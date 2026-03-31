@@ -1,9 +1,13 @@
-import Image from "next/image";
+import { TrionnCanvas, Banner, Vision } from "@/components/Sections/Home";
 
-export default function Home() {
+const Page = () => {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      
-    </div>
+    <>
+      <TrionnCanvas />
+      <Banner />
+      <Vision />
+    </>
   );
-}
+};
+
+export default Page;
