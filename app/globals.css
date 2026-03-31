@@ -93,5 +93,87 @@ html {
 
 body {
   font-family: "NeueHaasDisplay-Roman";
-  @apply text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden;
+  @apply text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden bg-white;
+}
+
+h1,
+.h1 {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-[6.25rem] leading-22.5 -tracking-[0.06em];
+  font-size: clamp(2.25rem, 5.727vw, 6.25rem);
+  line-height: clamp(2rem, 5.155vw, 5.625rem);
+  letter-spacing: clamp(-0.06em, -0.055vw, -0.06em);
+}
+
+h2,
+.h2 {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-[5.938rem] leading-22.5 -tracking-[0.06em];
+  font-size: clamp(2rem, 5.441vw, 6.25rem);
+  line-height: clamp(1.825rem, 5.155vw, 5.625rem);
+  letter-spacing: clamp(-0.06em, -0.056vw, -0.06em);
+}
+
+h3,
+.h3 {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-4xl leading-10.5 -tracking-[0.04em];
+}
+
+h4,
+.h4 {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-lg leading-5 -tracking-[0.02em];
+}
+
+p,
+.p {
+  font-family: "NeueHaasDisplay-Roman";
+  @apply text-xl leading-[normal];
+}
+
+.small {
+  font-family: "NeueHaasDisplay-Roman";
+  @apply text-base leading-[normal];
+}
+
+.title {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-base leading-4.5 -tracking-[0.02em] uppercase;
+}
+
+.menu {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-xl leading-5.5 -tracking-[0.04em];
+}
+
+.button-text {
+  font-family: "Martian-Mono-Light";
+  @apply text-sm leading-[normal] -tracking-[0.06em];
+}
+
+.number-small {
+  font-family: "PP-Editorial-New";
+  @apply text-[2.875rem] leading-[normal] -tracking-[0.04em];
+}
+
+.numbers {
+  font-family: "PP-Editorial-New";
+  @apply text-[5.375rem] leading-24.5 -tracking-[0.06em];
+}
+
+.mrquee-text {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-[10rem] leading-[normal] -tracking-[0.08em];
+  font-size: clamp(3rem, 9.164vw, 10rem);
+  line-height: clamp(0.672, 0.672, 0.672);
+  letter-spacing: clamp(-0.08em, -0.073vw, -0.08em);
+}
+
+.mrquee-text .marquee-text-item {
+  @apply relative -top-3;
+}
+
+.tr__container {
+  @apply px-6 md:px-10 mx-auto;
 }

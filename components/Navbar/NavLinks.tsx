@@ -1,7 +1,7 @@
-'use client';
-import Link from 'next/link';
-import { BlurReveal } from '@/components/TextAnimation';
-import { menu } from '@/data';
+"use client";
+import Link from "next/link";
+import { BlurReveal } from "@/components/TextAnimation";
+import { menu } from "@/data";
 
 export default function NavLinks() {
   return (
@@ -11,7 +11,10 @@ export default function NavLinks() {
           {menu.map((item, index) => (
             <li className="menu-item" key={index}>
               <BlurReveal>
-                <Link className="text-button block text-light-font uppercase" href={item.url}>
+                <Link
+                  className="menu block text-white uppercase"
+                  href={item.url}
+                >
                   {item.title}
                 </Link>
               </BlurReveal>

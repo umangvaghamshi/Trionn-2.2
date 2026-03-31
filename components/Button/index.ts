@@ -1,0 +1,1 @@
+export { default as WordShiftButton } from './WordShiftButton';
