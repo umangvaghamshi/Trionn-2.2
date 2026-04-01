@@ -1,4 +1,9 @@
-import { TrionnCanvas, Banner, Vision } from "@/components/Sections/Home";
+import {
+  TrionnCanvas,
+  Banner,
+  Vision,
+  KeyFacts,
+} from "@/components/Sections/Home";
 
 const Page = () => {
   return (
@@ -8,6 +13,7 @@ const Page = () => {
         <Banner />
         <Vision />
       </div>
+      <KeyFacts />
     </>
   );
 };
