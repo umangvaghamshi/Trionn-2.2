@@ -1,6 +1,10 @@
-import { headerSection } from '@/data';
-import { Header, Footer } from './PageWrapper';
-export default async function PagesWrapper({ children }: { children: React.ReactNode }) {
+import { headerSection } from "@/data";
+import { Header, Footer } from "./PageWrapper";
+export default async function PagesWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body cz-shortcut-listen="true">

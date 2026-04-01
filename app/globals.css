@@ -4,13 +4,11 @@
   font-family: "NeueHaasDisplay-Roman";
   src: url("../public/fonts/NeueHaasDisplay-Roman.eot");
   src:
-    url("../public/fonts/NeueHaasDisplay-Roman.eot?#iefix")
-      format("embedded-opentype"),
+    url("../public/fonts/NeueHaasDisplay-Roman.eot?#iefix") format("embedded-opentype"),
     url("../public/fonts/NeueHaasDisplay-Roman.woff2") format("woff2"),
     url("../public/fonts/NeueHaasDisplay-Roman.woff") format("woff"),
     url("../public/fonts/NeueHaasDisplay-Roman.ttf") format("truetype"),
-    url("../public/fonts/NeueHaasDisplay-Roman.svg#NeueHaasDisplay-Roman")
-      format("svg");
+    url("../public/fonts/NeueHaasDisplay-Roman.svg#NeueHaasDisplay-Roman") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -20,13 +18,11 @@
   font-family: "PP-Editorial-New";
   src: url("../public/fonts/PPEditorialNew-Ultralight.eot");
   src:
-    url("../public/fonts/PPEditorialNew-Ultralight.eot?#iefix")
-      format("embedded-opentype"),
+    url("../public/fonts/PPEditorialNew-Ultralight.eot?#iefix") format("embedded-opentype"),
     url("../public/fonts/PPEditorialNew-Ultralight.woff2") format("woff2"),
     url("../public/fonts/PPEditorialNew-Ultralight.woff") format("woff"),
     url("../public/fonts/PPEditorialNew-Ultralight.ttf") format("truetype"),
-    url("../public/fonts/PPEditorialNew-Ultralight.svg#PPEditorialNew-Ultralight")
-      format("svg");
+    url("../public/fonts/PPEditorialNew-Ultralight.svg#PPEditorialNew-Ultralight") format("svg");
   font-weight: 200;
   font-style: normal;
   font-display: swap;
@@ -36,8 +32,7 @@
   font-family: "Martian-Mono-Light";
   src: url("../public/fonts/MartianMono-Light.eot");
   src:
-    url("../public/fonts/MartianMono-Light.eot?#iefix")
-      format("embedded-opentype"),
+    url("../public/fonts/MartianMono-Light.eot?#iefix") format("embedded-opentype"),
     url("../public/fonts/MartianMono-Light.woff2") format("woff2"),
     url("../public/fonts/MartianMono-Light.woff") format("woff"),
     url("../public/fonts/MartianMono-Light.ttf") format("truetype"),
@@ -51,14 +46,11 @@
   font-family: "FamiljenGroteskVariable-Regular";
   src: url("../public/fonts/FamiljenGroteskVariable-Regular.eot");
   src:
-    url("../public/fonts/FamiljenGroteskVariable-Regular.eot?#iefix")
-      format("embedded-opentype"),
+    url("../public/fonts/FamiljenGroteskVariable-Regular.eot?#iefix") format("embedded-opentype"),
     url("../public/fonts/FamiljenGroteskVariable-Regular.woff2") format("woff2"),
     url("../public/fonts/FamiljenGroteskVariable-Regular.woff") format("woff"),
-    url("../public/fonts/FamiljenGroteskVariable-Regular.ttf")
-      format("truetype"),
-    url("../public/fonts/FamiljenGroteskVariable-Regular.svg#FamiljenGroteskVariable-Regular")
-      format("svg");
+    url("../public/fonts/FamiljenGroteskVariable-Regular.ttf") format("truetype"),
+    url("../public/fonts/FamiljenGroteskVariable-Regular.svg#FamiljenGroteskVariable-Regular") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -93,7 +85,7 @@ html {
 
 body {
   font-family: "NeueHaasDisplay-Roman";
-  @apply text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden bg-white;
+  @apply text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden;
 }
 
 h1,
@@ -176,4 +168,8 @@ p,
 
 .tr__container {
   @apply px-6 md:px-10 mx-auto;
+}
+
+canvas {
+  display: block;
 }

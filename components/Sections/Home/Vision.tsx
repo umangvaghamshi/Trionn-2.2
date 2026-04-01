@@ -4,9 +4,9 @@ import Marquee from "@/components/Marquee";
 
 export default function Vision() {
   return (
-    <section className="min-h-screen text-light-font relative flex flex-col items-center justify-between overflow-hidden py-37.5 pb-20 w-full">
+    <section className="min-h-screen text-light-font relative flex flex-col items-center justify-center py-37.5 pb-20 w-full mix-blend-difference">
       <div
-        className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6 mix-blend-difference"
+        className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6"
         id="s3-text"
       >
         <BlurTextReveal
@@ -18,7 +18,7 @@ export default function Vision() {
         />
       </div>
       <div
-        className="relative z-3 flex-col flex justify-center items-start pointer-events-none mix-blend-difference"
+        className="relative z-3 flex-col flex justify-center items-start pointer-events-none pt-40 pb-20"
         id="s3-marquee"
       >
         <Marquee gap={0} speed={0.8}>
@@ -99,7 +99,7 @@ export default function Vision() {
         </Marquee>
       </div>
       <div
-        className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6 pb-10 mix-blend-difference"
+        className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6 pb-10"
         id="s3-bottom-text"
       >
         <BlurTextReveal

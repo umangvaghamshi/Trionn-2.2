@@ -11,15 +11,6 @@ export default function Footer() {
   return (
     <>
       <footer className="site-footer text-light-font min-h-screen pt-37.5 bg-[#000000] relative overflow-hidden z-2 flex flex-col">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="object-cover video-block absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full rotate-180"
-        >
-          <source src="/video/smock-bg.mp4" type="video/mp4" />
-        </video>
         <div className="tr__container w-full flex flex-col justify-between">
           <div className="footer-top-block flex flex-col w-full">
             <div className="footer-title-block grid grid-cols-12 grid-rows-2 gap-x-6 w-full">
