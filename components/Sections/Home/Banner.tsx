@@ -6,7 +6,10 @@ import BlurTextRotate from "@/components/TextAnimation/BlurTextRotate";
 
 export default function Banner() {
   return (
-    <div className="text-light-font relative mix-blend-difference" id="sticky-wrap">
+    <div
+      className="text-light-font relative mix-blend-difference"
+      id="sticky-wrap"
+    >
       <section className="main-banner  min-h-screen pt-37 pb-20 flex w-full ">
         <div className="tr__container relative flex flex-col justify-between w-full">
           <div className="banner-top-block flex flex-col w-full">
@@ -36,27 +39,38 @@ export default function Banner() {
             </div>
 
             <div className="banner-subtitle-block grid grid-cols-12 grid-rows-1 gap-x-6 -translate-y-full w-full z-3 -mt-0.75">
-              <span
-                className="title z-2 col-span-6 flex items-end"
-                id="s1-sub"
-              >
-                Strategy-led <br />
-                digital experiences.
+              <span className="title z-2 col-span-6 flex items-end" id="s1-sub">
+                <BlurTextReveal
+                  as="span"
+                  html={`Strategy-led <br />digital experiences.`}
+                  animationType="chars"
+                  stagger={0.05}
+                  className="title block"
+                />
               </span>
               <span
                 className="title text-right z-2 col-span-6 flex items-end justify-end"
                 id="s1-stats"
               >
-                13+ years <br />
-                shaping digital <br />
-                direction.
+                <BlurTextReveal
+                  as="span"
+                  html={`13+ years <br />shaping digital <br />direction.`}
+                  animationType="chars"
+                  stagger={0.03}
+                  className="title block"
+                />
               </span>
             </div>
           </div>
           <div className="banner-text-block grid grid-cols-12 grid-rows-1 gap-x-6 w-full">
             <p className="max-w-60 z-2 col-span-5 title" id="s1-body">
-              Websites, Digital products, brands, and systems built for clarity,
-              scale, and impact.
+              <BlurTextReveal
+                as="span"
+                html={`Websites, Digital products, brands, and systems built for clarity, scale, and impact.`}
+                animationType="chars"
+                stagger={0.03}
+                className="title block"
+              />
             </p>
           </div>
         </div>
