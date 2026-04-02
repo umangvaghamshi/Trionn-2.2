@@ -398,7 +398,7 @@ export default function KeyFacts() {
             html={`Key facts`}
             animationType="chars"
             stagger={0.05}
-            className="text-dark-font block mix-blend-difference"
+            className="text-dark-font block"
           />
           <p className="text-dark-font">
             A snapshot of our

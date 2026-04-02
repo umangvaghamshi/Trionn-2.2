@@ -157,11 +157,11 @@ const WipeImageCard = (item: CardItem) => {
       ref={containerRef}
       className="relative mb-20 last:mb-0 overflow-hidden"
     >
-      <div className="mx-auto grid min-h-140 grid-cols-12 gap-10">
+      <div className="mx-auto flex min-h-140">
         {/* IMAGE WRAPPER */}
         <div
           ref={imageWrapperRef}
-          className={`relative h-full w-full overflow-hidden col-span-6 ${isEven ? "lg:order-2" : "lg:order-1"}`}
+          className={`relative overflow-hidden rounded-sm w-1/2 ${isEven ? "lg:order-2" : "lg:order-1"}`}
           style={{
             clipPath: isEven ? "inset(0% 0% 0% 100%)" : "inset(0% 100% 0% 0%)",
           }}
@@ -178,13 +178,15 @@ const WipeImageCard = (item: CardItem) => {
 
         {/* CONTENT */}
         <div
-          className={`relative flex flex-col justify-between col-span-6 ${isEven ? "lg:order-1" : "lg:order-2"}`}
+          className={`relative flex flex-col justify-between w-1/2 ${isEven ? "lg:order-1 pr-10" : "lg:order-2 pl-10"}`}
         >
           {/* LINE */}
-          <div
-            ref={lineRef}
-            className={`absolute left-0 top-0 h-px w-full scale-x-0 bg-grey-line/15 ${isEven ? "origin-top-left" : "origin-top-right"}`}
-          ></div>
+          <div className="relative">
+            <div
+              ref={lineRef}
+              className={`absolute left-0 top-0 h-px w-full scale-x-0 bg-grey-line/15 ${isEven ? "origin-top-left" : "origin-top-right"}`}
+            ></div>
+          </div>
 
           <div className="content-top text-dark-font">
             <div className="flex items-start justify-between mt-10">
