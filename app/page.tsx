@@ -3,6 +3,7 @@ import {
   Banner,
   Vision,
   KeyFacts,
+  Work,
 } from "@/components/Sections/Home";
 
 const Page = () => {
@@ -14,6 +15,7 @@ const Page = () => {
         <Vision />
       </div>
       <KeyFacts />
+      <Work />
     </>
   );
 };

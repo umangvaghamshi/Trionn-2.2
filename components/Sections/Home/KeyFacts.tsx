@@ -31,9 +31,9 @@ const ROWS: RowData[] = [
     suffix: "+",
     type: "image-logos",
     logos: [
-      "/images/work-kuros.jpg",
-      "/images/work-luxury-presence.jpg",
-      "/images/work-willam-jonshan.jpg",
+      "/images/work-kuros.webp",
+      "/images/work-luxury-presence.webp",
+      "/images/work-willam-jonshan.webp",
     ],
   },
   {
@@ -222,7 +222,7 @@ export default function KeyFacts() {
           const v = videoRefs.current[i];
           if (v) {
             v.currentTime = 0;
-            v.play().catch(() => { });
+            v.play().catch(() => {});
           }
         }
 
