@@ -20,7 +20,7 @@ export default function TrionnCanvas() {
       {/* Sound Toggle */}
       <div
         id="sound-toggle"
-        className="absolute top-25 right-10 z-99999"
+        className="absolute top-25 right-10 z-10"
         title="Toggle Sound"
         onClick={handleSoundToggle}
       >
@@ -79,7 +79,7 @@ export default function TrionnCanvas() {
       {/* Three.js canvas mount point */}
       <div
         id="canvas-wrap"
-        className="fixed top-0 left-0 w-screen h-screen z-0 pointer-events-none"
+        className="fixed bottom-0 left-0 w-screen h-screen z-0 pointer-events-none"
         ref={containerRef}
       />
     </>
