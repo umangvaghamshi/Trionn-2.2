@@ -28,56 +28,7 @@ export function useThreeScene(
     // Audio init
     audioRef.current.initHoverBeep();
 
-    // Lenis-style smooth scroll
-    const lenis = (() => {
-      let current = 0,
-        target = 0,
-        ease = 0.08;
-      const listeners: Array<(e: { scroll: number }) => void> = [];
-      const onWheel = (e: WheelEvent) => {
-        e.preventDefault();
-        target += e.deltaY;
-        target = Math.max(
-          0,
-          Math.min(target, document.body.scrollHeight - window.innerHeight),
-        );
-      };
-      window.addEventListener("wheel", onWheel, { passive: false });
-      let touchY = 0;
-      const onTouchStart = (e: TouchEvent) => {
-        touchY = e.touches[0].clientY;
-      };
-      const onTouchMove = (e: TouchEvent) => {
-        const dy = touchY - e.touches[0].clientY;
-        touchY = e.touches[0].clientY;
-        target += dy * 2;
-        target = Math.max(
-          0,
-          Math.min(target, document.body.scrollHeight - window.innerHeight),
-        );
-      };
-      window.addEventListener("touchstart", onTouchStart, { passive: true });
-      window.addEventListener("touchmove", onTouchMove, { passive: true });
-      return {
-        on: (event: string, cb: (e: { scroll: number }) => void) => {
-          if (event === "scroll") listeners.push(cb);
-        },
-        raf: () => {
-          current += (target - current) * ease;
-          if (Math.abs(target - current) < 0.1) current = target;
-          window.scrollTo({
-            top: current,
-            behavior: "instant" as ScrollBehavior,
-          });
-          listeners.forEach((cb) => cb({ scroll: current }));
-        },
-        destroy: () => {
-          window.removeEventListener("wheel", onWheel);
-          window.removeEventListener("touchstart", onTouchStart);
-          window.removeEventListener("touchmove", onTouchMove);
-        },
-      };
-    })();
+
 
     const W = window.innerWidth,
       H = window.innerHeight;
@@ -559,31 +510,7 @@ export function useThreeScene(
     const s4El = document.getElementById("s4-text") as HTMLElement | null;
     let lastNorm = 0;
 
-    lenis.on("scroll", ({ scroll }) => {
-      const norm = scroll / window.innerHeight;
-      const prevTarget = targetScrollProgress;
-      if (norm <= 0.1) targetScrollProgress = 0;
-      else if (norm <= 1.0)
-        targetScrollProgress = Math.max(0, (norm - 0.1) * (1 / 0.9));
-      else if (norm <= 1.2) targetScrollProgress = 1;
-      else if (norm <= 1.8)
-        targetScrollProgress = Math.max(0, (1.8 - norm) / 0.6);
-      else targetScrollProgress = 0;
 
-      const s4Start = 2.0;
-      const s4SlideProgress = Math.max(0, Math.min(1, (norm - s4Start) / 0.8));
-      const ty = (1 - s4SlideProgress) * 100;
-      if (s4El) s4El.style.transform = `translateY(${ty}vh)`;
-      (window as Window & { _s4ty?: number })._s4ty = ty;
-
-      if (norm > 0.1 && lastNorm <= 0.1 && norm > lastNorm)
-        audioRef.current.startWooshSound();
-      if (targetScrollProgress > 0.05 && prevTarget <= 0.05 && norm < lastNorm)
-        audioRef.current.startWooshSound();
-      if (targetScrollProgress < 0.05 && prevTarget >= 0.05)
-        audioRef.current.stopWooshSound();
-      lastNorm = norm;
-    });
 
     // Interaction
     let rotX = 0.3,
@@ -685,7 +612,31 @@ export function useThreeScene(
 
     function animate() {
       animId = requestAnimationFrame(animate);
-      lenis.raf();
+      const scroll = window.scrollY;
+      const norm = scroll / window.innerHeight;
+      const prevTarget = targetScrollProgress;
+      if (norm <= 0.1) targetScrollProgress = 0;
+      else if (norm <= 1.0)
+        targetScrollProgress = Math.max(0, (norm - 0.1) * (1 / 0.9));
+      else if (norm <= 1.2) targetScrollProgress = 1;
+      else if (norm <= 1.8)
+        targetScrollProgress = Math.max(0, (1.8 - norm) / 0.6);
+      else targetScrollProgress = 0;
+
+      const s4Start = 2.0;
+      const s4SlideProgress = Math.max(0, Math.min(1, (norm - s4Start) / 0.8));
+      const ty = (1 - s4SlideProgress) * 100;
+      if (s4El) s4El.style.transform = `translateY(${ty}vh)`;
+      (window as Window & { _s4ty?: number })._s4ty = ty;
+
+      if (norm > 0.1 && lastNorm <= 0.1 && norm > lastNorm)
+        audioRef.current.startWooshSound();
+      if (targetScrollProgress > 0.05 && prevTarget <= 0.05 && norm < lastNorm)
+        audioRef.current.startWooshSound();
+      if (targetScrollProgress < 0.05 && prevTarget >= 0.05)
+        audioRef.current.stopWooshSound();
+      lastNorm = norm;
+
       const t = clock.getElapsedTime();
 
       scrollProgress += (targetScrollProgress - scrollProgress) * 0.06;
@@ -706,12 +657,14 @@ export function useThreeScene(
         group.rotation.y = rotY;
       }
 
-      raycaster.setFromCamera(mouse, camera);
-      const hits = raycaster.intersectObjects(
-        particles.filter((p) => !p.isEdge).map((p) => p.mesh),
-        false,
-      );
-      const nowHit = hits.length > 0 ? hits[0].object : null;
+      const nowHit = scrollProgress < 0.15 ? (() => {
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObjects(
+          particles.filter((p) => !p.isEdge).map((p) => p.mesh),
+          false,
+        );
+        return hits.length > 0 ? hits[0].object : null;
+      })() : null;
       if (nowHit !== hoveredMesh) {
         if (nowHit) {
           (nowHit as THREE.Mesh & { _flash?: number })._flash = 1.0;
@@ -892,7 +845,6 @@ export function useThreeScene(
 
     return () => {
       cancelAnimationFrame(animId);
-      lenis.destroy();
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
       window.removeEventListener("mousedown", onWindowMouseDown);

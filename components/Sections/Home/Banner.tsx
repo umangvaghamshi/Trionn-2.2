@@ -56,7 +56,7 @@ export default function Banner() {
                   as="span"
                   html={`13+ years <br />shaping digital <br />direction.`}
                   animationType="chars"
-                  stagger={0.03}
+                  stagger={0.05}
                   className="title block"
                 />
               </span>
@@ -68,7 +68,7 @@ export default function Banner() {
                 as="span"
                 html={`Websites, Digital products, brands, and systems built for clarity, scale, and impact.`}
                 animationType="chars"
-                stagger={0.03}
+                stagger={0.05}
                 className="title block"
               />
             </p>

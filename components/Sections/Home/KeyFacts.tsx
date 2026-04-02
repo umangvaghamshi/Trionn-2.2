@@ -222,7 +222,7 @@ export default function KeyFacts() {
           const v = videoRefs.current[i];
           if (v) {
             v.currentTime = 0;
-            v.play().catch(() => {});
+            v.play().catch(() => { });
           }
         }
 
@@ -390,7 +390,7 @@ export default function KeyFacts() {
   };
 
   return (
-    <section className="pt-25 pb-37.5 bg-[#D2D2D2] min-h-screen select-none relative">
+    <section className="pt-25 pb-37.5 bg-[#D2D2D2] min-h-screen select-none relative z-20">
       <div className="tr__container">
         <div className="w-8/12 mx-auto flex justify-between items-start mb-20">
           <BlurTextReveal

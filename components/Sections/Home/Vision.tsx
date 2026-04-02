@@ -1,109 +1,136 @@
 "use client";
+import React, { useEffect, useRef } from "react";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import Marquee from "@/components/Marquee";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { SplitText } from "gsap/all";
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export default function Vision() {
+  const bannerBottomBlock = useRef<HTMLDivElement | null>(null);
+
+  useGSAP(() => {
+    if (!bannerBottomBlock.current) {
+      return;
+    }
+    // Sticky Banner Animation
+    ScrollTrigger.create({
+      trigger: bannerBottomBlock.current,
+      start: "top top",
+      end: "bottom top",
+      pin: true,
+      pinSpacing: false,
+      scrub: false,
+      markers: false,
+    });
+  }, []);
+
   return (
-    <section className=" ">
-      <div
-        id="s3-text"
-        className="w-screen h-screen relative z-20 flex flex-col justify-center bg-transparent text-left  overflow-hidden items-center py-37.5 pb-20 mix-blend-difference text-light-font"
-      >
-        <div className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6">
-          <BlurTextReveal
-            as="span"
-            html={`Focused vision. <br/>Measured execution.`}
-            animationType="chars"
-            stagger={0.05}
-            className="title z-3 col-start-2 col-span-11"
-          />
-        </div>
-        <div className="relative z-3 flex-col flex justify-center items-start pointer-events-none pt-40 pb-20">
-          <Marquee gap={0} speed={0.8}>
-            <div className="uppercase mrquee-text flex items-center">
-              <span className="marquee-text-item">Inspire</span>
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 40 40"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="mx-[4.582vw] w-[2.291vw] h-[2.291vw]"
-              >
-                <line
-                  x1="20.2256"
-                  y1="-2.18557e-08"
-                  x2="20.2256"
-                  y2="40"
-                  stroke="#D8D8D8"
-                />
-                <line
-                  x1="40"
-                  y1="20.226"
-                  x2="-4.37114e-08"
-                  y2="20.226"
-                  stroke="#D8D8D8"
-                />
-              </svg>
-              <span className="marquee-text-item">innovate</span>
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 40 40"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="mx-[4.582vw] w-[2.291vw] h-[2.291vw]"
-              >
-                <line
-                  x1="20.2256"
-                  y1="-2.18557e-08"
-                  x2="20.2256"
-                  y2="40"
-                  stroke="#D8D8D8"
-                />
-                <line
-                  x1="40"
-                  y1="20.226"
-                  x2="-4.37114e-08"
-                  y2="20.226"
-                  stroke="#D8D8D8"
-                />
-              </svg>
-              <span className="marquee-text-item">Impact</span>
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 40 40"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="mx-[4.582vw] w-[2.291vw] h-[2.291vw]"
-              >
-                <line
-                  x1="20.2256"
-                  y1="-2.18557e-08"
-                  x2="20.2256"
-                  y2="40"
-                  stroke="#D8D8D8"
-                />
-                <line
-                  x1="40"
-                  y1="20.226"
-                  x2="-4.37114e-08"
-                  y2="20.226"
-                  stroke="#D8D8D8"
-                />
-              </svg>
-            </div>
-          </Marquee>
-        </div>
-        <div className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6 pb-10">
-          <BlurTextReveal
-            as="span"
-            html={`✦ From idea to outcome.`}
-            animationType="chars"
-            stagger={0.05}
-            className="title z-3 col-span-12 text-center"
-          />
+    <section className="relative">
+      <div className="w-full min-h-screen z-20 mix-blend-difference" ref={bannerBottomBlock}>
+        <div
+          id="s3-text"
+          className="w-screen min-h-screen flex flex-col justify-center bg-transparent text-left overflow-hidden items-center py-37.5 pb-20 text-light-font"
+        >
+          <div className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6">
+            <BlurTextReveal
+              as="span"
+              html={`Focused vision. <br/>Measured execution.`}
+              animationType="chars"
+              stagger={0.05}
+              className="title z-3 col-start-2 col-span-11"
+            />
+          </div>
+          <div className="relative z-3 flex-col flex justify-center items-start pointer-events-none pt-40 pb-20">
+            <Marquee gap={0} speed={0.8}>
+              <div className="uppercase mrquee-text flex items-center">
+                <span className="marquee-text-item">Inspire</span>
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 40 40"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mx-[4.582vw] w-[2.291vw] h-[2.291vw]"
+                >
+                  <line
+                    x1="20.2256"
+                    y1="-2.18557e-08"
+                    x2="20.2256"
+                    y2="40"
+                    stroke="#D8D8D8"
+                  />
+                  <line
+                    x1="40"
+                    y1="20.226"
+                    x2="-4.37114e-08"
+                    y2="20.226"
+                    stroke="#D8D8D8"
+                  />
+                </svg>
+                <span className="marquee-text-item">innovate</span>
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 40 40"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mx-[4.582vw] w-[2.291vw] h-[2.291vw]"
+                >
+                  <line
+                    x1="20.2256"
+                    y1="-2.18557e-08"
+                    x2="20.2256"
+                    y2="40"
+                    stroke="#D8D8D8"
+                  />
+                  <line
+                    x1="40"
+                    y1="20.226"
+                    x2="-4.37114e-08"
+                    y2="20.226"
+                    stroke="#D8D8D8"
+                  />
+                </svg>
+                <span className="marquee-text-item">Impact</span>
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 40 40"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mx-[4.582vw] w-[2.291vw] h-[2.291vw]"
+                >
+                  <line
+                    x1="20.2256"
+                    y1="-2.18557e-08"
+                    x2="20.2256"
+                    y2="40"
+                    stroke="#D8D8D8"
+                  />
+                  <line
+                    x1="40"
+                    y1="20.226"
+                    x2="-4.37114e-08"
+                    y2="20.226"
+                    stroke="#D8D8D8"
+                  />
+                </svg>
+              </div>
+            </Marquee>
+          </div>
+          <div className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6 pb-10">
+            <BlurTextReveal
+              as="span"
+              html={`✦ From idea to outcome.`}
+              animationType="chars"
+              stagger={0.05}
+              className="title z-3 col-span-12 text-center"
+            />
+          </div>
         </div>
       </div>
     </section>
