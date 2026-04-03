@@ -10,7 +10,7 @@ import { Orbit } from "@/components/Orbit";
 const Page = () => {
   return (
     <>
-      <div className="bg-[#0C0C0C] overflow-hidden relative">
+      <div id="hero-section" className="bg-[#0C0C0C] overflow-hidden relative">
         <TrionnCanvas />
         <Banner />
         <Vision />
