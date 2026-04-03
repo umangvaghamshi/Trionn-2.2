@@ -2,18 +2,48 @@
 
 import { useRef, useState, useCallback } from "react";
 import { useThreeScene } from "@/hooks/useThreeScene";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function TrionnCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const audio = useThreeScene(containerRef);
 
+  // Tracks the user's manual sound preference independently of scroll visibility
+  const soundPreferenceRef = useRef(false);
+
   const handleSoundToggle = useCallback(() => {
     const next = !soundEnabled;
     setSoundEnabled(next);
-    audio.soundEnabledRef.current = next;
+    soundPreferenceRef.current = next;
+    audio.setSoundEnabled(next);
     if (!next) audio.stopAllSounds();
   }, [soundEnabled, audio]);
+
+  useGSAP(() => {
+    if (!containerRef.current) return;
+
+    ScrollTrigger.create({
+      trigger: "#hero-section",
+      start: "top top",
+      end: "bottom top",
+      pin: containerRef.current,
+      pinSpacing: false,
+      onLeave: () => {
+        // Section scrolled out of view — silence all sounds
+        audio.stopAllSounds();
+        audio.setSoundEnabled(false);
+      },
+      onEnterBack: () => {
+        // Section back in view — restore user's preference
+        audio.setSoundEnabled(soundPreferenceRef.current);
+      },
+    });
+  }, []);
 
   return (
     <>
@@ -79,7 +109,7 @@ export default function TrionnCanvas() {
       {/* Three.js canvas mount point */}
       <div
         id="canvas-wrap"
-        className="fixed bottom-0 left-0 w-screen h-screen z-0 pointer-events-none"
+        className="absolute top-0 left-0 w-screen h-screen z-0 pointer-events-none"
         ref={containerRef}
       />
     </>

@@ -280,8 +280,13 @@ export function useAudio() {
     stopExplodeSound();
   }, [stopVibrateSound, stopWooshSound, stopExplodeSound]);
 
+  const setSoundEnabled = useCallback((enabled: boolean) => {
+    soundEnabledRef.current = enabled;
+  }, []);
+
   return {
     soundEnabledRef,
+    setSoundEnabled,
     startVibrateSound,
     stopVibrateSound,
     playExplodeSound,

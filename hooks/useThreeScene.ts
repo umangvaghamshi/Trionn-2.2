@@ -596,13 +596,20 @@ export function useThreeScene(
       }
     };
 
-    window.addEventListener("mousemove", onMouseMove);
+    // Scope interaction events to #hero-section so sounds/effects never
+    // fire when the cursor is over sections below (e.g. KeyFacts)
+    const heroSection = document.getElementById("hero-section");
+    const interactionTarget = heroSection ?? wrap;
+
+    interactionTarget.addEventListener("mousemove", onMouseMove);
+    interactionTarget.addEventListener("mousedown", onWindowMouseDown);
     renderer.domElement.addEventListener("mousedown", onMouseDown);
     renderer.domElement.addEventListener("contextmenu", (e) =>
       e.preventDefault(),
     );
+    // mouseup stays on window so drag & vibrate release are always caught
+    // even if the cursor leaves the hero section mid-drag
     window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("mousedown", onWindowMouseDown);
     window.addEventListener("mouseup", onWindowMouseUp);
 
     // Animate
@@ -845,9 +852,9 @@ export function useThreeScene(
 
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener("mousemove", onMouseMove);
+      interactionTarget.removeEventListener("mousemove", onMouseMove);
+      interactionTarget.removeEventListener("mousedown", onWindowMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("mousedown", onWindowMouseDown);
       window.removeEventListener("mouseup", onWindowMouseUp);
       window.removeEventListener("resize", onResize);
       renderer.dispose();
