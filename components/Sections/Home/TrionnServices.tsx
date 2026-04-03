@@ -824,7 +824,7 @@ export default function TrionnServices() {
           {/* Background video — reveals after text blast, blends with canvas frames */}
           <video
             ref={bgVideoRef}
-            src="/services_bg_video.mp4"
+            src="/video/services_bg_video.mp4"
             muted
             loop
             playsInline
