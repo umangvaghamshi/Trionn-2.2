@@ -181,14 +181,11 @@ const WipeImageCard = (item: CardItem) => {
           className={`relative flex flex-col justify-between w-1/2 ${isEven ? "lg:order-1 pr-10" : "lg:order-2 pl-10"}`}
         >
           {/* LINE */}
-          <div className="relative">
+          <div className="content-top text-dark-font relative">
             <div
               ref={lineRef}
               className={`absolute left-0 top-0 h-px w-full scale-x-0 bg-grey-line/15 ${isEven ? "origin-top-left" : "origin-top-right"}`}
             ></div>
-          </div>
-
-          <div className="content-top text-dark-font">
             <div className="flex items-start justify-between mt-10">
               <BlurTextReveal
                 as="h1"
