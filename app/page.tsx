@@ -6,6 +6,7 @@ import {
   Work,
 } from "@/components/Sections/Home";
 import { Orbit } from "@/components/Orbit";
+import TrionnServices from "@/components/Sections/Home/TrionnServices";
 
 const Page = () => {
   return (
@@ -16,6 +17,7 @@ const Page = () => {
         <Vision />
       </div>
       <KeyFacts />
+      <TrionnServices />
       <Work />
       <Orbit />
     </>
