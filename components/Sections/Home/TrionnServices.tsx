@@ -42,6 +42,7 @@ interface CardData {
   title: string;
   description: string;
   svgIndex: number;
+  highlightColor?: { r: number; g: number; b: number };
 }
 
 /* ─────────────────────────────────────────────
@@ -179,33 +180,36 @@ function randInt(a: number, b: number) {
    ───────────────────────────────────────────── */
 function ServiceCard({ data }: { data: CardData }) {
   const paths = CARD_SVG_PATHS[data.svgIndex];
+
   return (
-    <div className="card-inner bg-[#1c1c1c] border border-white/[0.08] rounded-lg p-[clamp(16px,2vw,28px)] max-md:p-[14px_16px] max-md:rounded-md h-full flex flex-col justify-between">
-      <div className="card-top flex justify-between items-start gap-[10px]">
-        <h3 className="text-white text-[clamp(13px,1.6vw,24px)] max-md:text-[clamp(12px,3.5vw,18px)] max-[480px]:text-[clamp(11px,4vw,16px)] font-normal leading-[1.2] m-0 tracking-[-0.02em] font-['Helvetica_Neue',sans-serif] max-w-[65%]">
-          {data.title}
-        </h3>
-        <svg
-          viewBox="0 0 60 60"
-          xmlns="http://www.w3.org/2000/svg"
-          className="card-svg-icon shrink-0 w-[clamp(28px,3.5vh,44px)] h-[clamp(28px,3.5vh,44px)]"
-        >
-          {paths.map((d, i) => (
-            <path
-              key={i}
-              className="svg-path"
-              fill="none"
-              stroke="#d8d8d8"
-              strokeMiterlimit={10}
-              style={{ vectorEffect: "non-scaling-stroke" }}
-              d={d}
-            />
-          ))}
-        </svg>
+    <div className="w-full h-full relative" style={{ perspective: "1000px" }}>
+      <div className="card-inner pointer-events-auto bg-[#00000046] border-0 rounded-lg p-[clamp(16px,2vw,28px)] max-md:p-[14px_16px] max-md:rounded-md h-full flex flex-col justify-between overflow-hidden relative [transform-style:preserve-3d] backdrop-blur-md">
+        <div className="card-top relative z-10 flex justify-between items-start gap-[10px] [transform:translateZ(30px)]">
+          <h3 className="text-white text-[clamp(13px,1.6vw,24px)] max-md:text-[clamp(12px,3.5vw,18px)] max-[480px]:text-[clamp(11px,4vw,16px)] font-normal leading-[1.2] m-0 tracking-[-0.02em] font-['Helvetica_Neue',sans-serif] max-w-[65%]">
+            {data.title}
+          </h3>
+          <svg
+            viewBox="0 0 60 60"
+            xmlns="http://www.w3.org/2000/svg"
+            className="card-svg-icon shrink-0 w-[clamp(28px,3.5vh,44px)] h-[clamp(28px,3.5vh,44px)]"
+          >
+            {paths.map((d, i) => (
+              <path
+                key={i}
+                className="svg-path"
+                fill="none"
+                stroke="#d8d8d8"
+                strokeMiterlimit={10}
+                style={{ vectorEffect: "non-scaling-stroke" }}
+                d={d}
+              />
+            ))}
+          </svg>
+        </div>
+        <p className="text-white/35 relative z-10 text-[clamp(10px,0.85vw,12px)] max-md:text-[clamp(9px,2.5vw,11px)] max-[480px]:text-[clamp(9px,2.8vw,11px)] leading-[1.65] m-0 font-light font-['Helvetica_Neue',sans-serif] [transform:translateZ(20px)]">
+          {data.description}
+        </p>
       </div>
-      <p className="text-white/35 text-[clamp(10px,0.85vw,12px)] max-md:text-[clamp(9px,2.5vw,11px)] max-[480px]:text-[clamp(9px,2.8vw,11px)] leading-[1.65] m-0 font-light font-['Helvetica_Neue',sans-serif]">
-        {data.description}
-      </p>
     </div>
   );
 }
@@ -233,8 +237,10 @@ export default function TrionnServices() {
   const stateRef = useRef({
     imgs: new Array<HTMLImageElement>(371),
     loaded: 0,
+    preloading: false,
     videoIdx: 0,
     scrollT: 0,
+    cardsT: 0, // Smoothed scroll specifically for cards
     particles: [] as Particle[],
     prevInZone: false,
     particleContainer: null as HTMLDivElement | null,
@@ -428,14 +434,6 @@ export default function TrionnServices() {
     });
 
     gsap.set(allEls, { opacity: 0, x: 0, y: 0 });
-    document
-      .querySelectorAll<HTMLElement>(".card-inner")
-      .forEach((el) => (el.style.backgroundColor = "#1c1c1c"));
-
-    allEls.forEach((el) => {
-      (el as any)._colorStart = null;
-      (el as any)._colorEnd = null;
-    });
 
     const tl = gsap.timeline({ paused: true });
     const pairDur = 0.45;
@@ -460,6 +458,9 @@ export default function TrionnServices() {
       const lEl = cEls[lk];
       const rEl = cEls[rk];
       if (!lEl || !rEl) return;
+
+      const lData = LEFT_CARDS.find((c) => c.id === lk);
+      const rData = RIGHT_CARDS.find((c) => c.id === rk);
 
       const lFrames: any[] = [];
       const rFrames: any[] = [];
@@ -492,43 +493,60 @@ export default function TrionnServices() {
               ? 1 - (frac - 0.85) / 0.15
               : 1;
 
-        const HZONE = 0.1;
-        const distFromMid = Math.abs(frac - 0.5);
-        const highlightAmt = distFromMid < HZONE ? 1 - distFromMid / HZONE : 0;
-        const r = Math.round(28 + highlightAmt * (201 - 28));
-        const g = Math.round(28 + highlightAmt * (74 - 28));
-        const b = Math.round(28 + highlightAmt * (26 - 28));
-        const bg = `rgb(${r},${g},${b})`;
+        const tiltZ = (0.5 - frac) * 5;
 
-        const tiltZ = (0.5 - frac) * 3;
+        // 3D Entrance effects
+        const scale = 0.6 + (arc * 0.4); // Scale up to 1.0 peak
+        const z = -200 + (arc * 200);   // Pull forward
+        const rotX = (frac - 0.5) * -35;
+        const lRotY = (0.5 - frac) * 35;
+        const rRotY = (0.5 - frac) * -35;
 
         lFrames.push({
-          x: Math.round(lX),
-          y: Math.round(lY),
+          x: lX,
+          y: lY,
+          z: z,
+          scaleX: scale,
+          scaleY: scale,
+          rotationX: rotX,
+          rotationY: lRotY,
+          rotationZ: tiltZ,
           opacity: op,
-          backgroundColor: bg,
-          rotation: tiltZ,
         });
         rFrames.push({
-          x: Math.round(rX),
-          y: Math.round(rY),
+          x: rX,
+          y: rY,
+          z: z,
+          scaleX: scale,
+          scaleY: scale,
+          rotationX: rotX,
+          rotationY: rRotY,
+          rotationZ: -tiltZ,
           opacity: op,
-          backgroundColor: bg,
-          rotation: -tiltZ,
         });
       }
 
       const lPosFrames = lFrames.map((f) => ({
         x: f.x,
         y: f.y,
+        z: f.z,
+        scaleX: f.scaleX,
+        scaleY: f.scaleY,
+        rotationX: f.rotationX,
+        rotationY: f.rotationY,
+        rotation: f.rotationZ, // gsap uses 'rotation' for rotateZ
         opacity: f.opacity,
-        rotation: f.rotation,
       }));
       const rPosFrames = rFrames.map((f) => ({
         x: f.x,
         y: f.y,
+        z: f.z,
+        scaleX: f.scaleX,
+        scaleY: f.scaleY,
+        rotationX: f.rotationX,
+        rotationY: f.rotationY,
+        rotation: f.rotationZ,
         opacity: f.opacity,
-        rotation: f.rotation,
       }));
 
       tl.to(
@@ -541,44 +559,6 @@ export default function TrionnServices() {
         { keyframes: rPosFrames, duration: pairDur, ease: "none" },
         startT,
       );
-
-      const lColorFrames = lFrames.map((f) => ({
-        backgroundColor: f.backgroundColor,
-      }));
-      const rColorFrames = rFrames.map((f) => ({
-        backgroundColor: f.backgroundColor,
-      }));
-
-      const lInner = lEl.querySelector<HTMLElement>(".card-inner");
-      const rInner = rEl.querySelector<HTMLElement>(".card-inner");
-
-      if (lInner)
-        tl.to(
-          lInner,
-          {
-            keyframes: lColorFrames,
-            duration: pairDur,
-            ease: "none",
-            immediateRender: false,
-          },
-          startT,
-        );
-      if (rInner)
-        tl.to(
-          rInner,
-          {
-            keyframes: rColorFrames,
-            duration: pairDur,
-            ease: "none",
-            immediateRender: false,
-          },
-          startT,
-        );
-
-      (lEl as any)._colorStart = startT + pairDur * 0.3;
-      (lEl as any)._colorEnd = startT + pairDur * 0.7;
-      (rEl as any)._colorStart = startT + pairDur * 0.3;
-      (rEl as any)._colorEnd = startT + pairDur * 0.7;
 
       /* ── DrawSVG: init paths — animation fires independently in updateCards ── */
       const svgPathsL = Array.from(
@@ -605,9 +585,6 @@ export default function TrionnServices() {
 
       if (t < CARDS_START) {
         gsap.set(allEls, { opacity: 0, x: 0, y: 0 });
-        document
-          .querySelectorAll<HTMLElement>(".card-inner")
-          .forEach((el) => (el.style.backgroundColor = "#1c1c1c"));
         return;
       }
 
@@ -704,6 +681,8 @@ export default function TrionnServices() {
   /* ── Preload frames ── */
   const preload = useCallback(() => {
     const s = stateRef.current;
+    if (s.preloading || s.loaded > 0) return;
+    s.preloading = true;
     for (let i = 0; i < TOTAL; i++) {
       const img = new Image();
       img.onload = () => {
@@ -719,12 +698,21 @@ export default function TrionnServices() {
 
   /* ── ScrollTrigger drives scrollT progress ── */
   useGSAP(() => {
+    // Start preloading canvas frames when approaching section
+    ScrollTrigger.create({
+      trigger: scrollDriverRef.current,
+      start: "top 200%", // Start preloading 1 viewport above
+      once: true,
+      onEnter: () => preload(),
+    });
+
     // Shutter reveal effect
     gsap.fromTo(
       stickyWrapRef.current,
-      { yPercent: -100 },
+      { yPercent: -100, visibility: 'hidden' },
       {
         yPercent: 0,
+        visibility: 'visible',
         ease: "none",
         scrollTrigger: {
           trigger: scrollDriverRef.current,
@@ -739,7 +727,7 @@ export default function TrionnServices() {
       trigger: scrollDriverRef.current,
       start: "top top",
       end: "+=300%",
-      pin:true,
+      pin: true,
       onUpdate: (self) => {
         stateRef.current.scrollT = self.progress;
       },
@@ -751,7 +739,6 @@ export default function TrionnServices() {
     const s = stateRef.current;
 
     resize();
-    preload();
 
     const handleResize = () => resize();
     window.addEventListener("resize", handleResize);
@@ -788,9 +775,12 @@ export default function TrionnServices() {
 
       /* ── Background video: always playing ── */
       const vid = bgVideoRef.current;
-      if (vid && vid.paused) vid.play().catch(() => {});
+      if (vid && vid.paused) vid.play().catch(() => { });
 
-      updateCards(s.scrollT);
+      // Add simple lerp for the cards to provide a smooth scrub without vibration
+      s.cardsT += (s.scrollT - s.cardsT) * 0.08;
+      updateCards(s.cardsT);
+
       if (progressRef.current)
         progressRef.current.style.width = s.scrollT * 100 + "%";
     };
@@ -850,12 +840,12 @@ export default function TrionnServices() {
           />
 
           {/* Cards overlay */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden z-[2]">
+          <div className="absolute inset-0 pointer-events-none overflow-hidden z-[2]" style={{ perspective: "1500px" }}>
             {LEFT_CARDS.map((card) => (
               <div
                 key={card.id}
                 ref={setCardRef(card.id)}
-                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] [backface-visibility:hidden] p-[6px]"
+                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] [transform-style:preserve-3d] p-[6px]"
               >
                 <ServiceCard data={card} />
               </div>
@@ -864,7 +854,7 @@ export default function TrionnServices() {
               <div
                 key={card.id}
                 ref={setCardRef(card.id)}
-                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] [backface-visibility:hidden] p-[6px]"
+                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] [transform-style:preserve-3d] p-[6px]"
               >
                 <ServiceCard data={card} />
               </div>
@@ -895,11 +885,10 @@ export default function TrionnServices() {
                 <div
                   key={i}
                   data-line
-                  className={`text-white font-bold tracking-[-0.02em] block font-['Helvetica_Neue',sans-serif] ${
-                    i === 2
-                      ? "text-[clamp(28px,8vw,118px)] max-md:text-[clamp(22px,10vw,68px)]"
-                      : "text-[clamp(32px,9vw,130px)] max-md:text-[clamp(28px,12vw,80px)]"
-                  }`}
+                  className={`text-white font-bold tracking-[-0.02em] block font-['Helvetica_Neue',sans-serif] ${i === 2
+                    ? "text-[clamp(28px,8vw,118px)] max-md:text-[clamp(22px,10vw,68px)]"
+                    : "text-[clamp(32px,9vw,130px)] max-md:text-[clamp(28px,12vw,80px)]"
+                    }`}
                 >
                   {line}
                 </div>
