@@ -5,6 +5,8 @@ import * as THREE from "three";
 import gsap from "gsap";
 import type { OrbitLabel } from "./types";
 
+/* ── ScrollTrigger is registered by the consumer (Orbit.tsx) ── */
+
 /* ── Constants ── */
 const IMG_RATIO = 812 / 568;
 
@@ -35,6 +37,9 @@ export function useOrbitScene(
 ) {
   const configRef = useRef(config);
   configRef.current = config;
+
+  /* Stable ref so Orbit.tsx can call triggerIntro() after ScrollTrigger fires */
+  const triggerIntroRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -119,6 +124,8 @@ export function useOrbitScene(
 
     /* ── Orbit Rings ── */
     let orbitRings: THREE.Line[] = [];
+    let introHasRun = false;
+
     const buildRings = () => {
       orbitRings.forEach((r) => {
         r.geometry.dispose();
@@ -129,7 +136,7 @@ export function useOrbitScene(
       const SEG = 128;
       const mobile = isMobile();
       const OFFSETS = [CH / 1.7, 0, -CH / 1.7];
-      OFFSETS.forEach((off, ri) => {
+      OFFSETS.forEach((off) => {
         const mat = new THREE.LineBasicMaterial({
           color: 0x555555,
           transparent: true,
@@ -151,15 +158,8 @@ export function useOrbitScene(
         const geo = new THREE.BufferGeometry().setFromPoints(pts);
         const ring = new THREE.Line(geo, mat);
         ring.renderOrder = 1;
-        ring.position.y = mobile ? 0 : 22;
-        if (!mobile) {
-          gsap.to(ring.position, {
-            y: 0,
-            duration: 1.6,
-            delay: 0.3 + ri * 0.12,
-            ease: "expo.out",
-          });
-        }
+        /* Start off-screen until intro fires; if resizing after intro already ran, place in final position */
+        ring.position.y = mobile || introHasRun ? 0 : 22;
         scene.add(ring);
         orbitRings.push(ring);
       });
@@ -355,23 +355,51 @@ export function useOrbitScene(
 
     /* ── Intro ── */
     const introProgress = Array(N).fill(0) as number[];
-    cards.forEach((c, i) => {
-      const delay = 0.35 + i * 0.09;
-      gsap.to(introProgress, {
-        [i]: 1,
-        duration: 1.4,
-        delay,
-        ease: "expo.out",
+
+    const startIntro = () => {
+      if (introHasRun) return;
+      introHasRun = true;
+
+      /* Animate rings dropping in */
+      if (!isMobile()) {
+        orbitRings.forEach((ring, ri) => {
+          gsap.to(ring.position, {
+            y: 0,
+            duration: 1.6,
+            delay: 0.3 + ri * 0.12,
+            ease: "expo.out",
+          });
+        });
+      }
+
+      /* Animate cards flying into orbit */
+      cards.forEach((c, i) => {
+        const delay = 0.35 + i * 0.09;
+        gsap.to(introProgress, {
+          [i]: 1,
+          duration: 1.4,
+          delay,
+          ease: "expo.out",
+        });
+        gsap.to(c.mesh.scale, {
+          x: 1,
+          y: 1,
+          z: 1,
+          duration: 1.2,
+          delay,
+          ease: "expo.out",
+        });
       });
-      gsap.to(c.mesh.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 1.2,
-        delay,
-        ease: "expo.out",
-      });
-    });
+
+      /* Camera zoom in */
+      gsap.fromTo(
+        cam.position,
+        { z: 14 },
+        { z: isMobile() ? 11 : 9, duration: 2.0, ease: "expo.out", delay: 0.1 },
+      );
+    };
+
+    triggerIntroRef.current = startIntro;
 
     /* ── Orbit Position ── */
     const orbitPos = (i: number, rot: number, tx: number, ty: number) => {
@@ -497,11 +525,6 @@ export function useOrbitScene(
     };
 
     /* ── Start ── */
-    gsap.fromTo(
-      cam.position,
-      { z: 14 },
-      { z: 9, duration: 2.0, ease: "expo.out", delay: 0.1 },
-    );
     setActive(0);
     rafId = requestAnimationFrame(loop);
 
@@ -536,4 +559,6 @@ export function useOrbitScene(
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  return { triggerIntro: () => triggerIntroRef.current() };
 }

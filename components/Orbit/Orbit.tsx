@@ -1,11 +1,16 @@
 "use client";
 
 import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import type { OrbitProps, OrbitLabel } from "./types";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import LinePlus from "@/components/LinePlus";
 import { WordShiftButton } from "@/components/Button";
 import { useOrbitScene } from "./useOrbitScene";
+
+gsap.registerPlugin(ScrollTrigger);
 
 /* ── Default Data ── */
 const DEFAULT_LABELS: OrbitLabel[] = [
@@ -44,11 +49,12 @@ export default function Orbit({
     );
 
   /* ── Refs ── */
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const trailCanvasRef = useRef<HTMLCanvasElement>(null);
 
   /* ── Three.js Scene Hook ── */
-  useOrbitScene(canvasRef, trailCanvasRef, {
+  const { triggerIntro } = useOrbitScene(canvasRef, trailCanvasRef, {
     labels,
     images: imgSrcs,
     backgroundColor,
@@ -59,8 +65,20 @@ export default function Orbit({
     heroSubtitle,
   });
 
+  /* ── Trigger intro animation when section top hits viewport top ── */
+  useGSAP(() => {
+    ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top bottom",
+      once: true,
+      markers:false,
+      onEnter: triggerIntro,
+    });
+  }, { scope: containerRef, dependencies: [triggerIntro] });
+
   return (
     <div
+      ref={containerRef}
       className={`relative w-full h-screen overflow-hidden cursor-default flex ${className}`}
       style={{ backgroundColor, fontFamily }}
     >
