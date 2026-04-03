@@ -17,8 +17,8 @@ const Page = () => {
         <Vision />
       </div>
       <KeyFacts />
-      <TrionnServices />
       <Work />
+      <TrionnServices />
       <Orbit />
     </>
   );

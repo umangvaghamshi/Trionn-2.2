@@ -219,6 +219,7 @@ export default function TrionnServices() {
   const progressRef = useRef<HTMLDivElement>(null);
   const textOverlayRef = useRef<HTMLDivElement>(null);
   const scrollDriverRef = useRef<HTMLDivElement>(null);
+  const stickyWrapRef = useRef<HTMLDivElement>(null);
 
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const setCardRef = useCallback(
@@ -718,6 +719,22 @@ export default function TrionnServices() {
 
   /* ── ScrollTrigger drives scrollT progress ── */
   useGSAP(() => {
+    // Shutter reveal effect
+    gsap.fromTo(
+      stickyWrapRef.current,
+      { yPercent: -100 },
+      {
+        yPercent: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: scrollDriverRef.current,
+          start: "top bottom",
+          end: "top top",
+          scrub: true,
+        },
+      }
+    );
+
     ScrollTrigger.create({
       trigger: scrollDriverRef.current,
       start: "top top",
@@ -813,7 +830,7 @@ export default function TrionnServices() {
         className="relative bg-[#000]"
       >
         {/* Sticky wrap */}
-        <div className="sticky top-0 w-full h-screen overflow-hidden">
+        <div ref={stickyWrapRef} className="sticky top-0 w-full h-screen overflow-hidden">
           {/* Canvas */}
           <canvas
             ref={canvasRef}
