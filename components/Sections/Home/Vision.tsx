@@ -46,9 +46,10 @@ export default function Vision() {
       scrollTrigger: {
         trigger: bannerBottomBlock.current,
         start: "top top",
-        end: "+=150%",
-        scrub: 1,
+        end: "+=200%",
+        scrub: true,
         pin: true,
+        markers: true,
       },
     });
 

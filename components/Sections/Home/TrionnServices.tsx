@@ -475,7 +475,7 @@ export default function TrionnServices() {
         const lPeakX = vw * 0.1;
 
         const lY = lStartY + frac * (lEndY - lStartY);
-        const arc = Math.sin(frac * Math.PI);
+        const arc = frac <= 0.5 ? Math.sin(frac * Math.PI) : 1;
         const lX = lStartX + arc * (lPeakX - lStartX);
 
         const rStartX = vw - W * 0.3;
@@ -778,7 +778,7 @@ export default function TrionnServices() {
       {/* ── Progress bar ── */}
       <div
         ref={progressRef}
-        className="fixed bottom-0 left-0 h-0.5 w-0 bg-white z-[100]"
+        className="fixed bottom-0 left-0 h-0.5 w-0 bg-white z-[100] hidden"
       />
 
       {/* ── Scroll driver ── */}
