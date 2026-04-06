@@ -1,11 +1,11 @@
+import { Orbit } from "@/components/Orbit";
 import {
-  TrionnCanvas,
   Banner,
-  Vision,
   KeyFacts,
+  TrionnCanvas,
+  Vision,
   Work,
 } from "@/components/Sections/Home";
-import { Orbit } from "@/components/Orbit";
 import TrionnServices from "@/components/Sections/Home/TrionnServices";
 
 const Page = () => {
@@ -16,10 +16,9 @@ const Page = () => {
         <Banner />
         <Vision />
       </div>
-      <KeyFacts />
       <Work />
       <TrionnServices />
-      <Orbit />
+      {/* <Orbit /> */}
     </>
   );
 };
