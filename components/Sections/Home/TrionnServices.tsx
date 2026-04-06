@@ -182,9 +182,9 @@ function ServiceCard({ data }: { data: CardData }) {
   const paths = CARD_SVG_PATHS[data.svgIndex];
 
   return (
-    <div className="w-full h-full relative" style={{ perspective: "1000px" }}>
-      <div className="card-inner pointer-events-auto bg-[#00000046] border-0 rounded-lg p-[clamp(16px,2vw,28px)] max-md:p-[14px_16px] max-md:rounded-md h-full flex flex-col justify-between overflow-hidden relative [transform-style:preserve-3d] backdrop-blur-md">
-        <div className="card-top relative z-10 flex justify-between items-start gap-[10px] [transform:translateZ(30px)]">
+    <div className="w-full h-full relative">
+      <div className="card-inner pointer-events-auto bg-[#00000046] border-0 rounded-lg p-[clamp(16px,2vw,28px)] max-md:p-[14px_16px] max-md:rounded-md h-full flex flex-col justify-between overflow-hidden relative backdrop-blur-md">
+        <div className="card-top relative z-10 flex justify-between items-start gap-[10px]">
           <h3 className="text-white text-[clamp(13px,1.6vw,24px)] max-md:text-[clamp(12px,3.5vw,18px)] max-[480px]:text-[clamp(11px,4vw,16px)] font-normal leading-[1.2] m-0 tracking-[-0.02em] font-['Helvetica_Neue',sans-serif] max-w-[65%]">
             {data.title}
           </h3>
@@ -206,7 +206,7 @@ function ServiceCard({ data }: { data: CardData }) {
             ))}
           </svg>
         </div>
-        <p className="text-white/35 relative z-10 text-[clamp(10px,0.85vw,12px)] max-md:text-[clamp(9px,2.5vw,11px)] max-[480px]:text-[clamp(9px,2.8vw,11px)] leading-[1.65] m-0 font-light font-['Helvetica_Neue',sans-serif] [transform:translateZ(20px)]">
+        <p className="text-white/35 relative z-10 text-[clamp(10px,0.85vw,12px)] max-md:text-[clamp(9px,2.5vw,11px)] max-[480px]:text-[clamp(9px,2.8vw,11px)] leading-[1.65] m-0 font-light font-['Helvetica_Neue',sans-serif]">
           {data.description}
         </p>
       </div>
@@ -493,35 +493,14 @@ export default function TrionnServices() {
               ? 1 - (frac - 0.85) / 0.15
               : 1;
 
-        const tiltZ = (0.5 - frac) * 5;
-
-        // 3D Entrance effects
-        const scale = 0.6 + (arc * 0.4); // Scale up to 1.0 peak
-        const z = -200 + (arc * 200);   // Pull forward
-        const rotX = (frac - 0.5) * -35;
-        const lRotY = (0.5 - frac) * 35;
-        const rRotY = (0.5 - frac) * -35;
-
         lFrames.push({
           x: lX,
           y: lY,
-          z: z,
-          scaleX: scale,
-          scaleY: scale,
-          rotationX: rotX,
-          rotationY: lRotY,
-          rotationZ: tiltZ,
           opacity: op,
         });
         rFrames.push({
           x: rX,
           y: rY,
-          z: z,
-          scaleX: scale,
-          scaleY: scale,
-          rotationX: rotX,
-          rotationY: rRotY,
-          rotationZ: -tiltZ,
           opacity: op,
         });
       }
@@ -529,23 +508,11 @@ export default function TrionnServices() {
       const lPosFrames = lFrames.map((f) => ({
         x: f.x,
         y: f.y,
-        z: f.z,
-        scaleX: f.scaleX,
-        scaleY: f.scaleY,
-        rotationX: f.rotationX,
-        rotationY: f.rotationY,
-        rotation: f.rotationZ, // gsap uses 'rotation' for rotateZ
         opacity: f.opacity,
       }));
       const rPosFrames = rFrames.map((f) => ({
         x: f.x,
         y: f.y,
-        z: f.z,
-        scaleX: f.scaleX,
-        scaleY: f.scaleY,
-        rotationX: f.rotationX,
-        rotationY: f.rotationY,
-        rotation: f.rotationZ,
         opacity: f.opacity,
       }));
 
