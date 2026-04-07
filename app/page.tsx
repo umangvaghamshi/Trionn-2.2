@@ -1,23 +1,22 @@
 import {
-  TrionnCanvas,
   Banner,
   Vision,
-  KeyFacts,
-  Work,
+  Work
 } from "@/components/Sections/Home";
-import { Orbit } from "@/components/Orbit";
+import TrionnServices from "@/components/Sections/Home/TrionnServices";
+import TrionnSymbolAnimation from "@/components/TrionnSymbolAnimation";
 
 const Page = () => {
   return (
     <>
       <div id="hero-section" className="bg-[#0C0C0C] overflow-hidden relative">
-        <TrionnCanvas />
+        <TrionnSymbolAnimation />
         <Banner />
         <Vision />
       </div>
-      <KeyFacts />
       <Work />
-      <Orbit />
+      <TrionnServices />
+      {/* <Orbit /> */}
     </>
   );
 };

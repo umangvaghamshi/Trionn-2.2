@@ -9,7 +9,7 @@ import { workData } from "@/data";
 
 export default function Work() {
   return (
-    <section className="bg-white relative">
+    <section className="bg-white relative z-[22]">
       <div className="tr__container relative w-full  bg-[linear-gradient(0deg,rgba(210,210,210,1)_0%,rgba(255,255,255,0)_50%,rgba(210,210,210,1)_100%)]">
         <LinePlus
           lineClass={"opacity-15 bg-grey-line left-1/2 -translate-x-1/2"}
