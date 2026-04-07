@@ -1,14 +1,8 @@
 "use client";
 import Marquee from "@/components/Marquee";
+import StripeReveal from "@/components/StripeReveal";
 import { BlurTextReveal } from "@/components/TextAnimation";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { SplitText } from "gsap/all";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
 import KeyFacts from "./KeyFacts";
-
-gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const CROSS_ICON = (
   <svg
@@ -31,49 +25,9 @@ const CROSS_ICON = (
 );
 
 export default function Vision() {
-  const bannerBottomBlock = useRef<HTMLDivElement | null>(null);
-  const stripes = useRef<HTMLDivElement[]>([]);
-  const keyFactsRef = useRef<HTMLDivElement | null>(null);
-
-  useGSAP(() => {
-    if (!bannerBottomBlock.current || stripes.current.length === 0) return;
-
-    gsap.set(stripes.current, { scaleY: 0, transformOrigin: "bottom" });
-    // Start KeyFacts exactly one viewport below so it slides up into view
-    gsap.set(keyFactsRef.current, { y: "100%" });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: bannerBottomBlock.current,
-        start: "top top",
-        end: "+=200%",
-        scrub: true,
-        pin: true,
-        markers: false,
-      },
-    });
-
-    tl.to(stripes.current, {
-      scaleY: 1,
-      stagger: { amount: 0.5, from: "end" },
-      ease: "none",
-    }).to(
-      keyFactsRef.current,
-      {
-        duration: 1,
-        y: "-20%",
-        ease: "none",
-      },
-      "<15%",
-    );
-  }, []);
-
   return (
-    <section className="relative overflow-visible">
-      <div
-        className="w-full min-h-screen z-20 mix-blend-difference relative overflow-visible"
-        ref={bannerBottomBlock}
-      >
+    <StripeReveal
+      pinnedContent={
         <div
           id="s3-text"
           className="w-screen min-h-screen flex flex-col justify-center bg-transparent text-left overflow-hidden items-center py-37.5 pb-20 text-light-font"
@@ -111,27 +65,13 @@ export default function Vision() {
             />
           </div>
         </div>
-
-        {/* Stripe overlay */}
-        <div className="stripes-container absolute inset-0 pointer-events-none flex flex-col w-full h-screen z-30">
-          {[0, 1, 2, 3, 4].map((index) => (
-            <div
-              key={index}
-              ref={(self) => {
-                stripes.current[index] = self!;
-              }}
-              className="stripe-item bg-[#D2D2D2] w-full flex-1"
-            />
-          ))}
-        </div>
-        <div
-          id="keyfacts-section"
-          ref={keyFactsRef}
-          className="absolute top-0 left-0 w-full z-40 "
-        >
-          <KeyFacts />
-        </div>
-      </div>
-    </section>
+      }
+      revealContent={<KeyFacts />}
+      stripeCount={5}
+      stripeColor="#D2D2D2"
+      scrollEnd="+=200%"
+      revealPosition="<15%"
+      revealEndY="-20%"
+    />
   );
 }
