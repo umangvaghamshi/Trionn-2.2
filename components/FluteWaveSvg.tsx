@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import gsap from 'gsap';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
 
 type Props = {
   /** Paste your SVG markup string here (the full <svg ...>...</svg>) */
@@ -38,7 +38,7 @@ export default function FluteWaveSvg({
   strokeWidth = 0.6,
   hoverAmp = 7,
   clickAmp = 11,
-  className = '',
+  className = "",
 }: Props) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const [soundOn, setSoundOn] = useState(false);
@@ -59,7 +59,7 @@ export default function FluteWaveSvg({
     const ctx = ensureAudio();
     if (!ctx) return;
     if (!soundOn) return;
-    if (ctx.state !== 'running') return;
+    if (ctx.state !== "running") return;
 
     intensity = Math.max(0, Math.min(1, intensity));
 
@@ -79,23 +79,23 @@ export default function FluteWaveSvg({
     // subtle vibrato
     const lfo = ctx.createOscillator();
     const lfoGain = ctx.createGain();
-    lfo.type = 'sine';
+    lfo.type = "sine";
     lfo.frequency.setValueAtTime(4.9, now);
     lfoGain.gain.setValueAtTime(0.18 + intensity * 0.25, now);
     lfo.connect(lfoGain);
 
     // mostly sine + gentle harmonics
     const osc1 = ctx.createOscillator();
-    osc1.type = 'sine';
+    osc1.type = "sine";
     osc1.frequency.setValueAtTime(freq, now);
     lfoGain.connect(osc1.frequency);
 
     const osc2 = ctx.createOscillator();
-    osc2.type = 'sine';
+    osc2.type = "sine";
     osc2.frequency.setValueAtTime(freq * 2, now);
 
     const osc3 = ctx.createOscillator();
-    osc3.type = 'sine';
+    osc3.type = "sine";
     osc3.frequency.setValueAtTime(freq * 3, now);
 
     const g1 = ctx.createGain();
@@ -117,15 +117,15 @@ export default function FluteWaveSvg({
 
     // warm tone shaping
     const toneLP = ctx.createBiquadFilter();
-    toneLP.type = 'lowpass';
+    toneLP.type = "lowpass";
     toneLP.frequency.setValueAtTime(1800 + intensity * 800, now);
 
     const airHP = ctx.createBiquadFilter();
-    airHP.type = 'highpass';
+    airHP.type = "highpass";
     airHP.frequency.setValueAtTime(120, now);
 
     const body = ctx.createBiquadFilter();
-    body.type = 'peaking';
+    body.type = "peaking";
     body.frequency.setValueAtTime(700, now);
     body.Q.setValueAtTime(0.8, now);
     body.gain.setValueAtTime(1.2, now);
@@ -139,7 +139,7 @@ export default function FluteWaveSvg({
     fb.gain.linearRampToValueAtTime(0.32 + intensity * 0.12, now + 0.05);
 
     const echoLP = ctx.createBiquadFilter();
-    echoLP.type = 'lowpass';
+    echoLP.type = "lowpass";
     echoLP.frequency.setValueAtTime(1600, now);
 
     const wetGain = ctx.createGain();
@@ -165,18 +165,22 @@ export default function FluteWaveSvg({
     const nLen = Math.max(1, Math.floor(ctx.sampleRate * noiseDur));
     const nBuf = ctx.createBuffer(1, nLen, ctx.sampleRate);
     const nd = nBuf.getChannelData(0);
-    for (let i = 0; i < nLen; i++) nd[i] = (Math.random() * 2 - 1) * 0.04 * (1 - i / nLen);
+    for (let i = 0; i < nLen; i++)
+      nd[i] = (Math.random() * 2 - 1) * 0.04 * (1 - i / nLen);
 
     const noise = ctx.createBufferSource();
     noise.buffer = nBuf;
 
     const nLP = ctx.createBiquadFilter();
-    nLP.type = 'lowpass';
+    nLP.type = "lowpass";
     nLP.frequency.setValueAtTime(2200, now);
 
     const nGain = ctx.createGain();
     nGain.gain.setValueAtTime(0.0001, now);
-    nGain.gain.exponentialRampToValueAtTime(0.018 + intensity * 0.02, now + 0.03);
+    nGain.gain.exponentialRampToValueAtTime(
+      0.018 + intensity * 0.02,
+      now + 0.03,
+    );
     nGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
 
     noise.connect(nLP);
@@ -206,7 +210,7 @@ export default function FluteWaveSvg({
     y2: number,
     amp: number,
     phase: number,
-    cycles: number
+    cycles: number,
   ) => {
     const segs = 26;
     const vx = x2 - x1;
@@ -237,7 +241,7 @@ export default function FluteWaveSvg({
   };
 
   const parseFallbackEndpoints = (dRaw: string) => {
-    const d = (dRaw || '').replace(/,/g, ' ').trim();
+    const d = (dRaw || "").replace(/,/g, " ").trim();
     let m = d.match(/^M\s*([-\d.]+)\s*([-\d.]+)\s*H\s*([-\d.]+)\s*$/i);
     if (m) return { x1: +m[1], y1: +m[2], x2: +m[3], y2: +m[2] };
     m = d.match(/^M\s*([-\d.]+)\s*([-\d.]+)\s*V\s*([-\d.]+)\s*$/i);
@@ -254,16 +258,19 @@ export default function FluteWaveSvg({
     // Inject SVG markup
     mount.innerHTML = svgMarkup;
 
-    const svg = mount.querySelector('svg') as SVGSVGElement | null;
+    const svg = mount.querySelector("svg") as SVGSVGElement | null;
     if (!svg) return;
 
-    const paths = Array.from(svg.querySelectorAll('path'));
+    const paths = Array.from(svg.querySelectorAll("path"));
     const strings: Array<{ el: SVGPathElement; state: StringState }> = [];
 
     const hasStroke = (p: SVGPathElement) => {
-      const strokeAttr = p.getAttribute('stroke');
+      const strokeAttr = p.getAttribute("stroke");
       const strokeComputed = getComputedStyle(p).stroke;
-      return (strokeAttr && strokeAttr !== 'none') || (strokeComputed && strokeComputed !== 'none');
+      return (
+        (strokeAttr && strokeAttr !== "none") ||
+        (strokeComputed && strokeComputed !== "none")
+      );
     };
 
     const getEndpoints = (p: SVGPathElement) => {
@@ -275,7 +282,7 @@ export default function FluteWaveSvg({
           return { x1: a.x, y1: a.y, x2: b.x, y2: b.y };
         }
       } catch {}
-      return parseFallbackEndpoints(p.getAttribute('d') || '');
+      return parseFallbackEndpoints(p.getAttribute("d") || "");
     };
 
     // Setup paths
@@ -286,15 +293,18 @@ export default function FluteWaveSvg({
       if (!ep) continue;
 
       // keep SVG colors; just enforce width + caps + non-scaling
-      p.style.fill = 'none';
-      p.style.strokeLinecap = (p.getAttribute('strokeLinecap') || 'round') as any;
-      p.style.vectorEffect = (p.getAttribute('vector-effect') || 'non-scaling-stroke') as any;
+      p.style.fill = "none";
+      p.style.strokeLinecap = (p.getAttribute("strokeLinecap") ||
+        "round") as any;
+      p.style.vectorEffect = (p.getAttribute("vector-effect") ||
+        "non-scaling-stroke") as any;
       p.style.strokeWidth = `${strokeWidth}`;
 
-      p.classList.add('tw-cursor-pointer');
+      p.classList.add("tw-cursor-pointer");
 
       const i = strings.length;
-      const intensity = i === 0 ? 0 : Math.pow(i / Math.max(1, paths.length - 1), 1.25);
+      const intensity =
+        i === 0 ? 0 : Math.pow(i / Math.max(1, paths.length - 1), 1.25);
 
       const state: StringState = {
         x1: ep.x1,
@@ -310,14 +320,25 @@ export default function FluteWaveSvg({
       };
 
       // Replace path to straight chord-based wave baseline (amp 0)
-      p.setAttribute('d', makeWavePath(state.x1, state.y1, state.x2, state.y2, 0, 0, state.cycles));
+      p.setAttribute(
+        "d",
+        makeWavePath(
+          state.x1,
+          state.y1,
+          state.x2,
+          state.y2,
+          0,
+          0,
+          state.cycles,
+        ),
+      );
 
       const onHover = () => {
         state.amp = hoverAmp;
         state.speed = 18;
         gsap.killTweensOf(state);
-        gsap.to(state, { amp: 0, duration: 0.9, ease: 'expo.out' });
-        gsap.to(state, { speed: 0, duration: 0.9, ease: 'expo.out' });
+        gsap.to(state, { amp: 0, duration: 0.9, ease: "expo.out" });
+        gsap.to(state, { speed: 0, duration: 0.9, ease: "expo.out" });
         pluckFluteDreamy(state.note, state.intensity);
       };
 
@@ -325,29 +346,34 @@ export default function FluteWaveSvg({
         state.amp = clickAmp;
         state.speed = 26;
         gsap.killTweensOf(state);
-        gsap.to(state, { amp: 0, duration: 1.1, ease: 'expo.out' });
-        gsap.to(state, { speed: 0, duration: 1.1, ease: 'expo.out' });
-        pluckFluteDreamy(state.note * 1.01, Math.min(1, state.intensity + 0.12));
+        gsap.to(state, { amp: 0, duration: 1.1, ease: "expo.out" });
+        gsap.to(state, { speed: 0, duration: 1.1, ease: "expo.out" });
+        pluckFluteDreamy(
+          state.note * 1.01,
+          Math.min(1, state.intensity + 0.12),
+        );
       };
 
-      p.addEventListener('mouseenter', onHover);
-      p.addEventListener('click', onClick);
+      p.addEventListener("mouseenter", onHover);
+      p.addEventListener("click", onClick);
 
       // Bigger hit area with transparent clone (doesn't affect colors)
       const clone = p.cloneNode(true) as SVGPathElement;
-      clone.setAttribute('stroke', 'transparent');
+      clone.setAttribute("stroke", "transparent");
       clone.style.strokeWidth = `${Math.max(12, strokeWidth * 18)}`;
-      clone.setAttribute('pointer-events', 'stroke');
+      clone.setAttribute("pointer-events", "stroke");
       // keep d in sync
-      const sync = () => clone.setAttribute('d', p.getAttribute('d') || '');
+      const sync = () => clone.setAttribute("d", p.getAttribute("d") || "");
       sync();
       const obs = new MutationObserver(sync);
-      obs.observe(p, { attributes: true, attributeFilter: ['d'] });
+      obs.observe(p, { attributes: true, attributeFilter: ["d"] });
 
-      clone.addEventListener('mouseenter', () =>
-        p.dispatchEvent(new Event('mouseenter', { bubbles: true }))
+      clone.addEventListener("mouseenter", () =>
+        p.dispatchEvent(new Event("mouseenter", { bubbles: true })),
       );
-      clone.addEventListener('click', () => p.dispatchEvent(new Event('click', { bubbles: true })));
+      clone.addEventListener("click", () =>
+        p.dispatchEvent(new Event("click", { bubbles: true })),
+      );
 
       p.parentNode?.insertBefore(clone, p.nextSibling);
 
@@ -361,8 +387,16 @@ export default function FluteWaveSvg({
         if (st.amp > 0.02 || st.speed > 0.02) {
           st.phase += st.speed * dt;
           s.el.setAttribute(
-            'd',
-            makeWavePath(st.x1, st.y1, st.x2, st.y2, st.amp, st.phase, st.cycles)
+            "d",
+            makeWavePath(
+              st.x1,
+              st.y1,
+              st.x2,
+              st.y2,
+              st.amp,
+              st.phase,
+              st.cycles,
+            ),
           );
         }
       }
@@ -373,7 +407,7 @@ export default function FluteWaveSvg({
     return () => {
       gsap.ticker.remove(tick);
       // best-effort cleanup: remove injected svg
-      mount.innerHTML = '';
+      mount.innerHTML = "";
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [svgMarkup, strokeWidth, hoverAmp, clickAmp, soundOn]);
@@ -400,9 +434,9 @@ export default function FluteWaveSvg({
           onClick={onToggleSound}
           aria-pressed={soundOn}
           className={[
-            'w-10 h-10 rounded-full cursor-pointer absolute left-1/2 -translate-x-1/2 top-0 -translate-y-full flex items-center justify-center',
-            soundOn ? 'bg-black/4 border-black/20' : '',
-          ].join(' ')}
+            "w-full h-full max-w-10 max-h-10 rounded-full  cursor-pointer absolute left-1/2 -translate-x-1/2 top-0 -translate-y-full flex items-center justify-center bg-[#D8D8D8]/20",
+            soundOn ? " " : "",
+          ].join(" ")}
         >
           {soundOn ? <SoundOffIcon /> : <SoundOnIcon />}
         </button>
@@ -414,48 +448,55 @@ export default function FluteWaveSvg({
 
 function SoundOnIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none">
-      <rect width="40" height="40" fill="#D8D8D8" fillOpacity=".2" opacity=".3" rx="20" />
-      <g clipPath="url(#a)">
-        <path
-          stroke="#D8D8D8"
-          strokeOpacity=".5"
-          d="M9.535 18.971c.073-1.208.11-1.813.424-2.394a3.2 3.2 0 0 1 1.38-1.3C11.94 15 12.627 15 14 15c.512 0 .768 0 1.016-.042a3 3 0 0 0 .712-.214c.23-.101.444-.242.871-.524l.22-.144c2.542-1.677 3.814-2.515 4.881-2.151.205.07.403.17.58.295.922.648.992 2.157 1.133 5.174A68 68 0 0 1 23.5 20c0 .532-.035 1.488-.087 2.605-.14 3.018-.21 4.526-1.133 5.175a2.3 2.3 0 0 1-.58.295c-1.067.364-2.339-.474-4.882-2.151l-.219-.144c-.427-.282-.64-.423-.871-.525a3 3 0 0 0-.712-.213C14.768 25 14.512 25 14 25c-1.374 0-2.06 0-2.66-.277a3.2 3.2 0 0 1-1.381-1.3c-.314-.582-.35-1.186-.424-2.395A17 17 0 0 1 9.5 20c0-.323.013-.671.035-1.029Z"
-        />
-        <path
-          stroke="#D8D8D8"
-          strokeLinecap="round"
-          strokeOpacity=".5"
-          d="M28 14s1.5 1.8 1.5 6-1.5 6-1.5 6M26 17s.5.9.5 3-.5 3-.5 3"
-        />
-        <path fill="#D8D8D8" fillOpacity=".5" d="M30 10 10 30Z" />
-        <path stroke="#323232" strokeLinecap="round" strokeWidth="6" d="M30 10 10 30" />
-        <path fill="#D8D8D8" fillOpacity=".5" d="M30 10 10 30Z" />
-        <path stroke="#D8D8D8" strokeLinecap="round" strokeOpacity=".5" d="M30 10 10 30" />
-      </g>
-      <defs>
-        <clipPath id="a">
-          <path fill="#fff" d="M8 8h24v24H8z" />
-        </clipPath>
-      </defs>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-8"
+    >
+      <path
+        d="M11 5L6 9H2v6h4l5 4V5z"
+        stroke="#D8D8D8"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M23 9l-6 6M17 9l6 6"
+        stroke="#D8D8D8"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
 
 function SoundOffIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none">
-      <rect width="40" height="40" fill="#D8D8D8" fillOpacity=".2" opacity=".3" rx="20" />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-8"
+    >
       <path
+        d="M11 5L6 9H2v6h4l5 4V5z"
         stroke="#D8D8D8"
-        strokeOpacity=".5"
-        d="M9.535 18.971c.073-1.208.11-1.813.424-2.394a3.2 3.2 0 0 1 1.38-1.3C11.94 15 12.627 15 14 15c.512 0 .768 0 1.016-.042a3 3 0 0 0 .712-.214c.23-.101.444-.242.871-.524l.22-.144c2.542-1.677 3.814-2.515 4.881-2.151.205.07.403.17.58.295.922.648.992 2.157 1.133 5.174A68 68 0 0 1 23.5 20c0 .532-.035 1.488-.087 2.605-.14 3.018-.21 4.526-1.133 5.175a2.3 2.3 0 0 1-.58.295c-1.067.364-2.339-.474-4.882-2.151l-.219-.144c-.427-.282-.64-.423-.871-.525a3 3 0 0 0-.712-.213C14.768 25 14.512 25 14 25c-1.374 0-2.06 0-2.66-.277a3.2 3.2 0 0 1-1.381-1.3c-.314-.582-.35-1.186-.424-2.395A17 17 0 0 1 9.5 20c0-.323.013-.671.035-1.029Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
+        d="M19.07 4.93a10 10 0 0 1 0 14.14"
         stroke="#D8D8D8"
+        strokeWidth="1.5"
         strokeLinecap="round"
-        strokeOpacity=".5"
-        d="M28 14s1.5 1.8 1.5 6-1.5 6-1.5 6M26 17s.5.9.5 3-.5 3-.5 3"
+      />
+      <path
+        d="M15.54 8.46a5 5 0 0 1 0 7.07"
+        stroke="#D8D8D8"
+        strokeWidth="1.5"
+        strokeLinecap="round"
       />
     </svg>
   );

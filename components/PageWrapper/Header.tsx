@@ -16,7 +16,7 @@ export default function Header({
           <Link className="logo relative" href={`/`}>
             <Image
               src={data.logo}
-              className=""
+              className="w-24 h-auto"
               alt="Trionn"
               width={94}
               height={25}

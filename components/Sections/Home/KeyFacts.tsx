@@ -76,9 +76,9 @@ const MARQUEE_ITEMS = [
   "Industry pioneers",
 ];
 
-const ROW_H = 190;
-const CARD_W = 255;
-const CARD_H = 240;
+const ROW_H = 12;
+const CARD_W = 16;
+const CARD_H = 15;
 
 export default function KeyFacts() {
   const [activeRow, setActiveRow] = useState(-1);
@@ -428,7 +428,7 @@ export default function KeyFacts() {
             }}
             className="relative tr__container"
             style={{
-              height: `${ROW_H}px`,
+              height: `${ROW_H}rem`,
               zIndex: activeRow === index ? 10 : 1,
             }}
           >
@@ -437,15 +437,9 @@ export default function KeyFacts() {
               ref={(el) => {
                 lineLeftRefs.current[index] = el;
               }}
+              className="absolute left-0 w-10 h-px bg-white z-20 origin-left"
               style={{
-                position: "absolute",
-                left: 0,
                 top: "calc(50% - 1.5px)",
-                width: "40px",
-                height: "1px",
-                backgroundColor: "#fff",
-                zIndex: 20,
-                transformOrigin: "left center",
               }}
             />
 
@@ -454,29 +448,23 @@ export default function KeyFacts() {
               ref={(el) => {
                 lineRightRefs.current[index] = el;
               }}
+              className="absolute right-0 w-10 h-px bg-white z-20 origin-right"
               style={{
-                position: "absolute",
-                right: 0,
                 top: "calc(50% - 1.5px)",
-                width: "40px",
-                height: "1px",
-                backgroundColor: "#fff",
-                zIndex: 20,
-                transformOrigin: "right center",
               }}
             />
 
             {/* Card Asset */}
             {row.type !== "marquee" && (
               <div
-                style={{ top: -CARD_H, zIndex: 30 }}
+                style={{ top: `${-CARD_H}rem`, zIndex: 30 }}
                 className="absolute left-0 right-0 bottom-0 flex items-end justify-center pointer-events-none overflow-hidden"
               >
                 <div
                   ref={(el) => {
                     cardRefs.current[index] = el;
                   }}
-                  style={{ width: `${CARD_W}px`, height: `${CARD_H}px` }}
+                  style={{ width: `${CARD_W}rem`, height: `${CARD_H}rem` }}
                   className="overflow-hidden relative pointer-events-none rounded-2xl shadow-[0_20px_60px_-10px_rgba(0,0,0,0.55)] shrink-0"
                 >
                   {row.type === "image-logos" &&
@@ -485,10 +473,10 @@ export default function KeyFacts() {
                         <Image
                           src={src}
                           alt=""
-                          width={225}
+                          width={224}
                           height={240}
                           priority={true}
-                          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+                          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out"
                           style={{ opacity: activeLogo === li ? 1 : 0 }}
                         />
                       </div>
