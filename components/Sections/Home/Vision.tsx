@@ -49,7 +49,7 @@ export default function Vision() {
         end: "+=200%",
         scrub: true,
         pin: true,
-        markers: true,
+        markers: false,
       },
     });
 
@@ -127,7 +127,7 @@ export default function Vision() {
         <div
           id="keyfacts-section"
           ref={keyFactsRef}
-          className="absolute top-0 left-0 w-full z-40"
+          className="absolute top-0 left-0 w-full z-40 "
         >
           <KeyFacts />
         </div>
