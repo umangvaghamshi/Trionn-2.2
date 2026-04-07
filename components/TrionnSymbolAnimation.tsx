@@ -5,6 +5,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef, useState } from 'react';
+import CursorFollowMarquee from './CursorFollowMarquee';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -106,6 +107,12 @@ export function TrionnSymbolAnimation() {
       <canvas
         ref={glowCanvasRef}
         style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 3 }}
+      />
+
+      {/* Cursor Follow Marquee */}
+      <CursorFollowMarquee 
+        text="Hold to blast. Touch lines at your own risk." 
+        containerRef={canvasWrapRef} 
       />
     </div>
   );
