@@ -5,6 +5,8 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import { WordShiftButton } from "@/components/Button";
 gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
 
 /* ─────────────────────────────────────────────
@@ -163,7 +165,7 @@ const RIGHT_CARDS: CardData[] = [
   },
 ];
 
-const TEXT_LINES = ["A.I.", "DESIGN", "DEVELOPMENT", "BRANDING"];
+const TEXT_LINES = ["A.I.", "Design", "Development", "Branding"];
 
 /* ─────────────────────────────────────────────
    Helpers
@@ -183,15 +185,13 @@ function ServiceCard({ data }: { data: CardData }) {
 
   return (
     <div className="w-full h-full relative">
-      <div className="card-inner pointer-events-auto bg-[#00000046] border-0 rounded-lg p-[clamp(16px,2vw,28px)] max-md:p-[14px_16px] max-md:rounded-md h-full flex flex-col justify-between overflow-hidden relative backdrop-blur-md">
-        <div className="card-top relative z-10 flex justify-between items-start gap-[10px]">
-          <h3 className="text-white text-[clamp(13px,1.6vw,24px)] max-md:text-[clamp(12px,3.5vw,18px)] max-[480px]:text-[clamp(11px,4vw,16px)] font-normal leading-[1.2] m-0 tracking-[-0.02em] font-['Helvetica_Neue',sans-serif] max-w-[65%]">
-            {data.title}
-          </h3>
+      <div className="card-inner pointer-events-auto bg-[#000]/20 border-0 rounded-sm p-10 h-full flex flex-col justify-between overflow-hidden relative backdrop-blur-md min-h-79">
+        <div className="card-top relative z-10 flex justify-between items-start gap-6">
+          <h3 className="text-white m-0 max-w-50">{data.title}</h3>
           <svg
             viewBox="0 0 60 60"
             xmlns="http://www.w3.org/2000/svg"
-            className="card-svg-icon shrink-0 w-[clamp(28px,3.5vh,44px)] h-[clamp(28px,3.5vh,44px)]"
+            className="card-svg-icon shrink-0 w-25 h-25"
           >
             {paths.map((d, i) => (
               <path
@@ -206,7 +206,7 @@ function ServiceCard({ data }: { data: CardData }) {
             ))}
           </svg>
         </div>
-        <p className="text-white/35 relative z-10 text-[clamp(10px,0.85vw,12px)] max-md:text-[clamp(9px,2.5vw,11px)] max-[480px]:text-[clamp(9px,2.8vw,11px)] leading-[1.65] m-0 font-light font-['Helvetica_Neue',sans-serif]">
+        <p className="text-light-font relative z-10 m-0 small max-w-75">
           {data.description}
         </p>
       </div>
@@ -220,7 +220,6 @@ function ServiceCard({ data }: { data: CardData }) {
 export default function TrionnServices() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
   const textOverlayRef = useRef<HTMLDivElement>(null);
   const scrollDriverRef = useRef<HTMLDivElement>(null);
   const stickyWrapRef = useRef<HTMLDivElement>(null);
@@ -676,10 +675,10 @@ export default function TrionnServices() {
     // Shutter reveal effect
     gsap.fromTo(
       stickyWrapRef.current,
-      { yPercent: -100, visibility: 'hidden' },
+      { yPercent: -100, visibility: "hidden" },
       {
         yPercent: 0,
-        visibility: 'visible',
+        visibility: "visible",
         ease: "none",
         scrollTrigger: {
           trigger: scrollDriverRef.current,
@@ -687,7 +686,7 @@ export default function TrionnServices() {
           end: "top top",
           scrub: true,
         },
-      }
+      },
     );
 
     ScrollTrigger.create({
@@ -742,14 +741,11 @@ export default function TrionnServices() {
 
       /* ── Background video: always playing ── */
       const vid = bgVideoRef.current;
-      if (vid && vid.paused) vid.play().catch(() => { });
+      if (vid && vid.paused) vid.play().catch(() => {});
 
       // Add simple lerp for the cards to provide a smooth scrub without vibration
       s.cardsT += (s.scrollT - s.cardsT) * 0.08;
       updateCards(s.cardsT);
-
-      if (progressRef.current)
-        progressRef.current.style.width = s.scrollT * 100 + "%";
     };
 
     rafId = requestAnimationFrame(raf);
@@ -774,20 +770,14 @@ export default function TrionnServices() {
   ]);
 
   return (
-    <>
-      {/* ── Progress bar ── */}
-      <div
-        ref={progressRef}
-        className="fixed bottom-0 left-0 h-0.5 w-0 bg-white z-[100] hidden"
-      />
-
+    <section className="bg-[#000] overflow-hidden relative">
       {/* ── Scroll driver ── */}
-      <div
-        ref={scrollDriverRef}
-        className="relative bg-[#000]"
-      >
+      <div ref={scrollDriverRef} className="relative">
         {/* Sticky wrap */}
-        <div ref={stickyWrapRef} className="sticky top-0 w-full h-screen overflow-hidden">
+        <div
+          ref={stickyWrapRef}
+          className="sticky top-0 w-full h-screen overflow-hidden"
+        >
           {/* Canvas */}
           <canvas
             ref={canvasRef}
@@ -803,16 +793,19 @@ export default function TrionnServices() {
             loop
             playsInline
             preload="auto"
-            className="pointer-events-none object-cover rotate-180 opacity-50 z-[1] mix-blend-screen absolute bottom-0 left-0 w-full h-auto min-w-full"
+            className="pointer-events-none object-cover rotate-180 opacity-50 z-1 mix-blend-screen absolute bottom-0 left-0 w-full h-auto min-w-full"
           />
 
           {/* Cards overlay */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden z-[2]" style={{ perspective: "1500px" }}>
+          <div
+            className="absolute inset-0 pointer-events-none overflow-hidden z-2"
+            style={{ perspective: "93.75rem" }}
+          >
             {LEFT_CARDS.map((card) => (
               <div
                 key={card.id}
                 ref={setCardRef(card.id)}
-                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] [transform-style:preserve-3d] p-[6px]"
+                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-1.5"
               >
                 <ServiceCard data={card} />
               </div>
@@ -821,49 +814,59 @@ export default function TrionnServices() {
               <div
                 key={card.id}
                 ref={setCardRef(card.id)}
-                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] [transform-style:preserve-3d] p-[6px]"
+                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-1.5"
               >
                 <ServiceCard data={card} />
               </div>
             ))}
           </div>
-
-          {/* Top label */}
-          <div className="absolute top-[clamp(20px,3vh,40px)] left-0 right-0 flex justify-center pointer-events-none font-['Helvetica_Neue',sans-serif] mix-blend-difference z-20">
-            <p className="text-white text-[clamp(9px,1vw,11px)] tracking-[0.35em] uppercase m-0">
-              OUR SERVICES
-            </p>
-          </div>
-
-          {/* Bottom label */}
-          <div className="absolute bottom-[clamp(20px,3vh,40px)] left-0 right-0 flex justify-center pointer-events-none font-['Helvetica_Neue',sans-serif] mix-blend-difference z-20">
-            <p className="text-white text-[clamp(9px,1vw,11px)] tracking-[0.25em] uppercase m-0">
-              ✦ DESIGN WITH INTENT. BUILT TO WORK.
-            </p>
-          </div>
-
-          {/* Text overlay */}
-          <div
-            ref={textOverlayRef}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none mix-blend-difference z-20 px-[4%]"
-          >
-            <div className="text-center" style={{ lineHeight: 0.88 }}>
-              {TEXT_LINES.map((line, i) => (
-                <div
-                  key={i}
-                  data-line
-                  className={`text-white font-bold tracking-[-0.02em] block font-['Helvetica_Neue',sans-serif] ${i === 2
-                    ? "text-[clamp(28px,8vw,118px)] max-md:text-[clamp(22px,10vw,68px)]"
-                    : "text-[clamp(32px,9vw,130px)] max-md:text-[clamp(28px,12vw,80px)]"
-                    }`}
-                >
-                  {line}
-                </div>
-              ))}
+          <div className="tr__container py-25 relative flex flex-col justify-between items-center h-full">
+            <BlurTextReveal
+              as="span"
+              html={`OUR SERVICES`}
+              animationType="chars"
+              stagger={0.05}
+              className="text-light-font title text-center block relative z-20"
+            />
+            <div
+              ref={textOverlayRef}
+              className=" flex items-center justify-center pointer-events-none mix-blend-difference z-20 my-20 w-full"
+            >
+              <div className="text-center">
+                {TEXT_LINES.map((line, i) => (
+                  <div
+                    key={i}
+                    data-line
+                    className={`text-light-font block mrquee-text uppercase`}
+                  >
+                    {line}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-between w-full">
+              <div className="hidden lg:block w-1/3"></div>
+              <div className="w-full sm:w-1/2 lg:w-1/3 text-center">
+                <BlurTextReveal
+                  as="span"
+                  html={`✦ Design with intent. Built to work.`}
+                  animationType="chars"
+                  stagger={0.05}
+                  className="text-light-font title block relative z-20"
+                />
+              </div>
+              <div className="w-full sm:w-1/2 lg:w-1/3 flex justify-end">
+                <WordShiftButton
+                  text={"view services"}
+                  href={"#"}
+                  customClass="relative z-20"
+                  styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </section>
   );
 }
