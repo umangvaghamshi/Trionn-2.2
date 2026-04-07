@@ -2,7 +2,7 @@
 import Marquee from "@/components/Marquee";
 import StripeReveal from "@/components/StripeReveal";
 import { BlurTextReveal } from "@/components/TextAnimation";
-import KeyFacts from "./KeyFacts";
+import KeyFactsNew from "./KeyFactsNew";
 
 const CROSS_ICON = (
   <svg
@@ -66,12 +66,12 @@ export default function Vision() {
           </div>
         </div>
       }
-      revealContent={<KeyFacts />}
+      revealContent={<KeyFactsNew />}
       stripeCount={5}
       stripeColor="#D2D2D2"
-      scrollEnd="+=200%"
+      scrollEnd="+=100%"
       revealPosition="<15%"
-      revealEndY="-20%"
+      revealEndY="1%"
     />
   );
 }

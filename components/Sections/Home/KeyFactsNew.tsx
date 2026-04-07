@@ -1,37 +1,69 @@
 "use client";
-import Image from "next/image";
-import { useRef, useState, useCallback } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { Odometer } from "@/components/Odometer";
 import { BlurTextReveal } from "@/components/TextAnimation";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import Image from "next/image";
+import { useRef } from "react";
 
 import { partnersLogo } from "@/data";
+import { ScrollTrigger } from "gsap/ScrollTrigger"; // Need this
+
+gsap.registerPlugin(ScrollTrigger); // And this
 
 export default function KeyFactsNew() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      const cards = gsap.utils.toArray(".key-card-list > div");
+      const cards = gsap.utils.toArray(".key-card-list > div") as HTMLElement[];
+      if (!cards.length) return;
 
-      gsap.fromTo(
-        cards,
-        {
-          // y: 50,
-          rotateZ: (i) => (i === 0 ? -5 : i === 2 ? 5 : 0),
+      // Set initial states
+      gsap.set(cards[0], {
+        rotateZ: -55,
+        x: -250,
+        y: 500,
+        transformOrigin: "center center",
+      });
+      gsap.set(cards[1], {
+        y: 150,
+      });
+      gsap.set(cards[2], {
+        rotateZ: 55,
+        x: 250,
+        y: 500,
+        transformOrigin: "center center",
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "top top",
+          scrub: true,
+          markers: true, // Set to false for production, but can be true for debugging
         },
+      });
+
+      // 1. First, animate the center card sliding up
+      tl.to(cards[1], {
+        y: 0,
+        ease: "none",
+        force3D: true,
+      });
+
+      // 2. Then, animate the side cards rotating and sliding in
+      tl.to(
+        [cards[0], cards[2]],
         {
-          // y: 0,
           rotateZ: 0,
+          x: 0,
+          y: 0,
           ease: "none",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            end: "top center",
-            scrub: 0.5,
-          },
+          force3D: true,
         },
+        "<10%",
       );
     },
     { scope: containerRef },
@@ -39,6 +71,7 @@ export default function KeyFactsNew() {
 
   return (
     <section
+      id="keyfacts-section"
       className="py-20 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20"
       ref={containerRef}
     >
@@ -136,7 +169,7 @@ function FeaturedCard() {
   return (
     <div
       ref={cardRef}
-      className="featured-card max-w-99 w-full h-122 rounded-lg bg-black text-light-font overflow-hidden relative transition-transform duration-500 hover:scale-[1.02]"
+      className="featured-card max-w-99 w-full h-122 rounded-lg bg-black text-light-font overflow-hidden relative hover:scale-[1.02] transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <video
         autoPlay
@@ -178,7 +211,7 @@ function FeaturedCard() {
 
 function ProjectCard() {
   return (
-    <div className="project-card relative max-w-99 w-full h-122 rounded-lg bg-cream p-10 flex flex-col justify-between overflow-hidden cursor-pointer transition-transform duration-500 hover:scale-[1.02] text-center">
+    <div className="project-card relative max-w-99 w-full h-122 rounded-lg bg-cream p-10 flex flex-col justify-between overflow-hidden cursor-pointer hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d">
       <h4 className="uppercase text-dark-font">projects completed</h4>
       <div className="flex flex-col items-center justify-center flex-1 relative">
         {/* Circle Background */}
@@ -221,7 +254,7 @@ function TeamCard() {
       ref={cardRef}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="team-card max-w-99 w-full h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative transition-transform duration-500 hover:scale-[1.02]"
+      className="team-card max-w-99 w-full h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02] cursor-pointer transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <div className="relative z-3 h-full p-10 flex flex-col justify-between">
         <h4 className="uppercase text-right">our team members</h4>
