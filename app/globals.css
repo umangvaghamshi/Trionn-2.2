@@ -191,3 +191,39 @@ p,
 canvas {
   display: block;
 }
+
+.custom-arrow {
+  @apply relative w-20 h-20 border border-solid border-grey-line/15 flex items-end rounded-lg cursor-pointer transition-all duration-300 ease-in-out hover:border-grey-line overflow-hidden;
+}
+
+.custom-arrow .arrow-icon {
+  @apply transition-all duration-500 ease-in-out absolute bottom-0 left-0 w-full p-4 flex;
+}
+
+.custom-arrow .second {
+  @apply translate-x-full;
+}
+
+.custom-arrow:hover .first {
+  @apply -translate-x-full;
+}
+
+.custom-arrow:hover .second {
+  @apply translate-x-0;
+}
+
+.custom-arrow.right .arrow-icon {
+  @apply justify-end;
+}
+
+.custom-arrow.right .second {
+  @apply -translate-x-full;
+}
+
+.custom-arrow.right:hover .first {
+  @apply translate-x-full;
+}
+
+.custom-arrow.right:hover .second {
+  @apply translate-x-0;
+}

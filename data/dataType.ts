@@ -12,3 +12,12 @@ export type workDataItem = {
     href: string;
   };
 };
+
+export type TestimonialsDataItem = {
+  companyName: string;
+  quoteMessage: string;
+  clientImage: StaticImageData | string;
+  clientName: string;
+  clientDeg: string;
+  videoURL?: string;
+};

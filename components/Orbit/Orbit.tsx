@@ -66,64 +66,88 @@ export default function Orbit({
   });
 
   /* ── Trigger intro animation when section top hits viewport top ── */
-  useGSAP(() => {
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "top bottom",
-      once: true,
-      markers:false,
-      onEnter: triggerIntro,
-    });
-  }, { scope: containerRef, dependencies: [triggerIntro] });
+  useGSAP(
+    () => {
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top bottom",
+        once: true,
+        markers: false,
+        onEnter: triggerIntro,
+      });
+    },
+    { scope: containerRef, dependencies: [triggerIntro] },
+  );
 
   return (
-    <div
+    <section
       ref={containerRef}
-      className={`relative w-full h-screen overflow-hidden cursor-default flex ${className}`}
+      className={`relative w-full h-screen cursor-default ${className}`}
       style={{ backgroundColor, fontFamily }}
     >
-      {/* Trail Canvas — Motion Blur Layer */}
-      <canvas
-        ref={trailCanvasRef}
-        className="absolute inset-0 z-0 pointer-events-none"
-      />
+      <div className="tr__container">
+        <LinePlus
+          customClass={"translate-y-1/2 col-span-12 z-20"}
+          lineClass={"opacity-15 bg-grey-line left-1/2 -translate-x-1/2"}
+          plusClass={"col-span-12 mx-auto -translate-x-0!"}
+          iconColor={"#272727"}
+        />
+      </div>
+      <div
+        ref={containerRef}
+        className={`relative w-full h-screen overflow-hidden cursor-default flex flex-col ${className}`}
+        style={{ backgroundColor, fontFamily }}
+      >
+        {/* Trail Canvas — Motion Blur Layer */}
+        <canvas
+          ref={trailCanvasRef}
+          className="absolute inset-0 z-0 pointer-events-none"
+        />
 
-      {/* Main Three.js Canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 z-1 pointer-events-none"
-      />
+        {/* Main Three.js Canvas */}
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 z-1 pointer-events-none"
+        />
 
-      {/* ── UI Overlays ── */}
+        {/* ── UI Overlays ── */}
 
-      {/* Top Left — Slide Counter */}
-      {/* <div className="absolute top-5 left-5 md:top-[36px] md:left-[40px] pointer-events-none z-10">
-        <span
-          ref={counterRef}
-          className="text-[8px] md:text-[9px] tracking-[0.2em] uppercase text-[#777]"
-        >
-          01 / {String(N).padStart(2, "0")}
-        </span>
-      </div> */}
-      <div className="tr__container w-full pt-37.5 pb-20 flex flex-col justify-between">
-        <div className="title-block flex justify-center text-center text-dark-font relative z-3">
-          <BlurTextReveal
-            as="span"
-            html={`${topCenterText}`}
-            animationType="chars"
-            stagger={0.05}
-            className="title block max-w-50"
-          />
-        </div>
-        <div className="bottom-block flex justify-between items-end text-dark-font">
-          <p className="small max-w-63 relative z-3">{bottomLeftText}</p>
-          <WordShiftButton
-            text={ctaText}
-            href={ctaHref}
-            customClass={"min-w-[15.625rem] z-3 relative"}
-          />
+        {/* Top Left — Slide Counter */}
+        {/* <div className="absolute top-5 left-5 md:top-[36px] md:left-[40px] pointer-events-none z-10">
+          <span
+            ref={counterRef}
+            className="text-[8px] md:text-[9px] tracking-[0.2em] uppercase text-[#777]"
+          >
+            01 / {String(N).padStart(2, "0")}
+          </span>
+        </div> */}
+        <div className="tr__container w-full pt-37.5 pb-20 flex flex-col justify-between h-full">
+          <div className="title-block flex items-center text-center text-dark-font relative z-3 flex-col gap-6">
+            <BlurTextReveal
+              as="h2"
+              html={`Design in motion`}
+              animationType="chars"
+              stagger={0.05}
+              className="text-dark-font"
+            />
+            <BlurTextReveal
+              as="span"
+              html={`${topCenterText}`}
+              animationType="chars"
+              stagger={0.05}
+              className="title block max-w-50"
+            />
+          </div>
+          <div className="bottom-block flex justify-between items-end text-dark-font">
+            <p className="small max-w-63 relative z-3">{bottomLeftText}</p>
+            <WordShiftButton
+              text={ctaText}
+              href={ctaHref}
+              customClass={"min-w-[15.625rem] z-3 relative"}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,4 +1,4 @@
-import { workDataItem } from "./dataType";
+import { workDataItem, TestimonialsDataItem } from "./dataType";
 
 export const headerSection = {
   logo: "/images/logo.svg",
@@ -99,5 +99,62 @@ export const workData: workDataItem[] = [
       text: "Explore Project",
       href: "#",
     },
+  },
+];
+
+export const TestimonialsData: TestimonialsDataItem[] = [
+  {
+    companyName: "Luxury presence",
+    quoteMessage:
+      "I've worked with Trionn on several projects and  he's one of the best UI/UX designers and front-end developers I know. He's meticulous in his attention to detail and has a true passion for  creating beautiful user interfaces.",
+    clientImage: "/images/malte.jpg",
+    clientName: "Malte Smith",
+    clientDeg: "Founder and CEO",
+    videoURL: "",
+  },
+  {
+    companyName: "credible",
+    quoteMessage:
+      "The Trionn team is extremely reliable, professional & talented. It has been a great pleasure collaborating with them over many months.",
+    clientImage: "/images/stephen.jpg",
+    clientName: "Stephen Dash",
+    clientDeg: "Founder and CEO",
+    videoURL: "",
+  },
+  {
+    companyName: "Indian Army",
+    quoteMessage:
+      "Our team is a small group of curious individuals dedicated to creating  work that we're proud of, collaborating with brands and people who share  our values. ",
+    clientImage: "/images/malte.jpg",
+    clientName: "Malte Smith",
+    clientDeg: "Founder and CEO",
+    videoURL: "",
+  },
+  {
+    companyName: "Linkedin",
+    quoteMessage:
+      "The Trionn team is extremely reliable, professional & talented. It has been a great pleasure collaborating with them over many months.",
+    clientImage: "/images/stephen.jpg",
+    clientName: "Stephen Dash",
+    clientDeg: "Founder and CEO",
+    videoURL: "",
+  },
+  {
+    companyName: "Bulklet Army",
+    quoteMessage:
+      "Our team is a small group of curious individuals dedicated to creating  work that we're proud of, collaborating with brands and people who share  our values. ",
+    clientImage: "/images/malte.jpg",
+    clientName: "Malte Smith",
+    clientDeg: "Founder and CEO",
+    videoURL: "",
+  },
+  {
+    companyName: "Technis INC",
+    quoteMessage:
+      "The Trionn team is extremely reliable, professional & talented. It has been a great pleasure collaborating with them over many months.",
+    clientImage: "/images/stephen.jpg",
+    clientName: "Stephen Dash",
+    clientDeg: "Founder and CEO",
+    videoURL: "",
   },
 ];

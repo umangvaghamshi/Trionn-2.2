@@ -1,6 +1,8 @@
 import { Banner, Vision, KeyFactsNew, Work } from "@/components/Sections/Home";
 import TrionnServices from "@/components/Sections/Home/TrionnServices";
 import TrionnSymbolAnimation from "@/components/TrionnSymbolAnimation";
+import Testimonials from "@/components/Testimonials";
+import { Orbit } from "@/components/Orbit";
 
 const Page = () => {
   return (
@@ -13,7 +15,8 @@ const Page = () => {
       <KeyFactsNew />
       <Work />
       <TrionnServices />
-      {/* <Orbit /> */}
+      <Testimonials />
+      <Orbit />
     </>
   );
 };
