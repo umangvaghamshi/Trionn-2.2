@@ -40,7 +40,7 @@ export default function KeyFactsNew() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top bottom",
-          end: "top top",
+          end: "top 20%",
           scrub: true,
           markers: true, // Set to false for production, but can be true for debugging
         },
@@ -72,7 +72,7 @@ export default function KeyFactsNew() {
   return (
     <section
       id="keyfacts-section"
-      className="py-20 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20"
+      className="py-20 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-screen "
       ref={containerRef}
     >
       <div className="tr__container">

@@ -71,7 +71,7 @@ export default function Vision() {
       stripeColor="#D2D2D2"
       scrollEnd="+=100%"
       revealPosition="<15%"
-      revealEndY="1%"
+      revealEndY="0%"
     />
   );
 }

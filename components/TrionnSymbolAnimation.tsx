@@ -64,7 +64,7 @@ export function TrionnSymbolAnimation({ vibrateElementIds = [] }: TrionnSymbolAn
     ScrollTrigger.create({
       trigger: '#hero-section',
       start: 'top top',
-      end: 'bottom top',
+      end: 'bottom center',
       pin: canvasWrapRef.current,
       pinSpacing: false,
       markers:false,
