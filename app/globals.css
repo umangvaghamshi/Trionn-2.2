@@ -163,8 +163,8 @@ p,
 }
 
 .number-small {
-  font-family: "PP-Editorial-New";
-  @apply text-[2.875rem] leading-[normal] -tracking-[0.04em];
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-[3.5rem] leading-12.5 -tracking-[0.06em];
 }
 
 .numbers {

@@ -94,8 +94,8 @@ const WipeImageCard = (item: CardItem) => {
     )
       .fromTo(
         imageRef.current,
-        { scale: 1.3, filter: "blur(10px)" },
-        { scale: 1.2, filter: "blur(0px)" },
+        { filter: "blur(10px)" },
+        { filter: "blur(0px)" },
         "<",
       )
       // Line
@@ -157,11 +157,11 @@ const WipeImageCard = (item: CardItem) => {
       ref={containerRef}
       className="relative mb-20 last:mb-0 overflow-hidden"
     >
-      <div className="mx-auto flex min-h-140">
+      <div className="mx-auto flex">
         {/* IMAGE WRAPPER */}
         <div
           ref={imageWrapperRef}
-          className={`relative overflow-hidden rounded-sm w-1/2 ${isEven ? "lg:order-2" : "lg:order-1"}`}
+          className={`relative overflow-hidden rounded-sm w-1/2 aspect-412/325 ${isEven ? "lg:order-2" : "lg:order-1"}`}
           style={{
             clipPath: isEven ? "inset(0% 0% 0% 100%)" : "inset(0% 100% 0% 0%)",
           }}
@@ -188,7 +188,7 @@ const WipeImageCard = (item: CardItem) => {
             ></div>
             <div className="flex items-start justify-between mt-10">
               <BlurTextReveal
-                as="h1"
+                as="h2"
                 text={`${item.id}.`}
                 animationType="lines"
                 stagger={0.8}
@@ -211,7 +211,7 @@ const WipeImageCard = (item: CardItem) => {
               {parse(item.subtitle)}
             </p>
 
-            <ul className="mt-10 small list-disc pl-4">
+            <ul className="mt-8 small list-disc pl-4">
               {item.category.map((li, i) => (
                 <li
                   ref={(el) => {
