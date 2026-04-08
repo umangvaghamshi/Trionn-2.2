@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
@@ -37,6 +37,32 @@ interface CharMeasure {
   x: number;
   y: number;
   fontSize: number;
+  /** Copied from the line’s computed style so particles match `.mrquee-text` / `text-light-font` */
+  fontFamily: string;
+  fontWeight: string;
+  fontStyle: string;
+  color: string;
+}
+
+/** Match how CSS `text-transform` affects the string used for layout (must match painted glyphs). */
+function applyTextTransform(text: string, textTransform: string): string {
+  if (textTransform === "uppercase") return text.toUpperCase();
+  if (textTransform === "lowercase") return text.toLowerCase();
+  if (textTransform === "capitalize") {
+    return text.replace(/\S+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  }
+  return text;
+}
+
+/** Inter-letter spacing in px (canvas + layout must match CSS `.mrquee-text` tracking). */
+function letterSpacingPx(cs: CSSStyleDeclaration, fontSizePx: number): number {
+  const ls = cs.letterSpacing?.trim();
+  if (!ls || ls === "normal") return 0;
+  const px = /^(-?[\d.]+)px$/.exec(ls);
+  if (px) return parseFloat(px[1]);
+  const em = /^(-?[\d.]+)em$/.exec(ls);
+  if (em) return parseFloat(em[1]) * fontSizePx;
+  return 0;
 }
 
 interface CardData {
@@ -262,23 +288,52 @@ export default function TrionnServices() {
     if (!overlay) return results;
 
     overlay.querySelectorAll<HTMLElement>("[data-line]").forEach((line) => {
-      const text = line.textContent || "";
+      const cs = getComputedStyle(line);
+      const raw = line.textContent || "";
+      const text = applyTextTransform(raw, cs.textTransform);
       const rect = line.getBoundingClientRect();
-      const fSize = parseFloat(getComputedStyle(line).fontSize);
+      const fSize = parseFloat(cs.fontSize);
+      const fontFamily = cs.fontFamily;
+      const fontWeight = cs.fontWeight;
+      const fontStyle = cs.fontStyle;
+      const color = cs.color;
+      const lsPx = letterSpacingPx(cs, fSize);
+
       const tmpCanvas = document.createElement("canvas");
       const tmp = tmpCanvas.getContext("2d")!;
-      tmp.font = `700 ${fSize}px 'Helvetica Neue',sans-serif`;
+      tmp.font = `${fontStyle} ${fontWeight} ${fSize}px ${fontFamily}`;
+      const tmpExt = tmp as CanvasRenderingContext2D & { letterSpacing?: string };
+      if ("letterSpacing" in tmpExt) {
+        tmpExt.letterSpacing = cs.letterSpacing;
+      }
 
+      const widths: number[] = [];
       let tw = 0;
-      for (const c of text) tw += tmp.measureText(c).width;
+      for (let i = 0; i < text.length; i++) {
+        const w = tmp.measureText(text[i]!).width;
+        widths.push(w);
+        tw += w;
+        if (i < text.length - 1) tw += lsPx;
+      }
 
       let x = rect.left + rect.width / 2 - tw / 2;
       const y = rect.top + rect.height / 2;
 
-      for (const c of text) {
-        const cw = tmp.measureText(c).width;
-        results.push({ ch: c, x: x + cw / 2, y, fontSize: fSize });
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i]!;
+        const cw = widths[i]!;
+        results.push({
+          ch: c,
+          x: x + cw / 2,
+          y,
+          fontSize: fSize,
+          fontFamily,
+          fontWeight,
+          fontStyle,
+          color,
+        });
         x += cw;
+        if (i < text.length - 1) x += lsPx;
       }
     });
     return results;
@@ -298,8 +353,10 @@ export default function TrionnServices() {
     s.particles = [];
 
     const container = document.createElement("div");
+    /* `mix-blend-difference` on moving single-glyph layers composites each letter against a
+       different part of the video/stone → uneven color/weight. Use normal blend + headline color. */
     container.style.cssText =
-      "position:fixed;inset:0;pointer-events:none;z-index:999;overflow:visible;mix-blend-mode:difference;";
+      "position:fixed;inset:0;pointer-events:none;z-index:999;overflow:visible;isolation:isolate;mix-blend-mode:normal;";
     document.body.appendChild(container);
     s.particleContainer = container;
 
@@ -315,7 +372,7 @@ export default function TrionnServices() {
       const isHero = hi.has(i);
       const el = document.createElement("span");
       el.textContent = p.ch;
-      el.style.cssText = `position:absolute;top:0;left:0;font-family:'Helvetica Neue',sans-serif;font-weight:700;font-size:${p.fontSize}px;color:#fff;transform-origin:center center;will-change:transform,opacity;white-space:nowrap;line-height:1;`;
+      el.style.cssText = `position:absolute;top:0;left:0;font-family:${p.fontFamily};font-style:${p.fontStyle};font-weight:${p.fontWeight};font-size:${p.fontSize}px;color:${p.color};font-synthesis:none;transform-origin:center center;will-change:transform,opacity;white-space:nowrap;line-height:1;-webkit-font-smoothing:antialiased;`;
       container.appendChild(el);
 
       const er = el.getBoundingClientRect();
