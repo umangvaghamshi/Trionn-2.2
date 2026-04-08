@@ -42,7 +42,7 @@ export default function KeyFactsNew() {
           start: "top bottom",
           end: "top top",
           scrub: true,
-          markers: true, // Set to false for production, but can be true for debugging
+          markers: false, // Set to false for production, but can be true for debugging
         },
       });
 
@@ -72,7 +72,7 @@ export default function KeyFactsNew() {
   return (
     <section
       id="keyfacts-section"
-      className="py-20 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-screen "
+      className="pt-24 pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-screen "
       ref={containerRef}
     >
       <div className="tr__container">

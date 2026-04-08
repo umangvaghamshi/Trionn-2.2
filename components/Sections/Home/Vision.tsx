@@ -68,8 +68,8 @@ export default function Vision() {
       stripeCount={5}
       stripeColor="#D2D2D2"
       scrollEndTrigger="#keyfacts-section"
-      scrollEnd="top top"
-      staggerAmount={0.8}
+      scrollEnd="top center"
+      staggerAmount={0.7}
     />
   );
 }

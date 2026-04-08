@@ -47,9 +47,9 @@ export default function StripeReveal({
   stripeColor = "#D2D2D2",
   stripeOrigin = "bottom",
   staggerFrom = "end",
-  staggerAmount = 0.5,
+  staggerAmount = 0.7,
   scrollEndTrigger = "#keyfacts-section",
-  scrollEnd = "top top",
+  scrollEnd = "top center",
   className = "",
   pinnedClassName = "",
   stripesClassName = "",
@@ -63,8 +63,7 @@ export default function StripeReveal({
 
     if (!container || stripes.length === 0) return;
 
-    // ── Initial state ──────────────────────────────────
-    gsap.set(stripes, { scaleY: 0, transformOrigin: stripeOrigin });
+    gsap.set(stripes, { scaleY: 0, transformOrigin:'bottom' });
 
     // ── Timeline ───────────────────────────────────────
     const tl = gsap.timeline({
@@ -76,17 +75,18 @@ export default function StripeReveal({
         scrub: true,
         pin: true,
         markers,
-        pinSpacing:false,
+        pinSpacing: false,
       },
     });
 
-    // 1. Scale stripes to full height
     tl.to(stripes, {
       scaleY: 1,
-      stagger: { amount: staggerAmount, from: staggerFrom },
       ease: "none",
+      stagger: {
+        amount: staggerAmount,
+        from: staggerFrom,
+      },
     });
-
   }, [
     stripeCount,
     stripeColor,
@@ -117,7 +117,7 @@ export default function StripeReveal({
               ref={(el) => {
                 stripesRef.current[index] = el!;
               }}
-              className="stripe-item w-full flex-1"
+              className="stripe-item flex-1 w-full h-full"
               style={{ backgroundColor: stripeColor }}
             />
           ))}
