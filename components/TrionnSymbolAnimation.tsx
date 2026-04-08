@@ -4,18 +4,30 @@ import { useTrionnSymbolScene } from '@/hooks/useTrionnSymbolScene';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import CursorFollowMarquee from './CursorFollowMarquee';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function TrionnSymbolAnimation() {
+interface TrionnSymbolAnimationProps {
+  /** IDs of elements that should receive the vibrate/orbit effect */
+  vibrateElementIds?: string[];
+}
+
+export function TrionnSymbolAnimation({ vibrateElementIds = [] }: TrionnSymbolAnimationProps) {
   // ── DOM refs ──────────────────────────────────────────────────────────────
   const canvasWrapRef = useRef<HTMLDivElement>(null);
   const glowCanvasRef = useRef<HTMLCanvasElement>(null);
   const s4ElRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
   const vibrateElsRef = useRef<(HTMLElement | null)[]>([]);
+  const keyFactsRef = useRef<HTMLElement | null>(null);
+
+  // ── Resolve element IDs → DOM elements for vibrate/orbit effect ──────────
+  useEffect(() => {
+    vibrateElsRef.current = vibrateElementIds.map((id) => document.getElementById(id));
+    keyFactsRef.current = document.getElementById('keyfacts-section');
+  }, [vibrateElementIds]);
 
   // ── Scene + audio via hook ────────────────────────────────────────────────
   const { audio } = useTrionnSymbolScene(
@@ -52,9 +64,10 @@ export function TrionnSymbolAnimation() {
     ScrollTrigger.create({
       trigger: '#hero-section',
       start: 'top top',
-      end: 'bottom top',
+      end: 'bottom center',
       pin: canvasWrapRef.current,
       pinSpacing: false,
+      markers:false,
       onLeave: () => {
         // Save the user's preference before silencing so we can restore it
         userSoundPreferenceRef.current = audio.soundEnabledRef.current;
@@ -110,9 +123,10 @@ export function TrionnSymbolAnimation() {
       />
 
       {/* Cursor Follow Marquee */}
-      <CursorFollowMarquee 
-        text="Hold to blast. Touch lines at your own risk." 
-        containerRef={canvasWrapRef} 
+      <CursorFollowMarquee
+        text="Hold to blast. Touch lines at your own risk."
+        containerRef={canvasWrapRef}
+        excludeRef={keyFactsRef}
       />
     </div>
   );
