@@ -12,6 +12,8 @@ const SPARK_SPEED = 280;
 const ORBIT_INTRO_START = 0.3;
 const ORBIT_INTRO_DUR = 3.2;
 const ORBIT_TARGET_OP = 0.28;
+/* Ring line color */
+const ORBIT_LINE_COLOR_HEX = 0x3a4658;
 const LERP_SPEED = 0.045;
 const POS_LERP = 0.055;
 const TARGET_HEIGHT = 4.8;
@@ -470,7 +472,7 @@ export function useServicesOrbitScene(
       const line = new THREE.Line(
         geo,
         new THREE.LineBasicMaterial({
-          color: 0x555555,
+          color: ORBIT_LINE_COLOR_HEX,
           transparent: true,
           opacity: 0.0,
         }),
