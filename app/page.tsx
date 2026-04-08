@@ -1,4 +1,4 @@
-import { Banner, Vision, Work } from "@/components/Sections/Home";
+import { Banner, KeyFactsNew, Vision, Work } from "@/components/Sections/Home";
 import TrionnServices from "@/components/Sections/Home/TrionnServices";
 import TrionnSymbolAnimation from "@/components/TrionnSymbolAnimation";
 
@@ -21,6 +21,7 @@ const Page = () => {
         <Banner />
         <Vision />
       </div>
+      <KeyFactsNew />
       <Work />
       <TrionnServices />
       {/* <Orbit /> */}

@@ -40,7 +40,7 @@ export default function KeyFactsNew() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top bottom",
-          end: "top 20%",
+          end: "top top",
           scrub: true,
           markers: true, // Set to false for production, but can be true for debugging
         },

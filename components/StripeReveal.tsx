@@ -11,8 +11,6 @@ gsap.registerPlugin(ScrollTrigger);
 export interface StripeRevealProps {
   /** The "pinned" content that stays fixed while stripes animate over it */
   pinnedContent: ReactNode;
-  /** The content that slides up behind the stripes to be revealed */
-  revealContent: ReactNode;
 
   /** Number of horizontal stripes (default: 5) */
   stripeCount?: number;
@@ -25,13 +23,10 @@ export interface StripeRevealProps {
   /** Total stagger spread across all stripes (default: 0.5) */
   staggerAmount?: number;
 
-  /** ScrollTrigger end value – controls how much scroll distance the
-   *  animation consumes (default: "+=200%") */
+  /** ScrollTrigger endTrigger element selector (default: "#keyfacts-section") */
+  scrollEndTrigger?: string;
+  /** ScrollTrigger end position relative to the endTrigger (default: "top top") */
   scrollEnd?: string;
-  /** Reveal-content start position in the timeline (default: "<15%") */
-  revealPosition?: string;
-  /** Reveal-content final y translation (default: "-20%") */
-  revealEndY?: string;
 
   /** Extra className applied to the outermost <section> */
   className?: string;
@@ -39,8 +34,6 @@ export interface StripeRevealProps {
   pinnedClassName?: string;
   /** Extra className applied to the stripes container */
   stripesClassName?: string;
-  /** Extra className applied to the reveal-content wrapper */
-  revealClassName?: string;
 
   /** Enable GSAP ScrollTrigger markers for debugging (default: false) */
   markers?: boolean;
@@ -50,47 +43,40 @@ export interface StripeRevealProps {
 
 export default function StripeReveal({
   pinnedContent,
-  revealContent,
   stripeCount = 5,
   stripeColor = "#D2D2D2",
   stripeOrigin = "bottom",
   staggerFrom = "end",
   staggerAmount = 0.5,
-  scrollEnd = "+=200%",
-  revealPosition = "<15%",
-  revealEndY = "-20%",
+  scrollEndTrigger = "#keyfacts-section",
+  scrollEnd = "top top",
   className = "",
   pinnedClassName = "",
   stripesClassName = "",
-  revealClassName = "",
   markers = false,
 }: StripeRevealProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
-  const revealRef = useRef<HTMLDivElement | null>(null);
-
   useGSAP(() => {
     const container = containerRef.current;
     const stripes = stripesRef.current;
-    const reveal = revealRef.current;
 
     if (!container || stripes.length === 0) return;
 
     // ── Initial state ──────────────────────────────────
     gsap.set(stripes, { scaleY: 0, transformOrigin: stripeOrigin });
-    if (reveal) {
-      gsap.set(reveal, { y: "100%" });
-    }
 
     // ── Timeline ───────────────────────────────────────
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
         start: "top top",
+        endTrigger: scrollEndTrigger,
         end: scrollEnd,
         scrub: true,
         pin: true,
         markers,
+        pinSpacing:false,
       },
     });
 
@@ -101,27 +87,14 @@ export default function StripeReveal({
       ease: "none",
     });
 
-    // 2. Slide reveal-content upward
-    if (reveal) {
-      tl.to(
-        reveal,
-        {
-          duration: 1,
-          y: revealEndY,
-          ease: "none",
-        },
-        revealPosition,
-      );
-    }
   }, [
     stripeCount,
     stripeColor,
     stripeOrigin,
     staggerFrom,
     staggerAmount,
+    scrollEndTrigger,
     scrollEnd,
-    revealPosition,
-    revealEndY,
     markers,
   ]);
 
@@ -148,14 +121,6 @@ export default function StripeReveal({
               style={{ backgroundColor: stripeColor }}
             />
           ))}
-        </div>
-
-        {/* ── 3. Reveal content ──────────────────────────── */}
-        <div
-          ref={revealRef}
-          className={`absolute top-0 left-0 w-full z-40 ${revealClassName}`}
-        >
-          {revealContent}
         </div>
       </div>
     </section>
