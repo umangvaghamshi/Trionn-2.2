@@ -7,6 +7,11 @@ import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
+import {
+  mapServicesScrollProgress,
+  SERVICES_PIN_END_PERCENT,
+  SERVICES_SHUTTER_VH,
+} from "@/components/Sections/Home/servicesScrollConstants";
 gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
 
 /* ─────────────────────────────────────────────
@@ -682,7 +687,11 @@ export default function TrionnServices() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const dpr = window.devicePixelRatio || 1;
-    const vh = window.innerHeight;
+    const vh = Math.round(
+      typeof window !== "undefined" && window.visualViewport?.height
+        ? window.visualViewport.height
+        : window.innerHeight,
+    );
     const cvH = vh;
     const cvW = Math.round(cvH * (16 / 9));
     canvas.width = cvW * dpr;
@@ -719,42 +728,35 @@ export default function TrionnServices() {
     }
   }, [drawFrame, TOTAL]);
 
-  /* ── ScrollTrigger drives scrollT progress ── */
+  /* ── ScrollTrigger: pin section, scrub scrollT 0→1 then hold final frame (testimonials overlap) ── */
   useGSAP(() => {
-    // Start preloading canvas frames when approaching section
-    ScrollTrigger.create({
-      trigger: scrollDriverRef.current,
-      start: "top 200%", // Start preloading 1 viewport above
-      once: true,
-      onEnter: () => preload(),
-    });
+    const ctx = gsap.context(() => {
+      const driver = scrollDriverRef.current;
+      const sticky = stickyWrapRef.current;
+      if (!driver || !sticky) return;
 
-    // Shutter reveal effect
-    gsap.fromTo(
-      stickyWrapRef.current,
-      { yPercent: -100, visibility: "hidden" },
-      {
-        yPercent: 0,
-        visibility: "visible",
-        ease: "none",
-        scrollTrigger: {
-          trigger: scrollDriverRef.current,
-          start: "top bottom",
-          end: "top top",
-          scrub: true,
+      ScrollTrigger.create({
+        trigger: driver,
+        start: "top 200%", // Start preloading 1 viewport above
+        once: true,
+        onEnter: () => preload(),
+      });
+
+
+      ScrollTrigger.create({
+        trigger: driver,
+        start: "top top",
+        end: `+=${SERVICES_PIN_END_PERCENT}%`,
+        pin: true,
+        pinSpacing: true,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
         },
-      },
-    );
-
-    ScrollTrigger.create({
-      trigger: scrollDriverRef.current,
-      start: "top top",
-      end: "+=300%",
-      pin: true,
-      onUpdate: (self) => {
-        stateRef.current.scrollT = self.progress;
-      },
+      });
     });
+
+    return () => ctx.revert();
   }, []);
 
   /* ── Main effect — init everything ── */
@@ -763,7 +765,10 @@ export default function TrionnServices() {
 
     resize();
 
-    const handleResize = () => resize();
+    const handleResize = () => {
+      resize();
+      ScrollTrigger.refresh();
+    };
     window.addEventListener("resize", handleResize);
 
     /* RAF loop */
@@ -827,22 +832,25 @@ export default function TrionnServices() {
   ]);
 
   return (
-    <section className="bg-[#000] overflow-hidden relative">
-      {/* ── Scroll driver ── */}
-      <div ref={scrollDriverRef} className="relative">
-        {/* Sticky wrap */}
+    <section
+      className="relative isolate bg-[#000] overflow-hidden"
+      style={{ zIndex: 1, marginTop: `-${SERVICES_SHUTTER_VH}vh` }}
+    >
+      {/* ── Scroll driver (pin spacing from ScrollTrigger) ── */}
+      <div ref={scrollDriverRef} className="relative min-h-screen min-h-[100dvh]">
+        {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
         <div
           ref={stickyWrapRef}
-          className="sticky top-0 w-full h-screen overflow-hidden"
+          className="relative h-[100dvh] w-full overflow-hidden bg-[#000]"
         >
           {/* Canvas */}
           <canvas
             ref={canvasRef}
             id="c"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block h-screen w-auto"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block h-[100dvh] w-auto max-w-none"
           />
 
-          {/* Background video — reveals after text blast, blends with canvas frames */}
+          {/* Background video — full-bleed cover so no strip shows at bottom */}
           <video
             ref={bgVideoRef}
             src="/video/homepage-services-video.mp4"
@@ -850,7 +858,7 @@ export default function TrionnServices() {
             loop
             playsInline
             preload="auto"
-            className="pointer-events-none object-cover rotate-180 opacity-50 z-1 mix-blend-screen absolute bottom-0 left-0 w-full h-auto min-w-full"
+            className="pointer-events-none object-cover rotate-180 opacity-50 z-1 mix-blend-screen absolute inset-0 h-full w-full min-h-full min-w-full"
           />
 
           {/* Cards overlay */}

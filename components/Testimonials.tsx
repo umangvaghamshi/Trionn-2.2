@@ -18,6 +18,7 @@ import "swiper/css/navigation";
 
 // Components / Data
 import { TestimonialsData } from "@/data";
+import { SERVICES_HOLD_VH } from "@/components/Sections/Home/servicesScrollConstants";
 
 interface TestimonialsProps {
   customClass?: string;
@@ -54,7 +55,10 @@ export default function Testimonials({
   }, []);
 
   return (
-    <section className="py-25 bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden relative">
+    <section
+      className="relative z-20 isolate py-25 bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden"
+      style={{ marginTop: `-${SERVICES_HOLD_VH}vh` }}
+    >
       <div className="tr__container">
         <div className="grid grid-cols-12 gap-6">
           <BlurTextReveal
