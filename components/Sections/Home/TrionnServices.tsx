@@ -686,7 +686,11 @@ export default function TrionnServices() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const dpr = window.devicePixelRatio || 1;
-    const vh = window.innerHeight;
+    const vh = Math.round(
+      typeof window !== "undefined" && window.visualViewport?.height
+        ? window.visualViewport.height
+        : window.innerHeight,
+    );
     const cvH = vh;
     const cvW = Math.round(cvH * (16 / 9));
     canvas.width = cvW * dpr;
@@ -760,7 +764,7 @@ export default function TrionnServices() {
         end: `+=${SERVICES_PIN_END_PERCENT}%`,
         pin: true,
         pinSpacing: true,
-        anticipatePin: 1,
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
           stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
         },
@@ -844,21 +848,21 @@ export default function TrionnServices() {
 
   return (
     <section className="relative z-10 isolate bg-[#000] overflow-hidden">
-      {/* ── Scroll driver (pin spacing from ScrollTrigger; no extra min-height) ── */}
-      <div ref={scrollDriverRef} className="relative">
-        {/* Sticky wrap */}
+      {/* ── Scroll driver (pin spacing from ScrollTrigger) ── */}
+      <div ref={scrollDriverRef} className="relative min-h-screen min-h-[100dvh]">
+        {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
         <div
           ref={stickyWrapRef}
-          className="sticky top-0 w-full h-screen overflow-hidden"
+          className="relative h-[100dvh] w-full overflow-hidden bg-[#000]"
         >
           {/* Canvas */}
           <canvas
             ref={canvasRef}
             id="c"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block h-screen w-auto"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block h-[100dvh] w-auto max-w-none"
           />
 
-          {/* Background video — reveals after text blast, blends with canvas frames */}
+          {/* Background video — full-bleed cover so no strip shows at bottom */}
           <video
             ref={bgVideoRef}
             src="/video/homepage-services-video.mp4"
@@ -866,7 +870,7 @@ export default function TrionnServices() {
             loop
             playsInline
             preload="auto"
-            className="pointer-events-none object-cover rotate-180 opacity-50 z-1 mix-blend-screen absolute bottom-0 left-0 w-full h-auto min-w-full"
+            className="pointer-events-none object-cover rotate-180 opacity-50 z-1 mix-blend-screen absolute inset-0 h-full w-full min-h-full min-w-full"
           />
 
           {/* Cards overlay */}
