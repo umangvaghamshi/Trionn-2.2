@@ -557,8 +557,8 @@ export function useTrionnSymbolScene(
       const rightEnd = Math.min(n - 1, mid + half - undrawnH);
 
       ctx.save();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+      ctx.lineCap = 'butt';
+      ctx.lineJoin = 'miter';
       ctx.lineWidth = 0.85;
       ctx.strokeStyle = 'rgba(58,70,88,1)';
 
@@ -600,8 +600,8 @@ export function useTrionnSymbolScene(
       }
       if (allPts.length < 2) return;
       ctx.save();
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+      ctx.lineCap = 'butt';
+      ctx.lineJoin = 'miter';
       for (let i = 0; i < allPts.length - 1; i++) {
         const t = allPts[i].tRatio;
         const env = Math.pow(1 - t, 0.5);
@@ -658,9 +658,11 @@ export function useTrionnSymbolScene(
       const ptsR = buildTwoSegPts(originL.x, originL.y + CH * 0.130, ar.x, ar.y, CW, CH * 0.10, 3.0);
       const ptsB = buildTwoSegPts(originL.x, originL.y - CH * 0.070, ab.x, ab.y, CW, -CH * 0.065, 2.0);
 
-      // Weld FX proximity trigger
+      // Weld FX proximity trigger (only after connector lines finish intro draw)
       st.weldCooldown -= 0.016;
-      if (inS1 && st.weldCooldown <= 0) {
+      const linesFullyDrawn =
+        st.lineState[0].prog >= 1 && st.lineState[1].prog >= 1 && st.lineState[2].prog >= 1;
+      if (inS1 && st.weldCooldown <= 0 && linesFullyDrawn) {
         const allLinePts = [ptsL, ptsR, ptsB];
         let hitResult: { x: number; y: number } | null = null;
         let hitLineIdx = -1;
