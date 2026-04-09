@@ -11,6 +11,7 @@ import {
   mapServicesScrollProgress,
   SERVICES_PIN_END_PERCENT,
   SERVICES_SHUTTER_VH,
+  SERVICES_SCRUB_VH,
 } from "@/components/Sections/Home/servicesScrollConstants";
 gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
 
@@ -254,6 +255,7 @@ export default function TrionnServices() {
   const textOverlayRef = useRef<HTMLDivElement>(null);
   const scrollDriverRef = useRef<HTMLDivElement>(null);
   const stickyWrapRef = useRef<HTMLDivElement>(null);
+  const stripesRef = useRef<HTMLDivElement[]>([]);
 
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const setCardRef = useCallback(
@@ -752,6 +754,24 @@ export default function TrionnServices() {
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
+
+          /* ── Stripe reveal during hold phase ── */
+          const holdStart = (SERVICES_SHUTTER_VH + SERVICES_SCRUB_VH) / SERVICES_PIN_END_PERCENT;
+          const holdT = Math.max(0, Math.min(1, (self.progress - holdStart) / (1 - holdStart)));
+          const stripes = stripesRef.current;
+          const stripeCount = stripes.length;
+          if (stripeCount > 0) {
+            const staggerAmount = 0.3;
+            const perStripe = (0.6 - staggerAmount) / 1; // duration per stripe within normalized 0-1
+            for (let i = 0; i < stripeCount; i++) {
+              // stagger from end (last stripe animates first)
+              const staggerIdx = stripeCount - 1 - i;
+              const stripeStart = (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
+              const stripeEnd = stripeStart + perStripe;
+              const stripeProgress = Math.max(0, Math.min(1, (holdT - stripeStart) / (stripeEnd - stripeStart)));
+              gsap.set(stripes[i]!, { scaleY: stripeProgress });
+            }
+          }
         },
       });
     });
@@ -929,6 +949,27 @@ export default function TrionnServices() {
                 />
               </div>
             </div>
+          </div>
+          {/* ── Stripes overlay (covers content during hold phase) ── */}
+          <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                ref={(el) => {
+                  if (el) stripesRef.current[i] = el;
+                }}
+                style={{
+                  flex: 1,
+                  width: "100%",
+                  marginTop: i > 0 ? "-0.5px" : undefined,
+                  paddingBottom: "0.5px",
+                  backgroundColor: "#fff",
+                  transform: "scaleY(0)",
+                  transformOrigin: "bottom",
+                  willChange: "transform",
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>
