@@ -17,9 +17,6 @@ interface UseOrbitSceneConfig {
   backgroundColor: string;
   autoRotateSpeed: number;
   orbitRadius: number;
-  fontFamily: string;
-  // heroTitle: string;
-  // heroSubtitle: string;
 }
 
 /* ── Card Data ── */
@@ -52,9 +49,6 @@ export function useOrbitScene(
       backgroundColor,
       autoRotateSpeed,
       orbitRadius: R,
-      fontFamily,
-      // heroTitle,
-      // heroSubtitle,
     } = configRef.current;
     const N = labels.length;
 
@@ -189,94 +183,6 @@ export function useOrbitScene(
       cards.push({ mesh, mat, em, idx: i });
     });
 
-    /* ── Text Planes ── */
-    let labelMesh: THREE.Mesh | null = null;
-    let motionMesh: THREE.Mesh | null = null;
-
-    const makeCanvasTex = (
-      draw: (ctx: CanvasRenderingContext2D, w: number, h: number) => void,
-      w: number,
-      h: number,
-    ): THREE.CanvasTexture => {
-      const oc = document.createElement("canvas");
-      oc.width = w;
-      oc.height = h;
-      const cx = oc.getContext("2d")!;
-      cx.clearRect(0, 0, w, h);
-      draw(cx, w, h);
-      const t = new THREE.CanvasTexture(oc);
-      t.minFilter = THREE.LinearFilter;
-      t.magFilter = THREE.LinearFilter;
-      return t;
-    };
-
-    document.fonts.ready.then(() => {
-      /* "DESIGN IN" label */
-      const texLabel = makeCanvasTex(
-        (cx, w, h) => {
-          cx.textAlign = "center";
-          cx.textBaseline = "middle";
-          cx.font = `400 60px ${fontFamily}`;
-          cx.fillStyle = "#434343";
-          (cx as any).letterSpacing = "18px";
-          cx.fillText(heroTitle, w / 2, h / 2);
-        },
-        1400,
-        160,
-      );
-
-      labelMesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(7.5, 7.5 * (160 / 1400)),
-        new THREE.MeshBasicMaterial({
-          map: texLabel,
-          transparent: true,
-          depthTest: true,
-          depthWrite: false,
-          side: THREE.DoubleSide,
-        }),
-      );
-      labelMesh.position.set(0, 0.62, 0);
-      labelMesh.renderOrder = 1;
-      scene.add(labelMesh);
-
-      /* "MOTION" subtitle */
-      const motionTex = makeCanvasTex(
-        (cx, w, h) => {
-          cx.textAlign = "center";
-          cx.textBaseline = "middle";
-          cx.font = `800 380px ${fontFamily}`;
-          cx.fillStyle = "#313131";
-          (cx as any).letterSpacing = "40px";
-          cx.fillText(heroSubtitle, w / 2, h / 2);
-        },
-        2600,
-        440,
-      );
-
-      const mobile = isMobile();
-      const motionW = mobile ? 3.8 : 6.48;
-      const motionH = motionW * (440 / 2600);
-      motionMesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(motionW, motionH),
-        new THREE.MeshBasicMaterial({
-          map: motionTex,
-          transparent: true,
-          depthTest: true,
-          depthWrite: false,
-          side: THREE.DoubleSide,
-        }),
-      );
-      motionMesh.position.set(0, -0.45, 0);
-      motionMesh.renderOrder = 1;
-
-      if (mobile) {
-        labelMesh.position.set(0, 0.35, 0);
-        motionMesh.position.set(0, -0.22, 0);
-        labelMesh.scale.set(0.55, 0.55, 1);
-      }
-      scene.add(motionMesh);
-    });
-
     /* ── UI Update ── */
     const setActive = (idx: number) => {
       // counterEl.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(N).padStart(2, '0')}`;
@@ -338,15 +244,6 @@ export function useOrbitScene(
       renderer.setSize(window.innerWidth, window.innerHeight);
       resizeTrail();
       buildRings();
-      const m = isMobile();
-      if (motionMesh) {
-        const mw = m ? 3.8 : 6.48;
-        const mh = mw * (440 / 2600);
-        motionMesh.scale.set(1, 1, 1);
-        motionMesh.geometry.dispose();
-        motionMesh.geometry = new THREE.PlaneGeometry(mw, mh);
-      }
-      if (labelMesh) labelMesh.scale.set(m ? 0.55 : 1, m ? 0.55 : 1, 1);
     };
 
     window.addEventListener("wheel", handleWheel, { passive: true });
@@ -578,13 +475,6 @@ export function useOrbitScene(
       orbitRings.forEach((r) => {
         r.geometry.dispose();
         (r.material as THREE.LineBasicMaterial).dispose();
-      });
-      [labelMesh, motionMesh].forEach((m) => {
-        if (!m) return;
-        m.geometry.dispose();
-        const mt = m.material as THREE.MeshBasicMaterial;
-        mt.map?.dispose();
-        mt.dispose();
       });
       textures.forEach((t) => t.dispose());
       scene.clear();
