@@ -1,7 +1,6 @@
 export const TRIONN_LOGO_VIEWBOX_WIDTH = 1728 as const;
 
 export const TRIONN_LOGO_SVG_MARKUP = `<svg viewBox="0 0 1728 441" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
-<rect width="1728" height="441" fill=""/>
 <path d="M589.056 212.315H330.526" stroke="#D8D8D8"/>
 <path d="M1022.87 212.315H1100.96" stroke="#D8D8D8"/>
 <path d="M714.35 212.315H792.444" stroke="#D8D8D8"/>

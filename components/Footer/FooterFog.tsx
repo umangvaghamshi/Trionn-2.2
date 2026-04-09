@@ -3,16 +3,13 @@
 import { useEffect, useRef } from "react";
 import { useFooterAtmosphere } from "./FooterAtmosphere";
 
-/**
- * Internal canvas resolution multiplier (fog is soft; shader cost scales with pixels).
- * Lower = faster; 0.65–0.8 is usually visually fine on retina.
- */
-const FOG_CANVAS_MAX_DPR = 0.72;
-/** Cap animation rate to reduce GPU + main-thread load when footer is visible. */
-const FOG_MIN_FRAME_MS = 1000 / 30;
+type Props = {
+  /** Stack above logo wires (z-[2]); default matches prototype (fog over SVG). */
+  className?: string;
+};
 
 /** WebGL smoke/fog — ported from trionn-logo-footer/fog.js, scoped to container. */
-export default function FooterFog() {
+export default function FooterFog({ className = "" }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { smokePulseRef, getSmokeAnalyser, audioContextRef } = useFooterAtmosphere();
@@ -98,14 +95,15 @@ export default function FooterFog() {
       f = smoothstep(0.0, 0.36, f);
       f = pow(f, 0.85);
 
-      float hoverGlow = H * 0.35;
-      f = clamp(f + H * 0.20, 0.0, 1.0);
+      // Pulse: visible lift without washing the whole footer (medium baseline fog)
+      float hoverGlow = H * 0.42;
+      f = clamp(f + H * 0.14, 0.0, 1.0);
 
-      float baseFog = smoothstep(0.35, 0.0, y) * 0.22
-                    + smoothstep(0.18, 0.0, y) * 0.18;
+      float baseFog = smoothstep(0.35, 0.0, y) * 0.14
+                    + smoothstep(0.18, 0.0, y) * 0.11;
 
-      float alpha = (f + baseFog + hoverGlow * vMask) * vMask * 1.08;
-      alpha = clamp(alpha, 0.0, 0.96);
+      float alpha = (f + baseFog + hoverGlow * vMask) * vMask * 0.94;
+      alpha = clamp(alpha, 0.0, 0.82);
 
       vec3 charcoal = vec3(0.02, 0.03, 0.05);
       vec3 ashGrey  = vec3(0.12, 0.14, 0.18);
@@ -113,7 +111,7 @@ export default function FooterFog() {
       vec3 hoverTint = vec3(0.35, 0.38, 0.44);
       vec3 col = mix(charcoal, ashGrey,   pow(f, 1.0));
           col  = mix(col,      lightGrey, pow(f, 2.2));
-          col  = mix(col,      hoverTint, H * 0.4 * f);
+          col  = mix(col,      hoverTint, H * 0.55 * f);
 
       gl_FragColor = vec4(col * alpha, alpha);
     }
@@ -162,29 +160,18 @@ export default function FooterFog() {
     let morphOffset = 0;
     let hoverEnergy = 0;
     let lastMs = performance.now();
-    let lastDrawMs = lastMs;
     let analyser: AnalyserNode | null = null;
     let freqData: Uint8Array | null = null;
 
     const t0 = performance.now();
     let running = true;
-    let tabVisible = !document.hidden;
-    const prefersReducedMotion =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function resize() {
       const el = containerRef.current;
       const cv = canvasRef.current;
       if (!el || !cv) return;
-      const cssW = Math.max(1, el.clientWidth);
-      const cssH = Math.max(1, el.clientHeight);
-      const dpr = Math.min(
-        typeof window !== "undefined" ? window.devicePixelRatio : 1,
-        FOG_CANVAS_MAX_DPR,
-      );
-      const w = Math.max(1, Math.floor(cssW * dpr));
-      const h = Math.max(1, Math.floor(cssH * dpr));
+      const w = Math.max(1, el.clientWidth);
+      const h = Math.max(1, el.clientHeight);
       cv.width = w;
       cv.height = h;
       if (glRef.current) glRef.current.viewport(0, 0, w, h);
@@ -199,51 +186,13 @@ export default function FooterFog() {
       if (!el) return;
       const r = el.getBoundingClientRect();
       footerVisible =
-        r.bottom > 0 && r.top < window.innerHeight;
+        r.bottom > -160 && r.top < window.innerHeight + 160;
     }
     syncFooterVisibility();
 
-    /** One static frame — used for reduced motion (accessibility + lighter GPU). */
-    function drawStaticFrame() {
-      const cv = canvasRef.current;
-      const gl = glRef.current;
-      if (!cv || !gl) return;
-      gl.viewport(0, 0, cv.width, cv.height);
-      gl.useProgram(prog);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.uniform1f(uT, 0);
-      gl.uniform2f(uR, cv.width, cv.height);
-      gl.uniform1f(uM, 0);
-      gl.uniform1f(uH, 0);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-    }
-
-    if (prefersReducedMotion) {
-      drawStaticFrame();
-      return () => {
-        running = false;
-        ro.disconnect();
-        gl.deleteProgram(prog);
-        gl.deleteBuffer(buf);
-        glRef.current = null;
-      };
-    }
-
-    function onVisibilityChange() {
-      tabVisible = !document.hidden;
-      if (tabVisible && footerVisible && running && !rafId) {
-        rafId = requestAnimationFrame(tick);
-      }
-      if (!tabVisible && rafId) {
-        cancelAnimationFrame(rafId);
-        rafId = 0;
-      }
-    }
-    document.addEventListener("visibilitychange", onVisibilityChange);
-
     function tick() {
       if (!running || !glRef.current) return;
-      if (!footerVisible || !tabVisible) {
+      if (!footerVisible) {
         rafId = 0;
         return;
       }
@@ -251,12 +200,6 @@ export default function FooterFog() {
       if (!cv) return;
       const gl = glRef.current;
       const now = performance.now();
-      if (now - lastDrawMs < FOG_MIN_FRAME_MS) {
-        rafId = requestAnimationFrame(tick);
-        rafRef.current = rafId;
-        return;
-      }
-      lastDrawMs = now;
       const dt = Math.min((now - lastMs) / 1000, 0.05);
       lastMs = now;
       const T = (now - t0) * 0.001;
@@ -287,7 +230,7 @@ export default function FooterFog() {
       if (pulse > 0) smokePulseRef.current *= 0.9;
       hoverEnergy += (hoverBoost - hoverEnergy) * (hoverBoost > hoverEnergy ? 0.25 : 0.04);
 
-      morphOffset += (4.0 + freqEnergy * 16.0 + hoverBoost * 4.0) * dt;
+      morphOffset += (4.0 + freqEnergy * 16.0 + hoverBoost * 2.8) * dt;
 
       gl.viewport(0, 0, cv.width, cv.height);
       gl.useProgram(prog);
@@ -305,8 +248,7 @@ export default function FooterFog() {
     const io = new IntersectionObserver(
       ([entry]) => {
         footerVisible = entry?.isIntersecting ?? false;
-        if (footerVisible && running && tabVisible && !rafId) {
-          lastDrawMs = 0;
+        if (footerVisible && running && !rafId) {
           rafId = requestAnimationFrame(tick);
         }
         if (!footerVisible && rafId) {
@@ -314,18 +256,16 @@ export default function FooterFog() {
           rafId = 0;
         }
       },
-      /* No early margin — start WebGL only when footer actually enters view (less scroll jank). */
-      { root: null, threshold: 0, rootMargin: "0px" },
+      { root: null, threshold: 0, rootMargin: "160px 0px" },
     );
     io.observe(container);
 
-    if (footerVisible && tabVisible) {
+    if (footerVisible) {
       rafId = requestAnimationFrame(tick);
     }
 
     return () => {
       running = false;
-      document.removeEventListener("visibilitychange", onVisibilityChange);
       io.disconnect();
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(rafRef.current);
@@ -339,7 +279,7 @@ export default function FooterFog() {
   return (
     <div
       ref={containerRef}
-      className="pointer-events-none absolute inset-0 z-0 overflow-hidden [contain:paint]"
+      className={`pointer-events-none absolute inset-0 z-[5] overflow-hidden ${className}`}
       aria-hidden
     >
       <canvas

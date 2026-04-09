@@ -448,11 +448,9 @@ export default function TrionnFooterLogo({
   };
 
   return (
-    <div
-      ref={rootRef}
-      className={`relative flex w-full flex-col items-stretch justify-end gap-3 ${className}`}
-    >
-      <div className="relative z-30 flex w-full justify-center pointer-events-auto">
+    <>
+      {/* Above fog (z-[5]); footer flex sibling so controls stay clickable */}
+      <div className="relative z-20 mt-auto flex w-full justify-center pointer-events-auto pt-2 pb-1">
         <button
           type="button"
           onClick={onToggleSound}
@@ -463,14 +461,19 @@ export default function TrionnFooterLogo({
           {soundOn ? <SoundOffIcon /> : <SoundOnIcon />}
         </button>
       </div>
-      {/* mix-blend-difference on wire SVG only — same as prototype #stage */}
-      <div className="flex w-full min-w-0 flex-col justify-end mix-blend-difference">
-        <div
-          className="w-[101%] max-w-none -ml-[0.5%] min-w-0 [&_svg]:max-h-none"
-          ref={mountRef}
-        />
+      {/* Under fog (z-[5]) like trionn-logo-footer canvas over #stage — wires pick up smoke tint */}
+      <div
+        ref={rootRef}
+        className={`relative z-[2] flex w-full min-w-0 flex-col items-stretch justify-end overflow-x-clip pb-4 ${className}`}
+      >
+        <div className="flex w-full min-w-0 flex-col justify-end mix-blend-difference">
+          <div
+            className="w-[101%] max-w-none -ml-[0.5%] min-w-0 [&_svg]:max-h-none"
+            ref={mountRef}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
