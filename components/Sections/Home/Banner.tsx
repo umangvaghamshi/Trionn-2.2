@@ -10,46 +10,39 @@ export default function Banner() {
       className="text-light-font relative mix-blend-difference"
       id="sticky-wrap"
     >
-      <section className="main-banner  min-h-screen pt-37 pb-20 flex w-full ">
-        <div className="tr__container relative flex flex-col justify-between w-full">
+      <section className="main-banner relative min-h-screen pt-37 pb-30 flex w-full ">
+        <div className="tr__container relative flex flex-col justify-between w-full gap-10">
           <div className="banner-top-block flex flex-col w-full">
-            <div
-              className="banner-title-block grid grid-cols-12 grid-rows-2 gap-x-6 w-full "
-              id="s1-headline"
-            >
+            <span className="title z-2 col-span-6 flex items-end" id="s1-sub">
               <BlurTextReveal
-                as="h1"
-                html="Designed to"
+                as="span"
+                html={`Strategy-led <br />digital experiences.`}
                 animationType="chars"
-                stagger={0.08}
-                className="uppercase z-2 col-span-12"
+                stagger={0.05}
+                className="block text-sm mb-2 text-light-font/50 leading-4 -tracking-[0.02em] uppercase"
               />
-              <BlurTextRotate
-                stagger={0.08}
-                prefix="mean"
-                texts={[
-                  "something.",
-                  "depth.",
-                  "impact.",
-                  "purpose.",
-                  "intention.",
-                ]}
-                className="uppercase z-2 col-span-10 col-start-3"
-              />
-            </div>
-
-            <div className="banner-subtitle-block grid grid-cols-12 grid-rows-1 gap-x-6 -translate-y-full w-full z-3 -mt-0.75">
-              <span className="title z-2 col-span-6 flex items-end" id="s1-sub">
+            </span>
+            <div className="grid grid-cols-12 gap-6 mb-10">
+              <div
+                className="banner-title-block w-full flex flex-col items-start col-span-8"
+                id="s1-headline"
+              >
                 <BlurTextReveal
-                  as="span"
-                  html={`Strategy-led <br />digital experiences.`}
+                  as="h1"
+                  html="Designed to"
                   animationType="chars"
-                  stagger={0.05}
-                  className="title block"
+                  stagger={0.08}
+                  className="z-2"
                 />
-              </span>
+                <BlurTextRotate
+                  stagger={0.08}
+                  prefix="mean"
+                  texts={["something.", "something."]}
+                  className="z-2"
+                />
+              </div>
               <span
-                className="title text-right z-2 col-span-6 flex items-end justify-end"
+                className="title text-right z-2 col-span-4 flex justify-end items-end"
                 id="s1-stats"
               >
                 <BlurTextReveal
@@ -61,19 +54,32 @@ export default function Banner() {
                 />
               </span>
             </div>
+            <div id="s1-cta">
+              <WordShiftButton
+                text="view work"
+                href="#"
+                styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+              />
+            </div>
           </div>
           <div className="banner-text-block grid grid-cols-12 grid-rows-1 gap-x-6 w-full">
-            <p className="max-w-60 z-2 col-span-5 title" id="s1-body">
-              <BlurTextReveal
-                as="span"
-                html={`Websites, Digital products, brands, and systems built for clarity, scale, and impact.`}
-                animationType="chars"
-                stagger={0.05}
-                className="title block"
-              />
+            <p className="max-w-72 z-2 col-span-4" id="s1-body">
+              Websites, Digital products, brands, and systems built for clarity,
+              scale, and impact.
             </p>
+            {/* <div className="col-span-4 flex items-end justify-center">
+              <span className="block text-sm mb-2 text-light-font/50 leading-4 -tracking-[0.02em] uppercase text-center">
+                Hold to blast
+              </span>
+            </div> */}
           </div>
         </div>
+        {/* <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-50 flex flex-col items-center justify-center tracking-[0.5em]">
+          <span className="block text-sm mb-2 text-light-font/50 leading-4 uppercase text-center ml-1.5">
+            Scroll
+          </span>
+          <div className="w-px h-10 bg-linear-to-b from-[rgba(255,80,30,0.6)] to-transparent animate-arrowPulse mx-auto" />
+        </div> */}
       </section>
       <section className="home-about  relative z-3 pt-50 pb-20">
         <div className="tr__container relative w-full">
