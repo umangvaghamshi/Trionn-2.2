@@ -59,17 +59,6 @@ function applyTextTransform(text: string, textTransform: string): string {
   return text;
 }
 
-/** Inter-letter spacing in px (canvas + layout must match CSS `.mrquee-text` tracking). */
-function letterSpacingPx(cs: CSSStyleDeclaration, fontSizePx: number): number {
-  const ls = cs.letterSpacing?.trim();
-  if (!ls || ls === "normal") return 0;
-  const px = /^(-?[\d.]+)px$/.exec(ls);
-  if (px) return parseFloat(px[1]);
-  const em = /^(-?[\d.]+)em$/.exec(ls);
-  if (em) return parseFloat(em[1]) * fontSizePx;
-  return 0;
-}
-
 interface CardData {
   id: string;
   title: string;
@@ -286,7 +275,7 @@ export default function TrionnServices() {
   const CARDS_START = 0.45;
   const CARDS_END = 1.0;
 
-  /* ── Measure each char viewport position ── */
+  /* ── Measure each char viewport position (Range API = same layout as painted text) ── */
   const measureChars = useCallback((): CharMeasure[] => {
     const results: CharMeasure[] = [];
     const overlay = textOverlayRef.current;
@@ -294,51 +283,35 @@ export default function TrionnServices() {
 
     overlay.querySelectorAll<HTMLElement>("[data-line]").forEach((line) => {
       const cs = getComputedStyle(line);
-      const raw = line.textContent || "";
-      const text = applyTextTransform(raw, cs.textTransform);
-      const rect = line.getBoundingClientRect();
+      const textNode = line.firstChild;
+      if (!textNode || textNode.nodeType !== Node.TEXT_NODE) return;
+
+      const raw = textNode.textContent || "";
+      const display = applyTextTransform(raw, cs.textTransform);
+      if (display.length !== raw.length) return;
+
       const fSize = parseFloat(cs.fontSize);
       const fontFamily = cs.fontFamily;
       const fontWeight = cs.fontWeight;
       const fontStyle = cs.fontStyle;
       const color = cs.color;
-      const lsPx = letterSpacingPx(cs, fSize);
 
-      const tmpCanvas = document.createElement("canvas");
-      const tmp = tmpCanvas.getContext("2d")!;
-      tmp.font = `${fontStyle} ${fontWeight} ${fSize}px ${fontFamily}`;
-      const tmpExt = tmp as CanvasRenderingContext2D & { letterSpacing?: string };
-      if ("letterSpacing" in tmpExt) {
-        tmpExt.letterSpacing = cs.letterSpacing;
-      }
-
-      const widths: number[] = [];
-      let tw = 0;
-      for (let i = 0; i < text.length; i++) {
-        const w = tmp.measureText(text[i]!).width;
-        widths.push(w);
-        tw += w;
-        if (i < text.length - 1) tw += lsPx;
-      }
-
-      let x = rect.left + rect.width / 2 - tw / 2;
-      const y = rect.top + rect.height / 2;
-
-      for (let i = 0; i < text.length; i++) {
-        const c = text[i]!;
-        const cw = widths[i]!;
+      const range = document.createRange();
+      for (let i = 0; i < raw.length; i++) {
+        range.setStart(textNode, i);
+        range.setEnd(textNode, i + 1);
+        const r = range.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) continue;
         results.push({
-          ch: c,
-          x: x + cw / 2,
-          y,
+          ch: display[i]!,
+          x: r.left + r.width / 2,
+          y: r.top + r.height / 2,
           fontSize: fSize,
           fontFamily,
           fontWeight,
           fontStyle,
           color,
         });
-        x += cw;
-        if (i < text.length - 1) x += lsPx;
       }
     });
     return results;
