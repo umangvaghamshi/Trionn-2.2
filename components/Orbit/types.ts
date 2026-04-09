@@ -26,12 +26,8 @@ export interface OrbitProps {
   autoRotateSpeed?: number;
   /** 3D orbit radius (default: 5.2) */
   orbitRadius?: number;
-  /** Font family string for canvas-rendered text */
+  /** Font family for the orbit section (CSS on the container) */
   fontFamily?: string;
-  /** Hero title rendered in 3D scene (default: "DESIGN IN") */
-  heroTitle?: string;
-  /** Hero subtitle rendered in 3D scene (default: "MOTION") */
-  heroSubtitle?: string;
   /** Additional CSS class for the container */
   className?: string;
 }

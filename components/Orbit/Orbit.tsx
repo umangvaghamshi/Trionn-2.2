@@ -36,8 +36,6 @@ export default function Orbit({
   autoRotateSpeed = 0.00042,
   orbitRadius = 5.2,
   fontFamily = "'Barlow', sans-serif",
-  // heroTitle = "DESIGN IN",
-  // heroSubtitle = "MOTION",
   className = "",
 }: OrbitProps) {
   const N = labels.length;
@@ -60,9 +58,6 @@ export default function Orbit({
     backgroundColor,
     autoRotateSpeed,
     orbitRadius,
-    fontFamily,
-    // heroTitle,
-    // heroSubtitle,
   });
 
   /* ── Trigger intro animation when section top hits viewport top ── */
