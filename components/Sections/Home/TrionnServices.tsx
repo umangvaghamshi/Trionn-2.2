@@ -10,6 +10,7 @@ import { WordShiftButton } from "@/components/Button";
 import {
   mapServicesScrollProgress,
   SERVICES_PIN_END_PERCENT,
+  SERVICES_SHUTTER_VH,
 } from "@/components/Sections/Home/servicesScrollConstants";
 gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
 
@@ -741,22 +742,6 @@ export default function TrionnServices() {
         onEnter: () => preload(),
       });
 
-      // Shutter reveal effect
-      gsap.fromTo(
-        sticky,
-        { yPercent: -100, visibility: "hidden" },
-        {
-          yPercent: 0,
-          visibility: "visible",
-          ease: "none",
-          scrollTrigger: {
-            trigger: driver,
-            start: "top bottom",
-            end: "top top",
-            scrub: true,
-          },
-        },
-      );
 
       ScrollTrigger.create({
         trigger: driver,
@@ -847,7 +832,10 @@ export default function TrionnServices() {
   ]);
 
   return (
-    <section className="relative z-10 isolate bg-[#000] overflow-hidden">
+    <section
+      className="relative isolate bg-[#000] overflow-hidden"
+      style={{ zIndex: 1, marginTop: `-${SERVICES_SHUTTER_VH}vh` }}
+    >
       {/* ── Scroll driver (pin spacing from ScrollTrigger) ── */}
       <div ref={scrollDriverRef} className="relative min-h-screen min-h-[100dvh]">
         {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
