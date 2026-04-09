@@ -45,9 +45,10 @@ export default function Footer() {
   return (
     <FooterAtmosphereProvider>
       <footer className="site-footer relative z-2 flex min-h-screen flex-col overflow-hidden bg-[#000000] text-light-font [isolation:isolate]">
+        {/* z-[5]: fog draws over wire SVG (z-[2]) like trionn-logo-footer; text stays z-20 */}
         <FooterFog />
 
-        <div className="relative z-10 flex w-full flex-1 flex-col">
+        <div className="relative z-20 flex w-full min-h-0 flex-1 flex-col">
           <div className="tr__container flex w-full flex-col pt-24 pb-16 md:pt-37.5">
             <div className="grid w-full grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-0">
               <div className="flex flex-col">
@@ -125,10 +126,10 @@ export default function Footer() {
             />
           </div>
 
-          <div className="relative z-10 mt-auto w-full min-w-0 overflow-x-clip pb-4">
-            <TrionnFooterLogo className="w-full" />
-          </div>
         </div>
+
+        {/* Logo: fragment places sound (z-20) above fog, wires (z-[2]) under fog — matches prototype stacking */}
+        <TrionnFooterLogo className="w-full" />
       </footer>
     </FooterAtmosphereProvider>
   );
