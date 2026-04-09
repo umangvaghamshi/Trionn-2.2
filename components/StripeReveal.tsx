@@ -118,7 +118,12 @@ export default function StripeReveal({
                 stripesRef.current[index] = el!;
               }}
               className="stripe-item flex-1 w-full h-full"
-              style={{ backgroundColor: stripeColor }}
+              style={{
+                backgroundColor: stripeColor,
+                willChange: "transform",
+                marginTop: index > 0 ? "-0.5px" : undefined,
+                paddingBottom: "0.5px",
+              }}
             />
           ))}
         </div>
