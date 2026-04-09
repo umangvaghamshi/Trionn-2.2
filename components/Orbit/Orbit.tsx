@@ -36,8 +36,8 @@ export default function Orbit({
   autoRotateSpeed = 0.00042,
   orbitRadius = 5.2,
   fontFamily = "'Barlow', sans-serif",
-  heroTitle = "DESIGN IN",
-  heroSubtitle = "MOTION",
+  // heroTitle = "DESIGN IN",
+  // heroSubtitle = "MOTION",
   className = "",
 }: OrbitProps) {
   const N = labels.length;
@@ -61,8 +61,8 @@ export default function Orbit({
     autoRotateSpeed,
     orbitRadius,
     fontFamily,
-    heroTitle,
-    heroSubtitle,
+    // heroTitle,
+    // heroSubtitle,
   });
 
   /* ── Trigger intro animation when section top hits viewport top ── */
@@ -107,7 +107,7 @@ export default function Orbit({
         {/* Main Three.js Canvas */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 z-1 pointer-events-none"
+          className="absolute inset-0 z-1 pointer-events-none mt-10"
         />
 
         {/* ── UI Overlays ── */}

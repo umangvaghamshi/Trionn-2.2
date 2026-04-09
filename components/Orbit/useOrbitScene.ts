@@ -18,8 +18,8 @@ interface UseOrbitSceneConfig {
   autoRotateSpeed: number;
   orbitRadius: number;
   fontFamily: string;
-  heroTitle: string;
-  heroSubtitle: string;
+  // heroTitle: string;
+  // heroSubtitle: string;
 }
 
 /* ── Card Data ── */
@@ -53,8 +53,8 @@ export function useOrbitScene(
       autoRotateSpeed,
       orbitRadius: R,
       fontFamily,
-      heroTitle,
-      heroSubtitle,
+      // heroTitle,
+      // heroSubtitle,
     } = configRef.current;
     const N = labels.length;
 
@@ -75,7 +75,9 @@ export function useOrbitScene(
     renderer.sortObjects = true;
     /* Match original Three.js r128 behavior — no tone mapping */
     renderer.toneMapping = THREE.NoToneMapping;
-    renderer.outputEncoding = THREE.sRGBEncoding;
+    /* r128: sRGBEncoding — runtime three still supports; @types/three omits legacy constant */
+    (renderer as THREE.WebGLRenderer & { outputEncoding?: number }).outputEncoding =
+      3001;
 
     /* ── Trail Canvas (Motion Blur) ── */
     const trailCtx = trailCanvas.getContext("2d")!;
@@ -105,8 +107,8 @@ export function useOrbitScene(
       tex.minFilter = THREE.LinearFilter;
       tex.magFilter = THREE.LinearFilter;
       tex.generateMipmaps = false;
-      /* Mark as sRGB so modern Three.js doesn't double-gamma-correct */
-      tex.encoding = THREE.sRGBEncoding;
+      /* Mark as sRGB — legacy Texture.encoding (r128); @types targets newer Texture API */
+      (tex as THREE.Texture & { encoding?: number }).encoding = 3001;
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.onload = () => {
@@ -423,9 +425,38 @@ export function useOrbitScene(
       activeIdx = 0,
       lastTs = 0;
     let lastFrame: HTMLCanvasElement | null = null;
-    let rafId: number;
+    let rafId = 0;
+    let sceneVisible = true;
+
+    const resumeOrbitIfNeeded = () => {
+      if (rafId) return;
+      if (!sceneVisible || document.hidden) return;
+      rafId = requestAnimationFrame(loop);
+    };
+
+    const onDocumentVisibility = () => {
+      if (!document.hidden && sceneVisible) resumeOrbitIfNeeded();
+    };
+
+    const orbitIo = new IntersectionObserver(
+      ([e]) => {
+        sceneVisible = e?.isIntersecting ?? false;
+        if (sceneVisible) resumeOrbitIfNeeded();
+        else if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = 0;
+        }
+      },
+      { root: null, threshold: 0, rootMargin: "48px 0px" },
+    );
+    orbitIo.observe(canvas);
+
+    document.addEventListener("visibilitychange", onDocumentVisibility);
 
     const loop = (ts: number) => {
+      rafId = 0;
+      if (!sceneVisible || document.hidden) return;
+
       const dt = Math.min(ts - lastTs, 50);
       lastTs = ts;
       const mobile = isMobile();
@@ -526,10 +557,12 @@ export function useOrbitScene(
 
     /* ── Start ── */
     setActive(0);
-    rafId = requestAnimationFrame(loop);
+    resumeOrbitIfNeeded();
 
     /* ── Cleanup ── */
     return () => {
+      orbitIo.disconnect();
+      document.removeEventListener("visibilitychange", onDocumentVisibility);
       cancelAnimationFrame(rafId);
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("touchstart", handleTouchStart);
