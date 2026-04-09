@@ -19,7 +19,7 @@ export default function Banner() {
             >
               <BlurTextReveal
                 as="h1"
-                html="Designed tooo"
+                html="Designed to"
                 animationType="chars"
                 stagger={0.08}
                 className="uppercase z-2 col-span-12"
