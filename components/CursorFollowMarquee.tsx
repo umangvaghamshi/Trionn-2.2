@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { useRef, useEffect } from 'react';
-import Marquee from './Marquee';
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { useRef, useEffect } from "react";
+import Marquee from "./Marquee";
 
 interface CursorFollowMarqueeProps {
   text: string;
@@ -40,7 +40,7 @@ export default function CursorFollowMarquee({
               xPercent: 0,
               yPercent: 0,
               duration: 0.6,
-              ease: 'power3.out',
+              ease: "power3.out",
               opacity: 1,
               scale: 1,
             });
@@ -82,7 +82,7 @@ export default function CursorFollowMarquee({
             xPercent: 0,
             yPercent: 0,
             duration: 0.6,
-            ease: 'power3.out',
+            ease: "power3.out",
           });
         } else if (isVisible.current) {
           gsap.to(follower, { opacity: 0, scale: 0.5, duration: 0.3 });
@@ -109,35 +109,38 @@ export default function CursorFollowMarquee({
         }
       };
 
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mousedown', handleMouseDown);
-      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mousedown", handleMouseDown);
+      window.addEventListener("mouseup", handleMouseUp);
       if (containerRef?.current) {
-        containerRef.current.addEventListener('mouseleave', handleMouseLeave);
+        containerRef.current.addEventListener("mouseleave", handleMouseLeave);
       }
 
       return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mousedown', handleMouseDown);
-        window.removeEventListener('mouseup', handleMouseUp);
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mousedown", handleMouseDown);
+        window.removeEventListener("mouseup", handleMouseUp);
         if (containerRef?.current) {
           // eslint-disable-next-line react-hooks/exhaustive-deps
-          containerRef.current.removeEventListener('mouseleave', handleMouseLeave);
+          containerRef.current.removeEventListener(
+            "mouseleave",
+            handleMouseLeave,
+          );
         }
       };
     },
-    { dependencies: [show, text], scope: followerRef }
+    { dependencies: [show, text], scope: followerRef },
   );
 
   return (
     <div
       ref={followerRef}
       className="fixed top-0 left-0 z-99999 pointer-events-none"
-      style={{ width: '180px', opacity: 0 }}
+      style={{ width: "180px", opacity: 0 }}
     >
-      <div className="bg-[#000] border py-1 px-2  overflow-hidden text-[9px]">
+      <div className="bg-[#000] border py-1 px-2  overflow-hidden ">
         <Marquee speed={1} gap={15}>
-          <p className="uppercase tracking-widest text-white whitespace-nowrap">
+          <p className="uppercase tracking-widest text-white text-sm! whitespace-nowrap">
             {text} &nbsp; • &nbsp;
           </p>
         </Marquee>

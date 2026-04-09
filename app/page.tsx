@@ -2,11 +2,15 @@ import { Banner, KeyFactsNew, Vision, Work } from "@/components/Sections/Home";
 import TrionnServices from "@/components/Sections/Home/TrionnServices";
 import TrionnSymbolAnimation from "@/components/TrionnSymbolAnimation";
 import Testimonials from "@/components/Testimonials";
+import ScheduleButton from "@/components/ScheduleButton";
 
 const Page = () => {
   return (
     <>
-      <div id="hero-section" className="bg-[#0C0C0C] overflow-hidden relative">
+      <div
+        id="hero-section"
+        className="bg-[#0C0C0C] overflow-hidden relative hero-section"
+      >
         <TrionnSymbolAnimation
           vibrateElementIds={[
             "nav",
@@ -26,6 +30,7 @@ const Page = () => {
       <Work />
       <TrionnServices />
       <Testimonials />
+      <ScheduleButton />
     </>
   );
 };
