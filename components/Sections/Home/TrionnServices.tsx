@@ -7,6 +7,10 @@ import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
+import {
+  mapServicesScrollProgress,
+  SERVICES_PIN_END_PERCENT,
+} from "@/components/Sections/Home/servicesScrollConstants";
 gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
 
 /* ─────────────────────────────────────────────
@@ -719,42 +723,51 @@ export default function TrionnServices() {
     }
   }, [drawFrame, TOTAL]);
 
-  /* ── ScrollTrigger drives scrollT progress ── */
+  /* ── ScrollTrigger: pin section, scrub scrollT 0→1 then hold final frame (testimonials overlap) ── */
   useGSAP(() => {
-    // Start preloading canvas frames when approaching section
-    ScrollTrigger.create({
-      trigger: scrollDriverRef.current,
-      start: "top 200%", // Start preloading 1 viewport above
-      once: true,
-      onEnter: () => preload(),
-    });
+    const ctx = gsap.context(() => {
+      const driver = scrollDriverRef.current;
+      const sticky = stickyWrapRef.current;
+      if (!driver || !sticky) return;
 
-    // Shutter reveal effect
-    gsap.fromTo(
-      stickyWrapRef.current,
-      { yPercent: -100, visibility: "hidden" },
-      {
-        yPercent: 0,
-        visibility: "visible",
-        ease: "none",
-        scrollTrigger: {
-          trigger: scrollDriverRef.current,
-          start: "top bottom",
-          end: "top top",
-          scrub: true,
+      ScrollTrigger.create({
+        trigger: driver,
+        start: "top 200%", // Start preloading 1 viewport above
+        once: true,
+        onEnter: () => preload(),
+      });
+
+      // Shutter reveal effect
+      gsap.fromTo(
+        sticky,
+        { yPercent: -100, visibility: "hidden" },
+        {
+          yPercent: 0,
+          visibility: "visible",
+          ease: "none",
+          scrollTrigger: {
+            trigger: driver,
+            start: "top bottom",
+            end: "top top",
+            scrub: true,
+          },
         },
-      },
-    );
+      );
 
-    ScrollTrigger.create({
-      trigger: scrollDriverRef.current,
-      start: "top top",
-      end: "+=300%",
-      pin: true,
-      onUpdate: (self) => {
-        stateRef.current.scrollT = self.progress;
-      },
+      ScrollTrigger.create({
+        trigger: driver,
+        start: "top top",
+        end: `+=${SERVICES_PIN_END_PERCENT}%`,
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
+        },
+      });
     });
+
+    return () => ctx.revert();
   }, []);
 
   /* ── Main effect — init everything ── */
@@ -763,7 +776,10 @@ export default function TrionnServices() {
 
     resize();
 
-    const handleResize = () => resize();
+    const handleResize = () => {
+      resize();
+      ScrollTrigger.refresh();
+    };
     window.addEventListener("resize", handleResize);
 
     /* RAF loop */
@@ -827,8 +843,8 @@ export default function TrionnServices() {
   ]);
 
   return (
-    <section className="bg-[#000] overflow-hidden relative">
-      {/* ── Scroll driver ── */}
+    <section className="relative z-10 isolate bg-[#000] overflow-hidden">
+      {/* ── Scroll driver (pin spacing from ScrollTrigger; no extra min-height) ── */}
       <div ref={scrollDriverRef} className="relative">
         {/* Sticky wrap */}
         <div
