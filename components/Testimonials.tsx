@@ -1,24 +1,37 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useCallback, useRef, useState } from "react";
 
 // Swiper
-import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperClass } from "swiper";
-import type { SwiperOptions } from "swiper/types";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { BlurTextReveal } from "@/components/TextAnimation";
-import LinePlus from "@/components/LinePlus";
 import { WordShiftButton } from "@/components/Button";
+import LinePlus from "@/components/LinePlus";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
-import "swiper/css/pagination";
 import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { SwiperOptions } from "swiper/types";
 
 // Components / Data
-import { TestimonialsData } from "@/data";
 import { SERVICES_HOLD_VH } from "@/components/Sections/Home/servicesScrollConstants";
+import { TestimonialsData } from "@/data";
+import { useGSAP } from "@gsap/react";
+
+const ArrowLeft = () => (
+  <svg width="14" height="6" viewBox="0 0 14 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3.66 5.58C3.48667 5.18 3.30667 4.82667 3.12 4.52C2.93333 4.2 2.74667 3.92667 2.56 3.7H13.94V2.62H2.56C2.74667 2.38 2.93333 2.10667 3.12 1.8C3.30667 1.48 3.48667 1.12667 3.66 0.739999H2.72C1.88 1.71333 0.993333 2.43333 0.0599988 2.9V3.42C0.993333 3.87333 1.88 4.59333 2.72 5.58H3.66Z" fill="#434343" />
+  </svg>
+);
+
+const ArrowRight = () => (
+  <svg width="14" height="6" viewBox="0 0 14 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10.34 5.58C10.5133 5.18 10.6933 4.82667 10.88 4.52C11.0667 4.2 11.2533 3.92667 11.44 3.7H0.0600002V2.62H11.44C11.2533 2.38 11.0667 2.10667 10.88 1.8C10.6933 1.48 10.5133 1.12667 10.34 0.739999H11.28C12.12 1.71333 13.0067 2.43333 13.94 2.9V3.42C13.0067 3.87333 12.12 4.59333 11.28 5.58H10.34Z" fill="#434343" />
+  </svg>
+);
 
 interface TestimonialsProps {
   customClass?: string;
@@ -29,13 +42,12 @@ export default function Testimonials({
   customClass,
   swiperOptions = {},
 }: TestimonialsProps) {
-  // ✅ Swiper instance MUST be a ref, not state
   const swiperRef = useRef<SwiperClass | null>(null);
   const reviewPrevRef = useRef<HTMLDivElement>(null);
   const reviewNextRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
+  useGSAP(() => {
     const swiper = swiperRef.current;
 
     if (swiper && reviewPrevRef.current && reviewNextRef.current) {
@@ -47,11 +59,14 @@ export default function Testimonials({
         nextEl: reviewNextRef.current,
       };
 
-      // ✅ Re-initialize to attach click events to your custom divs
       swiper.navigation.destroy();
       swiper.navigation.init();
       swiper.navigation.update();
     }
+  }, []);
+
+  const handleSlideChange = useCallback((swiper: SwiperClass) => {
+    setActiveIndex(swiper.realIndex);
   }, []);
 
   return (
@@ -63,7 +78,7 @@ export default function Testimonials({
         <div className="grid grid-cols-12 gap-6">
           <BlurTextReveal
             as="h2"
-            html={`Client stories`}
+            html="Client stories"
             animationType="chars"
             stagger={0.05}
             className="text-dark-font col-span-6"
@@ -86,12 +101,10 @@ export default function Testimonials({
             <div className="testimonial-company-list flex flex-col gap-4">
               {TestimonialsData.map((item, index) => (
                 <h4
-                  className={`uppercase flex gap-4 items-center transition-all duration-500 ease-in-out ${
-                    activeIndex === index
-                      ? "text-dark-font opacity-100"
-                      : "text-dark-font opacity-30"
+                  className={`uppercase flex gap-4 items-center transition-all duration-500 ease-in-out text-dark-font ${
+                    activeIndex === index ? "opacity-100" : "opacity-30"
                   }`}
-                  key={index}
+                  key={item.companyName}
                 >
                   {item.companyName}
                   <span
@@ -117,64 +130,12 @@ export default function Testimonials({
             </div>
             <div className="flex">
               <div ref={reviewPrevRef} className="custom-arrow left">
-                <div className="arrow-icon first">
-                  <svg
-                    width="14"
-                    height="6"
-                    viewBox="0 0 14 6"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3.66 5.58C3.48667 5.18 3.30667 4.82667 3.12 4.52C2.93333 4.2 2.74667 3.92667 2.56 3.7H13.94V2.62H2.56C2.74667 2.38 2.93333 2.10667 3.12 1.8C3.30667 1.48 3.48667 1.12667 3.66 0.739999H2.72C1.88 1.71333 0.993333 2.43333 0.0599988 2.9V3.42C0.993333 3.87333 1.88 4.59333 2.72 5.58H3.66Z"
-                      fill="#434343"
-                    />
-                  </svg>
-                </div>
-                <div className="arrow-icon second">
-                  <svg
-                    width="14"
-                    height="6"
-                    viewBox="0 0 14 6"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M3.66 5.58C3.48667 5.18 3.30667 4.82667 3.12 4.52C2.93333 4.2 2.74667 3.92667 2.56 3.7H13.94V2.62H2.56C2.74667 2.38 2.93333 2.10667 3.12 1.8C3.30667 1.48 3.48667 1.12667 3.66 0.739999H2.72C1.88 1.71333 0.993333 2.43333 0.0599988 2.9V3.42C0.993333 3.87333 1.88 4.59333 2.72 5.58H3.66Z"
-                      fill="#434343"
-                    />
-                  </svg>
-                </div>
+                <div className="arrow-icon first"><ArrowLeft /></div>
+                <div className="arrow-icon second"><ArrowLeft /></div>
               </div>
               <div ref={reviewNextRef} className="custom-arrow right -ml-px">
-                <div className="arrow-icon first">
-                  <svg
-                    width="14"
-                    height="6"
-                    viewBox="0 0 14 6"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.34 5.58C10.5133 5.18 10.6933 4.82667 10.88 4.52C11.0667 4.2 11.2533 3.92667 11.44 3.7H0.0600002V2.62H11.44C11.2533 2.38 11.0667 2.10667 10.88 1.8C10.6933 1.48 10.5133 1.12667 10.34 0.739999H11.28C12.12 1.71333 13.0067 2.43333 13.94 2.9V3.42C13.0067 3.87333 12.12 4.59333 11.28 5.58H10.34Z"
-                      fill="#434343"
-                    />
-                  </svg>
-                </div>
-                <div className="arrow-icon second">
-                  <svg
-                    width="14"
-                    height="6"
-                    viewBox="0 0 14 6"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10.34 5.58C10.5133 5.18 10.6933 4.82667 10.88 4.52C11.0667 4.2 11.2533 3.92667 11.44 3.7H0.0600002V2.62H11.44C11.2533 2.38 11.0667 2.10667 10.88 1.8C10.6933 1.48 10.5133 1.12667 10.34 0.739999H11.28C12.12 1.71333 13.0067 2.43333 13.94 2.9V3.42C13.0067 3.87333 12.12 4.59333 11.28 5.58H10.34Z"
-                      fill="#434343"
-                    />
-                  </svg>
-                </div>
+                <div className="arrow-icon first"><ArrowRight /></div>
+                <div className="arrow-icon second"><ArrowRight /></div>
               </div>
             </div>
           </div>
@@ -189,7 +150,7 @@ export default function Testimonials({
                 pauseOnMouseEnter: true, //
               }}
               loop={true}
-              onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+              onSlideChange={handleSlideChange}
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;
               }}

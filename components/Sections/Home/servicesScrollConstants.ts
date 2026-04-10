@@ -5,7 +5,7 @@
 /** Shutter reveal: services is pinned behind Work for this many vh before animation starts. */
 export const SERVICES_SHUTTER_VH = 100;
 /** Scroll distance for scrollT 0→1 (matches original pin `+=300%`). */
-export const SERVICES_SCRUB_VH = 300;
+export const SERVICES_SCRUB_VH = 500;
 /** After scrollT reaches 1, pin holds while testimonials overlaps. */
 export const SERVICES_HOLD_VH = 100;
 /** Total pinned scroll distance as ScrollTrigger `+=N%` (shutter reveal + scrub + hold). */

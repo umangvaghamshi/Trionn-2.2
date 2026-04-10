@@ -3,10 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useFooterAtmosphere } from "./FooterAtmosphere";
-import {
-  TRIONN_LOGO_SVG_MARKUP,
-  TRIONN_LOGO_VIEWBOX_WIDTH,
-} from "./trionnLogoSvgMarkup";
+import { TRIONN_LOGO_SVG_MARKUP } from "./trionnLogoSvgMarkup";
 
 type Props = {
   strokeWidth?: number;
@@ -350,8 +347,6 @@ export default function TrionnFooterLogo({
         ),
       );
 
-      const normX = (state.x1 + state.x2) / 2 / TRIONN_LOGO_VIEWBOX_WIDTH;
-
       const onHover = () => {
         state.amp = hoverAmp;
         state.speed = 18;
@@ -359,7 +354,7 @@ export default function TrionnFooterLogo({
         gsap.to(state, { amp: 0, duration: 0.9, ease: "expo.out" });
         gsap.to(state, { speed: 0, duration: 0.9, ease: "expo.out" });
         pluckFluteDreamy(state.note, state.intensity);
-        pulseSmoke(0.4, normX);
+        pulseSmoke(0.4);
       };
 
       const onClick = () => {
@@ -372,7 +367,7 @@ export default function TrionnFooterLogo({
           state.note * 1.01,
           Math.min(1, state.intensity + 0.12),
         );
-        pulseSmoke(0.9, normX);
+        pulseSmoke(0.9);
       };
 
       p.addEventListener("mouseenter", onHover);

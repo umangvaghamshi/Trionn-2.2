@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { getCanvasManager } from "@/lib/canvasManager";
+import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
 import { useFooterAtmosphere } from "./FooterAtmosphere";
 
 type Props = {
@@ -13,17 +15,13 @@ export default function FooterFog({ className = "" }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { smokePulseRef, getSmokeAnalyser, audioContextRef } = useFooterAtmosphere();
-  const rafRef = useRef<number>(0);
+  const loopIdRef = useRef<number | null>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
-
-    /** Pause WebGL loop when footer is off-screen — avoids fighting other canvases (Three.js). */
-    let footerVisible = false;
-    let rafId = 0;
 
     const gl = canvas.getContext("webgl", {
       alpha: true,
@@ -181,21 +179,8 @@ export default function FooterFog({ className = "" }: Props) {
     ro.observe(container);
     resize();
 
-    function syncFooterVisibility() {
-      const el = containerRef.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      footerVisible =
-        r.bottom > -160 && r.top < window.innerHeight + 160;
-    }
-    syncFooterVisibility();
-
     function tick() {
-      if (!running || !glRef.current) return;
-      if (!footerVisible) {
-        rafId = 0;
-        return;
-      }
+      if (!glRef.current) return;
       const cv = canvasRef.current;
       if (!cv) return;
       const gl = glRef.current;
@@ -240,35 +225,22 @@ export default function FooterFog({ className = "" }: Props) {
       gl.uniform1f(uM, morphOffset);
       gl.uniform1f(uH, Math.min(hoverEnergy, 1.0));
       gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-      rafId = requestAnimationFrame(tick);
-      rafRef.current = rafId;
     }
 
+    const manager = getCanvasManager();
+    const loopId = manager.register(tick, false);
+    loopIdRef.current = loopId;
+
     const io = new IntersectionObserver(
-      ([entry]) => {
-        footerVisible = entry?.isIntersecting ?? false;
-        if (footerVisible && running && !rafId) {
-          rafId = requestAnimationFrame(tick);
-        }
-        if (!footerVisible && rafId) {
-          cancelAnimationFrame(rafId);
-          rafId = 0;
-        }
-      },
+      ([entry]) => manager.setActive(loopId, entry.isIntersecting),
       { root: null, threshold: 0, rootMargin: "160px 0px" },
     );
     io.observe(container);
 
-    if (footerVisible) {
-      rafId = requestAnimationFrame(tick);
-    }
-
     return () => {
-      running = false;
+      manager.unregister(loopId);
+      loopIdRef.current = null;
       io.disconnect();
-      cancelAnimationFrame(rafId);
-      cancelAnimationFrame(rafRef.current);
       ro.disconnect();
       gl.deleteProgram(prog);
       gl.deleteBuffer(buf);

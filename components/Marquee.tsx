@@ -6,6 +6,7 @@ import { InertiaPlugin } from 'gsap/InertiaPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Draggable } from 'gsap/all';
 import { ReactElement, useRef } from 'react';
+import { getCanvasManager } from '@/lib/canvasManager';
 
 gsap.registerPlugin(ScrollTrigger, Draggable, InertiaPlugin);
 
@@ -39,7 +40,7 @@ export default function Marquee({
   const dir = useRef(direction === 'left' ? -1 : 1);
   const itemWidth = useRef(0);
 
-  const raf = useRef<number | null>(null);
+  const raf = useRef<number | null>(null); // stores canvas manager loop ID
 
   // State refs
   const isHovering = useRef(false);
@@ -91,7 +92,7 @@ export default function Marquee({
         }
       };
 
-      // 3. The Animation Loop
+      // 3. The Animation Loop — registered with global canvas manager
       const animate = () => {
         if (!isDragging.current) {
           // Determine Target Speed based on configuration and state
@@ -116,11 +117,18 @@ export default function Marquee({
             gsap.set(track, { x: x.current });
           }
         }
-
-        raf.current = requestAnimationFrame(animate);
       };
 
-      animate();
+      const manager = getCanvasManager();
+      // Start paused; IntersectionObserver activates when marquee enters view.
+      const loopId = manager.register(animate, false);
+      raf.current = loopId;
+
+      const marqueeIo = new IntersectionObserver(
+        ([entry]) => manager.setActive(loopId, entry.isIntersecting),
+        { root: null, threshold: 0, rootMargin: "64px 0px" },
+      );
+      marqueeIo.observe(container);
 
       // 4. Draggable Logic
       if (draggable) {
@@ -166,7 +174,11 @@ export default function Marquee({
       }
 
       return () => {
-        if (raf.current) cancelAnimationFrame(raf.current);
+        if (raf.current !== null) {
+          getCanvasManager().unregister(raf.current);
+          raf.current = null;
+        }
+        marqueeIo.disconnect();
         container.removeEventListener('mouseenter', handleMouseEnter);
         container.removeEventListener('mouseleave', handleMouseLeave);
       };

@@ -69,7 +69,8 @@ export default function Vision() {
       stripeColor="#D2D2D2"
       scrollEndTrigger="#keyfacts-section"
       scrollEnd="top center"
-      staggerAmount={0.7}
+      staggerAmount={0.5}
+      holdStart={0.1}
     />
   );
 }
