@@ -9,14 +9,14 @@ interface CursorFollowMarqueeProps {
   text: string;
   show?: boolean;
   containerRef?: React.RefObject<HTMLElement | null>;
-  excludeRef?: React.RefObject<HTMLElement | null>;
+  excludeSelectors?: string[];
 }
 
 export default function CursorFollowMarquee({
   text,
   show = true,
   containerRef,
-  excludeRef,
+  excludeSelectors = [],
 }: CursorFollowMarqueeProps) {
   const followerRef = useRef<HTMLDivElement>(null);
   const isVisible = useRef(false);
@@ -30,13 +30,15 @@ export default function CursorFollowMarquee({
       // Initial state: hidden
       gsap.set(follower, { opacity: 0, scale: 0.5 });
 
-      const handleMouseMove = (e: MouseEvent) => {
+      // Track last known mouse position to re-check on scroll
+      const lastMouse = { x: -9999, y: -9999 };
+
+      const checkVisibility = (clientX: number, clientY: number) => {
         if (!containerRef || !containerRef.current) {
-          // If no container provided, follow everywhere (if show is true)
           if (show) {
             gsap.to(follower, {
-              x: e.clientX,
-              y: e.clientY,
+              x: clientX,
+              y: clientY,
               xPercent: 0,
               yPercent: 0,
               duration: 0.6,
@@ -55,20 +57,26 @@ export default function CursorFollowMarquee({
         // Check if mouse is inside container
         const rect = containerRef.current.getBoundingClientRect();
         let isIn =
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top &&
-          e.clientY <= rect.bottom;
+          clientX >= rect.left &&
+          clientX <= rect.right &&
+          clientY >= rect.top &&
+          clientY <= rect.bottom;
 
-        // Check if cursor should be excluded
-        if (isIn && excludeRef?.current) {
-          const exRect = excludeRef.current.getBoundingClientRect();
-          const isExcluded =
-            e.clientX >= exRect.left &&
-            e.clientX <= exRect.right &&
-            e.clientY >= exRect.top &&
-            e.clientY <= exRect.bottom;
-          if (isExcluded) isIn = false;
+        // Check if cursor is over any excluded selector
+        if (isIn && excludeSelectors.length > 0) {
+          for (const selector of excludeSelectors) {
+            const els = document.querySelectorAll(selector);
+            for (const el of els) {
+              const exRect = el.getBoundingClientRect();
+              const isExcluded =
+                clientX >= exRect.left &&
+                clientX <= exRect.right &&
+                clientY >= exRect.top &&
+                clientY <= exRect.bottom;
+              if (isExcluded) { isIn = false; break; }
+            }
+            if (!isIn) break;
+          }
         }
 
         if (isIn && show && !isMouseDown.current) {
@@ -77,8 +85,8 @@ export default function CursorFollowMarquee({
             isVisible.current = true;
           }
           gsap.to(follower, {
-            x: e.clientX,
-            y: e.clientY,
+            x: clientX,
+            y: clientY,
             xPercent: 0,
             yPercent: 0,
             duration: 0.6,
@@ -88,6 +96,18 @@ export default function CursorFollowMarquee({
           gsap.to(follower, { opacity: 0, scale: 0.5, duration: 0.3 });
           isVisible.current = false;
         }
+      };
+
+      const handleMouseMove = (e: MouseEvent) => {
+        lastMouse.x = e.clientX;
+        lastMouse.y = e.clientY;
+        checkVisibility(e.clientX, e.clientY);
+      };
+
+      // On scroll, re-check visibility using last known mouse position
+      const handleScroll = () => {
+        if (lastMouse.x === -9999) return;
+        checkVisibility(lastMouse.x, lastMouse.y);
       };
 
       const handleMouseDown = () => {
@@ -110,6 +130,7 @@ export default function CursorFollowMarquee({
       };
 
       window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("scroll", handleScroll, true);
       window.addEventListener("mousedown", handleMouseDown);
       window.addEventListener("mouseup", handleMouseUp);
       if (containerRef?.current) {
@@ -118,6 +139,7 @@ export default function CursorFollowMarquee({
 
       return () => {
         window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("scroll", handleScroll, true);
         window.removeEventListener("mousedown", handleMouseDown);
         window.removeEventListener("mouseup", handleMouseUp);
         if (containerRef?.current) {
