@@ -63,7 +63,7 @@ export function useOrbitScene(
       alpha: true,
       preserveDrawingBuffer: false,
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(parseInt(backgroundColor.replace("#", ""), 16), 0);
     renderer.sortObjects = true;
@@ -76,7 +76,7 @@ export function useOrbitScene(
     /* ── Trail Canvas (Motion Blur) ── */
     const trailCtx = trailCanvas.getContext("2d")!;
     const resizeTrail = () => {
-      const dpr = Math.min(window.devicePixelRatio, 2);
+      const dpr = window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5);
       trailCanvas.width = window.innerWidth * dpr;
       trailCanvas.height = window.innerHeight * dpr;
       trailCanvas.style.width = `${window.innerWidth}px`;

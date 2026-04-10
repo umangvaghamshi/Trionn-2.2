@@ -244,7 +244,7 @@ export function useServicesOrbitScene(
       powerPreference: "low-power",
     });
     renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5));
     renderer.setClearColor(0x0a0a0a, 1);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
@@ -1490,7 +1490,7 @@ export function useServicesOrbitScene(
     }
 
     const syncGlowCanvasSize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 2);
+      const dpr = window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5);
       weldFx.resizeGlow(W, H, dpr);
     };
 
@@ -1503,7 +1503,7 @@ export function useServicesOrbitScene(
       camera.position.z = isMobile ? 18 : 28;
       applyLightingTier();
       recomputeLayout();
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5));
       renderer.setSize(W, H);
       camera.aspect = W / H;
       camera.updateProjectionMatrix();

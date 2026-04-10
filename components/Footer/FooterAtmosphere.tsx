@@ -10,12 +10,11 @@ import React, {
 } from "react";
 
 export type FooterAtmosphereValue = {
-  pulseSmoke: (amount: number, normalizedX?: number) => void;
+  pulseSmoke: (amount: number) => void;
   setAudioContext: (ctx: AudioContext | null) => void;
   getSmokeAnalyser: (ctx: AudioContext) => AnalyserNode | null;
   audioContextRef: React.MutableRefObject<AudioContext | null>;
   smokePulseRef: React.MutableRefObject<number>;
-  smokeXRef: React.MutableRefObject<number>;
 };
 
 const FooterAtmosphereContext = createContext<FooterAtmosphereValue | null>(
@@ -32,15 +31,11 @@ export function useFooterAtmosphere(): FooterAtmosphereValue {
 
 export function FooterAtmosphereProvider({ children }: { children: ReactNode }) {
   const smokePulseRef = useRef(0);
-  const smokeXRef = useRef(0.5);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
 
-  const pulseSmoke = useCallback((amount: number, normalizedX?: number) => {
+  const pulseSmoke = useCallback((amount: number) => {
     smokePulseRef.current = Math.min(1, smokePulseRef.current + amount);
-    if (normalizedX !== undefined) {
-      smokeXRef.current = Math.max(0, Math.min(1, normalizedX));
-    }
   }, []);
 
   const setAudioContext = useCallback((ctx: AudioContext | null) => {
@@ -68,7 +63,6 @@ export function FooterAtmosphereProvider({ children }: { children: ReactNode }) 
         getSmokeAnalyser,
         audioContextRef: audioCtxRef,
         smokePulseRef,
-        smokeXRef,
       }) satisfies FooterAtmosphereValue,
     [pulseSmoke, setAudioContext, getSmokeAnalyser],
   );
