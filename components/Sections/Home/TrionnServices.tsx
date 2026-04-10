@@ -747,7 +747,7 @@ export default function TrionnServices() {
           end: `+=${SERVICES_PIN_END_PERCENT}%`,
           pin: true,
           pinSpacing: true,
-          markers:true,
+          markers:false,
           onUpdate: (self) => {
             stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
 
