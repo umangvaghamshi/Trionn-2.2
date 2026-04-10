@@ -9,14 +9,14 @@ interface CursorFollowMarqueeProps {
   text: string;
   show?: boolean;
   containerRef?: React.RefObject<HTMLElement | null>;
-  excludeRef?: React.RefObject<HTMLElement | null>;
+  excludeSelectors?: string[];
 }
 
 export default function CursorFollowMarquee({
   text,
   show = true,
   containerRef,
-  excludeRef,
+  excludeSelectors = [],
 }: CursorFollowMarqueeProps) {
   const followerRef = useRef<HTMLDivElement>(null);
   const isVisible = useRef(false);
@@ -62,15 +62,21 @@ export default function CursorFollowMarquee({
           clientY >= rect.top &&
           clientY <= rect.bottom;
 
-        // Check if cursor should be excluded
-        if (isIn && excludeRef?.current) {
-          const exRect = excludeRef.current.getBoundingClientRect();
-          const isExcluded =
-            clientX >= exRect.left &&
-            clientX <= exRect.right &&
-            clientY >= exRect.top &&
-            clientY <= exRect.bottom;
-          if (isExcluded) isIn = false;
+        // Check if cursor is over any excluded selector
+        if (isIn && excludeSelectors.length > 0) {
+          for (const selector of excludeSelectors) {
+            const els = document.querySelectorAll(selector);
+            for (const el of els) {
+              const exRect = el.getBoundingClientRect();
+              const isExcluded =
+                clientX >= exRect.left &&
+                clientX <= exRect.right &&
+                clientY >= exRect.top &&
+                clientY <= exRect.bottom;
+              if (isExcluded) { isIn = false; break; }
+            }
+            if (!isIn) break;
+          }
         }
 
         if (isIn && show && !isMouseDown.current) {

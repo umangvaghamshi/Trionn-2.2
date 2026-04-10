@@ -23,14 +23,11 @@ export function TrionnSymbolAnimation({
   const s4ElRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
   const vibrateElsRef = useRef<(HTMLElement | null)[]>([]);
-  const keyFactsRef = useRef<HTMLElement | null>(null);
-
   // ── Resolve element IDs → DOM elements for vibrate/orbit effect ──────────
   useEffect(() => {
     vibrateElsRef.current = vibrateElementIds.map((id) =>
       document.getElementById(id),
     );
-    keyFactsRef.current = document.getElementById("keyfacts-section");
   }, [vibrateElementIds]);
 
   // ── Scene + audio via hook ────────────────────────────────────────────────
@@ -187,7 +184,7 @@ export function TrionnSymbolAnimation({
       <CursorFollowMarquee
         text="Hold to blast. Touch lines at your own risk."
         containerRef={canvasWrapRef}
-        excludeRef={keyFactsRef}
+        excludeSelectors={["#keyfacts-section", ".stripe-item"]}
       />
     </div>
   );
