@@ -44,7 +44,7 @@ function formatEnquiryLabel(label: string) {
 export default function Footer() {
   return (
     <FooterAtmosphereProvider>
-      <footer className="site-footer relative z-2 flex min-h-screen flex-col overflow-hidden bg-[#000000] text-light-font [isolation:isolate]">
+      <footer className="site-footer relative z-2 flex min-h-screen flex-col overflow-hidden bg-[#000000] text-light-font isolate">
         {/* z-[5]: fog draws over wire SVG (z-[2]) like trionn-logo-footer; text stays z-20 */}
         <FooterFog />
 

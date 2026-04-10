@@ -57,46 +57,52 @@ export default function StripeReveal({
 }: StripeRevealProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
-  useGSAP(() => {
-    const container = containerRef.current;
-    const stripes = stripesRef.current;
 
-    if (!container || stripes.length === 0) return;
+  useGSAP(
+    () => {
+      const container = containerRef.current;
+      const stripes = stripesRef.current;
 
-    gsap.set(stripes, { scaleY: 0, transformOrigin:'bottom' });
+      if (!container || stripes.length === 0) return;
 
-    // ── Timeline ───────────────────────────────────────
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: container,
-        start: "top top",
-        endTrigger: scrollEndTrigger,
-        end: scrollEnd,
-        scrub: true,
-        pin: true,
+      gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
+
+      // ── Timeline ───────────────────────────────────────
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          endTrigger: scrollEndTrigger,
+          end: scrollEnd,
+          scrub: true,
+          pin: true,
+          markers,
+          pinSpacing: false,
+        },
+      });
+
+      tl.to(stripes, {
+        scaleY: 1,
+        ease: "none",
+        stagger: {
+          amount: staggerAmount,
+          from: staggerFrom,
+        },
+      });
+    },
+    {
+      dependencies: [
+        stripeCount,
+        stripeColor,
+        stripeOrigin,
+        staggerFrom,
+        staggerAmount,
+        scrollEndTrigger,
+        scrollEnd,
         markers,
-        pinSpacing: false,
-      },
-    });
-
-    tl.to(stripes, {
-      scaleY: 1,
-      ease: "none",
-      stagger: {
-        amount: staggerAmount,
-        from: staggerFrom,
-      },
-    });
-  }, [
-    stripeCount,
-    stripeColor,
-    stripeOrigin,
-    staggerFrom,
-    staggerAmount,
-    scrollEndTrigger,
-    scrollEnd,
-    markers,
-  ]);
+      ],
+    },
+  );
 
   return (
     <section className={`relative overflow-visible ${className}`}>

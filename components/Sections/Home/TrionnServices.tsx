@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
-import { getCanvasManager } from "@/lib/canvasManager";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import {
   mapServicesScrollProgress,
   SERVICES_PIN_END_PERCENT,
-  SERVICES_SHUTTER_VH,
   SERVICES_SCRUB_VH,
+  SERVICES_SHUTTER_VH,
 } from "@/components/Sections/Home/servicesScrollConstants";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import { getCanvasManager } from "@/lib/canvasManager";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useCallback, useEffect, useRef } from "react";
 gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
 
 /* ─────────────────────────────────────────────
@@ -56,7 +56,10 @@ function applyTextTransform(text: string, textTransform: string): string {
   if (textTransform === "uppercase") return text.toUpperCase();
   if (textTransform === "lowercase") return text.toLowerCase();
   if (textTransform === "capitalize") {
-    return text.replace(/\S+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+    return text.replace(
+      /\S+/g,
+      (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(),
+    );
   }
   return text;
 }
@@ -705,56 +708,91 @@ export default function TrionnServices() {
   }, [drawFrame, TOTAL]);
 
   /* ── ScrollTrigger: pin section, scrub scrollT 0→1 then hold final frame (testimonials overlap) ── */
-  useGSAP(() => {
-    const ctx = gsap.context(() => {
-      const driver = scrollDriverRef.current;
-      const sticky = stickyWrapRef.current;
-      if (!driver || !sticky) return;
+  useGSAP(
+    () => {
+      const ctx = gsap.context(() => {
+        const driver = scrollDriverRef.current;
+        const sticky = stickyWrapRef.current;
+        if (!driver || !sticky) return;
 
-      ScrollTrigger.create({
-        trigger: driver,
-        start: "top 200%", // Start preloading 1 viewport above
-        once: true,
-        onEnter: () => preload(),
-      });
+        preload();
 
+        // ScrollTrigger.create({
+        //   trigger: driver,
+        //   start: "top 200%", // Start preloading 1 viewport above
+        //   once: true,
+        //   onEnter: () => preload(),
+        // });
 
-      ScrollTrigger.create({
-        trigger: driver,
-        start: "top top",
-        end: `+=${SERVICES_PIN_END_PERCENT}%`,
-        pin: true,
-        pinSpacing: true,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
+        // gsap.set(scrollDriverRef.current, {
+        //   visibility: "hidden",
+        // });
 
-          /* ── Stripe reveal during hold phase ── */
-          const holdStart = (SERVICES_SHUTTER_VH + SERVICES_SCRUB_VH) / SERVICES_PIN_END_PERCENT;
-          const holdT = Math.max(0, Math.min(1, (self.progress - holdStart) / (1 - holdStart)));
-          const stripes = stripesRef.current;
-          const stripeCount = stripes.length;
-          if (stripeCount > 0) {
-            const staggerAmount = 0.3;
-            const perStripe = (0.6 - staggerAmount) / 1; // duration per stripe within normalized 0-1
-            for (let i = 0; i < stripeCount; i++) {
-              // stagger from end (last stripe animates first)
-              const staggerIdx = stripeCount - 1 - i;
-              const stripeStart = (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
-              const stripeEnd = stripeStart + perStripe;
-              const stripeProgress = Math.max(0, Math.min(1, (holdT - stripeStart) / (stripeEnd - stripeStart)));
-              gsap.set(stripes[i]!, { scaleY: stripeProgress });
+        // const tl = gsap.timeline({
+        //   scrollTrigger: {
+        //     trigger: driver,
+        //     start: "bottom bottom",
+        //     scrub: true,
+        //     markers: false,
+        //   },
+        // });
+
+        // tl.to(scrollDriverRef.current, {
+        //   visibility: "visible",
+        // });
+
+        ScrollTrigger.create({
+          trigger: driver,
+          start: "top top",
+          end: `+=${SERVICES_PIN_END_PERCENT}%`,
+          pin: true,
+          pinSpacing: true,
+          markers:true,
+          onUpdate: (self) => {
+            stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
+
+            /* ── Stripe reveal during hold phase ── */
+            const holdStart =
+              (SERVICES_SHUTTER_VH + SERVICES_SCRUB_VH) /
+              SERVICES_PIN_END_PERCENT;
+            const holdT = Math.max(
+              0,
+              Math.min(1, (self.progress - holdStart) / (1 - holdStart)),
+            );
+            const stripes = stripesRef.current;
+            const stripeCount = stripes.length;
+            if (stripeCount > 0) {
+              const staggerAmount = 0.3;
+              const perStripe = (0.6 - staggerAmount) / 1; // duration per stripe within normalized 0-1
+              for (let i = 0; i < stripeCount; i++) {
+                // stagger from end (last stripe animates first)
+                const staggerIdx = stripeCount - 1 - i;
+                const stripeStart =
+                  (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
+                const stripeEnd = stripeStart + perStripe;
+                const stripeProgress = Math.max(
+                  0,
+                  Math.min(
+                    1,
+                    (holdT - stripeStart) / (stripeEnd - stripeStart),
+                  ),
+                );
+                gsap.set(stripes[i]!, { scaleY: stripeProgress });
+              }
             }
-          }
-        },
+          },
+        });
       });
-    });
 
-    return () => ctx.revert();
-  }, []);
+      return () => ctx.revert();
+    },
+    {
+      dependencies: [],
+    },
+  );
 
   /* ── Main effect — init everything ── */
-  useEffect(() => {
+  useGSAP(() => {
     const s = stateRef.current;
 
     resize();
@@ -839,7 +877,10 @@ export default function TrionnServices() {
       style={{ zIndex: 1, marginTop: `-${SERVICES_SHUTTER_VH}vh` }}
     >
       {/* ── Scroll driver (pin spacing from ScrollTrigger) ── */}
-      <div ref={scrollDriverRef} className="relative min-h-screen min-h-[100dvh]">
+      <div
+        ref={scrollDriverRef}
+        className="relative min-h-screen min-h-[100dvh]"
+      >
         {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
         <div
           ref={stickyWrapRef}
