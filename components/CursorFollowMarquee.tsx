@@ -133,6 +133,7 @@ export default function CursorFollowMarquee({
       window.addEventListener("scroll", handleScroll, true);
       window.addEventListener("mousedown", handleMouseDown);
       window.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("mouseleave", handleMouseLeave);
       if (containerRef?.current) {
         containerRef.current.addEventListener("mouseleave", handleMouseLeave);
       }
@@ -142,6 +143,7 @@ export default function CursorFollowMarquee({
         window.removeEventListener("scroll", handleScroll, true);
         window.removeEventListener("mousedown", handleMouseDown);
         window.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener("mouseleave", handleMouseLeave);
         if (containerRef?.current) {
           // eslint-disable-next-line react-hooks/exhaustive-deps
           containerRef.current.removeEventListener(
