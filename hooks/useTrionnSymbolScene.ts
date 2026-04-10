@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { useTrionnSymbolAudio } from "./useTrionnSymbolAudio";
+import { getCanvasManager } from "@/lib/canvasManager";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -204,7 +205,6 @@ export function useTrionnSymbolScene(
       { line: 2, phase: 0, speed: 1.35, len: 0.03, active: false, rest: 4.1, dir: 1 },
     ] as Pulse[],
     envReady: false,
-    rafId: 0,
     clock: null as THREE.Clock | null,
     hoveredMesh: null as THREE.Object3D | null,
   });
@@ -235,7 +235,9 @@ export function useTrionnSymbolScene(
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Cap DPR: 1.0 on mobile, 1.5 on desktop — avoids over-rendering on HiDPI screens.
+    const cappedDPR = W < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5);
+    renderer.setPixelRatio(cappedDPR);
     renderer.setClearColor(0x0c0c0c, 1);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
@@ -838,8 +840,7 @@ export function useTrionnSymbolScene(
     st.clock = clock;
 
     // ── Animation loop ────────────────────────────────────────────────────────
-    function animate() {
-      st.rafId = requestAnimationFrame(animate);
+    function animate(_ts?: number) {
 
       const scroll = window.scrollY;
       st.lastScroll = scroll;
@@ -1029,7 +1030,17 @@ export function useTrionnSymbolScene(
       }
     }
 
-    animate();
+    // Register with global canvas manager. The hero canvas is always in view on
+    // load; the manager handles tab-visibility pausing automatically.
+    const manager = getCanvasManager();
+    const loopId = manager.register(animate, true);
+
+    // Pause when the hero section scrolls entirely out of view.
+    const heroIo = new IntersectionObserver(
+      ([entry]) => manager.setActive(loopId, entry.isIntersecting),
+      { root: null, threshold: 0, rootMargin: "0px" },
+    );
+    heroIo.observe(wrap);
 
     // ── Event listeners ───────────────────────────────────────────────────────
     const onMouseMove = (e: MouseEvent) => {
@@ -1107,7 +1118,8 @@ export function useTrionnSymbolScene(
     window.addEventListener('resize', onResize);
 
     return () => {
-      cancelAnimationFrame(st.rafId);
+      manager.unregister(loopId);
+      heroIo.disconnect();
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mouseup', onMouseUp);

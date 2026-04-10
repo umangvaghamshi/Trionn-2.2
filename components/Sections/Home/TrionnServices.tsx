@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { getCanvasManager } from "@/lib/canvasManager";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
@@ -764,10 +765,8 @@ export default function TrionnServices() {
     };
     window.addEventListener("resize", handleResize);
 
-    /* RAF loop */
-    let rafId: number;
+    /* RAF loop — managed by global canvas manager */
     const raf = (_time: number) => {
-      rafId = requestAnimationFrame(raf);
       if (!s.loaded) return;
 
       const targetFrame = s.scrollT * (TOTAL - 1);
@@ -803,10 +802,20 @@ export default function TrionnServices() {
       updateCards(s.cardsT);
     };
 
-    rafId = requestAnimationFrame(raf);
+    const manager = getCanvasManager();
+    // Start paused — IntersectionObserver will activate when scrolled into view.
+    const loopId = manager.register(raf, false);
+
+    const sectionEl = stickyWrapRef.current;
+    const sectionIo = new IntersectionObserver(
+      ([entry]) => manager.setActive(loopId, entry.isIntersecting),
+      { root: null, threshold: 0, rootMargin: "128px 0px" },
+    );
+    if (sectionEl) sectionIo.observe(sectionEl);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      manager.unregister(loopId);
+      sectionIo.disconnect();
       window.removeEventListener("resize", handleResize);
       clearParticles();
       if (s.cardsTL) s.cardsTL.kill();
