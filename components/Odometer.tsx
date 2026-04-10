@@ -10,6 +10,8 @@ interface OdometerProps {
   duration?: number;
   className?: string;
   trigger?: boolean; // hover trigger
+  /** When set, skips in-view autoplay; roll runs once the count goes above 0 (first time only per mount). */
+  syncPlayCount?: number;
 }
 
 export function Odometer({
@@ -17,6 +19,7 @@ export function Odometer({
   duration = 2,
   className = "",
   trigger = false,
+  syncPlayCount,
 }: OdometerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const digitRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -26,6 +29,7 @@ export function Odometer({
 
   // ✅ Track first view animation
   const hasAnimatedOnView = useRef(false);
+  const hasSyncRolled = useRef(false);
 
   // ✅ Track hover state change
   const prevTrigger = useRef(false);
@@ -89,6 +93,19 @@ export function Odometer({
   useEffect(() => {
     if (!digitHeight) return;
 
+    if (syncPlayCount !== undefined) {
+      if (hasSyncRolled.current) {
+        prevTrigger.current = trigger;
+        return;
+      }
+      if (syncPlayCount > 0) {
+        hasSyncRolled.current = true;
+        animateOdometer();
+      }
+      prevTrigger.current = trigger;
+      return;
+    }
+
     // ✅ First time in view
     if (inView && !hasAnimatedOnView.current) {
       animateOdometer();
@@ -103,7 +120,7 @@ export function Odometer({
     // ❌ Hover OUT → do nothing
 
     prevTrigger.current = trigger;
-  }, [inView, trigger, digitHeight, displayValue]);
+  }, [inView, trigger, digitHeight, displayValue, syncPlayCount]);
 
   return (
     <span className="relative inline-flex">
