@@ -501,26 +501,24 @@ export default function TrionnServices() {
       const lFrames: any[] = [];
       const rFrames: any[] = [];
 
+      /* Left column: straight vertical — enter from below, travel up. Right: from above, travel down. */
+      const lColX = vw * 0.1;
+      const rColX = vw * 0.9 - W;
+
       for (let step = 0; step <= STEPS; step++) {
         const frac = step / STEPS;
 
-        const lStartX = -W * 0.7;
-        const lEndX = -W * 0.7;
         const lStartY = vh;
         const lEndY = -H;
-        const lPeakX = vw * 0.1;
 
+        const lX = lColX;
         const lY = lStartY + frac * (lEndY - lStartY);
-        const arc = frac <= 0.5 ? Math.sin(frac * Math.PI) : 1;
-        const lX = lStartX + arc * (lPeakX - lStartX);
 
-        const rStartX = vw - W * 0.3;
         const rStartY = -H;
         const rEndY = vh;
-        const rPeakX = vw * 0.9 - W;
 
+        const rX = rColX;
         const rY = rStartY + frac * (rEndY - rStartY);
-        const rX = rStartX + arc * (rPeakX - rStartX);
 
         const op =
           frac < 0.15
