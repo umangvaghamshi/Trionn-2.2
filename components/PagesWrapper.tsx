@@ -8,9 +8,9 @@ export default async function PagesWrapper({
   return (
     <html lang="en">
       <body cz-shortcut-listen="true">
-        <Header data={headerSection}></Header>
+        {/* <Header data={headerSection}></Header>
         <main className="overflow-hidden">{children}</main>
-        <Footer />
+        <Footer /> */}
       </body>
     </html>
   );
