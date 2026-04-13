@@ -3,6 +3,7 @@ import TrionnServices from "@/components/Sections/Home/TrionnServices";
 import TrionnSymbolAnimation from "@/components/TrionnSymbolAnimation";
 import Testimonials from "@/components/Testimonials";
 import ScheduleButton from "@/components/ScheduleButton";
+import DribbleSection from "@/components/DribbleSection";
 
 const Page = () => {
   return (
@@ -30,6 +31,7 @@ const Page = () => {
       <Work />
       <TrionnServices />
       <Testimonials />
+      <DribbleSection/>
       <ScheduleButton />
     </>
   );
