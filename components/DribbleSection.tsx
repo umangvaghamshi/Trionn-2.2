@@ -13,6 +13,7 @@ export default function DribbleSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const centerRef = useRef<HTMLDivElement>(null);
+  const stripesRef = useRef<HTMLDivElement[]>([]);
 
   useGSAP(
     () => {
@@ -343,6 +344,32 @@ export default function DribbleSection() {
         scrub: true,
         onUpdate(self) {
           prog = Math.min(self.progress / animationEnd, 1);
+
+          /* ── Stripe reveal after animation completes ── */
+          const holdT = Math.max(
+            0,
+            Math.min(1, (self.progress - animationEnd) / (1 - animationEnd)),
+          );
+          const stripes = stripesRef.current;
+          const stripeCount = stripes.length;
+          if (stripeCount > 0) {
+            const staggerAmount = 0.3;
+            const perStripe = (0.6 - staggerAmount) / 1;
+            for (let i = 0; i < stripeCount; i++) {
+              const staggerIdx = stripeCount - 1 - i;
+              const stripeStart =
+                (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
+              const stripeEnd = stripeStart + perStripe;
+              const stripeProgress = Math.max(
+                0,
+                Math.min(
+                  1,
+                  (holdT - stripeStart) / (stripeEnd - stripeStart),
+                ),
+              );
+              gsap.set(stripes[i]!, { scaleY: stripeProgress });
+            }
+          }
         },
       });
 
@@ -445,7 +472,7 @@ export default function DribbleSection() {
 
   return (
     <>
-      <div ref={sectionRef} className="relative z-1 h-screen bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)]">
+      <div ref={sectionRef} className="relative z-1 h-screen bg-[#C3C3C3]">
         <div className="w-full h-full overflow-hidden flex items-center flex-col justify-center">
           <canvas
             ref={canvasRef}
@@ -465,6 +492,27 @@ export default function DribbleSection() {
               daily design practice.
             </p>
           </div>
+        </div>
+        {/* ── Stripes overlay (covers content after animation ends) ── */}
+        <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              ref={(el) => {
+                if (el) stripesRef.current[i] = el;
+              }}
+              style={{
+                flex: 1,
+                width: "100%",
+                marginTop: i > 0 ? "-0.5px" : undefined,
+                paddingBottom: "0.5px",
+                backgroundColor: "#000",
+                transform: "scaleY(0)",
+                transformOrigin: "bottom",
+                willChange: "transform",
+              }}
+            />
+          ))}
         </div>
       </div>
     </>
