@@ -103,28 +103,12 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
 
-    // 2. Lenis + ScrollTrigger integration (sync scroll position, reduces stuttering)
-    const proxySetup = () => {
-      const lenis = lenisRef.current?.lenis;
-      if (!lenis) return false;
-      ScrollTrigger.scrollerProxy(document.documentElement, {
-        scrollTop: function (v?: number) {
-          if (v !== undefined) lenis.scrollTo(v, { immediate: true });
-          return lenis.scroll;
-        },
-        getBoundingClientRect: () => ({
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        }),
-        fixedMarkers: true,
-      });
-      lenis.on('scroll', ScrollTrigger.update);
-      return true;
-    };
-    proxySetup();
-    const retryId = setTimeout(proxySetup, 100);
+    // 2. Lenis → ScrollTrigger: update ST on every Lenis scroll frame.
+    // scrollerProxy is NOT needed because autoRaf:false + gsap.ticker already
+    // drives lenis.raf(), which means Lenis and GSAP share the same RAF loop.
+    // ScrollTrigger reads scroll position via its own internal hooks once ST.update() is called.
+    const lenis = lenisRef.current?.lenis;
+    lenis?.on('scroll', ScrollTrigger.update);
 
     // 3. The Animation Loop (GSAP ticker drives Lenis for smooth sync)
     gsap.ticker.lagSmoothing(0);
@@ -145,7 +129,6 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     gsap.ticker.add(update);
 
     return () => {
-      clearTimeout(retryId);
       lenisRef.current?.lenis?.off('scroll', ScrollTrigger.update);
       gsap.ticker.remove(update);
       window.removeEventListener('keydown', handleKeyDown);

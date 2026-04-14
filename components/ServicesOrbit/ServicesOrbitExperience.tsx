@@ -1,5 +1,6 @@
 "use client";
 
+import { useSiteSound } from "@/components/SiteSoundContext";
 import { useLenis } from "lenis/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useServicesOrbitScene } from "./useServicesOrbitScene";
@@ -23,15 +24,8 @@ export default function ServicesOrbitExperience() {
   const servicesListRef = useRef<HTMLUListElement>(null);
   const soundEnabledRef = useRef(false);
 
-  const [soundOn, setSoundOn] = useState(false);
   const [activeService, setActiveService] = useState(1);
-
-  useEffect(() => {
-    soundEnabledRef.current = soundOn;
-    if (typeof window !== "undefined") {
-      (window as Window & { _soundEnabled?: boolean })._soundEnabled = soundOn;
-    }
-  }, [soundOn]);
+  const { soundEnabled } = useSiteSound();
 
   const getSmoothScroll = useCallback(() => {
     if (typeof window === "undefined") return 0;
@@ -81,6 +75,16 @@ export default function ServicesOrbitExperience() {
     servicesListRef,
   });
 
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+    if (typeof window !== "undefined") {
+      (window as Window & { _soundEnabled?: boolean })._soundEnabled =
+        soundEnabled;
+    }
+    if (soundEnabled) orbitAudioRef.current?.primeWoosh();
+    else orbitAudioRef.current?.muteWoosh();
+  }, [soundEnabled]);
+
   return (
     <div
       className="services-orbit-scope min-h-screen font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[#e8e8e8] overflow-x-hidden"
@@ -102,88 +106,6 @@ export default function ServicesOrbitExperience() {
           style={{ position: "absolute", top: 0, left: 0 }}
         />
       </div>
-
-      <button
-        type="button"
-        id="sound-toggle"
-        aria-label="Toggle sound"
-        onClick={() => {
-          const next = !soundOn;
-          setSoundOn(next);
-          soundEnabledRef.current = next;
-          if (typeof window !== "undefined") {
-            (
-              window as Window & { _soundEnabled?: boolean }
-            )._soundEnabled = next;
-          }
-          if (next) orbitAudioRef.current.primeWoosh();
-          else orbitAudioRef.current.muteWoosh();
-        }}
-        className="fixed top-[22px] right-6 z-[1000] flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/[0.18] bg-transparent p-0 text-white/[0.55] transition-[border-color,color,background] hover:border-white/45 hover:bg-white/[0.05] hover:text-white/90"
-      >
-        <span className={soundOn ? "hidden" : "block"} aria-hidden>
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M11 5L6 9H2v6h4l5 4V5z"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinejoin="round"
-            />
-            <line
-              x1="23"
-              y1="9"
-              x2="17"
-              y2="15"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-            />
-            <line
-              x1="17"
-              y1="9"
-              x2="23"
-              y2="15"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-            />
-          </svg>
-        </span>
-        <span className={soundOn ? "block" : "hidden"} aria-hidden>
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M11 5L6 9H2v6h4l5 4V5z"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M15.54 8.46a5 5 0 0 1 0 7.07"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-            />
-            <path
-              d="M19.07 4.93a10 10 0 0 1 0 14.14"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-            />
-          </svg>
-        </span>
-      </button>
 
       <section className="sec-expertise relative z-[1] flex min-h-screen w-screen flex-col justify-between bg-transparent px-6 pt-12 pb-14 sm:px-10 sm:pt-12 sm:pb-14 [contain:layout_style] [transform:translateZ(0)] [backface-visibility:hidden]">
         <div className="exp-left flex flex-col gap-[1.2rem]">

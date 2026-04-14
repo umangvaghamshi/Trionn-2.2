@@ -2,7 +2,8 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useEffect } from "react";
+import { useLenis } from "lenis/react";
+import { useEffect, useRef } from "react";
 import Marquee from "./Marquee";
 
 interface CursorFollowMarqueeProps {
@@ -19,8 +20,19 @@ export default function CursorFollowMarquee({
   excludeSelectors = [],
 }: CursorFollowMarqueeProps) {
   const followerRef = useRef<HTMLDivElement>(null);
+  const marqueeWrapRef = useRef<HTMLDivElement>(null);
   const isVisible = useRef(false);
   const isMouseDown = useRef(false);
+  const lastMouse = useRef({ x: -9999, y: -9999 });
+  const showRef = useRef(show);
+  useEffect(() => {
+    showRef.current = show;
+    // When hidden externally, immediately hide the follower
+    if (!show && isVisible.current) {
+      gsap.to(followerRef.current, { opacity: 0, scale: 0.5, duration: 0.3 });
+      isVisible.current = false;
+    }
+  }, [show]);
 
   useGSAP(
     () => {
@@ -30,12 +42,9 @@ export default function CursorFollowMarquee({
       // Initial state: hidden
       gsap.set(follower, { opacity: 0, scale: 0.5 });
 
-      // Track last known mouse position to re-check on scroll
-      const lastMouse = { x: -9999, y: -9999 };
-
       const checkVisibility = (clientX: number, clientY: number) => {
         if (!containerRef || !containerRef.current) {
-          if (show) {
+          if (showRef.current) {
             gsap.to(follower, {
               x: clientX,
               y: clientY,
@@ -79,7 +88,7 @@ export default function CursorFollowMarquee({
           }
         }
 
-        if (isIn && show && !isMouseDown.current) {
+        if (isIn && showRef.current && !isMouseDown.current) {
           if (!isVisible.current) {
             gsap.to(follower, { opacity: 1, scale: 1, duration: 0.3 });
             isVisible.current = true;
@@ -99,15 +108,20 @@ export default function CursorFollowMarquee({
       };
 
       const handleMouseMove = (e: MouseEvent) => {
-        lastMouse.x = e.clientX;
-        lastMouse.y = e.clientY;
+        lastMouse.current.x = e.clientX;
+        lastMouse.current.y = e.clientY;
         checkVisibility(e.clientX, e.clientY);
-      };
 
-      // On scroll, re-check visibility using last known mouse position
-      const handleScroll = () => {
-        if (lastMouse.x === -9999) return;
-        checkVisibility(lastMouse.x, lastMouse.y);
+        // Hide marquee text when hovering over a link
+        const target = e.target as Element;
+        const isLink = !!target.closest("a");
+        const marqueeWrap = marqueeWrapRef.current;
+        if (marqueeWrap) {
+          gsap.to(marqueeWrap, {
+            opacity: isLink ? 0 : 1,
+            duration: 0.2,
+          });
+        }
       };
 
       const handleMouseDown = () => {
@@ -130,7 +144,6 @@ export default function CursorFollowMarquee({
       };
 
       window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("scroll", handleScroll, true);
       window.addEventListener("mousedown", handleMouseDown);
       window.addEventListener("mouseup", handleMouseUp);
       document.addEventListener("mouseleave", handleMouseLeave);
@@ -140,7 +153,6 @@ export default function CursorFollowMarquee({
 
       return () => {
         window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("scroll", handleScroll, true);
         window.removeEventListener("mousedown", handleMouseDown);
         window.removeEventListener("mouseup", handleMouseUp);
         document.removeEventListener("mouseleave", handleMouseLeave);
@@ -153,8 +165,29 @@ export default function CursorFollowMarquee({
         }
       };
     },
-    { dependencies: [show, text], scope: followerRef },
+    { dependencies: [text], scope: followerRef },
   );
+
+  // Re-check cursor visibility on every Lenis scroll tick (synced with GSAP ticker)
+  useLenis(() => {
+    const { x, y } = lastMouse.current;
+    if (x === -9999) return;
+    const follower = followerRef.current;
+    if (!follower) return;
+    if (!containerRef?.current) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const isIn =
+      x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+
+    if (isIn && showRef.current && !isMouseDown.current && !isVisible.current) {
+      gsap.to(follower, { opacity: 1, scale: 1, duration: 0.3 });
+      isVisible.current = true;
+    } else if (!isIn && isVisible.current) {
+      gsap.to(follower, { opacity: 0, scale: 0.5, duration: 0.3 });
+      isVisible.current = false;
+    }
+  });
 
   return (
     <div
@@ -162,7 +195,7 @@ export default function CursorFollowMarquee({
       className="fixed top-0 left-0 z-99999 pointer-events-none"
       style={{ width: "180px", opacity: 0 }}
     >
-      <div className="bg-[#000] border py-1 px-2  overflow-hidden ">
+      <div ref={marqueeWrapRef} className="bg-[#000] border py-1 px-2  overflow-hidden ">
         <Marquee speed={1} gap={15}>
           <p className="uppercase tracking-widest text-white text-sm! whitespace-nowrap">
             {text} &nbsp; • &nbsp;

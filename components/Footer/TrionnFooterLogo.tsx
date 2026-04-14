@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useSiteSound } from "@/components/SiteSoundContext";
 import { useFooterAtmosphere } from "./FooterAtmosphere";
 import { TRIONN_LOGO_SVG_MARKUP } from "./trionnLogoSvgMarkup";
 
@@ -36,9 +37,16 @@ export default function TrionnFooterLogo({
   const mountRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const footerLogoVisibleRef = useRef(true);
-  const [soundOn, setSoundOn] = useState(false);
   const audioRef = useRef<AudioContext | null>(null);
   const { pulseSmoke, setAudioContext, getSmokeAnalyser } = useFooterAtmosphere();
+  const { soundEnabled } = useSiteSound();
+
+  useEffect(() => {
+    const ctx = audioRef.current;
+    if (!ctx) return;
+    if (soundEnabled) void ctx.resume().catch(() => {});
+    else void ctx.suspend().catch(() => {});
+  }, [soundEnabled]);
 
   useEffect(() => {
     const el = rootRef.current;
@@ -66,7 +74,7 @@ export default function TrionnFooterLogo({
   const pluckFluteDreamy = (freq: number, intensity: number) => {
     const ctx = ensureAudio();
     if (!ctx) return;
-    if (!soundOn) return;
+    if (!soundEnabled) return;
     if (ctx.state !== "running") return;
 
     intensity = Math.max(0, Math.min(1, intensity));
@@ -424,38 +432,10 @@ export default function TrionnFooterLogo({
       mount.innerHTML = "";
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [strokeWidth, hoverAmp, clickAmp, soundOn]);
-
-  const onToggleSound = async () => {
-    const ctx = ensureAudio();
-    if (!ctx) return;
-
-    const next = !soundOn;
-    setSoundOn(next);
-    setAudioContext(ctx);
-
-    try {
-      if (next) await ctx.resume();
-      else await ctx.suspend();
-    } catch {
-      /* ignore */
-    }
-  };
+  }, [strokeWidth, hoverAmp, clickAmp, soundEnabled]);
 
   return (
     <>
-      {/* Above fog (z-[5]); footer flex sibling so controls stay clickable */}
-      <div className="relative z-20 mt-auto flex w-full justify-center pointer-events-auto pt-2 pb-1">
-        <button
-          type="button"
-          onClick={onToggleSound}
-          aria-pressed={soundOn}
-          aria-label={soundOn ? "Mute sound" : "Enable sound"}
-          className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/10 text-white shadow-lg backdrop-blur-sm transition hover:bg-white/15"
-        >
-          {soundOn ? <SoundOffIcon /> : <SoundOnIcon />}
-        </button>
-      </div>
       {/* Under fog (z-[5]) like trionn-logo-footer canvas over #stage — wires pick up smoke tint */}
       <div
         ref={rootRef}
@@ -469,61 +449,5 @@ export default function TrionnFooterLogo({
         </div>
       </div>
     </>
-  );
-}
-
-function SoundOnIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-8"
-    >
-      <path
-        d="M11 5L6 9H2v6h4l5 4V5z"
-        stroke="#D8D8D8"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M23 9l-6 6M17 9l6 6"
-        stroke="#D8D8D8"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function SoundOffIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-8"
-    >
-      <path
-        d="M11 5L6 9H2v6h4l5 4V5z"
-        stroke="#D8D8D8"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M19.07 4.93a10 10 0 0 1 0 14.14"
-        stroke="#D8D8D8"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M15.54 8.46a5 5 0 0 1 0 7.07"
-        stroke="#D8D8D8"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
   );
 }
