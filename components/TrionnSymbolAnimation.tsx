@@ -5,7 +5,7 @@ import { useTrionnSymbolScene } from "@/hooks/useTrionnSymbolScene";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import CursorFollowMarquee from "./CursorFollowMarquee";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -26,9 +26,12 @@ export function TrionnSymbolAnimation({
   const vibrateElsRef = useRef<(HTMLElement | null)[]>([]);
   const heroActiveRef = useRef(true);
   const siteSoundRef = useRef(false);
+  const [showMarquee, setShowMarquee] = useState(true);
 
   const { soundEnabled } = useSiteSound();
-  siteSoundRef.current = soundEnabled;
+  useEffect(() => {
+    siteSoundRef.current = soundEnabled;
+  }, [soundEnabled]);
 
   // ── Resolve element IDs → DOM elements for vibrate/orbit effect ──────────
   useEffect(() => {
@@ -81,6 +84,24 @@ export function TrionnSymbolAnimation({
         }
       },
     });
+
+    // ── Marquee visibility based on scroll progress ───────────────────────
+    // default: shown → hide at 10% → show at 80% → hide at 100%
+    ScrollTrigger.create({
+      trigger: "#hero-section",
+      start: "top top",
+      end: "bottom bottom",
+      onUpdate: (self) => {
+        const p = self.progress;
+        if (p >= 0.8) {
+          setShowMarquee(true);
+        } else if (p >= 0.1) {
+          setShowMarquee(false);
+        } else {
+          setShowMarquee(true);
+        }
+      },
+    });
   }, []);
 
   return (
@@ -117,7 +138,8 @@ export function TrionnSymbolAnimation({
       <CursorFollowMarquee
         text="Hold to blast. Touch lines at your own risk."
         containerRef={canvasWrapRef}
-        excludeSelectors={["#keyfacts-section", ".stripe-item","#nav"]}
+        excludeSelectors={["#keyfacts-section", ".stripe-item", "#nav"]}
+        show={showMarquee}
       />
     </div>
   );

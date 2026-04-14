@@ -3,7 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useLenis } from "lenis/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Marquee from "./Marquee";
 
 interface CursorFollowMarqueeProps {
@@ -24,6 +24,15 @@ export default function CursorFollowMarquee({
   const isVisible = useRef(false);
   const isMouseDown = useRef(false);
   const lastMouse = useRef({ x: -9999, y: -9999 });
+  const showRef = useRef(show);
+  useEffect(() => {
+    showRef.current = show;
+    // When hidden externally, immediately hide the follower
+    if (!show && isVisible.current) {
+      gsap.to(followerRef.current, { opacity: 0, scale: 0.5, duration: 0.3 });
+      isVisible.current = false;
+    }
+  }, [show]);
 
   useGSAP(
     () => {
@@ -35,7 +44,7 @@ export default function CursorFollowMarquee({
 
       const checkVisibility = (clientX: number, clientY: number) => {
         if (!containerRef || !containerRef.current) {
-          if (show) {
+          if (showRef.current) {
             gsap.to(follower, {
               x: clientX,
               y: clientY,
@@ -79,7 +88,7 @@ export default function CursorFollowMarquee({
           }
         }
 
-        if (isIn && show && !isMouseDown.current) {
+        if (isIn && showRef.current && !isMouseDown.current) {
           if (!isVisible.current) {
             gsap.to(follower, { opacity: 1, scale: 1, duration: 0.3 });
             isVisible.current = true;
@@ -156,7 +165,7 @@ export default function CursorFollowMarquee({
         }
       };
     },
-    { dependencies: [show, text], scope: followerRef },
+    { dependencies: [text], scope: followerRef },
   );
 
   // Re-check cursor visibility on every Lenis scroll tick (synced with GSAP ticker)
@@ -171,7 +180,7 @@ export default function CursorFollowMarquee({
     const isIn =
       x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 
-    if (isIn && show && !isMouseDown.current && !isVisible.current) {
+    if (isIn && showRef.current && !isMouseDown.current && !isVisible.current) {
       gsap.to(follower, { opacity: 1, scale: 1, duration: 0.3 });
       isVisible.current = true;
     } else if (!isIn && isVisible.current) {
