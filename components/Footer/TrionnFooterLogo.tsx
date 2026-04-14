@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useSiteSound } from "@/components/SiteSoundContext";
 import { useFooterAtmosphere } from "./FooterAtmosphere";
 import { TRIONN_LOGO_SVG_MARKUP } from "./trionnLogoSvgMarkup";
+import { getCanvasManager } from "@/lib/canvasManager";
 
 type Props = {
   strokeWidth?: number;
@@ -36,7 +37,6 @@ export default function TrionnFooterLogo({
 }: Props) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const footerLogoVisibleRef = useRef(true);
   const audioRef = useRef<AudioContext | null>(null);
   const { pulseSmoke, setAudioContext, getSmokeAnalyser } = useFooterAtmosphere();
   const { soundEnabled } = useSiteSound();
@@ -48,18 +48,6 @@ export default function TrionnFooterLogo({
     else void ctx.suspend().catch(() => {});
   }, [soundEnabled]);
 
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        footerLogoVisibleRef.current = e?.isIntersecting ?? false;
-      },
-      { root: null, threshold: 0, rootMargin: "80px 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   const ensureAudio = () => {
     if (!audioRef.current) {
@@ -402,9 +390,10 @@ export default function TrionnFooterLogo({
       strings.push({ el: p, state });
     }
 
-    const tick = () => {
-      if (!footerLogoVisibleRef.current) return;
-      const dt = gsap.ticker.deltaRatio() / 60;
+    let lastTs = 0;
+    const tick = (ts: number) => {
+      const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 0;
+      lastTs = ts;
       for (const s of strings) {
         const st = s.state;
         if (st.amp > 0.02 || st.speed > 0.02) {
@@ -425,10 +414,19 @@ export default function TrionnFooterLogo({
       }
     };
 
-    gsap.ticker.add(tick);
+    const manager = getCanvasManager();
+    const loopId = manager.register(tick, false);
+
+    const io = new IntersectionObserver(
+      ([entry]) => manager.setActive(loopId, entry.isIntersecting),
+      { root: null, threshold: 0, rootMargin: "80px 0px" },
+    );
+    const rootEl = rootRef.current;
+    if (rootEl) io.observe(rootEl);
 
     return () => {
-      gsap.ticker.remove(tick);
+      manager.unregister(loopId);
+      io.disconnect();
       mount.innerHTML = "";
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -694,17 +694,28 @@ export default function TrionnServices() {
     const s = stateRef.current;
     if (s.preloading || s.loaded > 0) return;
     s.preloading = true;
-    for (let i = 0; i < TOTAL; i++) {
-      const img = new Image();
-      img.onload = () => {
-        s.loaded++;
-        if (s.loaded === TOTAL) {
-          drawFrame(0);
-        }
-      };
-      img.src = `stone/frame_${String(i + 1).padStart(4, "0")}.webp`;
-      s.imgs[i] = img;
-    }
+
+    const CHUNK = 20;
+    const ric =
+      typeof requestIdleCallback !== "undefined"
+        ? requestIdleCallback
+        : (cb: () => void) => setTimeout(cb, 0);
+
+    const loadChunk = (start: number) => {
+      const end = Math.min(start + CHUNK, TOTAL);
+      for (let i = start; i < end; i++) {
+        const img = new Image();
+        img.onload = () => {
+          s.loaded++;
+          if (s.loaded === TOTAL) drawFrame(0);
+        };
+        img.src = `stone/frame_${String(i + 1).padStart(4, "0")}.webp`;
+        s.imgs[i] = img;
+      }
+      if (end < TOTAL) ric(() => loadChunk(end));
+    };
+
+    loadChunk(0);
   }, [drawFrame, TOTAL]);
 
   /* ── ScrollTrigger: pin section, scrub scrollT 0→1 then hold final frame (testimonials overlap) ── */

@@ -153,6 +153,7 @@ export default function FooterFog({ className = "" }: Props) {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.clearColor(0, 0, 0, 0);
+    gl.useProgram(prog);
 
     let freqEnergy = 0;
     let morphOffset = 0;
@@ -162,7 +163,6 @@ export default function FooterFog({ className = "" }: Props) {
     let freqData: Uint8Array | null = null;
 
     const t0 = performance.now();
-    let running = true;
 
     function resize() {
       const el = containerRef.current;
@@ -217,8 +217,6 @@ export default function FooterFog({ className = "" }: Props) {
 
       morphOffset += (4.0 + freqEnergy * 16.0 + hoverBoost * 2.8) * dt;
 
-      gl.viewport(0, 0, cv.width, cv.height);
-      gl.useProgram(prog);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.uniform1f(uT, T);
       gl.uniform2f(uR, cv.width, cv.height);
@@ -251,7 +249,7 @@ export default function FooterFog({ className = "" }: Props) {
   return (
     <div
       ref={containerRef}
-      className={`pointer-events-none absolute inset-0 z-[5] overflow-hidden ${className}`}
+      className={`pointer-events-none absolute inset-0 z-5 overflow-hidden ${className}`}
       aria-hidden
     >
       <canvas
