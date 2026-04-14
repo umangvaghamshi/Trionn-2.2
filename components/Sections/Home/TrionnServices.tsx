@@ -246,7 +246,7 @@ export default function TrionnServices() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
   const textOverlayRef = useRef<HTMLDivElement>(null);
-  const scrollDriverRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const stickyWrapRef = useRef<HTMLDivElement>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
 
@@ -711,7 +711,7 @@ export default function TrionnServices() {
   useGSAP(
     () => {
       const ctx = gsap.context(() => {
-        const driver = scrollDriverRef.current;
+        const driver = sectionRef.current;
         const sticky = stickyWrapRef.current;
         if (!driver || !sticky) return;
 
@@ -747,7 +747,9 @@ export default function TrionnServices() {
           end: `+=${SERVICES_PIN_END_PERCENT}%`,
           pin: true,
           pinSpacing: true,
-          markers:false,
+          anticipatePin: 1,
+          markers: false,
+          scrub:1,
           onUpdate: (self) => {
             stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
 
@@ -873,19 +875,15 @@ export default function TrionnServices() {
 
   return (
     <section
-      className="relative isolate bg-[#000] overflow-hidden"
+      ref={sectionRef}
+      className="relative isolate bg-[#000]"
       style={{ zIndex: 1, marginTop: `-${SERVICES_SHUTTER_VH}vh` }}
     >
-      {/* ── Scroll driver (pin spacing from ScrollTrigger) ── */}
+      {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
       <div
-        ref={scrollDriverRef}
-        className="relative min-h-screen min-h-[100dvh]"
+        ref={stickyWrapRef}
+        className="relative h-[100dvh] w-full overflow-hidden bg-[#000]"
       >
-        {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
-        <div
-          ref={stickyWrapRef}
-          className="relative h-[100dvh] w-full overflow-hidden bg-[#000]"
-        >
           {/* Canvas */}
           <canvas
             ref={canvasRef}
@@ -995,7 +993,6 @@ export default function TrionnServices() {
             ))}
           </div>
         </div>
-      </div>
     </section>
   );
 }
