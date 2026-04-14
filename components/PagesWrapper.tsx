@@ -1,4 +1,5 @@
 import { headerSection } from "@/data";
+import { SiteSoundProvider } from "@/components/SiteSoundContext";
 import { Header, Footer } from "./PageWrapper";
 export default async function PagesWrapper({
   children,
@@ -8,9 +9,11 @@ export default async function PagesWrapper({
   return (
     <html lang="en">
       <body cz-shortcut-listen="true">
-        <Header data={headerSection}></Header>
-        <main className="relative z-1 overflow-x-hidden">{children}</main>
-        <Footer />
+        <SiteSoundProvider>
+          <Header data={headerSection}></Header>
+          <main className="relative z-1 overflow-x-hidden">{children}</main>
+          <Footer />
+        </SiteSoundProvider>
       </body>
     </html>
   );
