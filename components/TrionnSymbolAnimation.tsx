@@ -184,7 +184,7 @@ export function TrionnSymbolAnimation({
       <CursorFollowMarquee
         text="Hold to blast. Touch lines at your own risk."
         containerRef={canvasWrapRef}
-        excludeSelectors={["#keyfacts-section", ".stripe-item"]}
+        excludeSelectors={["#keyfacts-section", ".stripe-item","#nav"]}
       />
     </div>
   );
