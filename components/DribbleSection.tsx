@@ -341,7 +341,8 @@ export default function DribbleSection() {
         start: "top top",
         end: `+=${totalScroll}`,
         pin: true,
-        scrub: true,
+        anticipatePin: 1,
+        scrub: 1,
         onUpdate(self) {
           prog = Math.min(self.progress / animationEnd, 1);
 
@@ -362,10 +363,7 @@ export default function DribbleSection() {
               const stripeEnd = stripeStart + perStripe;
               const stripeProgress = Math.max(
                 0,
-                Math.min(
-                  1,
-                  (holdT - stripeStart) / (stripeEnd - stripeStart),
-                ),
+                Math.min(1, (holdT - stripeStart) / (stripeEnd - stripeStart)),
               );
               gsap.set(stripes[i]!, { scaleY: stripeProgress });
             }
