@@ -93,7 +93,7 @@ export function TrionnSymbolAnimation({
       end: "bottom bottom",
       onUpdate: (self) => {
         const p = self.progress;
-        if (p >= 0.8) {
+        if (p >= 0.9) {
           setShowMarquee(true);
         } else if (p >= 0.1) {
           setShowMarquee(false);
