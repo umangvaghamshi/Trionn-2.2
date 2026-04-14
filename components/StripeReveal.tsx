@@ -80,7 +80,7 @@ export default function StripeReveal({
         start: "top top",
         endTrigger: scrollEndTrigger,
         end: scrollEnd,
-        scrub: true,
+        scrub: 1,
         pin: true,
         markers,
         pinSpacing: false,
