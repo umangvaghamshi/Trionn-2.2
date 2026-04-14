@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { useAudio } from "./useAudio";
+import { getCanvasManager } from "@/lib/canvasManager";
+import { getCappedDPR } from "./useCanvasLoop";
 
 interface Particle {
   mesh: THREE.Mesh | THREE.LineSegments;
@@ -34,7 +36,7 @@ export function useThreeScene(
       H = window.innerHeight;
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(getCappedDPR());
     renderer.setClearColor(0x0c0c0c, 1);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
@@ -615,10 +617,8 @@ export function useThreeScene(
     // Animate
     const clock = new THREE.Clock();
     let envReady = false;
-    let animId: number;
 
     function animate() {
-      animId = requestAnimationFrame(animate);
       const scroll = window.scrollY;
       const norm = scroll / window.innerHeight;
       const prevTarget = targetScrollProgress;
@@ -821,10 +821,19 @@ export function useThreeScene(
       group.visible = true;
       renderer.render(scene, camera);
     }
-    animate();
+    // Register with canvas manager — starts active, pauses when off-screen / tab hidden
+    const manager = getCanvasManager();
+    const loopId = manager.register(animate, true);
+
+    const heroIo = new IntersectionObserver(
+      ([entry]) => manager.setActive(loopId, entry.isIntersecting),
+      { root: null, threshold: 0, rootMargin: "64px 0px" },
+    );
+    heroIo.observe(wrap);
 
     // Marquee
     const track = document.getElementById("marquee-track");
+    let marqueeRafId = 0;
     if (track) {
       track.innerHTML += track.innerHTML;
       let x = 0;
@@ -834,9 +843,9 @@ export function useThreeScene(
         const halfW = track.scrollWidth / 2;
         if (Math.abs(x) >= halfW) x = 0;
         track.style.transform = `translateX(${x}px)`;
-        requestAnimationFrame(marqueeLoop);
+        marqueeRafId = requestAnimationFrame(marqueeLoop);
       };
-      marqueeLoop();
+      marqueeRafId = requestAnimationFrame(marqueeLoop);
     }
 
     // Resize
@@ -851,7 +860,9 @@ export function useThreeScene(
     window.addEventListener("resize", onResize);
 
     return () => {
-      cancelAnimationFrame(animId);
+      manager.unregister(loopId);
+      heroIo.disconnect();
+      cancelAnimationFrame(marqueeRafId);
       interactionTarget.removeEventListener("mousemove", onMouseMove);
       interactionTarget.removeEventListener("mousedown", onWindowMouseDown);
       window.removeEventListener("mouseup", onMouseUp);

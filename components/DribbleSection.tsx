@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { getCanvasManager } from "@/lib/canvasManager";
+import { getCappedDPR } from "@/hooks/useCanvasLoop";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,7 +27,7 @@ export default function DribbleSection() {
         antialias: true,
         alpha: true,
       });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(getCappedDPR());
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setClearColor(0x000000, 0);
 
