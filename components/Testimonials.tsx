@@ -10,9 +10,10 @@ import LinePlus from "@/components/LinePlus";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
+import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Autoplay, EffectFade, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { SwiperOptions } from "swiper/types";
 
@@ -69,6 +70,10 @@ export default function Testimonials({
     setActiveIndex(swiper.realIndex);
   }, []);
 
+  const goToTestimonial = useCallback((index: number) => {
+    swiperRef.current?.slideToLoop(index);
+  }, []);
+
   return (
     <section
       className="relative z-20 isolate py-25 bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden"
@@ -100,17 +105,22 @@ export default function Testimonials({
           <div className="flex flex-col justify-between col-span-4 col-start-3">
             <div className="testimonial-company-list flex flex-col gap-4">
               {TestimonialsData.map((item, index) => (
-                <h4
-                  className={`uppercase flex gap-4 items-center transition-all duration-500 ease-in-out text-dark-font ${
-                    activeIndex === index ? "opacity-100" : "opacity-30"
-                  }`}
+                <button
+                  type="button"
                   key={item.companyName}
+                  onClick={() => goToTestimonial(index)}
+                  aria-current={activeIndex === index ? "true" : undefined}
+                  aria-label={`Show testimonial from ${item.companyName}`}
+                  className={`h4 uppercase flex gap-4 items-center text-left transition-all duration-500 ease-in-out text-dark-font bg-transparent border-0 p-0 cursor-pointer ${
+                    activeIndex === index ? "opacity-100" : "opacity-30 hover:opacity-60"
+                  }`}
                 >
                   {item.companyName}
                   <span
-                    className={`icon transition-opacity duration-500 ${
+                    className={`icon shrink-0 transition-opacity duration-500 ${
                       activeIndex === index ? "opacity-100" : "opacity-0"
                     }`}
+                    aria-hidden
                   >
                     <svg
                       width="10"
@@ -125,7 +135,7 @@ export default function Testimonials({
                       />
                     </svg>
                   </span>
-                </h4>
+                </button>
               ))}
             </div>
             <div className="flex">
@@ -142,7 +152,10 @@ export default function Testimonials({
           <div className="col-span-6 ">
             <Swiper
               {...swiperOptions}
-              modules={[Navigation, Pagination, Autoplay]}
+              modules={[Navigation, Pagination, Autoplay, EffectFade]}
+              effect="fade"
+              fadeEffect={{ crossFade: true }}
+              speed={600}
               navigation={false} // assigned manually in useEffect
               autoplay={{
                 delay: 5000,
