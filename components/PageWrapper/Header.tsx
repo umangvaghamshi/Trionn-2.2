@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { NavLinks } from "@/components/Navbar";
+import { HeaderSoundToggle } from "@/components/PageWrapper/HeaderSoundToggle";
 
 export default function Header({
   data,
@@ -23,8 +24,9 @@ export default function Header({
               priority={true}
             />
           </Link>
-          <div className="flex items-center">
+          <div className="flex items-center gap-4">
             <NavLinks></NavLinks>
+            <HeaderSoundToggle />
           </div>
         </div>
       </header>
