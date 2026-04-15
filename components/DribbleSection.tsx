@@ -5,16 +5,25 @@ import * as THREE from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useLenis } from "lenis/react";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { getCappedDPR } from "@/hooks/useCanvasLoop";
 
 gsap.registerPlugin(ScrollTrigger);
+gsap.ticker.lagSmoothing(0);
+gsap.ticker.fps(60);
 
 export default function DribbleSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const centerRef = useRef<HTMLDivElement>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
+  const scrollYRef = useRef(0);
+
+  /* Track Lenis smoothed scroll — same as app.js: lenis.on('scroll', e => scrollY = e.scroll) */
+  useLenis(({ scroll }) => {
+    scrollYRef.current = scroll;
+  });
 
   useGSAP(
     () => {
@@ -331,11 +340,9 @@ export default function DribbleSection() {
         ((totalArc * 0.5 + totArcN + 10.0) / (totalArc + totArcN)) *
         (400 / 600);
 
-      /* ScrollTrigger pin — replaces Lenis + driver div */
-      let prog = 0;
-      /* Extra 100vh for the footer-shutter reveal after animations finish */
-      const totalScroll = window.innerHeight * 6; // 500% for animation + 100% for shutter
-      const animationEnd = (window.innerHeight * 5) / totalScroll; // animation occupies first 5/6
+      /* Pin the section — scrub driven per-frame from Lenis scroll, like app.js */
+      const totalScroll = window.innerHeight * 6; // 500% animation + 100% shutter
+      const animationEnd = (window.innerHeight * 5) / totalScroll;
 
       const st = ScrollTrigger.create({
         trigger: section,
@@ -343,33 +350,6 @@ export default function DribbleSection() {
         end: `+=${totalScroll}`,
         pin: true,
         anticipatePin: 1,
-        scrub: 1,
-        onUpdate(self) {
-          prog = Math.min(self.progress / animationEnd, 1);
-
-          /* ── Stripe reveal after animation completes ── */
-          const holdT = Math.max(
-            0,
-            Math.min(1, (self.progress - animationEnd) / (1 - animationEnd)),
-          );
-          const stripes = stripesRef.current;
-          const stripeCount = stripes.length;
-          if (stripeCount > 0) {
-            const staggerAmount = 0.3;
-            const perStripe = (0.6 - staggerAmount) / 1;
-            for (let i = 0; i < stripeCount; i++) {
-              const staggerIdx = stripeCount - 1 - i;
-              const stripeStart =
-                (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
-              const stripeEnd = stripeStart + perStripe;
-              const stripeProgress = Math.max(
-                0,
-                Math.min(1, (holdT - stripeStart) / (stripeEnd - stripeStart)),
-              );
-              gsap.set(stripes[i]!, { scaleY: stripeProgress });
-            }
-          }
-        },
       });
 
       /* Ensure the pin-spacer has a low z-index so the footer can cover it */
@@ -380,8 +360,43 @@ export default function DribbleSection() {
         pinSpacer.style.position = "relative";
       }
 
-      /* render loop via canvasManager */
-      const renderFrame = () => {
+      /* render loop via canvasManager — prog computed from live Lenis scroll */
+      let lastTs = 0;
+      const renderFrame = (ts: number) => {
+        const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 1 / 60;
+        lastTs = ts;
+
+        /* Read smoothed scroll from Lenis (same as app.js: lenis.on('scroll', e => scrollY = e.scroll)) */
+        const lenisScroll = scrollYRef.current;
+        const sectionTop = st.start; // px offset where pin begins
+        const rawProg = totalScroll > 0
+          ? Math.max(0, Math.min(1, (lenisScroll - sectionTop) / totalScroll))
+          : 0;
+        const prog = Math.min(rawProg / animationEnd, 1);
+
+        /* ── Stripe reveal after animation completes ── */
+        const holdT = Math.max(
+          0,
+          Math.min(1, (rawProg - animationEnd) / (1 - animationEnd)),
+        );
+        const stripes = stripesRef.current;
+        const stripeCount = stripes.length;
+        if (stripeCount > 0) {
+          const staggerAmount = 0.3;
+          const perStripe = (0.6 - staggerAmount) / 1;
+          for (let i = 0; i < stripeCount; i++) {
+            const staggerIdx = stripeCount - 1 - i;
+            const stripeStart =
+              (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
+            const stripeEnd = stripeStart + perStripe;
+            const stripeProgress = Math.max(
+              0,
+              Math.min(1, (holdT - stripeStart) / (stripeEnd - stripeStart)),
+            );
+            gsap.set(stripes[i]!, { scaleY: stripeProgress });
+          }
+        }
+
         const rProg = Math.min(1, prog / (400 / 600));
         const offset = rProg * (totalArc + totArcN) - totArcN + 25.0;
         for (let k = 0; k < N; k++) {
@@ -398,7 +413,6 @@ export default function DribbleSection() {
         );
         const tFade = Math.max(0, 1 - gProg * 4);
         centerEl.style.opacity = String(tFade);
-        // centerEl.style.transform = `translate(-50%,calc(-50% - ${gProg * 20}px))`;
 
         const fov = (getCamFov() * Math.PI) / 180;
         const hH = Math.tan(fov / 2) * cam.position.z;
@@ -428,11 +442,11 @@ export default function DribbleSection() {
             sY + (to.y - sY) * ease,
             0,
           );
-          mesh.userData.waveT += 0.018;
+          mesh.userData.waveT += 1.08 * dt;
           mesh.userData.wave =
             dp < 1
-              ? Math.min(1, mesh.userData.wave + 0.03)
-              : Math.max(0, mesh.userData.wave - 0.012);
+              ? Math.min(1, mesh.userData.wave + 1.8 * dt)
+              : Math.max(0, mesh.userData.wave - 0.72 * dt);
           applyWave(mesh, mesh.userData.wave, mesh.userData.waveT, k);
         }
 
