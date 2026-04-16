@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useTrionnSymbolAudio } from "./useTrionnSymbolAudio";
 import { getCanvasManager } from "@/lib/canvasManager";
 
@@ -215,29 +216,33 @@ export function useTrionnSymbolScene(
     const glowCanvas = glowCanvasRef.current as HTMLCanvasElement;
     if (!wrap || !glowCanvas) return;
 
+    // ── Viewport variables ────────────────────────────────────────────────────
+    let viewportW = window.innerWidth;
+    let viewportH = window.innerHeight;
+
+    function getRenderPixelRatio() {
+      const isMobile = viewportW < 768;
+      return Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 1.2);
+    }
+
     // ── Glow canvas ──────────────────────────────────────────────────────────
-    glowCanvas.width = window.innerWidth;
-    glowCanvas.height = window.innerHeight;
+    glowCanvas.width = viewportW;
+    glowCanvas.height = viewportH;
     st.glowCtx = glowCanvas.getContext('2d');
 
     // ── Line overlay canvas ──────────────────────────────────────────────────
     const lineCanvas = document.createElement('canvas');
     lineCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;';
-    lineCanvas.width = window.innerWidth;
-    lineCanvas.height = window.innerHeight;
+    lineCanvas.width = viewportW;
+    lineCanvas.height = viewportH;
     wrap.appendChild(lineCanvas);
     st.lineCanvas = lineCanvas;
     st.lctx = lineCanvas.getContext('2d');
 
     // ── Three.js renderer ────────────────────────────────────────────────────
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setSize(W, H);
-    // Cap DPR: 1.0 on mobile, 1.5 on desktop — avoids over-rendering on HiDPI screens.
-    const cappedDPR = W < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5);
-    renderer.setPixelRatio(cappedDPR);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+    renderer.setSize(viewportW, viewportH);
+    renderer.setPixelRatio(getRenderPixelRatio());
     renderer.setClearColor(0x0c0c0c, 1);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
@@ -249,8 +254,9 @@ export function useTrionnSymbolScene(
     scene.background = new THREE.Color(0x0c0c0c);
     st.scene = scene;
 
-    const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 200);
-    camera.position.set(0, 0, W < 768 ? 9 : W < 1024 ? 7.5 : 6);
+    const getZoom = () => viewportW < 768 ? 9 : viewportW < 1024 ? 7.5 : 6;
+    const camera = new THREE.PerspectiveCamera(42, viewportW / viewportH, 0.1, 200);
+    camera.position.set(0, 0, getZoom());
     st.camera = camera;
 
     // ── Lights ───────────────────────────────────────────────────────────────
@@ -559,8 +565,8 @@ export function useTrionnSymbolScene(
       const rightEnd = Math.min(n - 1, mid + half - undrawnH);
 
       ctx.save();
-      ctx.lineCap = 'butt';
-      ctx.lineJoin = 'miter';
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       ctx.lineWidth = 0.85;
       ctx.strokeStyle = 'rgba(58,70,88,1)';
 
@@ -602,8 +608,8 @@ export function useTrionnSymbolScene(
       }
       if (allPts.length < 2) return;
       ctx.save();
-      ctx.lineCap = 'butt';
-      ctx.lineJoin = 'miter';
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       for (let i = 0; i < allPts.length - 1; i++) {
         const t = allPts[i].tRatio;
         const env = Math.pow(1 - t, 0.5);
@@ -633,7 +639,7 @@ export function useTrionnSymbolScene(
       lctx.clearRect(0, 0, lineCanvas.width, lineCanvas.height);
       st.lineTime += 0.016;
 
-      const lineNorm = st.lastScroll / window.innerHeight;
+      const lineNorm = st.lastScroll / viewportH;
       const undrawAmt = Math.max(0, Math.min(1, (lineNorm - 0.08) / 0.20));
       if (undrawAmt >= 1.0) return;
 
@@ -838,13 +844,17 @@ export function useTrionnSymbolScene(
     const symCenter3D = new THREE.Vector3(0, 0, 0);
     const clock = new THREE.Clock();
     st.clock = clock;
+    let frameCount = 0; // used to throttle cubeCamera updates
 
     // ── Animation loop ────────────────────────────────────────────────────────
     function animate(_ts?: number) {
 
-      const scroll = window.scrollY;
+      const t = clock.getElapsedTime();
+
+      // Smooth scroll state — read smoothed scroll to stay in sync with ScrollSmoother
+      const scroll = ScrollSmoother.get()?.scrollTop() ?? window.scrollY;
       st.lastScroll = scroll;
-      const norm = scroll / window.innerHeight;
+      const norm = scroll / viewportH;
       st.lastNorm = norm;
 
       if (norm <= 0.10) st.targetScrollProgress = 0;
@@ -857,8 +867,6 @@ export function useTrionnSymbolScene(
       const ty = (1 - s4SlideProgress) * 100;
       if (s4ElRef.current) s4ElRef.current.style.transform = `translateY(${ty}vh)`;
       st.s4ty = ty;
-
-      const t = clock.getElapsedTime();
 
       st.scrollProgress += (st.targetScrollProgress - st.scrollProgress) * 0.06;
       st.s4Amt += (st.targetS4Amt - st.s4Amt) * 0.05;
@@ -883,17 +891,20 @@ export function useTrionnSymbolScene(
         group.rotation.y = st.rotY;
       }
 
-      // Hover flash via raycast
-      raycaster.setFromCamera(mouse, camera);
-      const meshParticles = particles.filter((p) => !p.isEdge).map((p) => p.mesh as THREE.Mesh);
-      const hits = raycaster.intersectObjects(meshParticles, false);
-      const nowHit = hits.length > 0 ? hits[0].object : null;
-      if (nowHit !== st.hoveredMesh) {
-        if (nowHit) {
-          (nowHit as THREE.Mesh & { _flash?: number })._flash = 1.0;
-          if (st.scrollProgress < 0.05 && st.clickBurst < 0.05) audio.playHoverBeep();
+      // Hover flash via raycast — only when symbol is near assembled
+      if (st.scrollProgress < 0.08 && st.clickBurst < 0.05 && st.introAmt < 0.08) {
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObjects(particles.filter((p) => !p.isEdge).map((p) => p.mesh as THREE.Mesh), false);
+        const nowHit = hits.length > 0 ? hits[0].object : null;
+        if (nowHit !== st.hoveredMesh) {
+          if (nowHit) {
+            (nowHit as THREE.Mesh & { _flash?: number })._flash = 1.0;
+            audio.playHoverBeep();
+          }
+          st.hoveredMesh = nowHit;
         }
-        st.hoveredMesh = nowHit;
+      } else {
+        st.hoveredMesh = null;
       }
       particles.forEach((p) => {
         if (p.isEdge) return;
@@ -1006,10 +1017,12 @@ export function useTrionnSymbolScene(
         st.p2.position.z = Math.sin(t * 0.3) * 3 - 1;
       }
 
-      // Env map update
+      // Env map update — throttled to every 6 frames, only when something is moving
       group.visible = false;
       if (!st.envReady) { cubeCamera.update(renderer, scene); st.envReady = true; }
-      if (Math.floor(t * 2) % 3 === 0) cubeCamera.update(renderer, scene);
+      else if ((frameCount++ % 6) === 0 && (st.introAmt > 0.01 || st.clickBurst > 0.01 || st.scrollProgress > 0.01 || st.dragging)) {
+        cubeCamera.update(renderer, scene);
+      }
       group.visible = true;
 
       renderer.render(scene, camera);
@@ -1044,8 +1057,8 @@ export function useTrionnSymbolScene(
 
     // ── Event listeners ───────────────────────────────────────────────────────
     const onMouseMove = (e: MouseEvent) => {
-      st.mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      st.mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+      st.mouseX = (e.clientX / viewportW) * 2 - 1;
+      st.mouseY = -(e.clientY / viewportH) * 2 + 1;
       st.mouseScreenX = e.clientX;
       st.mouseScreenY = e.clientY;
       if (st.dragging) {
@@ -1108,12 +1121,15 @@ export function useTrionnSymbolScene(
     });
 
     const onResize = () => {
-      const w = window.innerWidth, h = window.innerHeight;
-      camera.aspect = w / h; camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-      lineCanvas.width = w; lineCanvas.height = h;
-      glowCanvas.width = w; glowCanvas.height = h;
-      camera.position.z = w < 768 ? 9 : w < 1024 ? 7.5 : 6;
+      viewportW = window.innerWidth;
+      viewportH = window.innerHeight;
+      camera.aspect = viewportW / viewportH;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(getRenderPixelRatio());
+      renderer.setSize(viewportW, viewportH);
+      lineCanvas.width = viewportW; lineCanvas.height = viewportH;
+      glowCanvas.width = viewportW; glowCanvas.height = viewportH;
+      camera.position.z = getZoom();
     };
     window.addEventListener('resize', onResize);
 
