@@ -23,14 +23,34 @@ import { TestimonialsData } from "@/data";
 import { useGSAP } from "@gsap/react";
 
 const ArrowLeft = () => (
-  <svg width="14" height="6" viewBox="0 0 14 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M3.66 5.58C3.48667 5.18 3.30667 4.82667 3.12 4.52C2.93333 4.2 2.74667 3.92667 2.56 3.7H13.94V2.62H2.56C2.74667 2.38 2.93333 2.10667 3.12 1.8C3.30667 1.48 3.48667 1.12667 3.66 0.739999H2.72C1.88 1.71333 0.993333 2.43333 0.0599988 2.9V3.42C0.993333 3.87333 1.88 4.59333 2.72 5.58H3.66Z" fill="#434343" />
+  <svg
+    width="14"
+    height="6"
+    viewBox="0 0 14 6"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-3.5 h-1.5"
+  >
+    <path
+      d="M3.66 5.58C3.48667 5.18 3.30667 4.82667 3.12 4.52C2.93333 4.2 2.74667 3.92667 2.56 3.7H13.94V2.62H2.56C2.74667 2.38 2.93333 2.10667 3.12 1.8C3.30667 1.48 3.48667 1.12667 3.66 0.739999H2.72C1.88 1.71333 0.993333 2.43333 0.0599988 2.9V3.42C0.993333 3.87333 1.88 4.59333 2.72 5.58H3.66Z"
+      fill="#434343"
+    />
   </svg>
 );
 
 const ArrowRight = () => (
-  <svg width="14" height="6" viewBox="0 0 14 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M10.34 5.58C10.5133 5.18 10.6933 4.82667 10.88 4.52C11.0667 4.2 11.2533 3.92667 11.44 3.7H0.0600002V2.62H11.44C11.2533 2.38 11.0667 2.10667 10.88 1.8C10.6933 1.48 10.5133 1.12667 10.34 0.739999H11.28C12.12 1.71333 13.0067 2.43333 13.94 2.9V3.42C13.0067 3.87333 12.12 4.59333 11.28 5.58H10.34Z" fill="#434343" />
+  <svg
+    width="14"
+    height="6"
+    viewBox="0 0 14 6"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-3.5 h-1.5"
+  >
+    <path
+      d="M10.34 5.58C10.5133 5.18 10.6933 4.82667 10.88 4.52C11.0667 4.2 11.2533 3.92667 11.44 3.7H0.0600002V2.62H11.44C11.2533 2.38 11.0667 2.10667 10.88 1.8C10.6933 1.48 10.5133 1.12667 10.34 0.739999H11.28C12.12 1.71333 13.0067 2.43333 13.94 2.9V3.42C13.0067 3.87333 12.12 4.59333 11.28 5.58H10.34Z"
+      fill="#434343"
+    />
   </svg>
 );
 
@@ -112,7 +132,9 @@ export default function Testimonials({
                   aria-current={activeIndex === index ? "true" : undefined}
                   aria-label={`Show testimonial from ${item.companyName}`}
                   className={`h4 uppercase flex gap-4 items-center text-left transition-all duration-500 ease-in-out text-dark-font bg-transparent border-0 p-0 cursor-pointer ${
-                    activeIndex === index ? "opacity-100" : "opacity-30 hover:opacity-60"
+                    activeIndex === index
+                      ? "opacity-100"
+                      : "opacity-30 hover:opacity-60"
                   }`}
                 >
                   {item.companyName}
@@ -128,6 +150,7 @@ export default function Testimonials({
                       viewBox="0 0 10 9"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      className="w-2.5 h-2.5"
                     >
                       <path
                         d="M5.47399 8.65203V6.55203L8.32999 3.75203V4.90003L5.47399 2.10003V2.74181e-05L9.32399 3.83603V4.81603L5.47399 8.65203ZM-6.57886e-06 5.11003V3.54203H8.60999V5.11003H-6.57886e-06Z"
@@ -140,12 +163,20 @@ export default function Testimonials({
             </div>
             <div className="flex">
               <div ref={reviewPrevRef} className="custom-arrow left">
-                <div className="arrow-icon first"><ArrowLeft /></div>
-                <div className="arrow-icon second"><ArrowLeft /></div>
+                <div className="arrow-icon first">
+                  <ArrowLeft />
+                </div>
+                <div className="arrow-icon second">
+                  <ArrowLeft />
+                </div>
               </div>
               <div ref={reviewNextRef} className="custom-arrow right -ml-px">
-                <div className="arrow-icon first"><ArrowRight /></div>
-                <div className="arrow-icon second"><ArrowRight /></div>
+                <div className="arrow-icon first">
+                  <ArrowRight />
+                </div>
+                <div className="arrow-icon second">
+                  <ArrowRight />
+                </div>
               </div>
             </div>
           </div>
