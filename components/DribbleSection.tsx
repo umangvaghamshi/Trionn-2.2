@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useLenis } from "lenis/react";
-import { getCanvasManager } from "@/lib/canvasManager";
+
 import { getCappedDPR } from "@/hooks/useCanvasLoop";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -18,11 +18,11 @@ export default function DribbleSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const centerRef = useRef<HTMLDivElement>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
-  const scrollYRef = useRef(0);
 
-  /* Track Lenis smoothed scroll — same as app.js: lenis.on('scroll', e => scrollY = e.scroll) */
-  useLenis(({ scroll }) => {
-    scrollYRef.current = scroll;
+  /* Hold a live ref to the Lenis instance so renderFrame reads scroll in the same tick */
+  const lenisRef = useRef<{ scroll: number } | null>(null);
+  useLenis((lenis) => {
+    lenisRef.current = lenis;
   });
 
   useGSAP(
@@ -260,17 +260,106 @@ export default function DribbleSection() {
         const pts: THREE.Vector3[] = [];
         for (let i = 0; i <= 400; i++)
           pts.push(hPos((i / 400) * TURNS * Math.PI * 2));
-        scene.add(
-          new THREE.Line(
-            new THREE.BufferGeometry().setFromPoints(pts),
-            new THREE.LineBasicMaterial({
-              color: 0x666666,
-              transparent: true,
-              opacity: 0, // line opacity
-            }),
-          ),
+        const springLine = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(pts),
+          new THREE.LineBasicMaterial({
+            color: 0x666666,
+            transparent: true,
+            opacity: 0, // line opacity
+            depthWrite: false,
+          }),
         );
+        springLine.renderOrder = -1;
+        scene.add(springLine);
       }
+
+      /* edge traveller paths */
+      const EDGE_STEPS = 600;
+      const edgeTopPts: THREE.Vector3[] = [];
+      const edgeBotPts: THREE.Vector3[] = [];
+      {
+        const fov = getCamFov() * Math.PI / 180;
+        const gapWorld = (4 / window.innerHeight) * 2 * Math.tan(fov / 2) * getCamZ();
+        const offset = CARD_H * 0.5 + gapWorld + CARD_H * 0.12;
+        for (let i = 0; i <= EDGE_STEPS; i++) {
+          const angle = (i / EDGE_STEPS) * TURNS * Math.PI * 2;
+          const cp = hPos(angle);
+          const up = new THREE.Vector3()
+            .crossVectors(hTan(angle), new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle)))
+            .normalize();
+          up.y += 0.6;
+          up.normalize();
+          edgeTopPts.push(new THREE.Vector3(cp.x + up.x * offset, cp.y + up.y * offset, cp.z + up.z * offset));
+          edgeBotPts.push(new THREE.Vector3(cp.x - up.x * offset, cp.y - up.y * offset, cp.z - up.z * offset));
+        }
+      }
+      const topReversed = [...edgeTopPts].reverse();
+      const botReversed = [...edgeBotPts].reverse();
+
+      // extend botReversed: prepend points continuing tangent to screen top
+      {
+        const fov = getCamFov() * Math.PI / 180;
+        const screenTop = Math.tan(fov / 2) * getCamZ();
+        const p0 = botReversed[0], p1 = botReversed[1];
+        const dx = p0.x - p1.x, dy = p0.y - p1.y, dz = p0.z - p1.z;
+        const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const tx = dx / len, ty = dy / len, tz = dz / len;
+        const distToTop = (screenTop - p0.y) / ty;
+        const steps = 20, extra: THREE.Vector3[] = [];
+        for (let i = steps; i >= 1; i--) {
+          const t = (i / steps) * distToTop;
+          extra.push(new THREE.Vector3(p0.x + tx * t, p0.y + ty * t, p0.z + tz * t));
+        }
+        botReversed.unshift(...extra);
+      }
+
+      const TRAVELLER_STEPS = Math.floor((EDGE_STEPS + 20) * 0.14);
+      const travelMatA = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+      const travelMatB = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+      const travelGeoA = new THREE.BufferGeometry().setFromPoints(topReversed);
+      const travelGeoB = new THREE.BufferGeometry().setFromPoints(botReversed);
+      travelGeoA.setDrawRange(0, 0);
+      travelGeoB.setDrawRange(0, 0);
+      const travelLineA = new THREE.Line(travelGeoA, travelMatA);
+      const travelLineB = new THREE.Line(travelGeoB, travelMatB);
+      travelLineA.renderOrder = 5;
+      travelLineA.frustumCulled = false;
+      travelLineB.renderOrder = 5;
+      travelLineB.frustumCulled = false;
+      scene.add(travelLineA);
+      scene.add(travelLineB);
+
+      /* horizontal grid lines */
+      const GRID_LINE_PTS = 600;
+      const gridLineMatT = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75 });
+      const gridLineMatB = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75 });
+
+      function buildGridLinePoints(yWorld: number, rtl = false) {
+        const fov = getCamFov() * Math.PI / 180;
+        const hW = Math.tan(fov / 2) * getCamZ() * (window.innerWidth / window.innerHeight);
+        const pxGap = isMobile() ? 0 : hW * (80 / window.innerWidth);
+        const xMin = -hW + pxGap, xMax = hW - pxGap;
+        const pts: THREE.Vector3[] = [];
+        for (let i = 0; i <= GRID_LINE_PTS; i++) {
+          const t = i / GRID_LINE_PTS;
+          pts.push(new THREE.Vector3(rtl ? xMax - t * (xMax - xMin) : xMin + t * (xMax - xMin), yWorld, 0));
+        }
+        return pts;
+      }
+
+      const gridTopGeo = new THREE.BufferGeometry().setFromPoints(buildGridLinePoints(0));
+      const gridBotGeo = new THREE.BufferGeometry().setFromPoints(buildGridLinePoints(0));
+      gridTopGeo.setDrawRange(0, 0);
+      gridBotGeo.setDrawRange(0, 0);
+      const gridTopLine = new THREE.Line(gridTopGeo, gridLineMatT);
+      const gridBotLine = new THREE.Line(gridBotGeo, gridLineMatB);
+      gridTopLine.renderOrder = 5;
+      gridTopLine.frustumCulled = false;
+      gridBotLine.renderOrder = 5;
+      gridBotLine.frustumCulled = false;
+      scene.add(gridTopLine);
+      scene.add(gridBotLine);
+      let gridLinesBuilt = false; // set to true once grid line geometry is rebuilt for the target y-positions
 
       /* ribbon cards */
       const VS_R = `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`;
@@ -360,14 +449,18 @@ export default function DribbleSection() {
         pinSpacer.style.position = "relative";
       }
 
-      /* render loop via canvasManager — prog computed from live Lenis scroll */
+      /* render loop — driven by gsap.ticker (same tick as Lenis) so scroll is never stale */
       let lastTs = 0;
-      const renderFrame = (ts: number) => {
+      let smoothHeadA = 0, smoothHeadB = 0;
+      let sectionVisible = false;
+      const renderFrame = (time: number) => {
+        if (!sectionVisible) return;
+        const ts = time * 1000;
         const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 1 / 60;
         lastTs = ts;
 
         /* Read smoothed scroll from Lenis (same as app.js: lenis.on('scroll', e => scrollY = e.scroll)) */
-        const lenisScroll = scrollYRef.current;
+        const lenisScroll = lenisRef.current?.scroll ?? 0;
         const sectionTop = st.start; // px offset where pin begins
         const rawProg = totalScroll > 0
           ? Math.max(0, Math.min(1, (lenisScroll - sectionTop) / totalScroll))
@@ -398,6 +491,22 @@ export default function DribbleSection() {
         }
 
         const rProg = Math.min(1, prog / (400 / 600));
+
+        /* traveller lines — lerp head for sub-pixel smoothness */
+        const totalPtsA = EDGE_STEPS + 1;
+        const totalPtsB = EDGE_STEPS + 1 + 20;
+        const targetHeadA = rProg * (totalPtsA + TRAVELLER_STEPS);
+        const targetHeadB = rProg * (totalPtsB + TRAVELLER_STEPS);
+        const lerpK = 1 - Math.pow(0.01, dt); // ~same feel regardless of fps
+        smoothHeadA += (targetHeadA - smoothHeadA) * lerpK;
+        smoothHeadB += (targetHeadB - smoothHeadB) * lerpK;
+        const headA = Math.floor(smoothHeadA);
+        const tailA = Math.max(0, headA - TRAVELLER_STEPS);
+        travelGeoA.setDrawRange(tailA, Math.max(0, Math.min(headA, totalPtsA) - tailA + 1));
+        const headB = Math.floor(smoothHeadB);
+        const tailB = Math.max(0, headB - TRAVELLER_STEPS);
+        travelGeoB.setDrawRange(tailB, Math.max(0, Math.min(headB, totalPtsB) - tailB + 1));
+
         const offset = rProg * (totalArc + totArcN) - totArcN + 25.0;
         for (let k = 0; k < N; k++) {
           const s = offset + k * slotArc,
@@ -413,6 +522,37 @@ export default function DribbleSection() {
         );
         const tFade = Math.max(0, 1 - gProg * 4);
         centerEl.style.opacity = String(tFade);
+
+        /* grid lines */
+        if (gProg > 0 && !gridLinesBuilt) {
+          const rows = isMobile() ? 3 : 2;
+          const gapY = isMobile() ? 0.22 : isTablet() ? 0.36 : 0.55;
+          const FWg = getFlatW(), FHg = FWg * CARD_RATIO;
+          const tH = rows * FHg + (rows - 1) * gapY;
+          if (isMobile()) {
+            gridTopGeo.setFromPoints(buildGridLinePoints(tH * 0.5 - FHg - gapY * 0.5, false));
+            gridBotGeo.setFromPoints(buildGridLinePoints(tH * 0.5 - 2 * FHg - gapY * 1.5, true));
+          } else {
+            gridTopGeo.setFromPoints(buildGridLinePoints(0, false));
+            gridBotGeo.setFromPoints(buildGridLinePoints(0, false));
+          }
+          gridTopGeo.setDrawRange(0, 0);
+          gridBotGeo.setDrawRange(0, 0);
+          gridLinesBuilt = true;
+        }
+
+        if (gridLinesBuilt) {
+          const lineDelay = 0.2;
+          const lineProg = Math.max(0, Math.min(1, (gProg - lineDelay) / (1 - lineDelay)));
+          const lineEase = 1 - Math.pow(1 - lineProg, 2.5);
+          gridTopGeo.setDrawRange(0, Math.round(lineEase * GRID_LINE_PTS));
+          if (isMobile()) {
+            const lp2 = Math.max(0, Math.min(1, (gProg - lineDelay - 0.08) / (1 - lineDelay - 0.08)));
+            gridBotGeo.setDrawRange(0, Math.round((1 - Math.pow(1 - lp2, 2.5)) * GRID_LINE_PTS));
+          } else {
+            gridBotGeo.setDrawRange(0, 0);
+          }
+        }
 
         const fov = (getCamFov() * Math.PI) / 180;
         const hH = Math.tan(fov / 2) * cam.position.z;
@@ -453,12 +593,12 @@ export default function DribbleSection() {
         renderer.render(scene, cam);
       };
 
-      const manager = getCanvasManager();
-      const loopId = manager.register(renderFrame, false);
+      /* Same as app.js: gsap.ticker.add drives the render in the same tick as Lenis */
+      gsap.ticker.add(renderFrame);
 
-      /* IntersectionObserver — activate/deactivate render loop */
+      /* IntersectionObserver — skip rendering when section is off-screen */
       const io = new IntersectionObserver(
-        ([entry]) => manager.setActive(loopId, entry.isIntersecting),
+        ([entry]) => { sectionVisible = entry.isIntersecting; },
         { root: null, threshold: 0, rootMargin: "64px 0px" },
       );
       io.observe(section);
@@ -466,7 +606,7 @@ export default function DribbleSection() {
       /* cleanup */
       return () => {
         window.removeEventListener("resize", handleResize);
-        manager.unregister(loopId);
+        gsap.ticker.remove(renderFrame);
         io.disconnect();
         st.kill();
         videoEl.pause();
@@ -486,11 +626,11 @@ export default function DribbleSection() {
   return (
     <>
       <div ref={sectionRef} className="relative z-1 h-screen bg-[#C3C3C3]">
-        <div className="w-full h-full overflow-hidden flex items-center flex-col justify-center">
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full  pointer-events-none"
-          />
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full pointer-events-none"
+        />
+        <div className="w-full h-full flex items-center flex-col justify-center">
           {/* Center text */}
           <div
             ref={centerRef}
