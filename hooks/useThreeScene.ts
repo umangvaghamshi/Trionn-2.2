@@ -32,10 +32,10 @@ export function useThreeScene(
 
 
 
-    const W = window.innerWidth,
-      H = window.innerHeight;
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setSize(W, H);
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+    renderer.setSize(width, height);
     renderer.setPixelRatio(getCappedDPR());
     renderer.setClearColor(0x0c0c0c, 1);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -45,7 +45,7 @@ export function useThreeScene(
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0c0c0c);
 
-    const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 200);
+    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 200);
     const getZoom = () =>
       window.innerWidth < 768 ? 9 : window.innerWidth < 1024 ? 7.5 : 6;
     camera.position.set(0, 0, getZoom());
@@ -850,12 +850,13 @@ export function useThreeScene(
 
     // Resize
     const onResize = () => {
-      const w = window.innerWidth,
-        h = window.innerHeight;
-      camera.aspect = w / h;
+      width = window.innerWidth;
+      height = window.innerHeight;
+      camera.aspect = width / height;
       camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-      camera.position.z = w < 768 ? 9 : w < 1024 ? 7.5 : 6;
+      renderer.setPixelRatio(getCappedDPR());
+      renderer.setSize(width, height);
+      camera.position.z = width < 768 ? 9 : width < 1024 ? 7.5 : 6;
     };
     window.addEventListener("resize", onResize);
 

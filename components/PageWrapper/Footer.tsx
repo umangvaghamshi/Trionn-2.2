@@ -6,6 +6,8 @@ import LinePlus from "@/components/LinePlus";
 import { FooterAtmosphereProvider } from "@/components/Footer/FooterAtmosphere";
 import FooterFog from "@/components/Footer/FooterFog";
 import TrionnFooterLogo from "@/components/Footer/TrionnFooterLogo";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import { WordShiftButton } from "@/components/Button";
 
 import { enquiry, social } from "@/data";
 
@@ -29,7 +31,7 @@ function IstClock() {
   }, []);
 
   return (
-    <span className="text-sm tracking-wide text-white/55">
+    <span className="h4 text-light-font/50 inline-block ml-auto">
       IST → {time}
     </span>
   );
@@ -44,66 +46,79 @@ function formatEnquiryLabel(label: string) {
 export default function Footer() {
   return (
     <FooterAtmosphereProvider>
-      <footer className="site-footer relative z-2 flex min-h-screen flex-col overflow-hidden bg-[#000000] text-light-font isolate" style={{ marginTop: "-100vh" }}>
+      <footer
+        className="site-footer relative z-2 flex min-h-screen flex-col overflow-hidden bg-[#000000] text-light-font isolate"
+        style={{ marginTop: "-100vh" }}
+      >
         {/* z-[5]: fog draws over wire SVG (z-[2]) like trionn-logo-footer; text stays z-20 */}
         <FooterFog />
 
         <div className="relative z-20 flex w-full min-h-0 flex-1 flex-col">
           <div className="tr__container flex w-full flex-col pt-24 pb-16 md:pt-37.5">
-            <div className="grid w-full grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-x-12 lg:gap-y-0">
-              <div className="flex flex-col">
-                <p className="mb-6 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-white/50 md:text-xs">
-                  Let&apos;s build work that inspires.
-                </p>
-                <h2 className="h1 max-w-[20ch] text-balance uppercase leading-[0.95] tracking-tighter text-white">
-                  Ready to build something bold?
-                </h2>
-                <p className="mt-16 text-xs uppercase tracking-wide text-white/45 md:mt-24">
-                  ©TRIONN® 2026
-                </p>
+            <div className="grid w-full grid-cols-12 gap-10 lg:gap-x-12 lg:gap-y-0 mb-20">
+              <div className="flex flex-col justify-between gap-6 col-span-8">
+                <div>
+                  <BlurTextReveal
+                    as="h4"
+                    html={`Let&apos;s build work that inspires.`}
+                    animationType="chars"
+                    stagger={0.05}
+                    className="uppercase mb-4 text-light-font"
+                  />
+                  <h2 className="h1 max-w-200 text-light-font">
+                    Ready to build something bold?
+                  </h2>
+                </div>
               </div>
 
-              <div className="flex flex-col lg:items-end lg:text-right">
-                <div className="mb-8 w-full lg:flex lg:justify-end">
+              <div className="flex flex-col w-full justify-between col-span-4">
+                <div className="mb-8 w-full lg:flex lg:items-end ml-auto text-right">
                   <IstClock />
                 </div>
-                <Link
+                <WordShiftButton
+                  text="start a collaboration"
                   href="#"
-                  className="group mb-12 inline-flex w-fit flex-col self-start border-b border-white/90 pb-1 text-sm font-medium uppercase tracking-[0.12em] text-white lg:self-end"
-                >
-                  <span className="transition-opacity group-hover:opacity-80">
-                    Start a collaboration →
-                  </span>
-                </Link>
+                  customClass="min-w-63"
+                  styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+                />
+              </div>
+            </div>
+            <div className="grid w-full grid-cols-12 gap-10 lg:gap-x-12 lg:gap-y-0">
+              <div className="flex flex-col justify-end gap-6 col-span-8">
+                <span className="h4 block text-light-font/50">
+                  ©TRIONN® {new Date().getFullYear()}
+                </span>
+              </div>
 
-                <div className="grid w-full max-w-md grid-cols-1 gap-10 sm:grid-cols-2 lg:ml-auto lg:max-w-lg">
-                  <div className="flex flex-col text-left lg:text-left">
-                    <h4 className="mb-6 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-white/45">
+              <div className="flex flex-col w-full justify-between col-span-4">
+                <div className="flex columns-2 flex-wrap justify-between gap-10">
+                  <div className="flex flex-col">
+                    <h4 className="mb-6 text-light-font/50 uppercase">
                       Business enquiry
                     </h4>
                     {enquiry.map((item, index) => (
-                      <div className="mb-3 flex last:mb-0" key={index}>
-                        <span className="mr-2 shrink-0 text-sm uppercase text-white/45">
+                      <p className="flex gap-2 mb-2 last:mb-0" key={index}>
+                        <span className="shrink-0 uppercase text-light-font/50">
                           {formatEnquiryLabel(item.label)}
                         </span>
                         <Link
-                          className="text-button relative z-3 block text-sm text-white transition-opacity hover:opacity-80"
+                          className="link relative z-3 block text-light-font"
                           href={item.url}
                         >
                           {item.title}
                         </Link>
-                      </div>
+                      </p>
                     ))}
                   </div>
-                  <div className="flex flex-col text-left">
-                    <h4 className="mb-6 text-[0.65rem] font-medium uppercase tracking-[0.18em] text-white/45">
+                  <div className="flex flex-col max-w-45">
+                    <h4 className="mb-6 text-light-font/50 uppercase">
                       Social
                     </h4>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                    <div className="flex columns-2 flex-wrap justify-between gap-x-4 gap-y-2">
                       {social.map((item, index) => (
                         <p key={index}>
                           <Link
-                            className="text-button relative z-3 inline-block text-sm capitalize text-white transition-opacity hover:opacity-80"
+                            className="link relative z-3 block text-light-font"
                             href={item.url}
                           >
                             {item.title}
@@ -117,15 +132,13 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="tr__container w-full pb-8">
+          <div className="tr__container w-full pb-12">
             <LinePlus
-              customClass="col-span-12 w-full"
-              lineClass="opacity-20 left-1/2 -translate-x-1/2"
-              plusClass="col-span-12 mx-auto -translate-x-0!"
-              iconColor="#D8D8D8"
+              lineClass={"opacity-20"}
+              plusClass={"col-start-9 translate-x-1/2!"}
+              iconColor={"#D8D8D8"}
             />
           </div>
-
         </div>
 
         {/* Logo: fragment places sound (z-20) above fog, wires (z-[2]) under fog — matches prototype stacking */}
