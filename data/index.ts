@@ -56,11 +56,11 @@ export const enquiry = [
 ];
 
 export const partnersLogo = [
-  { logo: "/images/partner1.svg", widthClass: "5.5rem" },
-  { logo: "/images/partner2.svg", widthClass: "6.75rem" },
-  { logo: "/images/partner3.svg", widthClass: "6.5rem" },
-  { logo: "/images/partner4.svg", widthClass: "6.75rem" },
-  { logo: "/images/partner5.svg", widthClass: "5.625rem" },
+  { logo: "/images/partner1.svg", widthClass: "w-[5.5rem]" },
+  { logo: "/images/partner2.svg", widthClass: "w-[6.75rem]" },
+  { logo: "/images/partner3.svg", widthClass: "w-[6.5rem]" },
+  { logo: "/images/partner4.svg", widthClass: "w-[6.75rem]" },
+  { logo: "/images/partner5.svg", widthClass: "w-[5.625rem]" },
 ];
 
 export const workData: workDataItem[] = [

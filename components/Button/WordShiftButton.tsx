@@ -427,7 +427,7 @@ export default function WordShiftButton({
     ["--ul-out-time" as string]: styleVars?.ulOutTime ?? "1000ms",
     ["--ul-in-time" as string]: styleVars?.ulInTime ?? "500ms",
     ["--pad-x" as string]: styleVars?.padX ?? "0px",
-    ["--arrow-size" as string]: styleVars?.arrowSize ?? "10px",
+    ["--arrow-size" as string]: styleVars?.arrowSize ?? "2.5rem",
   };
 
   return (
@@ -449,13 +449,13 @@ export default function WordShiftButton({
         draggable={false}
       >
         {/* Underline */}
-        <span className="underline pointer-events-none absolute inset-x-0 bottom-0 h-px">
+        <span className="underline pointer-events-none absolute inset-x-0 bottom-0 h-[0.063rem]">
           <span
-            className="u-right absolute inset-x-0 bottom-0 h-px will-change-transform"
+            className="u-right absolute inset-x-0 bottom-0 h-[0.063rem] will-change-transform"
             style={{ backgroundColor: "var(--button_wrapper-color)" }}
           />
           <span
-            className="u-left absolute inset-x-0 bottom-0 h-px will-change-transform origin-left"
+            className="u-left absolute inset-x-0 bottom-0 h-[0.063rem] will-change-transform origin-left"
             style={{ backgroundColor: "var(--button_wrapper-color)" }}
           />
         </span>
@@ -474,13 +474,14 @@ export default function WordShiftButton({
           style={{ width: "var(--arrow-size)", height: "var(--arrow-size)" }}
           aria-hidden="true"
         >
-          <span className="arrow-sprite block h-full w-full opacity-0 will-change-[transform,opacity]">
+          <span className="arrow-sprite h-full w-full opacity-0 will-change-[transform,opacity] flex items-center justify-end">
             <svg
               width="10"
               height="9"
               viewBox="0 0 10 9"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              className="w-2.5 h-2.5"
             >
               <path
                 d="M5.47372 8.652V6.552L8.32972 3.752V4.9L5.47372 2.1V-3.09944e-06L9.32372 3.836V4.816L5.47372 8.652ZM-0.000281237 5.11V3.542H8.60972V5.11H-0.000281237Z"
@@ -494,13 +495,14 @@ export default function WordShiftButton({
           style={{ width: "var(--arrow-size)", height: "var(--arrow-size)" }}
           aria-hidden="true"
         >
-          <span className="arrow-sprite block h-full w-full opacity-0 will-change-[transform,opacity]">
+          <span className="arrow-sprite h-full w-full opacity-0 will-change-[transform,opacity] flex items-center">
             <svg
               width="10"
               height="9"
               viewBox="0 0 10 9"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              className="w-2.5 h-2.5"
             >
               <path
                 d="M5.47372 8.652V6.552L8.32972 3.752V4.9L5.47372 2.1V-3.09944e-06L9.32372 3.836V4.816L5.47372 8.652ZM-0.000281237 5.11V3.542H8.60972V5.11H-0.000281237Z"
