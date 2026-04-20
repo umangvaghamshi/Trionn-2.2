@@ -274,6 +274,14 @@ function ServiceCard({ data }: { data: CardData }) {
   );
 }
 
+function SoundListener({ soundEnabledRef }: { soundEnabledRef: React.MutableRefObject<boolean> }) {
+  const { soundEnabled } = useSiteSound();
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled, soundEnabledRef]);
+  return null;
+}
+
 /* ─────────────────────────────────────────────
    Main Component
    ───────────────────────────────────────────── */
@@ -281,13 +289,7 @@ export default function TrionnServices({
   scrollProgressRef,
   embedded = false,
 }: TrionnServicesProps = {}) {
-  const { soundEnabled } = useSiteSound();
-  const soundEnabledRef = useRef(soundEnabled);
-  
-  // Keep ref up to date without triggering RAF rebuild
-  useEffect(() => {
-    soundEnabledRef.current = soundEnabled;
-  }, [soundEnabled]);
+  const soundEnabledRef = useRef(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
@@ -1007,6 +1009,7 @@ export default function TrionnServices({
         marginTop: embedded ? 0 : `-100vh`,
       }}
     >
+      <SoundListener soundEnabledRef={soundEnabledRef} />
       {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
       <div
         ref={stickyWrapRef}
