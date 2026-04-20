@@ -109,29 +109,13 @@ export function TrionnSymbolAnimation({
       {/* 3D canvas wrap — position:absolute so GSAP ScrollTrigger pin can manage sticky */}
       <div
         ref={canvasWrapRef}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100vw",
-          height: "100vh",
-          zIndex: 0,
-          pointerEvents: "none",
-        }}
+        className="absolute inset-0 w-full h-screen z-0 pointer-events-none"
       />
 
       {/* Glow canvas */}
       <canvas
         ref={glowCanvasRef}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-          zIndex: 3,
-        }}
+        className="fixed inset-0 w-full min-h-screen pointer-events-none z-3"
       />
 
       {/* Cursor Follow Marquee */}
