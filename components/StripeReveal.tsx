@@ -2,9 +2,12 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLenis } from "lenis/react";
 import { useRef, type ReactNode } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
+gsap.ticker.lagSmoothing(0);
+gsap.ticker.fps(60);
 
 /* ── Configuration ─────────────────────────────────────── */
 
@@ -65,6 +68,12 @@ export default function StripeReveal({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
 
+  /* Hold a live ref to the Lenis instance so the tick reads scroll in the same frame */
+  const lenisRef = useRef<{ scroll: number } | null>(null);
+  useLenis((lenis) => {
+    lenisRef.current = lenis;
+  });
+
   useGSAP(
     () => {
       const container = containerRef.current;
@@ -75,46 +84,62 @@ export default function StripeReveal({
       const origin = stripeOrigin === "bottom" ? "bottom" : "top";
       gsap.set(stripes, { scaleY: 0, transformOrigin: origin });
 
-      ScrollTrigger.create({
+      const st = ScrollTrigger.create({
         trigger: container,
         start: "top top",
         endTrigger: scrollEndTrigger,
         end: scrollEnd,
-        scrub: 1,
         pin: true,
-        markers,
         pinSpacing: false,
-        onUpdate: (self) => {
-          const count = stripes.length;
-          if (count === 0) return;
-
-          // Stripes only animate after `holdStart` progress fraction
-          const holdT = Math.max(
-            0,
-            Math.min(1, (self.progress - holdStart) / (1 - holdStart)),
-          );
-
-          // Each stripe gets a window of (1 - staggerAmount) of the holdT range,
-          // staggered so the last stripe animates first (matching TrionnServices)
-          const perStripe = 1 - staggerAmount;
-
-          for (let i = 0; i < count; i++) {
-            // stagger from end: last stripe starts first
-            const staggerIdx = count - 1 - i;
-            const stripeStart =
-              (staggerAmount * staggerIdx) / (count - 1 || 1);
-            const stripeEnd = stripeStart + perStripe;
-            const stripeProgress = Math.max(
-              0,
-              Math.min(
-                1,
-                (holdT - stripeStart) / (stripeEnd - stripeStart),
-              ),
-            );
-            gsap.set(stripes[i]!, { scaleY: stripeProgress });
-          }
-        },
+        markers,
       });
+
+      const count = stripes.length;
+      const perStripe = 1 - staggerAmount;
+
+      /* Drive stripe scaleY every GSAP ticker tick — stays in sync with
+         Lenis-smoothed scroll (same pattern as DribbleSection). */
+      let sectionVisible = false;
+
+      const tick = () => {
+        if (!sectionVisible) return;
+
+        const progress = st.progress;
+        const holdT = Math.max(
+          0,
+          Math.min(1, (progress - holdStart) / (1 - holdStart)),
+        );
+
+        for (let i = 0; i < count; i++) {
+          const staggerIdx = count - 1 - i;
+          const stripeStart = (staggerAmount * staggerIdx) / (count - 1 || 1);
+          const stripeEnd = stripeStart + perStripe;
+          const stripeProgress = Math.max(
+            0,
+            Math.min(1, (holdT - stripeStart) / (stripeEnd - stripeStart)),
+          );
+          gsap.set(stripes[i]!, { scaleY: stripeProgress });
+        }
+      };
+
+      gsap.ticker.add(tick);
+
+      /* Skip rendering when section is fully off-screen */
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          sectionVisible = entry.isIntersecting;
+        },
+        { root: null, threshold: 0, rootMargin: "64px 0px" },
+      );
+      io.observe(container);
+
+      ScrollTrigger.refresh();
+
+      return () => {
+        gsap.ticker.remove(tick);
+        io.disconnect();
+        st.kill();
+      };
     },
     {
       dependencies: [
@@ -131,10 +156,10 @@ export default function StripeReveal({
   );
 
   return (
-    <section className={`relative overflow-visible ${className}`}>
+    <section className={`relative overflow-visible min-h-dvh ${className}`}>
       <div
         ref={containerRef}
-        className={`w-full min-h-screen z-20 mix-blend-difference relative overflow-visible ${pinnedClassName}`}
+        className={`w-full min-h-screen z-20 mix-blend-difference h-screen ${pinnedClassName}`}
       >
         {/* ── 1. Pinned content ──────────────────────────── */}
         {pinnedContent}
