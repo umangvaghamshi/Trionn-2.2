@@ -3,6 +3,7 @@ import { BrandShowcase } from "@/components/BrandShowcase";
 import HowWork from "@/components/HowWork";
 import { PaperFold } from "@/components/PaperFold";
 import { AboutHero } from "@/components/Sections/About";
+import TeamSection from "@/components/TeamSection";
 import Testimonials from "@/components/Testimonials";
 import WeNot from "@/components/WeNot";
 
@@ -12,6 +13,7 @@ const Page = () => {
       <AboutHero />
       <PaperFold />
       <HowWork />
+      <TeamSection />
       <WeNot />
       <Awards />
       <BrandShowcase animationVariant="cubeRotate" />
