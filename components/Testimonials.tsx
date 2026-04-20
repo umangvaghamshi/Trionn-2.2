@@ -57,11 +57,13 @@ const ArrowRight = () => (
 interface TestimonialsProps {
   customClass?: string;
   swiperOptions?: SwiperOptions;
+  disableScrollEffect?: boolean;
 }
 
 export default function Testimonials({
   customClass,
   swiperOptions = {},
+  disableScrollEffect = false,
 }: TestimonialsProps) {
   const swiperRef = useRef<SwiperClass | null>(null);
   const reviewPrevRef = useRef<HTMLDivElement>(null);
@@ -97,7 +99,7 @@ export default function Testimonials({
   return (
     <section
       className="relative z-20 isolate bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden min-h-screen"
-      style={{ transform: `translateY(-${SERVICES_HOLD_VH}vh)`, marginBottom: `-${SERVICES_HOLD_VH}vh`, willChange: "transform" }}
+      style={disableScrollEffect ? undefined : { transform: `translateY(-${SERVICES_HOLD_VH}vh)`, marginBottom: `-${SERVICES_HOLD_VH}vh`, willChange: "transform" }}
     >
       <div className="tr__container min-h-screen py-25">
         <div className="grid grid-cols-12 gap-6">
