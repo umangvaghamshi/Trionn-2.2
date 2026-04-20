@@ -1513,9 +1513,6 @@ export default function TeamSection() {
      
 
       <div className="ts-root">
-        {/* Top blank section */}
-        <div className="w-full h-screen bg-white" />
-
         {/* Scene */}
         <div ref={sceneRef} className="ts-scene relative w-screen min-h-screen overflow-hidden">
           <div ref={crtRef} className="ts-crt absolute inset-0 z-[200] pointer-events-none" />
@@ -1569,7 +1566,7 @@ export default function TeamSection() {
                 className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none z-[1]"
                 muted
                 playsInline
-                preload="auto"
+                preload="metadata"
               />
 
               <canvas
@@ -1679,9 +1676,6 @@ export default function TeamSection() {
             </div>
           </div>
         </div>
-
-        {/* Bottom blank section */}
-        <div className="w-full h-screen" style={{ background: "#e8e8e8" }} />
       </div>
     </>
   );
