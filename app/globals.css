@@ -141,7 +141,7 @@ h2,
 .h2 {
   font-family: "FamiljenGroteskVariable-Regular";
   @apply text-[5.938rem] leading-22.5 -tracking-[0.06em];
-  font-size: clamp(2rem, 6.283vw, 6.25rem);
+  font-size: clamp(2rem, 6.283vw, 5.938rem);
   line-height: clamp(1.825rem, 5.952vw, 5.625rem);
   letter-spacing: clamp(-0.06em, -0.056vw, -0.06em);
 }

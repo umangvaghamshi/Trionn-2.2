@@ -108,7 +108,7 @@ export default function Testimonials({
             html="Client stories"
             animationType="chars"
             stagger={0.05}
-            className="text-dark-font col-span-6"
+            className="text-dark-font col-span-5 col-start-2"
           />
           <div className="col-span-6">
             <p className="small text-dark-font max-w-45">
@@ -119,12 +119,12 @@ export default function Testimonials({
         </div>
         <LinePlus
           customClass={"my-20"}
-          lineClass={"opacity-15 bg-grey-line"}
+          lineClass={"opacity-15 bg-grey-line col-span-11 col-start-2"}
           plusClass={"col-start-7"}
           iconColor={"#272727"}
         />
         <div className="w-full relative grid grid-cols-12 gap-6 ">
-          <div className="flex flex-col justify-between col-span-4 col-start-3">
+          <div className="flex flex-col justify-between col-span-5 col-start-2">
             <div className="testimonial-company-list flex flex-col gap-4">
               {TestimonialsData.map((item, index) => (
                 <button
