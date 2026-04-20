@@ -9,6 +9,7 @@ import { useCallback, useRef, useState } from "react";
 
 import { partnersLogo } from "@/data";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import LinePlus from "@/components/LinePlus";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,6 +36,24 @@ export default function KeyFactsNew() {
 
       const list = root.querySelector(".key-card-list") as HTMLElement | null;
       if (list) gsap.set(list, { perspective: 1400 });
+
+      const lineWrap = root.querySelector(".js-kf-line-wrap");
+      if (lineWrap) {
+        gsap.fromTo(
+          lineWrap,
+          { scaleY: 0, transformOrigin: "top" },
+          {
+            scaleY: 1,
+            ease: "sine.inOut",
+            duration: 1.5,
+            scrollTrigger: {
+              trigger: lineWrap,
+              start: "top 70%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
 
       gsap.set(cards, {
         rotateX: -92,
@@ -68,7 +87,7 @@ export default function KeyFactsNew() {
       tl.call(
         triggerOdometerOnce,
         undefined,
-        staggerEach * 2 + cardDuration * 0.92,
+        staggerEach * 1.5,
       );
     },
     { scope: containerRef, dependencies: [triggerOdometerOnce] },
@@ -77,7 +96,7 @@ export default function KeyFactsNew() {
   return (
     <section
       id="keyfacts-section"
-      className="pt-24 pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-screen "
+      className="pt-24 pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-screen"
       ref={containerRef}
     >
       <div className="tr__container">
@@ -123,6 +142,14 @@ export default function KeyFactsNew() {
             ))}
           </div>
         </div>
+      </div>
+      {/* Bottom decoration line (Moved from Work section) */}
+      <div className="js-kf-line-wrap tr__container pointer-events-none absolute bottom-0 left-0 right-0 z-0 max-md:px-4 hidden md:block">
+        <LinePlus
+          lineClass={"opacity-25 bg-grey-line left-1/2 -translate-x-1/2"}
+          plusClass={"col-span-12 mx-auto translate-x-1/2!"}
+          iconColor={"#272727"}
+        />
       </div>
     </section>
   );
@@ -231,7 +258,7 @@ function ProjectCard({ odoSync }: { odoSync: number }) {
     >
       <h4 className="uppercase text-dark-font">projects completed</h4>
       <div className="flex flex-col items-center justify-center flex-1 relative">
-        <div className="w-50 h-50 rounded-full bg-white shadow-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+        <div className="w-50 h-50 rounded-full bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         <div className="relative z-2 flex items-center">
           <span className="flex items-start tabular-nums text-dark-font number-small">
             <Odometer
