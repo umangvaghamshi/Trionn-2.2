@@ -2,10 +2,11 @@
 
 import { WordShiftButton } from "@/components/Button";
 import {
+  mapOverlapProgress,
   mapServicesScrollProgress,
+  mapServicesScrimOpacity,
   SERVICES_PIN_END_PERCENT,
-  SERVICES_SCRUB_VH,
-  SERVICES_SHUTTER_VH,
+  servicesStripeHoldStartLinear,
 } from "@/components/Sections/Home/servicesScrollConstants";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { getCanvasManager } from "@/lib/canvasManager";
@@ -13,7 +14,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, type MutableRefObject } from "react";
+import { useSiteSound } from "@/components/SiteSoundContext";
 gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
 
 /* ─────────────────────────────────────────────
@@ -192,6 +194,39 @@ const RIGHT_CARDS: CardData[] = [
 
 const TEXT_LINES = ["A.I.", "Design", "Development", "Branding"];
 
+function applyStripeHold(
+  linear: number,
+  stripes: (HTMLDivElement | undefined)[],
+) {
+  const holdStart = servicesStripeHoldStartLinear();
+  const holdT = Math.max(
+    0,
+    Math.min(1, (linear - holdStart) / (1 - holdStart)),
+  );
+  const stripeCount = stripes.length;
+  if (stripeCount === 0) return;
+  const staggerAmount = 0.3;
+  const perStripe = (0.6 - staggerAmount) / 1;
+  for (let i = 0; i < stripeCount; i++) {
+    const staggerIdx = stripeCount - 1 - i;
+    const stripeStart =
+      (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
+    const stripeEnd = stripeStart + perStripe;
+    const stripeProgress = Math.max(
+      0,
+      Math.min(1, (holdT - stripeStart) / (stripeEnd - stripeStart)),
+    );
+    const s = stripes[i];
+    if (s) gsap.set(s, { scaleY: stripeProgress });
+  }
+}
+
+export type TrionnServicesProps = {
+  /** When set, scroll is driven by the Work + Services bridge (single pin). */
+  scrollProgressRef?: MutableRefObject<number>;
+  embedded?: boolean;
+};
+
 /* ─────────────────────────────────────────────
    Helpers
    ───────────────────────────────────────────── */
@@ -242,10 +277,26 @@ function ServiceCard({ data }: { data: CardData }) {
 /* ─────────────────────────────────────────────
    Main Component
    ───────────────────────────────────────────── */
-export default function TrionnServices() {
+export default function TrionnServices({
+  scrollProgressRef,
+  embedded = false,
+}: TrionnServicesProps = {}) {
+  const { soundEnabled } = useSiteSound();
+  const soundEnabledRef = useRef(soundEnabled);
+  
+  // Keep ref up to date without triggering RAF rebuild
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+  }, [soundEnabled]);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const textOverlayRef = useRef<HTMLDivElement>(null);
+  const textLightRef = useRef<HTMLDivElement>(null);
+  const textDarkRef = useRef<HTMLDivElement>(null);
+  const scrimRef = useRef<HTMLDivElement>(null);
+  const typographyRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const stickyWrapRef = useRef<HTMLDivElement>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
@@ -340,7 +391,7 @@ export default function TrionnServices() {
     /* `mix-blend-difference` on moving single-glyph layers composites each letter against a
        different part of the video/stone → uneven color/weight. Use normal blend + headline color. */
     container.style.cssText =
-      "position:fixed;inset:0;pointer-events:none;z-index:999;overflow:visible;isolation:isolate;mix-blend-mode:normal;";
+      "position:fixed;inset:0;pointer-events:none;z-index:999;overflow:visible;isolation:isolate;mix-blend-mode:difference;";
     document.body.appendChild(container);
     s.particleContainer = container;
 
@@ -718,39 +769,16 @@ export default function TrionnServices() {
     loadChunk(0);
   }, [drawFrame, TOTAL]);
 
-  /* ── ScrollTrigger: pin section, scrub scrollT 0→1 then hold final frame (testimonials overlap) ── */
+  /* ── ScrollTrigger: only when not driven by WorkServicesSequence bridge ── */
   useGSAP(
     () => {
+      if (scrollProgressRef) return;
+
       const ctx = gsap.context(() => {
         const driver = sectionRef.current;
-        const sticky = stickyWrapRef.current;
-        if (!driver || !sticky) return;
+        if (!driver) return;
 
         preload();
-
-        // ScrollTrigger.create({
-        //   trigger: driver,
-        //   start: "top 200%", // Start preloading 1 viewport above
-        //   once: true,
-        //   onEnter: () => preload(),
-        // });
-
-        // gsap.set(scrollDriverRef.current, {
-        //   visibility: "hidden",
-        // });
-
-        // const tl = gsap.timeline({
-        //   scrollTrigger: {
-        //     trigger: driver,
-        //     start: "bottom bottom",
-        //     scrub: true,
-        //     markers: false,
-        //   },
-        // });
-
-        // tl.to(scrollDriverRef.current, {
-        //   visibility: "visible",
-        // });
 
         ScrollTrigger.create({
           trigger: driver,
@@ -760,39 +788,10 @@ export default function TrionnServices() {
           pinSpacing: true,
           anticipatePin: 1,
           markers: false,
-          scrub:1,
+          scrub: 1,
           onUpdate: (self) => {
             stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
-
-            /* ── Stripe reveal during hold phase ── */
-            const holdStart =
-              (SERVICES_SHUTTER_VH + SERVICES_SCRUB_VH) /
-              SERVICES_PIN_END_PERCENT;
-            const holdT = Math.max(
-              0,
-              Math.min(1, (self.progress - holdStart) / (1 - holdStart)),
-            );
-            const stripes = stripesRef.current;
-            const stripeCount = stripes.length;
-            if (stripeCount > 0) {
-              const staggerAmount = 0.3;
-              const perStripe = (0.6 - staggerAmount) / 1; // duration per stripe within normalized 0-1
-              for (let i = 0; i < stripeCount; i++) {
-                // stagger from end (last stripe animates first)
-                const staggerIdx = stripeCount - 1 - i;
-                const stripeStart =
-                  (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
-                const stripeEnd = stripeStart + perStripe;
-                const stripeProgress = Math.max(
-                  0,
-                  Math.min(
-                    1,
-                    (holdT - stripeStart) / (stripeEnd - stripeStart),
-                  ),
-                );
-                gsap.set(stripes[i]!, { scaleY: stripeProgress });
-              }
-            }
+            applyStripeHold(self.progress, stripesRef.current);
           },
         });
       });
@@ -800,8 +799,15 @@ export default function TrionnServices() {
       return () => ctx.revert();
     },
     {
-      dependencies: [],
+      dependencies: [scrollProgressRef],
     },
+  );
+
+  useGSAP(
+    () => {
+      if (scrollProgressRef) preload();
+    },
+    { dependencies: [scrollProgressRef, preload] },
   );
 
   /* ── Main effect — init everything ── */
@@ -812,13 +818,120 @@ export default function TrionnServices() {
 
     const handleResize = () => {
       resize();
-      ScrollTrigger.refresh();
     };
     window.addEventListener("resize", handleResize);
 
     /* RAF loop — managed by global canvas manager */
     const raf = (_time: number) => {
       if (!s.loaded) return;
+
+      if (scrollProgressRef) {
+        const linear = scrollProgressRef.current;
+        s.scrollT = mapServicesScrollProgress(linear);
+        applyStripeHold(linear, stripesRef.current);
+        const st = s.scrollT;
+
+        // Overlap progress (0→1 as services slides in from right)
+        const ov = mapOverlapProgress(linear);
+
+        // Scrim: fully opaque while Work slides over it. Fades ONLY when scrollT begins.
+        if (scrimRef.current) {
+          const scrollScrim = mapServicesScrimOpacity(st);
+          scrimRef.current.style.opacity = String(scrollScrim);
+        }
+
+        // Use a smoothed scroll value for visual transitions to make them buttery smooth
+        s.cardsT += (st - s.cardsT) * 0.08;
+        const smoothSt = s.cardsT;
+
+        // Text color transition — perfectly scrubbed with the background fade
+        if (typographyRef.current) {
+          // Keep difference mode ON permanently to eliminate any jerks or pops.
+          typographyRef.current.style.mixBlendMode = "difference";
+
+          // Because we are in difference mode over a white scrim (which fades to black),
+          // we interpolate the text from light gray (216) to pure white (255).
+          // Start: |216 - 255 (white scrim)| = 39 (appears dark gray)
+          // End:   |255 - 0 (black bg)| = 255 (appears pure white)
+          const colorProgress = gsap.utils.clamp(0, 1, (st - 0.01) / 0.12);
+          
+          const copyColor = gsap.utils.interpolate(
+            "rgba(216,216,216,1)",
+            "rgba(255,255,255,1)",
+            colorProgress
+          );
+
+          typographyRef.current
+            .querySelectorAll<HTMLElement>("[data-services-copy], [data-services-copy] *")
+            .forEach((node) => {
+              node.style.setProperty("color", copyColor as string, "important");
+            });
+            
+          // Crossfade the bottom text with perfectly scrubbed blur animation
+          if (textLightRef.current && textDarkRef.current) {
+            const lightChars = textLightRef.current.querySelectorAll<HTMLElement>('.chars');
+            const darkChars = textDarkRef.current.querySelectorAll<HTMLElement>('.chars');
+            
+            lightChars.forEach((char, i) => {
+              // Fade OUT between 0.0 and 0.5 of colorProgress
+              const charStart = (i / lightChars.length) * 0.3; // stagger
+              const p = gsap.utils.clamp(0, 1, (colorProgress - charStart) / 0.2);
+              char.style.opacity = String(1 - p);
+              char.style.filter = `blur(${p * 12}px)`;
+            });
+
+            darkChars.forEach((char, i) => {
+              // Fade IN between 0.5 and 1.0 of colorProgress
+              const charStart = 0.5 + (i / darkChars.length) * 0.3; // stagger
+              const p = gsap.utils.clamp(0, 1, (colorProgress - charStart) / 0.2);
+              char.style.opacity = String(p);
+              char.style.filter = `blur(${(1 - p) * 12}px)`;
+            });
+          }
+        }
+
+        // Canvas: hidden during white intro, fades in with st
+        if (canvasRef.current) {
+          canvasRef.current.style.opacity = String(
+            gsap.utils.clamp(0, 1, st / 0.08),
+          );
+        }
+
+        // Video fades in and plays ONLY AFTER color transform is completed
+        if (bgVideoRef.current) {
+          bgVideoRef.current.style.opacity = String(
+            gsap.utils.clamp(0, 1, (st - 0.04) / 0.08) * 0.5,
+          );
+
+          if (st >= 0.04 && bgVideoRef.current.paused) {
+            bgVideoRef.current.play().catch(() => { });
+          } else if (st < 0.04 && !bgVideoRef.current.paused) {
+            bgVideoRef.current.pause();
+          }
+        }
+
+        // Thunder audio plays and loops when text turns white, but stops when next section overlaps
+        if (audioRef.current) {
+          // Play if sound is enabled, we are past the white text transition (st >= 0.04),
+          // and we haven't reached the very end of the pin where the next section overlaps (linear < 0.95)
+          const shouldPlay = soundEnabledRef.current && st >= 0.04 && linear < 0.95;
+          
+          if (shouldPlay && audioRef.current.paused) {
+            audioRef.current.play().catch(() => { });
+          } else if (!shouldPlay && !audioRef.current.paused) {
+            audioRef.current.pause();
+          }
+
+          if (shouldPlay) {
+            // Fade in from st 0.04 to 0.20
+            const fadeIn = gsap.utils.clamp(0, 1, (st - 0.04) / 0.16);
+            // Fade out from linear 0.85 to 0.95
+            const fadeOut = 1 - gsap.utils.clamp(0, 1, (linear - 0.85) / 0.10);
+            
+            audioRef.current.volume = fadeIn * fadeOut;
+          }
+        }
+      }
 
       const targetFrame = s.scrollT * (TOTAL - 1);
       s.videoIdx += (targetFrame - s.videoIdx) * 0.12;
@@ -846,10 +959,9 @@ export default function TrionnServices() {
 
       /* ── Background video: always playing ── */
       const vid = bgVideoRef.current;
-      if (vid && vid.paused) vid.play().catch(() => {});
+      if (vid && vid.paused) vid.play().catch(() => { });
 
-      // Add simple lerp for the cards to provide a smooth scrub without vibration
-      s.cardsT += (s.scrollT - s.cardsT) * 0.08;
+      // Update cards using the smoothed scroll value
       updateCards(s.cardsT);
     };
 
@@ -882,128 +994,171 @@ export default function TrionnServices() {
     TOTAL,
     EXPLODE_START,
     EXPLODE_END,
+    scrollProgressRef,
+    embedded,
   ]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative isolate bg-[#000]"
-      style={{ zIndex: 1, marginTop: `-${SERVICES_SHUTTER_VH}vh` }}
+      className={`relative isolate bg-[#000] ${embedded ? "h-full min-h-0 w-full" : ""}`}
+      style={{
+        zIndex: 1,
+        marginTop: embedded ? 0 : `-100vh`,
+      }}
     >
       {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
       <div
         ref={stickyWrapRef}
-        className="relative h-[100dvh] w-full overflow-hidden bg-[#000]"
+        className={`relative w-full overflow-hidden bg-[#000] ${embedded ? "h-full min-h-[100dvh]" : "h-[100dvh]"}`}
       >
-          {/* Canvas */}
-          <canvas
-            ref={canvasRef}
-            id="c"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block h-[100dvh] w-auto max-w-none"
-          />
+        <div
+          ref={scrimRef}
+          className="pointer-events-none absolute inset-0 z-[25] bg-white"
+          style={{ opacity: embedded ? 1 : 0 }}
+          aria-hidden
+        />
+        {/* Canvas */}
+        <canvas
+          ref={canvasRef}
+          id="c"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block h-[100dvh] w-auto max-w-none"
+          style={{ opacity: embedded ? 0 : 1 }}
+        />
 
-          {/* Background video — full-bleed cover so no strip shows at bottom */}
-          <video
-            ref={bgVideoRef}
-            src="/video/homepage-services-video.mp4"
-            muted
-            loop
-            playsInline
-            preload="auto"
-            className="pointer-events-none object-cover rotate-180 opacity-50 z-1 mix-blend-screen absolute inset-0 h-full w-full min-h-full min-w-full"
-          />
+        {/* Background video — full-bleed cover so no strip shows at bottom */}
+        <video
+          ref={bgVideoRef}
+          src="/video/homepage-services-video.mp4"
+          muted
+          loop
+          playsInline
+          preload="auto"
+          className="pointer-events-none object-cover rotate-180 opacity-50 z-1 mix-blend-screen absolute inset-0 h-full w-full min-h-full min-w-full"
+          style={{ opacity: 0 }}
+        />
 
-          {/* Cards overlay */}
-          <div
-            className="absolute inset-0 pointer-events-none overflow-hidden z-2"
-            style={{ perspective: "93.75rem" }}
-          >
-            {LEFT_CARDS.map((card) => (
-              <div
-                key={card.id}
-                ref={setCardRef(card.id)}
-                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-1.5"
-              >
-                <ServiceCard data={card} />
-              </div>
-            ))}
-            {RIGHT_CARDS.map((card) => (
-              <div
-                key={card.id}
-                ref={setCardRef(card.id)}
-                className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-1.5"
-              >
-                <ServiceCard data={card} />
-              </div>
-            ))}
-          </div>
-          <div className="tr__container py-25 relative flex flex-col justify-between items-center h-full">
+        {/* Audio for text transition */}
+        <audio
+          ref={audioRef}
+          src="/audio/thunder.mp3"
+          loop
+          preload="auto"
+          onTimeUpdate={(e) => {
+            if (e.currentTarget.currentTime >= 14) {
+              e.currentTarget.currentTime = 0;
+            }
+          }}
+        />
+
+        {/* Cards overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none overflow-hidden z-2"
+          style={{ perspective: "93.75rem" }}
+        >
+          {LEFT_CARDS.map((card) => (
+            <div
+              key={card.id}
+              ref={setCardRef(card.id)}
+              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-1.5"
+            >
+              <ServiceCard data={card} />
+            </div>
+          ))}
+          {RIGHT_CARDS.map((card) => (
+            <div
+              key={card.id}
+              ref={setCardRef(card.id)}
+              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-1.5"
+            >
+              <ServiceCard data={card} />
+            </div>
+          ))}
+        </div>
+        <div
+          ref={typographyRef}
+          className="tr__container relative flex h-full flex-col items-center justify-between py-25 z-30"
+        >
+          <div data-services-copy className="relative z-20 block">
             <BlurTextReveal
               as="span"
               html={`OUR SERVICES`}
               animationType="chars"
               stagger={0.05}
-              className="text-light-font title text-center block relative z-20"
+              className={`title text-center relative z-20 block transition-colors duration-500 ${embedded ? "" : "text-light-font"}`}
             />
-            <div
-              ref={textOverlayRef}
-              className=" flex items-center justify-center pointer-events-none mix-blend-difference z-20 my-20 w-full"
-            >
-              <div className="text-center">
-                {TEXT_LINES.map((line, i) => (
-                  <div
-                    key={i}
-                    data-line
-                    className={`text-light-font block mrquee-text uppercase`}
-                  >
-                    {line}
-                  </div>
-                ))}
-              </div>
+          </div>
+          <div
+            ref={textOverlayRef}
+            className="relative z-20 my-20 flex w-full items-center justify-center pointer-events-none"
+          >
+            <div className="text-center">
+              {TEXT_LINES.map((line, i) => (
+                <div
+                  key={i}
+                  data-line
+                  data-services-copy
+                  className={`block mrquee-text uppercase transition-colors duration-500 ${embedded ? "" : "text-light-font"}`}
+                >
+                  {line}
+                </div>
+              ))}
             </div>
-            <div className="flex justify-between w-full">
-              <div className="hidden lg:block w-1/3"></div>
-              <div className="w-full sm:w-1/2 lg:w-1/3 text-center">
+          </div>
+          <div className="relative z-20 flex w-full justify-between">
+            <div className="hidden w-1/3 lg:block"></div>
+            <div data-services-copy className="w-full text-center sm:w-1/2 lg:w-1/3 relative min-h-[3rem]">
+              <div ref={textLightRef} className="absolute inset-0 flex items-center justify-center">
                 <BlurTextReveal
                   as="span"
                   html={`✦ Design with intent. Built to work.`}
                   animationType="chars"
                   stagger={0.05}
-                  className="text-light-font title block relative z-20"
+                  className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
                 />
               </div>
-              <div className="w-full sm:w-1/2 lg:w-1/3 flex justify-end">
-                <WordShiftButton
-                  text={"view services"}
-                  href={"#"}
-                  customClass="relative z-20"
-                  styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+              <div ref={textDarkRef} className="absolute inset-0 flex items-center justify-center">
+                <BlurTextReveal
+                  as="span"
+                  html={`✦ Different disciplines. One standard of craft.`}
+                  animationType="chars"
+                  stagger={0.05}
+                  className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
                 />
               </div>
             </div>
-          </div>
-          {/* ── Stripes overlay (covers content during hold phase) ── */}
-          <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div
-                key={i}
-                ref={(el) => {
-                  if (el) stripesRef.current[i] = el;
-                }}
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  marginTop: i > 0 ? "-0.5px" : undefined,
-                  paddingBottom: "0.5px",
-                  backgroundColor: "#fff",
-                  transform: "scaleY(0)",
-                  transformOrigin: "bottom",
-                  willChange: "transform",
-                }}
+            <div className="flex w-full justify-end sm:w-1/2 lg:w-1/3">
+              <WordShiftButton
+                text={"view services"}
+                href={"#"}
+                customClass="relative z-20"
+                styleVars={{ buttonWrapperColor: "#D8D8D8" }}
               />
-            ))}
+            </div>
           </div>
         </div>
+        {/* ── Stripes overlay (covers content during hold phase) ── */}
+        <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              ref={(el) => {
+                if (el) stripesRef.current[i] = el;
+              }}
+              style={{
+                flex: 1,
+                width: "100%",
+                marginTop: i > 0 ? "-0.5px" : undefined,
+                paddingBottom: "0.5px",
+                backgroundColor: "#fff",
+                transform: "scaleY(0)",
+                transformOrigin: "bottom",
+                willChange: "transform",
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
