@@ -2,12 +2,14 @@ import Awards from "@/components/Awards";
 import { BrandShowcase } from "@/components/BrandShowcase";
 import HowWork from "@/components/HowWork";
 import { PaperFold } from "@/components/PaperFold";
+import { AboutHero } from "@/components/Sections/About";
 import Testimonials from "@/components/Testimonials";
 import WeNot from "@/components/WeNot";
 
 const Page = () => {
   return (
     <div>
+      <AboutHero />
       <PaperFold />
       <HowWork />
       <WeNot />
