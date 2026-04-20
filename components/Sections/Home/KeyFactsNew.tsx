@@ -37,23 +37,23 @@ export default function KeyFactsNew() {
       const list = root.querySelector(".key-card-list") as HTMLElement | null;
       if (list) gsap.set(list, { perspective: 1400 });
 
-      const lineWrap = root.querySelector(".js-kf-line-wrap");
-      if (lineWrap) {
-        gsap.fromTo(
-          lineWrap,
-          { scaleY: 0, transformOrigin: "top" },
-          {
-            scaleY: 1,
-            ease: "sine.inOut",
-            duration: 1.5,
-            scrollTrigger: {
-              trigger: lineWrap,
-              start: "top 70%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      }
+      // const lineWrap = root.querySelector(".js-kf-line-wrap");
+      // if (lineWrap) {
+      //   gsap.fromTo(
+      //     lineWrap,
+      //     { scaleY: 0, transformOrigin: "top" },
+      //     {
+      //       scaleY: 1,
+      //       ease: "sine.inOut",
+      //       duration: 1.5,
+      //       scrollTrigger: {
+      //         trigger: lineWrap,
+      //         start: "top 70%",
+      //         toggleActions: "play none none reverse",
+      //       },
+      //     },
+      //   );
+      // }
 
       gsap.set(cards, {
         rotateX: -92,
@@ -84,11 +84,7 @@ export default function KeyFactsNew() {
         duration: cardDuration,
       });
 
-      tl.call(
-        triggerOdometerOnce,
-        undefined,
-        staggerEach * 1.5,
-      );
+      tl.call(triggerOdometerOnce, undefined, staggerEach * 1.5);
     },
     { scope: containerRef, dependencies: [triggerOdometerOnce] },
   );
