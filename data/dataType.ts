@@ -21,3 +21,14 @@ export type TestimonialsDataItem = {
   clientDeg: string;
   videoURL?: string;
 };
+
+export type HowWorkType = {
+  id: number | string;
+  title: string;
+  content: string;
+};
+
+export type WeNotType = {
+  id: number | string;
+  content: string;
+};

@@ -1,4 +1,4 @@
-import { workDataItem, TestimonialsDataItem } from "./dataType";
+import { workDataItem, TestimonialsDataItem, HowWorkType, WeNotType } from "./dataType";
 
 export const headerSection = {
   logo: "/images/logo.svg",
@@ -15,7 +15,7 @@ export const menu = [
   },
   {
     title: "About",
-    url: "#",
+    url: "/about",
   },
   {
     title: "Contact",
@@ -156,5 +156,38 @@ export const TestimonialsData: TestimonialsDataItem[] = [
     clientName: "Stephen Dash",
     clientDeg: "Founder and CEO",
     videoURL: "",
+  },
+];
+
+export const HowWorkData: HowWorkType[] = [
+  {
+    id: 1,
+    title: 'Understand',
+    content: `We begin by listening. Understanding your vision, challenges, and context allows us to define the right problem before designing the solution.`,
+  },
+  {
+    id: 2,
+    title: 'Design & Build',
+    content: `We translate insight into systems — shaping thoughtful design, refined interactions, and robust execution with care and precision.`,
+  },
+  {
+    id: 3,
+    title: 'Refine & Evolve',
+    content: `Through iteration and detail-driven refinement, we deliver work that's purposeful, scalable, and built to stand the test of time.`,
+  },
+];
+
+export const WeNotData: WeNotType[] = [
+  {
+    id: 0,
+    content: `We don't do disposable design, endless <br/>revisions without direction, or work that <br/>exists only to “look good.”`,
+  },
+  {
+    id: 1,
+    content: `We're not for projects driven by urgency <br/>over understanding, or decisions made <br/>without purpose.`,
+  },
+  {
+    id: 2,
+    content: `We partner with teams who care about outcomes, trust the process, and are committed to building something meaningful — together.`,
   },
 ];
