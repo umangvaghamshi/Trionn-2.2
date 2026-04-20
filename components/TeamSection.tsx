@@ -1566,7 +1566,7 @@ export default function TeamSection() {
                 className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none z-[1]"
                 muted
                 playsInline
-                preload="auto"
+                preload="metadata"
               />
 
               <canvas

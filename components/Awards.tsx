@@ -159,9 +159,10 @@ export default function Awards() {
           trigger: awardsSectionRef.current,
           start: 'top top',
           end: () => `+=500%`,
-          scrub: 1,
+          scrub: true,
           pin: true,
           markers: false,
+          anticipatePin:1,
         },
       });
 
@@ -298,6 +299,7 @@ export default function Awards() {
             playsInline
             // Replace with your actual video URL
             src="/video/awards-video.mp4"
+            preload="metadata"
           />
         </div>
 

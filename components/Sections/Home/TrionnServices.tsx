@@ -1036,7 +1036,7 @@ export default function TrionnServices({
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           className="pointer-events-none object-cover rotate-180 opacity-50 z-1 mix-blend-screen absolute inset-0 h-full w-full min-h-full min-w-full"
           style={{ opacity: 0 }}
         />
