@@ -89,8 +89,8 @@ export default function WorkServicesSequence() {
         const cardEls = bridge.querySelectorAll<HTMLElement>(".js-work-card");
         const vw = window.innerWidth;
         const isMobile = vw < 768; // matches tailwind md breakpoint
-        const introW = isMobile ? vw : 0.44 * vw;
-        const cardW = isMobile ? 0.85 * vw : 0.44 * vw;
+        const introW = isMobile ? vw : 0.5 * vw;
+        const cardW = isMobile ? 0.85 * vw : 0.5 * vw;
 
         cardEls.forEach((card, index) => {
           const inner = card.querySelector<HTMLElement>(".js-work-card-inner");

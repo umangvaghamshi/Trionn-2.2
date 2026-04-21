@@ -45,7 +45,7 @@ export default function Work({
           className="flex h-[min(80vh,860px)] flex-nowrap items-center will-change-transform"
         >
           {/* ── Intro Text Block (Responsive width) ── */}
-          <div className="pointer-events-auto flex w-screen md:w-[44%] shrink-0 h-full flex-col justify-center px-6 md:px-10">
+          <div className="pointer-events-auto flex w-screen md:w-[50vw] shrink-0 h-full flex-col justify-center px-6 md:px-10">
             <div className="title-block flex flex-col gap-6 md:gap-12">
               <BlurTextReveal
                 as="h2"
@@ -64,7 +64,7 @@ export default function Work({
           {workData.map((item, i) => (
             <div
               key={item.id}
-              className="js-work-card relative flex w-[85vw] md:w-[44%] shrink-0 min-w-0 h-full items-center pointer-events-none"
+              className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-full items-center pointer-events-none"
             >
               {/* Vertical divider line — draws top→bottom on scrub */}
               <div
@@ -73,7 +73,7 @@ export default function Work({
               />
 
               {/* Card content */}
-              <div className="js-work-card-inner w-full will-change-transform px-4 md:px-10">
+              <div className="js-work-card-inner w-full will-change-transform px-4 md:px-20">
                 <WorkProjectPanel
                   ref={(el) => {
                     panelRefs.current[i] = el;
@@ -85,13 +85,13 @@ export default function Work({
           ))}
 
           {/* ── View All Projects card ── */}
-          <div className="js-work-card relative flex w-[85vw] md:w-[44%] shrink-0 min-w-0 h-full items-center pointer-events-none">
+          <div className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-full items-center pointer-events-none">
             <div
               className="js-card-line absolute left-0 top-1/2 -translate-y-1/2 h-screen w-px bg-grey-line/30 origin-top"
               style={{ transform: "scaleY(0)" }}
             />
             <div className="js-work-card-inner w-full will-change-transform px-4 md:px-10 lg:px-16 xl:px-20">
-              <div className="relative flex flex-col items-center justify-center w-full pointer-events-auto aspect-670/460">
+              <div className="relative flex flex-col items-center justify-center w-full pointer-events-auto">
                 <div className="group flex flex-col items-center justify-center gap-10 text-center cursor-pointer w-full h-full">
                   <h3 className=" text-dark-font transition-transform duration-700">
                     Discover our complete collection of digital experiences,

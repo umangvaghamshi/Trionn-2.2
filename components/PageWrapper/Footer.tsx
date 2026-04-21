@@ -54,7 +54,7 @@ export default function Footer() {
         <FooterFog />
 
         <div className="relative z-20 flex w-full min-h-0 flex-1 flex-col">
-          <div className="tr__container flex w-full flex-col pt-24 pb-16 md:pt-37.5">
+          <div className="tr__container flex w-full flex-col pt-24 pb-20 md:pt-37.5">
             <div className="grid w-full grid-cols-12 gap-10 lg:gap-x-12 lg:gap-y-0 mb-20">
               <div className="flex flex-col justify-between gap-6 col-span-8">
                 <div>
@@ -132,7 +132,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="tr__container w-full pb-12">
+          <div className="tr__container w-full pb-20">
             <LinePlus
               lineClass={"opacity-20"}
               plusClass={"col-start-9 translate-x-1/2!"}

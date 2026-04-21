@@ -6,6 +6,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useLenis } from "lenis/react";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import { WordShiftButton } from "@/components/Button";
 
 import { getCappedDPR } from "@/hooks/useCanvasLoop";
 
@@ -701,23 +703,44 @@ export default function DribbleSection() {
 
   return (
     <>
-      <div ref={sectionRef} className="relative z-1 h-screen bg-[#C3C3C3]">
+      <div
+        ref={sectionRef}
+        className="relative z-10 h-screen bg-[#C3C3C3] py-30 overflow-hidden"
+      >
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full pointer-events-none"
+          className="absolute inset-0 w-full h-full pointer-events-none z-1"
         />
-        <div className="w-full h-full flex items-center flex-col justify-center">
+        <div className="tr__container w-full h-full flex items-center flex-col justify-between text-dark-font">
+          <div></div>
           {/* Center text */}
           <div
             ref={centerRef}
-            className="text-center pointer-events-none select-none text-dark-font"
+            className="text-center pointer-events-none select-none"
           >
-            <h2 className="mb-6 text-dark-font">Design in motion</h2>
-            <p className="">
+            <BlurTextReveal
+              as="h2"
+              html="Design in motion"
+              animationType="chars"
+              stagger={0.05}
+              className="text-dark-font mb-6 relative"
+            />
+            <p className="relative">
               Exploring ideas through
               <br />
               daily design practice.
             </p>
+          </div>
+          <div className="w-full flex items-end justify-between">
+            <p className="max-w-80 w-full block relative z-5">
+              Concepts, explorations, and interface experiments—shared openly as
+              part of our creative process.
+            </p>
+            <WordShiftButton
+              text="View on Dribbble"
+              href="#"
+              customClass="relative z-5"
+            />
           </div>
         </div>
         {/* ── Stripes overlay (covers content after animation ends) ── */}
