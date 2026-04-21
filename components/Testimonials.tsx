@@ -256,6 +256,13 @@ export default function Testimonials({
           </div>
         </div>
       </div>
+      <div className="tr__container pointer-events-none z-0">
+        <LinePlus
+          lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
+          plusClass={"col-span-12 mx-auto translate-x-0!"}
+          iconColor={"#272727"}
+        />
+      </div>
     </section>
   );
 }
