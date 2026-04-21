@@ -37,7 +37,13 @@ export default function Banner() {
                 <BlurTextRotate
                   stagger={0.08}
                   prefix="mean"
-                  texts={["something.", "something."]}
+                  texts={[
+                    "something.",
+                    "depth.",
+                    "impact.",
+                    "purpose.",
+                    "intention.",
+                  ]}
                   className="z-2"
                 />
               </div>
