@@ -1558,7 +1558,6 @@ export default function TeamSection() {
               <img
                 ref={frameImgRef}
                 className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none z-[2]"
-                src=""
                 alt=""
               />
               <video
