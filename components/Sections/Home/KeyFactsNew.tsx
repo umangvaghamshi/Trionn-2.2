@@ -108,7 +108,7 @@ export default function KeyFactsNew() {
             A snapshot of our experience and impact.
           </p>
         </div>
-        <div className="key-card-list flex gap-6 justify-center flex-wrap lg:flex-nowrap [transform-style:preserve-3d]">
+        <div className="key-card-list flex gap-6 justify-center flex-wrap lg:flex-nowrap transform-3d">
           <FeaturedCard odoSync={odoTick} />
           <ProjectCard odoSync={odoTick} />
           <TeamCard odoSync={odoTick} />
@@ -140,10 +140,10 @@ export default function KeyFactsNew() {
         </div>
       </div>
       {/* Bottom decoration line (Moved from Work section) */}
-      <div className="js-kf-line-wrap tr__container pointer-events-none absolute bottom-0 left-0 right-0 z-0 max-md:px-4 hidden md:block">
+      <div className="js-kf-line-wrap tr__container pointer-events-none absolute bottom-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4 hidden md:block">
         <LinePlus
-          lineClass={"opacity-25 bg-grey-line left-1/2 -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto translate-x-1/2!"}
+          lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
+          plusClass={"col-span-12 mx-auto translate-x-0!"}
           iconColor={"#272727"}
         />
       </div>
