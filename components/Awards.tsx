@@ -159,7 +159,7 @@ export default function Awards() {
           trigger: awardsSectionRef.current,
           start: 'top top',
           end: () => `+=500%`,
-          scrub: true,
+          scrub: 1,
           pin: true,
           markers: false,
           anticipatePin:1,
