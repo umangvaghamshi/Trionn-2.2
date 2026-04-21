@@ -8,6 +8,7 @@ import { useCallback, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LinePlus from "@/components/LinePlus";
 import { WordShiftButton } from "@/components/Button";
+import MagneticLinePlus from "@/components/MagneticLinePlus";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,11 +34,12 @@ export default function AboutIntro() {
         </div>
         <div className="grid grid-cols-12 gap-x-6 my-25">
           <div className="col-span-11 col-start-2">
-            <LinePlus
+            {/* <LinePlus
               lineClass={"opacity-15 bg-grey-line"}
               plusClass={"col-start-9"}
               iconColor={"#272727"}
-            />
+            /> */}
+            <MagneticLinePlus/>
           </div>
         </div>
         <div className="grid grid-cols-12 gap-x-6">
