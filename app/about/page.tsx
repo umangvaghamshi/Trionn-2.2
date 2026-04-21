@@ -2,7 +2,7 @@ import Awards from "@/components/Awards";
 import { BrandShowcase } from "@/components/BrandShowcase";
 import HowWork from "@/components/HowWork";
 import { PaperFold } from "@/components/PaperFold";
-import { AboutHero } from "@/components/Sections/About";
+import { AboutHero, AboutIntro } from "@/components/Sections/About";
 import TeamSection from "@/components/TeamSection";
 import Testimonials from "@/components/Testimonials";
 import WeNot from "@/components/WeNot";
@@ -11,6 +11,7 @@ const Page = () => {
   return (
     <div>
       <AboutHero />
+      <AboutIntro />
       <PaperFold />
       <HowWork />
       <TeamSection />
@@ -19,7 +20,6 @@ const Page = () => {
       <BrandShowcase animationVariant="crossDissolve" />
       <Testimonials disableScrollEffect />
       <div className="min-h-screen bg-[#0C0C0C]"></div>
-
     </div>
   );
 };
