@@ -84,11 +84,13 @@ export default function StripeReveal({
       const origin = stripeOrigin === "bottom" ? "bottom" : "top";
       gsap.set(stripes, { scaleY: 0, transformOrigin: origin });
 
+      const hasEndTrigger = scrollEndTrigger && document.querySelector(scrollEndTrigger);
+
       const st = ScrollTrigger.create({
         trigger: container,
         start: "top top",
-        endTrigger: scrollEndTrigger,
-        end: scrollEnd,
+        endTrigger: hasEndTrigger ? scrollEndTrigger : container,
+        end: hasEndTrigger ? scrollEnd : "bottom top",
         pin: true,
         pinSpacing: false,
         markers,
