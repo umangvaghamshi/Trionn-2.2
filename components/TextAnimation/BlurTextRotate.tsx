@@ -46,44 +46,49 @@ const BlurTextRotate = ({
     if (!rotateRef.current || texts.length <= 1) return;
 
     const el = rotateRef.current;
+    
+    document.fonts.ready.then(() => {
+      const split = splitTextContent(el);
 
-    const tl = gsap.timeline({
-      delay,
-      repeat: -1,
-      repeatDelay: interval / 1000 - 0.6,
-    });
+      const tl = gsap.timeline({
+        delay,
+        repeat: -1,
+        repeatDelay: interval / 1000 - 0.6,
+      });
 
-    tl.to(splitTextContent(el).chars, {
-      autoAlpha: 0,
-      filter: 'blur(12px)',
-      ease: 'power2.in',
-      stagger: {
-        each: stagger,
-        from: 'random',
-      },
-      onComplete: () => {
-        gsap.to(splitTextContent(el).chars, {
-          autoAlpha: 0,
-          filter: 'blur(12px)',
-          ease: 'power2.in',
-          stagger: {
-            each: stagger,
-            from: 'random',
-          },
-          onComplete: () => {
-            setIndex((i) => (i + 1) % texts.length);
-            tl.kill();
-          },
-        });
-      },
-    }).to(splitTextContent(el).chars, {
-      autoAlpha: 1,
-      filter: 'blur(0px)',
-      ease: 'power2.out',
-      stagger: {
-        each: stagger,
-        from: 'random',
-      },
+      tl.to(split.chars, {
+        autoAlpha: 0,
+        filter: 'blur(12px)',
+        ease: 'power2.in',
+        stagger: {
+          each: stagger,
+          from: 'random',
+        },
+        onComplete: () => {
+          gsap.to(split.chars, {
+            autoAlpha: 0,
+            filter: 'blur(12px)',
+            ease: 'power2.in',
+            stagger: {
+              each: stagger,
+              from: 'random',
+            },
+            onComplete: () => {
+              setIndex((i) => (i + 1) % texts.length);
+              tl.kill();
+              split.revert();
+            },
+          });
+        },
+      }).to(split.chars, {
+        autoAlpha: 1,
+        filter: 'blur(0px)',
+        ease: 'power2.out',
+        stagger: {
+          each: stagger,
+          from: 'random',
+        },
+      });
     });
   };
 

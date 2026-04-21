@@ -98,74 +98,84 @@ const BlurTextReveal = ({
   useGSAP(() => {
     if (!textRef.current) return;
 
-    const split = new SplitText(textRef.current, {
-      type: 'chars,words,lines',
-      smartWrap: true,
-      wordsClass: 'words',
-      charsClass: 'chars',
-      linesClass: 'lines',
-    });
-
-    const targets =
-      animationType === 'lines'
-        ? split.lines
-        : animationType === 'chars'
-          ? split.chars
-          : split.words;
-
-    gsap.set([textRef.current, targets], {
-      autoAlpha: 0,
-      filter: 'blur(12px)',
-      force3D: true,
-    });
-
+    let split: SplitText | null = null;
+    let tl: gsap.core.Timeline | null = null;
     let flickerTl: gsap.core.Timeline | null = null;
+    let hasReverted = false;
 
-    const tl = gsap.timeline({
-      delay,
-      scrollTrigger: {
-        trigger: textRef.current,
-        start,
-        end,
-        scrub,
-        once,
-      },
-      onComplete: () => {
+    document.fonts.ready.then(() => {
+      if (!textRef.current || hasReverted) return;
 
-        if (onCompleteAnimation) {
-          onCompleteAnimation();
-        }
+      split = new SplitText(textRef.current, {
+        type: 'chars,words,lines',
+        smartWrap: true,
+        wordsClass: 'words',
+        charsClass: 'chars',
+        linesClass: 'lines',
+      });
 
-        if (flicker) {
-          flickerTl = randomCharFlicker(targets as HTMLElement[], flickerConfig);
-        }
-      },
-    });
+      const targets =
+        animationType === 'lines'
+          ? split.lines
+          : animationType === 'chars'
+            ? split.chars
+            : split.words;
 
-    tl.to(textRef.current, {
-      autoAlpha: 1,
-      filter: 'blur(0px)',
-      duration: 0.5,
-      ease,
-    }).to(
-      targets,
-      {
+      gsap.set([textRef.current, targets], {
+        autoAlpha: 0,
+        filter: 'blur(12px)',
+        force3D: true,
+      });
+
+      tl = gsap.timeline({
+        delay,
+        scrollTrigger: {
+          trigger: textRef.current,
+          start,
+          end,
+          scrub,
+          once,
+        },
+        onComplete: () => {
+          if (onCompleteAnimation) {
+            onCompleteAnimation();
+          }
+
+          if (flicker) {
+            flickerTl = randomCharFlicker(targets as HTMLElement[], flickerConfig);
+          }
+        },
+      });
+
+      tl.to(textRef.current, {
         autoAlpha: 1,
         filter: 'blur(0px)',
-        duration,
-        stagger: {
-          each: stagger,
-          from,
-        },
+        duration: 0.5,
         ease,
-      },
-      0
-    );
+      }).to(
+        targets,
+        {
+          autoAlpha: 1,
+          filter: 'blur(0px)',
+          duration,
+          stagger: {
+            each: stagger,
+            from,
+          },
+          ease,
+        },
+        0
+      );
+    });
 
     return () => {
-      tl.scrollTrigger?.kill();
-      tl.kill();
-      split.revert();
+      hasReverted = true;
+      if (tl) {
+        tl.scrollTrigger?.kill();
+        tl.kill();
+      }
+      if (flickerTl) flickerTl.kill();
+      if (split) split.revert();
     };
   }, []);
 

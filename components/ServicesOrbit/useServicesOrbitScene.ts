@@ -1554,8 +1554,8 @@ export function useServicesOrbitScene(
         }
       });
 
-      renderer.dispose();
       cubeRT.dispose();
+      renderer.dispose();
 
       orbitAudioRef.current = {
         primeWoosh: () => {},

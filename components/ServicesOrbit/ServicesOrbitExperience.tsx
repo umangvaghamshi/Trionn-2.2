@@ -1,8 +1,13 @@
 "use client";
 
 import { useSiteSound } from "@/components/SiteSoundContext";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
 import { useServicesOrbitScene } from "./useServicesOrbitScene";
 
 const BG = "#0a0a0a";
@@ -85,14 +90,27 @@ export default function ServicesOrbitExperience() {
     else orbitAudioRef.current?.muteWoosh();
   }, [soundEnabled]);
 
+  useGSAP(() => {
+    if (!canvasWrapRef.current) return;
+    ScrollTrigger.create({
+      trigger: "#services-orbit-scope",
+      start: "top top",
+      end: "bottom bottom",
+      pin: canvasWrapRef.current,
+      pinSpacing: false,
+      markers: false,
+    });
+  }, []);
+
   return (
     <div
+      id="services-orbit-scope"
       className="services-orbit-scope min-h-screen font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[#e8e8e8] overflow-x-hidden"
       style={{ background: BG, color: FG }}
     >
       <div
         ref={canvasWrapRef}
-        className="fixed inset-0 z-0 [isolation:isolate] [transform:translateZ(0)] [backface-visibility:hidden] max-[768px]:[contain:layout_style] max-[768px]:[transform:translateZ(0)]"
+        className="absolute inset-0 w-full h-screen z-0 [isolation:isolate] [transform:translateZ(0)] [backface-visibility:hidden] max-[768px]:[contain:layout_style] max-[768px]:[transform:translateZ(0)]"
       >
         <canvas
           ref={mainCanvasRef}

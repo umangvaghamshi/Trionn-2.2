@@ -26,54 +26,60 @@ export default function BlurReveal<T extends ElementType = 'span'>({
   useEffect(() => {
     if (!elRef.current) return;
 
-    // Split ONCE
-    splitRef.current = new SplitText(elRef.current, {
-      type: 'chars',
-      smartWrap: true,
-    });
+    let hasReverted = false;
+    const onEnter = () => tlRef.current?.restart();
 
-    const chars = splitRef.current.chars;
+    document.fonts.ready.then(() => {
+      if (!elRef.current || hasReverted) return;
 
-    gsap.set(chars, {
-      filter: 'blur(0px)',
-      opacity: 1,
-      y: 0,
-    });
+      // Split ONCE
+      splitRef.current = new SplitText(elRef.current, {
+        type: 'chars',
+        smartWrap: true,
+      });
 
-    // Timeline
-    tlRef.current = gsap.timeline({
-      paused: true,
-      defaults: { ease: 'power2.out' },
-    });
+      const chars = splitRef.current.chars;
 
-    tlRef.current
-      .to(chars, {
-        filter: 'blur(10px)',
-        opacity: 0,
-        y: -10,
-        stagger: {
-          each: 0.03,
-          from: 'random',
-        },
-        duration: 0.35,
-      })
-      .set(chars, { y: 10 })
-      .to(chars, {
+      gsap.set(chars, {
         filter: 'blur(0px)',
         opacity: 1,
         y: 0,
-        stagger: {
-          each: 0.03,
-          from: 'random',
-        },
-        duration: 0.4,
       });
 
-    const onEnter = () => tlRef.current?.restart();
+      // Timeline
+      tlRef.current = gsap.timeline({
+        paused: true,
+        defaults: { ease: 'power2.out' },
+      });
 
-    elRef.current.addEventListener('mouseenter', onEnter);
+      tlRef.current
+        .to(chars, {
+          filter: 'blur(10px)',
+          opacity: 0,
+          y: -10,
+          stagger: {
+            each: 0.03,
+            from: 'random',
+          },
+          duration: 0.35,
+        })
+        .set(chars, { y: 10 })
+        .to(chars, {
+          filter: 'blur(0px)',
+          opacity: 1,
+          y: 0,
+          stagger: {
+            each: 0.03,
+            from: 'random',
+          },
+          duration: 0.4,
+        });
+
+      elRef.current.addEventListener('mouseenter', onEnter);
+    });
 
     return () => {
+      hasReverted = true;
       elRef.current?.removeEventListener('mouseenter', onEnter);
       splitRef.current?.revert();
       tlRef.current?.kill();

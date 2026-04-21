@@ -7,8 +7,8 @@ export default async function PagesWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body cz-shortcut-listen="true">
+    <html lang="en" suppressHydrationWarning>
+      <body cz-shortcut-listen="true" suppressHydrationWarning>
         <SiteSoundProvider>
           <Header data={headerSection}></Header>
           <main className="relative z-1 overflow-x-hidden">{children}</main>
