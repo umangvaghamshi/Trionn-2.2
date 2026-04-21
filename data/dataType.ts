@@ -32,3 +32,8 @@ export type WeNotType = {
   id: number | string;
   content: string;
 };
+
+export type FaqItemType = {
+  title: string;
+  content: string[] | string;
+};

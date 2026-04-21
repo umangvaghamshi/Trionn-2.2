@@ -2,7 +2,6 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { SplitText } from "gsap/all";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import parse from "html-react-parser";
@@ -10,7 +9,7 @@ import React, { useRef } from "react";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger);
 
 interface CardItem {
   id: number | string;
