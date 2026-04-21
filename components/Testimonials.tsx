@@ -118,7 +118,7 @@ export default function Testimonials({
             stagger={0.05}
             className="text-dark-font col-span-5 col-start-2"
           />
-          <div className="col-span-5">
+          <div className="col-span-5 flex flex-col justify-end">
             <p className="small text-dark-font max-w-45">
               Great work is built through partnership. Here&apos;s what our
               clients say.

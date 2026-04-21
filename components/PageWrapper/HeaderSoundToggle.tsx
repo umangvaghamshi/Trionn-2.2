@@ -13,7 +13,7 @@ export function HeaderSoundToggle() {
       title={soundEnabled ? "Mute sound" : "Enable sound"}
       aria-pressed={soundEnabled}
       aria-label={soundEnabled ? "Mute sound" : "Enable sound"}
-      className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 shadow-sm backdrop-blur-sm transition hover:border-white/35 hover:bg-white/10 hover:text-white"
+      className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center text-white/80 shadow-sm backdrop-blur-sm transition hover:text-white"
     >
       {soundEnabled ? <SoundOnGlyph /> : <SoundOffGlyph />}
     </button>
@@ -22,7 +22,7 @@ export function HeaderSoundToggle() {
 
 function SoundOnGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden>
+    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden>
       <path
         d="M11 5L6 9H2v6h4l5 4V5z"
         stroke="currentColor"
@@ -48,7 +48,7 @@ function SoundOnGlyph() {
 
 function SoundOffGlyph() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden>
+    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden>
       <path
         d="M11 5L6 9H2v6h4l5 4V5z"
         stroke="currentColor"

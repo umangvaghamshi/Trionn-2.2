@@ -209,8 +209,7 @@ function applyStripeHold(
   const perStripe = (0.6 - staggerAmount) / 1;
   for (let i = 0; i < stripeCount; i++) {
     const staggerIdx = stripeCount - 1 - i;
-    const stripeStart =
-      (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
+    const stripeStart = (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
     const stripeEnd = stripeStart + perStripe;
     const stripeProgress = Math.max(
       0,
@@ -274,7 +273,11 @@ function ServiceCard({ data }: { data: CardData }) {
   );
 }
 
-function SoundListener({ soundEnabledRef }: { soundEnabledRef: React.MutableRefObject<boolean> }) {
+function SoundListener({
+  soundEnabledRef,
+}: {
+  soundEnabledRef: React.MutableRefObject<boolean>;
+}) {
   const { soundEnabled } = useSiteSound();
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
@@ -856,28 +859,36 @@ export default function TrionnServices({
           // Start: |216 - 255 (white scrim)| = 39 (appears dark gray)
           // End:   |255 - 0 (black bg)| = 255 (appears pure white)
           const colorProgress = gsap.utils.clamp(0, 1, (st - 0.01) / 0.12);
-          
+
           const copyColor = gsap.utils.interpolate(
             "rgba(216,216,216,1)",
             "rgba(255,255,255,1)",
-            colorProgress
+            colorProgress,
           );
 
           typographyRef.current
-            .querySelectorAll<HTMLElement>("[data-services-copy], [data-services-copy] *")
+            .querySelectorAll<HTMLElement>(
+              "[data-services-copy], [data-services-copy] *",
+            )
             .forEach((node) => {
               node.style.setProperty("color", copyColor as string, "important");
             });
-            
+
           // Crossfade the bottom text with perfectly scrubbed blur animation
           if (textLightRef.current && textDarkRef.current) {
-            const lightChars = textLightRef.current.querySelectorAll<HTMLElement>('.chars');
-            const darkChars = textDarkRef.current.querySelectorAll<HTMLElement>('.chars');
-            
+            const lightChars =
+              textLightRef.current.querySelectorAll<HTMLElement>(".chars");
+            const darkChars =
+              textDarkRef.current.querySelectorAll<HTMLElement>(".chars");
+
             lightChars.forEach((char, i) => {
               // Fade OUT between 0.0 and 0.5 of colorProgress
               const charStart = (i / lightChars.length) * 0.3; // stagger
-              const p = gsap.utils.clamp(0, 1, (colorProgress - charStart) / 0.2);
+              const p = gsap.utils.clamp(
+                0,
+                1,
+                (colorProgress - charStart) / 0.2,
+              );
               char.style.opacity = String(1 - p);
               char.style.filter = `blur(${p * 12}px)`;
             });
@@ -885,7 +896,11 @@ export default function TrionnServices({
             darkChars.forEach((char, i) => {
               // Fade IN between 0.5 and 1.0 of colorProgress
               const charStart = 0.5 + (i / darkChars.length) * 0.3; // stagger
-              const p = gsap.utils.clamp(0, 1, (colorProgress - charStart) / 0.2);
+              const p = gsap.utils.clamp(
+                0,
+                1,
+                (colorProgress - charStart) / 0.2,
+              );
               char.style.opacity = String(p);
               char.style.filter = `blur(${(1 - p) * 12}px)`;
             });
@@ -906,7 +921,7 @@ export default function TrionnServices({
           );
 
           if (st >= 0.04 && bgVideoRef.current.paused) {
-            bgVideoRef.current.play().catch(() => { });
+            bgVideoRef.current.play().catch(() => {});
           } else if (st < 0.04 && !bgVideoRef.current.paused) {
             bgVideoRef.current.pause();
           }
@@ -916,10 +931,11 @@ export default function TrionnServices({
         if (audioRef.current) {
           // Play if sound is enabled, we are past the white text transition (st >= 0.04),
           // and we haven't reached the very end of the pin where the next section overlaps (linear < 0.95)
-          const shouldPlay = soundEnabledRef.current && st >= 0.04 && linear < 0.95;
-          
+          const shouldPlay =
+            soundEnabledRef.current && st >= 0.04 && linear < 0.95;
+
           if (shouldPlay && audioRef.current.paused) {
-            audioRef.current.play().catch(() => { });
+            audioRef.current.play().catch(() => {});
           } else if (!shouldPlay && !audioRef.current.paused) {
             audioRef.current.pause();
           }
@@ -928,8 +944,8 @@ export default function TrionnServices({
             // Fade in from st 0.04 to 0.20
             const fadeIn = gsap.utils.clamp(0, 1, (st - 0.04) / 0.16);
             // Fade out from linear 0.85 to 0.95
-            const fadeOut = 1 - gsap.utils.clamp(0, 1, (linear - 0.85) / 0.10);
-            
+            const fadeOut = 1 - gsap.utils.clamp(0, 1, (linear - 0.85) / 0.1);
+
             audioRef.current.volume = fadeIn * fadeOut;
           }
         }
@@ -961,7 +977,7 @@ export default function TrionnServices({
 
       /* ── Background video: always playing ── */
       const vid = bgVideoRef.current;
-      if (vid && vid.paused) vid.play().catch(() => { });
+      if (vid && vid.paused) vid.play().catch(() => {});
 
       // Update cards using the smoothed scroll value
       updateCards(s.cardsT);
@@ -1080,7 +1096,7 @@ export default function TrionnServices({
         </div>
         <div
           ref={typographyRef}
-          className="tr__container relative flex h-full flex-col items-center justify-between py-25 z-30"
+          className="tr__container relative flex h-full flex-col items-center justify-between py-30 z-30"
         >
           <div data-services-copy className="relative z-20 block">
             <BlurTextReveal
@@ -1110,8 +1126,14 @@ export default function TrionnServices({
           </div>
           <div className="relative z-20 flex w-full justify-between">
             <div className="hidden w-1/3 lg:block"></div>
-            <div data-services-copy className="w-full text-center sm:w-1/2 lg:w-1/3 relative min-h-[3rem]">
-              <div ref={textLightRef} className="absolute inset-0 flex items-center justify-center">
+            <div
+              data-services-copy
+              className="w-full text-center sm:w-1/2 lg:w-1/3 relative min-h-[3rem]"
+            >
+              <div
+                ref={textLightRef}
+                className="absolute inset-0 flex items-center justify-center"
+              >
                 <BlurTextReveal
                   as="span"
                   html={`✦ Design with intent. Built to work.`}
@@ -1120,7 +1142,10 @@ export default function TrionnServices({
                   className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
                 />
               </div>
-              <div ref={textDarkRef} className="absolute inset-0 flex items-center justify-center">
+              <div
+                ref={textDarkRef}
+                className="absolute inset-0 flex items-center justify-center"
+              >
                 <BlurTextReveal
                   as="span"
                   html={`✦ Different disciplines. One standard of craft.`}

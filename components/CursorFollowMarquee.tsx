@@ -82,7 +82,10 @@ export default function CursorFollowMarquee({
                 clientX <= exRect.right &&
                 clientY >= exRect.top &&
                 clientY <= exRect.bottom;
-              if (isExcluded) { isIn = false; break; }
+              if (isExcluded) {
+                isIn = false;
+                break;
+              }
             }
             if (!isIn) break;
           }
@@ -195,9 +198,12 @@ export default function CursorFollowMarquee({
       className="fixed top-0 left-0 z-99999 pointer-events-none"
       style={{ width: "180px", opacity: 0 }}
     >
-      <div ref={marqueeWrapRef} className="bg-[#000] border py-1 px-2  overflow-hidden ">
-        <Marquee speed={1} gap={15}>
-          <p className="uppercase tracking-widest text-white text-sm! whitespace-nowrap">
+      <div
+        ref={marqueeWrapRef}
+        className="bg-[#000] border py-1 px-2  overflow-hidden "
+      >
+        <Marquee speed={1} gap={0}>
+          <p className="uppercase tracking-widest text-white text-xs! whitespace-nowrap">
             {text} &nbsp; • &nbsp;
           </p>
         </Marquee>

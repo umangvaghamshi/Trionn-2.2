@@ -38,11 +38,11 @@ const ScheduleButton = () => {
   }, []);
 
   return (
-    <div className={`fixed right-10 mix-blend-difference bg-cream/4 hover:bg-cream/6 z-99 transition-all ease-in rounded-lg ${
-            collapsed
-              ? "bottom-10"
-              : "bottom-30"
-          }`}>
+    <div
+      className={`fixed right-10 mix-blend-difference bg-cream/4 hover:bg-cream/6 z-99 transition-all ease-in rounded-lg ${
+        collapsed ? "bottom-10" : "bottom-10"
+      }`}
+    >
       <Link
         href="#"
         className="group schedule-btn px-6.5 py-4 flex justify-between items-center h-17.5"
