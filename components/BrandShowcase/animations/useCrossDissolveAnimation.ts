@@ -11,7 +11,7 @@ export function useCrossDissolveAnimation(): AnimateFn {
     const tl = gsap.timeline();
 
     // Next starts invisible at slightly larger scale
-    gsap.set(next, { opacity: 0, scale: 1.03, visibility: 'visible' });
+    gsap.set(next, { opacity: 0, scale: 1.5, visibility: 'visible' });
 
     // Simultaneous crossfade — both running together for smoothness
     tl.to(current, {

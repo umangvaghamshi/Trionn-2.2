@@ -16,7 +16,7 @@ const Page = () => {
       <TeamSection />
       <WeNot />
       <Awards />
-      <BrandShowcase animationVariant="cubeRotate" />
+      <BrandShowcase animationVariant="crossDissolve" />
       <Testimonials disableScrollEffect />
       <div className="min-h-screen bg-[#0C0C0C]"></div>
 
