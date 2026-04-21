@@ -38,7 +38,8 @@ export default function TrionnFooterLogo({
   const mountRef = useRef<HTMLDivElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<AudioContext | null>(null);
-  const { pulseSmoke, setAudioContext, getSmokeAnalyser } = useFooterAtmosphere();
+  const { pulseSmoke, setAudioContext, getSmokeAnalyser } =
+    useFooterAtmosphere();
   const { soundEnabled } = useSiteSound();
 
   useEffect(() => {
@@ -48,10 +49,12 @@ export default function TrionnFooterLogo({
     else void ctx.suspend().catch(() => {});
   }, [soundEnabled]);
 
-
   const ensureAudio = () => {
     if (!audioRef.current) {
-      const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      const Ctx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
       if (!Ctx) return null;
       audioRef.current = new Ctx();
       setAudioContext(audioRef.current);
@@ -437,7 +440,7 @@ export default function TrionnFooterLogo({
       {/* Under fog (z-[5]) like trionn-logo-footer canvas over #stage — wires pick up smoke tint */}
       <div
         ref={rootRef}
-        className={`relative z-[2] flex w-full min-w-0 flex-col items-stretch justify-end overflow-x-clip pb-4 ${className}`}
+        className={`relative z-2 flex w-full min-w-0 flex-col items-stretch justify-end overflow-x-clip pb-4 ${className}`}
       >
         <div className="flex w-full min-w-0 flex-col justify-end mix-blend-difference">
           <div

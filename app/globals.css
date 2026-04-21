@@ -79,7 +79,7 @@
 }
 @media (min-width: 1024px) {
   :root {
-    --size: 1100;
+    --size: 945;
   }
 }
 /* @media (min-width: 1280px) {
