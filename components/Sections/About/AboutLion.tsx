@@ -85,7 +85,11 @@ interface AboutLionProps {
  *
  * Ported from the standalone About-Lion-TOP-Section prototype.
  */
-export default function AboutLion({ className = "", onLoad, children }: AboutLionProps) {
+export default function AboutLion({
+  className = "",
+  onLoad,
+  children,
+}: AboutLionProps) {
   const sceneRef = useRef<HTMLDivElement>(null);
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const stripContainerRef = useRef<HTMLDivElement>(null);
@@ -275,10 +279,7 @@ export default function AboutLion({ className = "", onLoad, children }: AboutLio
         traceStripShape(restY, displacement, stripH);
         const gradUp = sctx.createLinearGradient(0, topY + stripH, 0, topY);
         gradUp.addColorStop(0, STRIP_CLEAR);
-        gradUp.addColorStop(
-          1,
-          `rgba(255,247,216,${strength.toFixed(3)})`,
-        );
+        gradUp.addColorStop(1, `rgba(255,247,216,${strength.toFixed(3)})`);
         sctx.fillStyle = gradUp;
         sctx.fill();
       }
@@ -448,14 +449,7 @@ export default function AboutLion({ className = "", onLoad, children }: AboutLio
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texImage2D(
-        gl.TEXTURE_2D,
-        0,
-        gl.RGBA,
-        gl.RGBA,
-        gl.UNSIGNED_BYTE,
-        img,
-      );
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
       gl.bindTexture(gl.TEXTURE_2D, null);
       return t;
     };
@@ -594,10 +588,12 @@ export default function AboutLion({ className = "", onLoad, children }: AboutLio
       state.mouse.y = 0.5;
     };
     const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length) updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      if (e.touches.length)
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY);
     };
     const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length) updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      if (e.touches.length)
+        updatePointer(e.touches[0].clientX, e.touches[0].clientY);
     };
 
     window.addEventListener("resize", onResize);
@@ -666,16 +662,13 @@ export default function AboutLion({ className = "", onLoad, children }: AboutLio
   return (
     <div
       ref={sceneRef}
-      className={`relative inline-block leading-[0] w-full max-w-[2048px] aspect-[660/1434] md:aspect-[2048/1200] ${className}`}
+      className={`relative inline-block leading-0 w-full max-w-512 aspect-660/143] md:aspect-2048/1200 ${className}`}
     >
-      <canvas
-        ref={glCanvasRef}
-        className="block w-full h-full touch-none"
-      />
+      <canvas ref={glCanvasRef} className="block w-full h-full touch-none" />
       {children}
       <div
         ref={stripContainerRef}
-        className="absolute inset-0 z-[2] pointer-events-none overflow-hidden w-full h-full"
+        className="absolute inset-0 z-2 pointer-events-none overflow-hidden w-full h-full"
         style={{
           mixBlendMode: "luminosity",
           opacity: 0.9,
