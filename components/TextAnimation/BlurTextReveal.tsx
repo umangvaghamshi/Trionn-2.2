@@ -98,84 +98,74 @@ const BlurTextReveal = ({
   useGSAP(() => {
     if (!textRef.current) return;
 
-    let split: SplitText | null = null;
-    let tl: gsap.core.Timeline | null = null;
-    let flickerTl: gsap.core.Timeline | null = null;
-    let hasReverted = false;
-
-    document.fonts.ready.then(() => {
-      if (!textRef.current || hasReverted) return;
-
-      split = new SplitText(textRef.current, {
-        type: 'chars,words,lines',
-        smartWrap: true,
-        wordsClass: 'words',
-        charsClass: 'chars',
-        linesClass: 'lines',
-      });
-
-      const targets =
-        animationType === 'lines'
-          ? split.lines
-          : animationType === 'chars'
-            ? split.chars
-            : split.words;
-
-      gsap.set([textRef.current, targets], {
-        autoAlpha: 0,
-        filter: 'blur(12px)',
-        force3D: true,
-      });
-
-      tl = gsap.timeline({
-        delay,
-        scrollTrigger: {
-          trigger: textRef.current,
-          start,
-          end,
-          scrub,
-          once,
-        },
-        onComplete: () => {
-          if (onCompleteAnimation) {
-            onCompleteAnimation();
-          }
-
-          if (flicker) {
-            flickerTl = randomCharFlicker(targets as HTMLElement[], flickerConfig);
-          }
-        },
-      });
-
-      tl.to(textRef.current, {
-        autoAlpha: 1,
-        filter: 'blur(0px)',
-        duration: 0.5,
-        ease,
-      }).to(
-        targets,
-        {
-          autoAlpha: 1,
-          filter: 'blur(0px)',
-          duration,
-          stagger: {
-            each: stagger,
-            from,
-          },
-          ease,
-        },
-        0
-      );
+    const split = new SplitText(textRef.current, {
+      type: 'chars,words,lines',
+      smartWrap: true,
+      wordsClass: 'words',
+      charsClass: 'chars',
+      linesClass: 'lines',
     });
 
+    const targets =
+      animationType === 'lines'
+        ? split.lines
+        : animationType === 'chars'
+          ? split.chars
+          : split.words;
+
+    gsap.set([textRef.current, targets], {
+      autoAlpha: 0,
+      filter: 'blur(12px)',
+      force3D: true,
+    });
+
+    let flickerTl: gsap.core.Timeline | null = null;
+
+    const tl = gsap.timeline({
+      delay,
+      scrollTrigger: {
+        trigger: textRef.current,
+        start,
+        end,
+        scrub,
+        once,
+      },
+      onComplete: () => {
+
+        if (onCompleteAnimation) {
+          onCompleteAnimation();
+        }
+
+        if (flicker) {
+          flickerTl = randomCharFlicker(targets as HTMLElement[], flickerConfig);
+        }
+      },
+    });
+
+    tl.to(textRef.current, {
+      autoAlpha: 1,
+      filter: 'blur(0px)',
+      duration: 0.5,
+      ease,
+    }).to(
+      targets,
+      {
+        autoAlpha: 1,
+        filter: 'blur(0px)',
+        duration,
+        stagger: {
+          each: stagger,
+          from,
+        },
+        ease,
+      },
+      0
+    );
+
     return () => {
-      hasReverted = true;
-      if (tl) {
-        tl.scrollTrigger?.kill();
-        tl.kill();
-      }
-      if (flickerTl) flickerTl.kill();
-      if (split) split.revert();
+      tl.scrollTrigger?.kill();
+      tl.kill();
+      split.revert();
     };
   }, []);
 

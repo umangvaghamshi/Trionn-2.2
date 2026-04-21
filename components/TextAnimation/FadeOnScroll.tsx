@@ -28,38 +28,32 @@ const FadeOnScroll = ({
   useGSAP(() => {
     if (!textRef.current) return;
 
-    let split: SplitText | null = null;
-    let hasReverted = false;
-
-    document.fonts.ready.then(() => {
-      if (!textRef.current || hasReverted) return;
-      
-      split = new SplitText(textRef.current, {
-        type: 'chars',
-        aria: 'none',
-        charsClass: 'chars',
-        autoSplit: true,
-        smartWrap: true,
-        onSplit: (self) => {
-          return gsap.to(self.chars, {
-            color: '#d8d8d8',
-            stagger,
-            scrollTrigger: {
-              trigger: self.chars,
-              endTrigger: self.chars[self.chars.length - 1],
-              markers: false,
-              scrub,
-              start: 'top 80%',
-              end: 'bottom center',
-            },
-          });
-        },
-      });
+    const split = new SplitText(textRef.current, {
+      type: 'chars',
+      aria: 'none',
+      charsClass: 'chars',
+      autoSplit: true,
+      smartWrap: true,
+      onSplit: (self) => {
+        return gsap.to(self.chars, {
+          color: '#d8d8d8',
+          stagger,
+          scrollTrigger: {
+            trigger: self.chars,
+            endTrigger: self.chars[self.chars.length - 1],
+            markers: false,
+            scrub,
+            // once: true,
+            start: 'top 80%',
+            end: 'bottom center',
+            // refreshPriority: 1,
+          },
+        });
+      },
     });
 
     return () => {
-      hasReverted = true;
-      if (split) split.revert();
+      split.revert();
     };
   }, []);
 
