@@ -1,14 +1,11 @@
 "use client";
 
-import { BlurTextReveal } from "@/components/TextAnimation";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import LinePlus from "@/components/LinePlus";
 import { WordShiftButton } from "@/components/Button";
+import LinePlus from "@/components/LinePlus";
 import MagneticLinePlus from "@/components/MagneticLinePlus";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,14 +31,10 @@ export default function AboutIntro() {
         </div>
         <div className="grid grid-cols-12 gap-x-6 my-25">
           <div className="col-span-11 col-start-2">
-            {/* <LinePlus
-              lineClass={"opacity-15 bg-grey-line"}
-              plusClass={"col-start-9"}
-              iconColor={"#272727"}
-            /> */}
-            <MagneticLinePlus/>
+            <MagneticLinePlus plusCol={9.2} totalCols={12} lineColor="#434343" plusColor="#272727" plusHalfSize={6} bgColor="white" />
           </div>
         </div>
+         
         <div className="grid grid-cols-12 gap-x-6">
           <div className="col-span-11 col-start-2 grid grid-cols-12 gap-x-6 grid-rows-1">
             <div className="left-block grid grid-cols-3 gap-x-6 col-span-3 align-top">
