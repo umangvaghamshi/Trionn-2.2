@@ -23,6 +23,7 @@ interface LinePlusProps {
    */
   scrollOffset?: string;
 }
+
 export default function LinePlus({
   customClass,
   lineClass,
@@ -32,7 +33,6 @@ export default function LinePlus({
 }: LinePlusProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const drawLine = useRef<HTMLDivElement>(null);
-  const plusWrapperRef = useRef<HTMLDivElement>(null);
   const PlusIcon = useRef<SVGSVGElement>(null);
   const lineDrawn = useRef(false);
 
@@ -58,6 +58,7 @@ export default function LinePlus({
         },
       },
     });
+
     gsap.to(PlusIcon.current, {
       rotation: 360,
       duration: 1,
@@ -81,7 +82,7 @@ export default function LinePlus({
 
       const containerRect = container.getBoundingClientRect();
 
-      // Capture rest position on first move after enter (x is 0 at that point)
+      // Capture rest position on first move after enter
       if (iconRestX === null) {
         const iconRect = PlusIcon.current.getBoundingClientRect();
         iconRestX = iconRect.left - containerRect.left + iconRect.width / 2;
@@ -116,44 +117,6 @@ export default function LinePlus({
     };
   }, [scrollOffset]);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDrawn.current || !containerRef.current || !PlusIcon.current || !drawLine.current) return;
-
-    const lineRect = drawLine.current.getBoundingClientRect();
-    const plusWrap = plusWrapperRef.current;
-    if (!plusWrap) return;
-
-    const parentRect = plusWrap.getBoundingClientRect();
-    // Rest position of the plus (horizontal center of the icon column / wrapper)
-    const parentCenterX = parentRect.left + parentRect.width / 2;
-
-    let offsetX = e.clientX - parentCenterX;
-
-    // Keep icon on the line segment (left/right edges in screen space, relative to rest center)
-    const minX = lineRect.left - parentCenterX;
-    const maxX = lineRect.right - parentCenterX;
-    const lo = Math.min(minX, maxX);
-    const hi = Math.max(minX, maxX);
-    offsetX = Math.max(lo, Math.min(offsetX, hi));
-
-    gsap.to(PlusIcon.current, {
-      x: offsetX,
-      duration: 0.4,
-      ease: "power3.out",
-      overwrite: "auto",
-    });
-  };
-
-  const handleMouseLeave = () => {
-    if (!PlusIcon.current) return;
-    gsap.to(PlusIcon.current, {
-      x: 0,
-      duration: 0.6,
-      ease: "power2.out",
-      overwrite: "auto",
-    });
-  };
-
   return (
     <div
       ref={containerRef}
@@ -163,29 +126,32 @@ export default function LinePlus({
         className={`line absolute top-1/2 left-0 -translate-y-1/2 h-px w-0 ${lineClass ? lineClass : "bg-cream-line"}`}
         ref={drawLine}
       />
-      {PlusIcon && (
-        <div
-          ref={plusWrapperRef}
-          className={`flex items-center justify-center ${plusClass ? plusClass : ""}`}
-        >
-          <line
-            x1="6.5"
-            y1="0"
-            x2="6.5"
-            y2="13"
-            strokeWidth="1"
-            style={{ stroke: iconColor }}
-          />
-          <line
-            x1="0"
-            y1="6.5"
-            x2="13"
-            y2="6.5"
-            strokeWidth="1"
-            style={{ stroke: iconColor }}
-          />
-        </svg>
-      )}
+      <svg
+        width="13"
+        height="13"
+        viewBox="0 0 13 13"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`-translate-x-1/2 w-3.25 h-3.25 ${plusClass ? plusClass : ""}`}
+        ref={PlusIcon}
+      >
+        <line
+          x1="6.5"
+          y1="0"
+          x2="6.5"
+          y2="13"
+          strokeWidth="1"
+          style={{ stroke: iconColor }}
+        />
+        <line
+          x1="0"
+          y1="6.5"
+          x2="13"
+          y2="6.5"
+          strokeWidth="1"
+          style={{ stroke: iconColor }}
+        />
+      </svg>
     </div>
   );
 }
