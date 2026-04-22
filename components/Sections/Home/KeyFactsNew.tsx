@@ -37,23 +37,23 @@ export default function KeyFactsNew() {
       const list = root.querySelector(".key-card-list") as HTMLElement | null;
       if (list) gsap.set(list, { perspective: 1400 });
 
-      const lineWrap = root.querySelector(".js-kf-line-wrap");
-      if (lineWrap) {
-        gsap.fromTo(
-          lineWrap,
-          { scaleY: 0, transformOrigin: "top" },
-          {
-            scaleY: 1,
-            ease: "sine.inOut",
-            duration: 1.5,
-            scrollTrigger: {
-              trigger: lineWrap,
-              start: "top 70%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      }
+      // const lineWrap = root.querySelector(".js-kf-line-wrap");
+      // if (lineWrap) {
+      //   gsap.fromTo(
+      //     lineWrap,
+      //     { scaleY: 0, transformOrigin: "top" },
+      //     {
+      //       scaleY: 1,
+      //       ease: "sine.inOut",
+      //       duration: 1.5,
+      //       scrollTrigger: {
+      //         trigger: lineWrap,
+      //         start: "top 70%",
+      //         toggleActions: "play none none reverse",
+      //       },
+      //     },
+      //   );
+      // }
 
       gsap.set(cards, {
         rotateX: -92,
@@ -84,11 +84,7 @@ export default function KeyFactsNew() {
         duration: cardDuration,
       });
 
-      tl.call(
-        triggerOdometerOnce,
-        undefined,
-        staggerEach * 1.5,
-      );
+      tl.call(triggerOdometerOnce, undefined, staggerEach * 1.5);
     },
     { scope: containerRef, dependencies: [triggerOdometerOnce] },
   );
@@ -112,7 +108,7 @@ export default function KeyFactsNew() {
             A snapshot of our experience and impact.
           </p>
         </div>
-        <div className="key-card-list flex gap-6 justify-center flex-wrap lg:flex-nowrap [transform-style:preserve-3d]">
+        <div className="key-card-list flex gap-6 justify-center flex-wrap lg:flex-nowrap transform-3d">
           <FeaturedCard odoSync={odoTick} />
           <ProjectCard odoSync={odoTick} />
           <TeamCard odoSync={odoTick} />
@@ -144,10 +140,10 @@ export default function KeyFactsNew() {
         </div>
       </div>
       {/* Bottom decoration line (Moved from Work section) */}
-      <div className="js-kf-line-wrap tr__container pointer-events-none absolute bottom-0 left-0 right-0 z-0 max-md:px-4 hidden md:block">
+      <div className="js-kf-line-wrap tr__container pointer-events-none absolute bottom-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4 hidden md:block">
         <LinePlus
-          lineClass={"opacity-25 bg-grey-line left-1/2 -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto translate-x-1/2!"}
+          lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
+          plusClass={"col-span-12 mx-auto translate-x-0!"}
           iconColor={"#272727"}
         />
       </div>

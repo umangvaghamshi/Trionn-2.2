@@ -47,7 +47,7 @@ export default function WorkServicesSequence() {
       const initCards = () => {
         const vw = window.innerWidth;
         const isMobile = vw < 768;
-        
+
         const cardEls = bridge.querySelectorAll<HTMLElement>(".js-work-card");
         cardEls.forEach((card, index) => {
           const inner = card.querySelector<HTMLElement>(".js-work-card-inner");
@@ -106,7 +106,7 @@ export default function WorkServicesSequence() {
           // Simple entry: card rises from below (+550) to Y=0 and stays
           // Card 3 only ever reaches norm = 0.75 at max scroll, so it MUST finish rising before then.
           const entryStart = 1.2; // starts rising much later (when card is almost fully in view horizontally)
-          const entryEnd = 0.5;    // fully settled by here
+          const entryEnd = 0.5; // fully settled by here
           let y: number;
 
           if (isMobile) {
@@ -119,10 +119,10 @@ export default function WorkServicesSequence() {
             // Rising from bottom to center
             // p goes from 0 (just entering) to 1 (fully arrived)
             const p = (entryStart - norm) / (entryStart - entryEnd);
-            
+
             // True power3.out ease: starts fast, slows down smoothly at the end
             const easeOut = 1 - Math.pow(1 - p, 3);
-            
+
             // y goes from 550 to 0 based on the easeOut curve
             y = 550 * (1 - easeOut);
           } else {
@@ -191,7 +191,7 @@ export default function WorkServicesSequence() {
       } else {
         window.addEventListener("load", onLoad);
       }
-      
+
       // Additional refresh to catch late-loading fonts/images
       const timeoutId = setTimeout(() => {
         ScrollTrigger.refresh();
@@ -215,14 +215,14 @@ export default function WorkServicesSequence() {
     >
       <div
         ref={servicesLayerRef}
-        className="absolute inset-0 z-[1] will-change-transform"
+        className="absolute inset-0 z-1 will-change-transform"
       >
         <TrionnServices scrollProgressRef={progressRef} embedded />
       </div>
 
       <div
         ref={workLayerRef}
-        className="absolute inset-0 z-[2] overflow-hidden pointer-events-none will-change-transform"
+        className="absolute inset-0 z-2 overflow-hidden pointer-events-none will-change-transform"
       >
         <Work trackRef={workTrackRef} workHandleRef={workHandleRef} />
       </div>

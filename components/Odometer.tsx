@@ -21,7 +21,7 @@ export function Odometer({
   trigger = false,
   syncPlayCount,
 }: OdometerProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLSpanElement | null>(null);
   const digitRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sampleDigitRef = useRef<HTMLSpanElement | null>(null);
 
@@ -123,7 +123,10 @@ export function Odometer({
   }, [inView, trigger, digitHeight, displayValue, syncPlayCount]);
 
   return (
-    <span className="relative inline-flex">
+    <span className="relative inline-flex" ref={(el) => {
+      containerRef.current = el;
+      inViewRef(el);
+    }}>
       {/* 👻 Hidden measurement */}
       <span
         ref={sampleDigitRef}
@@ -145,10 +148,6 @@ export function Odometer({
       {/* 🎡 Odometer */}
       {digitHeight > 0 && (
         <div
-          ref={(el) => {
-            containerRef.current = el;
-            inViewRef(el);
-          }}
           className={`absolute inset-0 flex justify-center overflow-hidden ${className}`}
           style={{ height: digitHeight }}
         >

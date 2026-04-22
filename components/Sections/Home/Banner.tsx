@@ -10,10 +10,10 @@ export default function Banner() {
       className="text-light-font relative mix-blend-difference"
       id="sticky-wrap"
     >
-      <section className="main-banner relative min-h-screen pt-37 pb-30 flex w-full ">
+      <section className="main-banner relative min-h-screen pt-37 pb-10 flex w-full ">
         <div className="tr__container relative flex flex-col justify-between w-full gap-10">
           <div className="banner-top-block flex flex-col w-full">
-            <span className="title z-2 col-span-6 flex items-end" id="s1-sub">
+            <span className="title z-2 col-span-6 items-end hidden" id="s1-sub">
               <BlurTextReveal
                 as="span"
                 html={`Strategy-led <br />digital experiences.`}
@@ -37,7 +37,13 @@ export default function Banner() {
                 <BlurTextRotate
                   stagger={0.08}
                   prefix="mean"
-                  texts={["something.", "something."]}
+                  texts={[
+                    "something.",
+                    "depth.",
+                    "impact.",
+                    "purpose.",
+                    "intention.",
+                  ]}
                   className="z-2"
                 />
               </div>
@@ -47,7 +53,7 @@ export default function Banner() {
               >
                 <BlurTextReveal
                   as="span"
-                  html={`13+ years <br />shaping digital <br />direction.`}
+                  html={`13+ years <br />shaping digital <br />direction`}
                   animationType="chars"
                   stagger={0.05}
                   className="title block"

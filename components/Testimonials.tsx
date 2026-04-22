@@ -58,12 +58,14 @@ interface TestimonialsProps {
   customClass?: string;
   swiperOptions?: SwiperOptions;
   disableScrollEffect?: boolean;
+  showBottomLine?: boolean;
 }
 
 export default function Testimonials({
   customClass,
   swiperOptions = {},
   disableScrollEffect = false,
+  showBottomLine = false,
 }: TestimonialsProps) {
   const swiperRef = useRef<SwiperClass | null>(null);
   const reviewPrevRef = useRef<HTMLDivElement>(null);
@@ -99,7 +101,15 @@ export default function Testimonials({
   return (
     <section
       className="relative z-20 isolate bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden min-h-screen"
-      style={disableScrollEffect ? undefined : { transform: `translateY(-${SERVICES_HOLD_VH}vh)`, marginBottom: `-${SERVICES_HOLD_VH}vh`, willChange: "transform" }}
+      style={
+        disableScrollEffect
+          ? undefined
+          : {
+              transform: `translateY(-${SERVICES_HOLD_VH}vh)`,
+              marginBottom: `-${SERVICES_HOLD_VH}vh`,
+              willChange: "transform",
+            }
+      }
     >
       <div className="tr__container min-h-screen py-25">
         <div className="grid grid-cols-12 gap-6">
@@ -108,9 +118,9 @@ export default function Testimonials({
             html="Client stories"
             animationType="chars"
             stagger={0.05}
-            className="text-dark-font col-span-6"
+            className="text-dark-font col-span-5 col-start-2"
           />
-          <div className="col-span-6">
+          <div className="col-span-5 flex flex-col justify-end">
             <p className="small text-dark-font max-w-45">
               Great work is built through partnership. Here&apos;s what our
               clients say.
@@ -119,12 +129,12 @@ export default function Testimonials({
         </div>
         <LinePlus
           customClass={"my-20"}
-          lineClass={"opacity-15 bg-grey-line"}
+          lineClass={"opacity-15 bg-grey-line col-span-10 col-start-2"}
           plusClass={"col-start-7"}
           iconColor={"#272727"}
         />
         <div className="w-full relative grid grid-cols-12 gap-6 ">
-          <div className="flex flex-col justify-between col-span-4 col-start-3">
+          <div className="flex flex-col justify-between col-span-5 col-start-2">
             <div className="testimonial-company-list flex flex-col gap-4">
               {TestimonialsData.map((item, index) => (
                 <button
@@ -182,7 +192,7 @@ export default function Testimonials({
               </div>
             </div>
           </div>
-          <div className="col-span-6 ">
+          <div className="col-span-5 ">
             <Swiper
               {...swiperOptions}
               modules={[Navigation, Pagination, Autoplay, EffectFade]}
@@ -248,6 +258,15 @@ export default function Testimonials({
           </div>
         </div>
       </div>
+      {showBottomLine && (
+        <div className="tr__container pointer-events-none z-0">
+          <LinePlus
+            lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
+            plusClass={"col-span-12 mx-auto translate-x-0!"}
+            iconColor={"#272727"}
+          />
+        </div>
+      )}
     </section>
   );
 }

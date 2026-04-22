@@ -6,6 +6,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useLenis } from "lenis/react";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import { WordShiftButton } from "@/components/Button";
 
 import { getCappedDPR } from "@/hooks/useCanvasLoop";
 
@@ -278,19 +280,35 @@ export default function DribbleSection() {
       const edgeTopPts: THREE.Vector3[] = [];
       const edgeBotPts: THREE.Vector3[] = [];
       {
-        const fov = getCamFov() * Math.PI / 180;
-        const gapWorld = (4 / window.innerHeight) * 2 * Math.tan(fov / 2) * getCamZ();
+        const fov = (getCamFov() * Math.PI) / 180;
+        const gapWorld =
+          (4 / window.innerHeight) * 2 * Math.tan(fov / 2) * getCamZ();
         const offset = CARD_H * 0.5 + gapWorld + CARD_H * 0.12;
         for (let i = 0; i <= EDGE_STEPS; i++) {
           const angle = (i / EDGE_STEPS) * TURNS * Math.PI * 2;
           const cp = hPos(angle);
           const up = new THREE.Vector3()
-            .crossVectors(hTan(angle), new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle)))
+            .crossVectors(
+              hTan(angle),
+              new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle)),
+            )
             .normalize();
           up.y += 0.6;
           up.normalize();
-          edgeTopPts.push(new THREE.Vector3(cp.x + up.x * offset, cp.y + up.y * offset, cp.z + up.z * offset));
-          edgeBotPts.push(new THREE.Vector3(cp.x - up.x * offset, cp.y - up.y * offset, cp.z - up.z * offset));
+          edgeTopPts.push(
+            new THREE.Vector3(
+              cp.x + up.x * offset,
+              cp.y + up.y * offset,
+              cp.z + up.z * offset,
+            ),
+          );
+          edgeBotPts.push(
+            new THREE.Vector3(
+              cp.x - up.x * offset,
+              cp.y - up.y * offset,
+              cp.z - up.z * offset,
+            ),
+          );
         }
       }
       const topReversed = [...edgeTopPts].reverse();
@@ -298,24 +316,38 @@ export default function DribbleSection() {
 
       // extend botReversed: prepend points continuing tangent to screen top
       {
-        const fov = getCamFov() * Math.PI / 180;
+        const fov = (getCamFov() * Math.PI) / 180;
         const screenTop = Math.tan(fov / 2) * getCamZ();
-        const p0 = botReversed[0], p1 = botReversed[1];
-        const dx = p0.x - p1.x, dy = p0.y - p1.y, dz = p0.z - p1.z;
+        const p0 = botReversed[0],
+          p1 = botReversed[1];
+        const dx = p0.x - p1.x,
+          dy = p0.y - p1.y,
+          dz = p0.z - p1.z;
         const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        const tx = dx / len, ty = dy / len, tz = dz / len;
+        const tx = dx / len,
+          ty = dy / len,
+          tz = dz / len;
         const distToTop = (screenTop - p0.y) / ty;
-        const steps = 20, extra: THREE.Vector3[] = [];
+        const steps = 20,
+          extra: THREE.Vector3[] = [];
         for (let i = steps; i >= 1; i--) {
           const t = (i / steps) * distToTop;
-          extra.push(new THREE.Vector3(p0.x + tx * t, p0.y + ty * t, p0.z + tz * t));
+          extra.push(
+            new THREE.Vector3(p0.x + tx * t, p0.y + ty * t, p0.z + tz * t),
+          );
         }
         botReversed.unshift(...extra);
       }
 
       const TRAVELLER_STEPS = Math.floor((EDGE_STEPS + 20) * 0.14);
-      const travelMatA = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
-      const travelMatB = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+      const travelMatA = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        linewidth: 2,
+      });
+      const travelMatB = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        linewidth: 2,
+      });
       const travelGeoA = new THREE.BufferGeometry().setFromPoints(topReversed);
       const travelGeoB = new THREE.BufferGeometry().setFromPoints(botReversed);
       travelGeoA.setDrawRange(0, 0);
@@ -331,24 +363,46 @@ export default function DribbleSection() {
 
       /* horizontal grid lines */
       const GRID_LINE_PTS = 600;
-      const gridLineMatT = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75 });
-      const gridLineMatB = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.75 });
+      const gridLineMatT = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.75,
+      });
+      const gridLineMatB = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.75,
+      });
 
       function buildGridLinePoints(yWorld: number, rtl = false) {
-        const fov = getCamFov() * Math.PI / 180;
-        const hW = Math.tan(fov / 2) * getCamZ() * (window.innerWidth / window.innerHeight);
+        const fov = (getCamFov() * Math.PI) / 180;
+        const hW =
+          Math.tan(fov / 2) *
+          getCamZ() *
+          (window.innerWidth / window.innerHeight);
         const pxGap = isMobile() ? 0 : hW * (80 / window.innerWidth);
-        const xMin = -hW + pxGap, xMax = hW - pxGap;
+        const xMin = -hW + pxGap,
+          xMax = hW - pxGap;
         const pts: THREE.Vector3[] = [];
         for (let i = 0; i <= GRID_LINE_PTS; i++) {
           const t = i / GRID_LINE_PTS;
-          pts.push(new THREE.Vector3(rtl ? xMax - t * (xMax - xMin) : xMin + t * (xMax - xMin), yWorld, 0));
+          pts.push(
+            new THREE.Vector3(
+              rtl ? xMax - t * (xMax - xMin) : xMin + t * (xMax - xMin),
+              yWorld,
+              0,
+            ),
+          );
         }
         return pts;
       }
 
-      const gridTopGeo = new THREE.BufferGeometry().setFromPoints(buildGridLinePoints(0));
-      const gridBotGeo = new THREE.BufferGeometry().setFromPoints(buildGridLinePoints(0));
+      const gridTopGeo = new THREE.BufferGeometry().setFromPoints(
+        buildGridLinePoints(0),
+      );
+      const gridBotGeo = new THREE.BufferGeometry().setFromPoints(
+        buildGridLinePoints(0),
+      );
       gridTopGeo.setDrawRange(0, 0);
       gridBotGeo.setDrawRange(0, 0);
       const gridTopLine = new THREE.Line(gridTopGeo, gridLineMatT);
@@ -451,7 +505,8 @@ export default function DribbleSection() {
 
       /* render loop — driven by gsap.ticker (same tick as Lenis) so scroll is never stale */
       let lastTs = 0;
-      let smoothHeadA = 0, smoothHeadB = 0;
+      let smoothHeadA = 0,
+        smoothHeadB = 0;
       let sectionVisible = false;
       const renderFrame = (time: number) => {
         if (!sectionVisible) return;
@@ -462,9 +517,10 @@ export default function DribbleSection() {
         /* Read smoothed scroll from Lenis (same as app.js: lenis.on('scroll', e => scrollY = e.scroll)) */
         const lenisScroll = lenisRef.current?.scroll ?? 0;
         const sectionTop = st.start; // px offset where pin begins
-        const rawProg = totalScroll > 0
-          ? Math.max(0, Math.min(1, (lenisScroll - sectionTop) / totalScroll))
-          : 0;
+        const rawProg =
+          totalScroll > 0
+            ? Math.max(0, Math.min(1, (lenisScroll - sectionTop) / totalScroll))
+            : 0;
         const prog = Math.min(rawProg / animationEnd, 1);
 
         /* ── Stripe reveal after animation completes ── */
@@ -502,10 +558,16 @@ export default function DribbleSection() {
         smoothHeadB += (targetHeadB - smoothHeadB) * lerpK;
         const headA = Math.floor(smoothHeadA);
         const tailA = Math.max(0, headA - TRAVELLER_STEPS);
-        travelGeoA.setDrawRange(tailA, Math.max(0, Math.min(headA, totalPtsA) - tailA + 1));
+        travelGeoA.setDrawRange(
+          tailA,
+          Math.max(0, Math.min(headA, totalPtsA) - tailA + 1),
+        );
         const headB = Math.floor(smoothHeadB);
         const tailB = Math.max(0, headB - TRAVELLER_STEPS);
-        travelGeoB.setDrawRange(tailB, Math.max(0, Math.min(headB, totalPtsB) - tailB + 1));
+        travelGeoB.setDrawRange(
+          tailB,
+          Math.max(0, Math.min(headB, totalPtsB) - tailB + 1),
+        );
 
         const offset = rProg * (totalArc + totArcN) - totArcN + 25.0;
         for (let k = 0; k < N; k++) {
@@ -527,11 +589,16 @@ export default function DribbleSection() {
         if (gProg > 0 && !gridLinesBuilt) {
           const rows = isMobile() ? 3 : 2;
           const gapY = isMobile() ? 0.22 : isTablet() ? 0.36 : 0.55;
-          const FWg = getFlatW(), FHg = FWg * CARD_RATIO;
+          const FWg = getFlatW(),
+            FHg = FWg * CARD_RATIO;
           const tH = rows * FHg + (rows - 1) * gapY;
           if (isMobile()) {
-            gridTopGeo.setFromPoints(buildGridLinePoints(tH * 0.5 - FHg - gapY * 0.5, false));
-            gridBotGeo.setFromPoints(buildGridLinePoints(tH * 0.5 - 2 * FHg - gapY * 1.5, true));
+            gridTopGeo.setFromPoints(
+              buildGridLinePoints(tH * 0.5 - FHg - gapY * 0.5, false),
+            );
+            gridBotGeo.setFromPoints(
+              buildGridLinePoints(tH * 0.5 - 2 * FHg - gapY * 1.5, true),
+            );
           } else {
             gridTopGeo.setFromPoints(buildGridLinePoints(0, false));
             gridBotGeo.setFromPoints(buildGridLinePoints(0, false));
@@ -543,12 +610,21 @@ export default function DribbleSection() {
 
         if (gridLinesBuilt) {
           const lineDelay = 0.2;
-          const lineProg = Math.max(0, Math.min(1, (gProg - lineDelay) / (1 - lineDelay)));
+          const lineProg = Math.max(
+            0,
+            Math.min(1, (gProg - lineDelay) / (1 - lineDelay)),
+          );
           const lineEase = 1 - Math.pow(1 - lineProg, 2.5);
           gridTopGeo.setDrawRange(0, Math.round(lineEase * GRID_LINE_PTS));
           if (isMobile()) {
-            const lp2 = Math.max(0, Math.min(1, (gProg - lineDelay - 0.08) / (1 - lineDelay - 0.08)));
-            gridBotGeo.setDrawRange(0, Math.round((1 - Math.pow(1 - lp2, 2.5)) * GRID_LINE_PTS));
+            const lp2 = Math.max(
+              0,
+              Math.min(1, (gProg - lineDelay - 0.08) / (1 - lineDelay - 0.08)),
+            );
+            gridBotGeo.setDrawRange(
+              0,
+              Math.round((1 - Math.pow(1 - lp2, 2.5)) * GRID_LINE_PTS),
+            );
           } else {
             gridBotGeo.setDrawRange(0, 0);
           }
@@ -598,7 +674,9 @@ export default function DribbleSection() {
 
       /* IntersectionObserver — skip rendering when section is off-screen */
       const io = new IntersectionObserver(
-        ([entry]) => { sectionVisible = entry.isIntersecting; },
+        ([entry]) => {
+          sectionVisible = entry.isIntersecting;
+        },
         { root: null, threshold: 0, rootMargin: "64px 0px" },
       );
       io.observe(section);
@@ -625,25 +703,44 @@ export default function DribbleSection() {
 
   return (
     <>
-      <div ref={sectionRef} className="relative z-1 h-screen bg-[#C3C3C3]">
+      <div
+        ref={sectionRef}
+        className="relative z-10 h-screen bg-[#C3C3C3] py-30 overflow-hidden"
+      >
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full pointer-events-none"
+          className="absolute inset-0 w-full h-full pointer-events-none z-1"
         />
-        <div className="w-full h-full flex items-center flex-col justify-center">
+        <div className="tr__container w-full h-full flex items-center flex-col justify-between text-dark-font">
+          <div></div>
           {/* Center text */}
           <div
             ref={centerRef}
             className="text-center pointer-events-none select-none"
           >
-            <h1 className="text-[clamp(48px,7vw,96px)] font-light text-[#3a3a3a] tracking-[-0.02em] leading-[1.05] mb-4.5 md:max-lg:text-[clamp(32px,5vw,72px)] max-md:text-[clamp(26px,8vw,48px)] max-[399px]:text-[clamp(22px,7.5vw,36px)]">
-              Design in motion
-            </h1>
-            <p className="text-[clamp(13px,1.1vw,16px)] font-light text-[#555] leading-[1.7] md:max-lg:text-[clamp(12px,1.4vw,16px)] max-md:text-[clamp(10px,3vw,13px)] max-[399px]:text-[10px]">
+            <BlurTextReveal
+              as="h2"
+              html="Design in motion"
+              animationType="chars"
+              stagger={0.05}
+              className="text-dark-font mb-6 relative"
+            />
+            <p className="relative">
               Exploring ideas through
               <br />
               daily design practice.
             </p>
+          </div>
+          <div className="w-full flex items-end justify-between">
+            <p className="max-w-80 w-full block relative z-5">
+              Concepts, explorations, and interface experiments—shared openly as
+              part of our creative process.
+            </p>
+            <WordShiftButton
+              text="View on Dribbble"
+              href="#"
+              customClass="relative z-5"
+            />
           </div>
         </div>
         {/* ── Stripes overlay (covers content after animation ends) ── */}
