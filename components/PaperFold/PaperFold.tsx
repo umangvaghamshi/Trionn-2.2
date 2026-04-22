@@ -84,7 +84,7 @@ export default function PaperFold({
       pinSpacing: false,
       scrub: false,
       invalidateOnRefresh: true, // IMPORTANT: Allows recalculation on resize
-      markers: true, // Keep this enabled until the alignment is perfect
+      markers: false,
     });
   }, []);
 
