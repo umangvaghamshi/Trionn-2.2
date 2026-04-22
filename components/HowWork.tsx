@@ -1,9 +1,9 @@
-'use client';
-import { BlurTextReveal } from '@/components/TextAnimation';
-import { HowWorkData } from '@/data';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { useRef } from 'react';
+"use client";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import { HowWorkData } from "@/data";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { useRef } from "react";
 
 export default function HowWork() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -18,24 +18,24 @@ export default function HowWork() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top top',
+          start: "top top",
           end: `+=150%`,
           pin: true,
           scrub: true,
           markers: false,
         },
         defaults: {
-          ease: 'none',
+          ease: "none",
         },
       });
 
       cardsRef.current.forEach((card, idx) => {
-        const plus = card.querySelector('.plus');
-        const line = card.querySelector('.line');
-        const content = card.querySelector('.content');
-        const title = card.querySelector('.work-title');
-        const numbers = card.querySelector('.numbers');
-        const plusFollow = card.querySelector('.plus-follow');
+        const plus = card.querySelector(".plus");
+        const line = card.querySelector(".line");
+        const content = card.querySelector(".content");
+        const title = card.querySelector(".work-title");
+        const numbers = card.querySelector(".step-no");
+        const plusFollow = card.querySelector(".plus-follow");
 
         gsap.set([plusFollow, plus], {
           autoAlpha: 0,
@@ -54,7 +54,7 @@ export default function HowWork() {
             {
               autoAlpha: 1,
             },
-            '<0.2'
+            "<0.2",
           );
         } else {
           tl.set(plusFollow, {
@@ -63,27 +63,50 @@ export default function HowWork() {
         }
 
         // Plus Follow
-        tl.fromTo(plusFollow, { rotation: 0 }, { rotation: 360 * 2, right: -12 }, '<10%');
+        tl.fromTo(
+          plusFollow,
+          { rotation: 0 },
+          { rotation: 360 * 2, right: -12 },
+          "<10%",
+        );
 
         // Line draws during entire card
-        tl.fromTo(line, { scaleX: 0, transformOrigin: 'left' }, { scaleX: 1 }, '<')
+        tl.fromTo(
+          line,
+          { scaleX: 0, transformOrigin: "left" },
+          { scaleX: 1 },
+          "<",
+        )
           .fromTo(
             numbers,
-            { autoAlpha: 0, filter: 'blur(12px)', force3D: true },
-            { autoAlpha: 1, filter: 'blur(0px)', duration: 0.2 },
-            '<'
+            { autoAlpha: 0, filter: "blur(12px)", force3D: true },
+            { autoAlpha: 1, filter: "blur(0px)", duration: 0.2 },
+            "<",
           )
-          .fromTo(title, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0 }, '<25%')
-          .fromTo(content, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0 }, '<');
+          .fromTo(
+            title,
+            { autoAlpha: 0, y: 20 },
+            { autoAlpha: 1, y: 0 },
+            "<25%",
+          )
+          .fromTo(
+            content,
+            { autoAlpha: 0, y: 20 },
+            { autoAlpha: 0.5, y: 0 },
+            "<",
+          );
 
         tl.addLabel(`card_${idx}_end`);
       });
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
-    <section ref={sectionRef} className="bg-[#F7F7F7] py-37.5 min-h-screen relative text-dark-font">
+    <section
+      ref={sectionRef}
+      className="bg-[#0A0A0A] py-37.5 min-h-screen relative text-light-font"
+    >
       <div className="tr__container relative w-full grid grid-cols-12 gap-x-6 h-full">
         <div className="grid grid-cols-12 gap-x-6 mb-20 col-span-12">
           <BlurTextReveal
@@ -94,12 +117,20 @@ export default function HowWork() {
             className="title block col-span-2 pt-4"
           />
           <div className="col-span-10">
-            <h2 className="mb-6">HOW WE WORK</h2>
-            <p className="small max-w-50">A repeatable method applied across every engagement.</p>
+            <BlurTextReveal
+              as="h2"
+              html={`How we work`}
+              animationType="chars"
+              stagger={0.05}
+              className="mb-6"
+            />
+            <p className="small max-w-50 opacity-50">
+              A repeatable method applied across every engagement.
+            </p>
           </div>
         </div>
         <div className="col-span-9 col-start-3 gap-x-6 relative">
-          <div className="grid grid-cols-12 text-dark-font">
+          <div className="grid grid-cols-12 text-light-font">
             {cards.map((card, idx) => {
               return (
                 <div
@@ -111,14 +142,14 @@ export default function HowWork() {
                   key={idx}
                   className="col-span-4 relative pb-20 pr-6 last:pr-0"
                 >
-                  <span className="numbers block mb-9">
-                    {card.id}. <span className="title text-dark-font/60">Step</span>
+                  <span className="title step-no text-light-font mb-9 block">
+                    Step - {card.id}
                   </span>
 
                   <h3 className="work-title block mb-8">{card.title}</h3>
                   <p className="content small max-w-87.5">{card.content}</p>
                   <div className="fill-line absolute left-0 bottom-0 w-full">
-                    <div className="line absolute top-1/2 -translate-y-1/2 bg-dark-font/20 h-px w-full"></div>
+                    <div className="line absolute top-1/2 -translate-y-1/2 bg-cream-line/20 h-px w-full"></div>
                     <svg
                       width="13"
                       height="13"
@@ -132,14 +163,14 @@ export default function HowWork() {
                         y1="-2.18557e-08"
                         x2="6.5"
                         y2="13"
-                        style={{ stroke: '#272727' }}
+                        style={{ stroke: "#D8D8D8" }}
                       />
                       <line
                         x1="13"
                         y1="6.5"
                         x2="-4.37114e-08"
                         y2="6.5"
-                        style={{ stroke: '#272727' }}
+                        style={{ stroke: "#D8D8D8" }}
                       />
                     </svg>
 
@@ -156,14 +187,14 @@ export default function HowWork() {
                         y1="-2.18557e-08"
                         x2="6.5"
                         y2="13"
-                        style={{ stroke: '#272727' }}
+                        style={{ stroke: "#D8D8D8" }}
                       />
                       <line
                         x1="13"
                         y1="6.5"
                         x2="-4.37114e-08"
                         y2="6.5"
-                        style={{ stroke: '#272727' }}
+                        style={{ stroke: "#D8D8D8" }}
                       />
                     </svg>
                   </div>
