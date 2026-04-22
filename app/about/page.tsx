@@ -2,8 +2,7 @@ import Awards from "@/components/Awards";
 import { BrandShowcase } from "@/components/BrandShowcase";
 import HowWork from "@/components/HowWork";
 import { PaperFold } from "@/components/PaperFold";
-import { AboutHero, AboutIntro } from "@/components/Sections/About";
-import TeamSection from "@/components/TeamSection";
+import { AboutHero, AboutIntro, AboutTeam } from "@/components/Sections/About";
 import Testimonials from "@/components/Testimonials";
 import WeNot from "@/components/WeNot";
 
@@ -14,7 +13,7 @@ const Page = () => {
       <AboutIntro />
       <PaperFold />
       <HowWork />
-      <TeamSection />
+      <AboutTeam />
       <WeNot />
       <Awards />
       <BrandShowcase animationVariant="crossDissolve" />
