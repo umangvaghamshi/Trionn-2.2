@@ -6,9 +6,31 @@ import { useGSAP } from "@gsap/react";
 
 type MagneticLinePlusProps = {
   className?: string;
-  /** wrapper height (Tailwind classes are easiest, but this works too) */
+  /** wrapper div height in px */
   heightPx?: number;
-  /** show the draw-on-load animation (uses DrawSVGPlugin if available, otherwise dash fallback) */
+  /** internal SVG viewBox height — lower = tighter magnetic travel */
+  svgHeight?: number;
+  /** background color of the wrapper */
+  bgColor?: string;
+  /** stroke color of the horizontal line */
+  lineColor?: string;
+  /** stroke color of the plus icon */
+  plusColor?: string;
+  /**
+   * Grid column where the plus icon rests (1-based, same as col-start-N).
+   * The component converts this to a viewBox X position automatically.
+   * Default is the centre column.
+   */
+  plusCol?: number;
+  /** Total number of grid columns in the parent grid. Default 12. */
+  totalCols?: number;
+  /**
+   * Half-arm length of the plus icon in viewBox units.
+   * LinePlus renders a 13px icon; at ~1320px container width the scale is
+   * 1648/1320 ≈ 1.25, so 13px × 1.25 / 2 ≈ 8 viewBox units per arm half.
+   * Default 8 matches LinePlus visually.
+   */
+  plusHalfSize?: number;
   drawOnMount?: boolean;
 };
 
@@ -16,9 +38,20 @@ type Pt = { x: number };
 
 export default function MagneticLinePlus({
   className = "",
-  heightPx = 320,
+  heightPx = 120,
+  svgHeight = 120,
+  bgColor = "#ffffff",
+  lineColor = "#434343",
+  plusColor = "#272727",
+  plusCol,
+  totalCols = 12,
+  plusHalfSize = 8,
   drawOnMount = false,
 }: MagneticLinePlusProps) {
+  const W = 1648;
+  // Convert col-start (1-based) to a 0-based fraction then to viewBox X.
+  // col-start-9 of 12 means the left edge of column 9, i.e. 8/12 across.
+  const plusX = plusCol != null ? (W / totalCols) * (plusCol - 1) : W / 2;
   const svgRef = useRef<SVGSVGElement | null>(null);
   const hitRef = useRef<HTMLDivElement | null>(null);
   const lineRef = useRef<SVGPathElement | null>(null);
@@ -26,10 +59,8 @@ export default function MagneticLinePlus({
   const plusWrapperRef = useRef<SVGGElement | null>(null);
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
-  // --- constants (match your HTML) ---
-  const W = 1648;
-  const H = 220;
-  const baseY = 110;
+  const H = svgHeight;
+  const baseY = svgHeight / 2;
 
   const segs = 220;
   const tol = 16;
@@ -53,7 +84,7 @@ export default function MagneticLinePlus({
 
     if (!svg || !hit || !line || !plus || !plusWrapper) return;
 
-    const state = { mx: W / 2, my: baseY, amp: 0 };
+    const state = { mx: plusX, my: baseY, amp: 0 };
     const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
     const falloff = (x: number) => {
@@ -108,7 +139,7 @@ export default function MagneticLinePlus({
       active = false;
       gsap.killTweensOf(state);
       gsap.to(state, { amp: 0, duration: 0.9, ease: "expo.out" });
-      gsap.to(state, { mx: W / 2, my: baseY, duration: 1.0, ease: "expo.out" });
+      gsap.to(state, { mx: plusX, my: baseY, duration: 1.0, ease: "expo.out" });
     };
 
     const applyPointer = (p: { x: number; y: number }) => {
@@ -206,29 +237,30 @@ export default function MagneticLinePlus({
       intentRange,
       followX,
       followY,
+      plusX,
     ]
   });
 
   return (
-    <div ref={sectionRef} className={`grid place-items-center bg-white ${className}`}>
+    <div ref={sectionRef} className={`grid place-items-center ${className}`} style={{ backgroundColor: bgColor }}>
       <div
-        className="relative w-full bg-white"
+        className="relative w-full "
         style={{ height: `${heightPx}px` }}
       >
         <div ref={hitRef} className="absolute inset-0 cursor-default touch-none" />
 
         <svg
           ref={svgRef}
-          viewBox="0 0 1648 220"
+          viewBox={`0 0 1648 ${svgHeight}`}
           aria-label="Magnetic line"
-          className="block h-full w-full overflow-visible bg-white"
+          className="block h-full w-full overflow-visible "
         >
           <path
             ref={lineRef}
             d=""
             className="vector-effect-non-scaling-stroke"
             style={{
-              stroke: "#434343",
+              stroke: lineColor,
               strokeOpacity: 0.15,
               strokeWidth: 1,
               fill: "none",
@@ -239,17 +271,17 @@ export default function MagneticLinePlus({
             <g ref={plusRef}>
               <line
                 x1="0"
-                y1="-6.5"
+                y1={-plusHalfSize}
                 x2="0"
-                y2="6.5"
-                style={{ stroke: "#272727", strokeWidth: 1, strokeLinecap: "butt" }}
+                y2={plusHalfSize}
+                style={{ stroke: plusColor, strokeWidth: 1, strokeLinecap: "butt" }}
               />
               <line
-                x1="6.5"
+                x1={plusHalfSize}
                 y1="0"
-                x2="-6.5"
+                x2={-plusHalfSize}
                 y2="0"
-                style={{ stroke: "#272727", strokeWidth: 1, strokeLinecap: "butt" }}
+                style={{ stroke: plusColor, strokeWidth: 1, strokeLinecap: "butt" }}
               />
             </g>
           </g>
