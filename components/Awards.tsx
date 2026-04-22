@@ -1,124 +1,124 @@
-'use client';
-import Marquee from '@/components/Marquee';
-import { BlurTextReveal } from '@/components/TextAnimation';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef } from 'react';
+"use client";
+import Marquee from "@/components/Marquee";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
 
-import { useGSAP } from '@gsap/react';
-import Image from 'next/image';
-import { WordShiftButton } from '@/components/Button';
+import { useGSAP } from "@gsap/react";
+import Image from "next/image";
+import { WordShiftButton } from "@/components/Button";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const cards = [
   {
-    title: 'GSAP',
+    title: "✦ GSAP",
     awards: [
       {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-luxury-presence.webp',
+        title: "Website of the day  — (2X)",
+        image: "/images/awards.webp",
       },
       {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-kuros.webp',
+        title: "Website of the day  — (2X)",
+        image: "/images/rushi.webp",
       },
     ],
   },
   {
-    title: 'CSSDA',
+    title: "✦ CSSDA",
     awards: [
       {
-        title: '2X - Website of the day',
-        image: '/images/work-kuros.webp',
+        title: "2X - Website of the day",
+        image: "/images/rushi.webp",
       },
     ],
   },
   {
-    title: 'Orpetron',
+    title: "✦ Orpetron",
     awards: [
       {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-kuros.webp',
+        title: "Website of the day  — (2X)",
+        image: "/images/rushi.webp",
       },
       {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-luxury-presence.webp',
+        title: "Website of the day  — (2X)",
+        image: "/images/awards.webp",
       },
     ],
   },
   {
-    title: 'Awwwards',
+    title: "✦ Awwwards",
     awards: [
       {
-        title: '2X - Honnerable Mention',
-        image: '/images/orbit-07.jpg',
+        title: "2X - Honnerable Mention",
+        image: "/images/rushi.webp",
       },
       {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-luxury-presence.webp',
+        title: "Website of the day  — (2X)",
+        image: "/images/awards.webp",
       },
     ],
   },
   {
-    title: 'The FWA',
+    title: "✦ The FWA",
     awards: [
       {
-        title: '2X - Honnerable Mention',
-        image: '/images/orbit-07.jpg',
+        title: "2X - Honnerable Mention",
+        image: "/images/rushi.webp",
       },
       {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-luxury-presence.webp',
+        title: "Website of the day  — (2X)",
+        image: "/images/awards.webp",
       },
     ],
   },
   {
-    title: 'A Design Awards',
+    title: "✦ A Design Awards",
     awards: [
       {
-        title: 'Silver Medal',
-        image: '/images/orbit-07.jpg',
+        title: "Silver Medal",
+        image: "/images/rushi.webp",
       },
       {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-luxury-presence.webp',
-      },
-    ],
-  },
-  {
-    title: 'Landing.Love',
-    awards: [
-      {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-luxury-presence.webp',
+        title: "Website of the day  — (2X)",
+        image: "/images/awards.webp",
       },
     ],
   },
   {
-    title: 'CSS Winner',
+    title: "✦ Landing.Love",
     awards: [
       {
-        title: '2X - Website of the day',
-        image: '/images/work-luxury-presence.webp',
+        title: "Website of the day  — (2X)",
+        image: "/images/awards.webp",
       },
     ],
   },
   {
-    title: 'CSSnectar',
+    title: "✦ CSS Winner",
     awards: [
       {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-luxury-presence.webp',
+        title: "2X - Website of the day",
+        image: "/images/awards.webp",
       },
     ],
   },
   {
-    title: 'Codrops',
+    title: "✦ CSSnectar",
     awards: [
       {
-        title: 'Website of the day  — (2X)',
-        image: '/images/work-luxury-presence.webp',
+        title: "Website of the day  — (2X)",
+        image: "/images/awards.webp",
+      },
+    ],
+  },
+  {
+    title: "✦ Codrops",
+    awards: [
+      {
+        title: "Website of the day  — (2X)",
+        image: "/images/awards.webp",
       },
     ],
   },
@@ -154,19 +154,19 @@ export default function Awards() {
       });
 
       const tl = gsap.timeline({
-        defaults: { ease: 'none' },
+        defaults: { ease: "none" },
         scrollTrigger: {
           trigger: awardsSectionRef.current,
-          start: 'top top',
+          start: "top top",
           end: () => `+=500%`,
           scrub: 1,
           pin: true,
           markers: false,
-          anticipatePin:1,
+          anticipatePin: 1,
         },
       });
 
-      tl.addLabel('start_animation')
+      tl.addLabel("start_animation")
 
         // 2️⃣ Clip-path reveal
         .fromTo(
@@ -177,14 +177,14 @@ export default function Awards() {
             borderRadius: 999,
           },
           {
-            width: '100vw',
-            height: '100vh',
+            width: "100vw",
+            height: "100vh",
             borderRadius: 0,
             duration: 0.15,
-          }
+          },
         )
 
-        .addLabel('reveal_clip_path')
+        .addLabel("reveal_clip_path")
 
         // 3️⃣ Headings move (THIS is your trigger moment)
         .to(
@@ -193,7 +193,7 @@ export default function Awards() {
             y: 0,
             duration: 0.15,
           },
-          'reveal_clip_path'
+          "reveal_clip_path",
         )
         .to(
           marqueeContainerRef.current,
@@ -201,7 +201,7 @@ export default function Awards() {
             y: -window.innerHeight,
             duration: 0.15,
           },
-          '<'
+          "<",
         )
         .to(
           scrollTextRef.current,
@@ -209,7 +209,7 @@ export default function Awards() {
             y: window.innerHeight,
             duration: 0.15,
           },
-          '<'
+          "<",
         )
 
         // 4️⃣ Slider starts sliding EXACTLY here
@@ -218,10 +218,10 @@ export default function Awards() {
           {
             xPercent: 0,
             x: () => -scrollDistance,
-            ease: 'none',
+            ease: "none",
             // duration: 0.15,
           },
-          'reveal_clip_path-=0.18'
+          "reveal_clip_path-=0.18",
         )
 
         // 5️⃣ Slider header fade in
@@ -229,10 +229,10 @@ export default function Awards() {
           sliderHeaderRef.current,
           { autoAlpha: 0 },
           { autoAlpha: 1, duration: 0.05 },
-          '<50%'
+          "<50%",
         );
     },
-    { scope: awardsSectionRef }
+    { scope: awardsSectionRef },
   );
 
   // Card Fadein FadeOut Effect
@@ -243,7 +243,7 @@ export default function Awards() {
       }
 
       cardsRef.current.forEach((card) => {
-        const imgs = card.querySelectorAll('.awards-image-wrapper img');
+        const imgs = card.querySelectorAll(".awards-image-wrapper img");
         // Show only First Image
         if (imgs.length > 1) {
           gsap.set(imgs, { opacity: 0 });
@@ -265,31 +265,37 @@ export default function Awards() {
             {
               opacity: 0,
               duration: duration,
-              ease: 'power1.inOut',
+              ease: "power1.inOut",
             },
-            `+=${pause}`
+            `+=${pause}`,
           ).to(
             nextImg,
             {
               opacity: 1,
               duration: duration,
-              ease: 'power1.inOut',
+              ease: "power1.inOut",
             },
-            `<`
+            `<`,
           ); // "<" means start at the same time as the previous animation
         });
       });
     },
     {
       scope: awardsSectionRef,
-    }
+    },
   );
 
   return (
-    <section ref={awardsSectionRef} className="relative h-screen w-full  bg-[#F7F7F7] overflow-hidden ">
+    <section
+      ref={awardsSectionRef}
+      className="relative h-screen w-full  bg-[#F7F7F7] overflow-hidden "
+    >
       {/* 1. Background Video (Masked) */}
       {/* We apply the clip-path via GSAP, but set initial state here to avoid FOUC */}
-      <div ref={videoContainerRef} className="absolute inset-0 flex items-center justify-center">
+      <div
+        ref={videoContainerRef}
+        className="absolute inset-0 flex items-center justify-center"
+      >
         <div ref={maskRef} className="overflow-hidden w-full h-full">
           <video
             className="h-screen w-full object-cover"
@@ -308,14 +314,17 @@ export default function Awards() {
       </div>
 
       {/* 2. Marquee Component (Centered) */}
-      <div className="z-10 flex flex-col justify-between min-h-screen pt-37.5 pb-25 mix-blend-difference">
-        <div className="tr__container w-full" ref={titleContainerRef}>
+      <div className="z-10 flex flex-col justify-center min-h-screen pt-37.5 pb-25 mix-blend-difference">
+        <div
+          className="tr__container w-full absolute top-37.5 left-0"
+          ref={titleContainerRef}
+        >
           <BlurTextReveal
-            as="h4"
+            as="span"
             html="Results matter most. Awards add recognition and value."
             animationType="words"
             stagger={0.03}
-            className="uppercase max-w-[14.063rem] text-light-font"
+            className="title max-w-50 text-light-font block"
           />
         </div>
         {/* Using your component */}
@@ -331,8 +340,20 @@ export default function Awards() {
                 xmlns="http://www.w3.org/2000/svg"
                 className="mx-[4.582vw] w-[2.291vw] h-[2.291vw]"
               >
-                <line x1="20.2256" y1="-2.18557e-08" x2="20.2256" y2="40" stroke="#FFFFFF" />
-                <line x1="40" y1="20.226" x2="-4.37114e-08" y2="20.226" stroke="#FFFFFF" />
+                <line
+                  x1="20.2256"
+                  y1="-2.18557e-08"
+                  x2="20.2256"
+                  y2="40"
+                  stroke="#FFFFFF"
+                />
+                <line
+                  x1="40"
+                  y1="20.226"
+                  x2="-4.37114e-08"
+                  y2="20.226"
+                  stroke="#FFFFFF"
+                />
               </svg>
               <span className="marquee-text-item">RECOGNITION</span>
               <svg
@@ -343,81 +364,104 @@ export default function Awards() {
                 xmlns="http://www.w3.org/2000/svg"
                 className="mx-[4.582vw] w-[2.291vw] h-[2.291vw]"
               >
-                <line x1="20.2256" y1="-2.18557e-08" x2="20.2256" y2="40" stroke="#FFFFFF" />
-                <line x1="40" y1="20.226" x2="-4.37114e-08" y2="20.226" stroke="#FFFFFF" />
+                <line
+                  x1="20.2256"
+                  y1="-2.18557e-08"
+                  x2="20.2256"
+                  y2="40"
+                  stroke="#FFFFFF"
+                />
+                <line
+                  x1="40"
+                  y1="20.226"
+                  x2="-4.37114e-08"
+                  y2="20.226"
+                  stroke="#FFFFFF"
+                />
               </svg>
             </div>
           </Marquee>
         </div>
-        <div
+        {/* <div
           className="title overflow-hidden relative flex items-center justify-center text-grey-light pointer-events-none"
           ref={scrollTextRef}
         >
           <span className="block animate-arrow mr-1">↓</span>
           <span>keep scrolling</span>
           <span className="block animate-arrow ml-1">↓</span>
-        </div>
+        </div> */}
       </div>
-
-      <div
-        ref={sliderHeaderRef}
-        className="absolute top-1/3 w-full flex items-center justify-between tr__container"
-      >
-        <BlurTextReveal
-          as="h4"
-          html="Recognition follows work donw with care."
-          animationType="chars"
-          stagger={0.03}
-          className="uppercase  text-light-font"
-        />
-        <WordShiftButton
-          text="win an award"
-          href="#"
-          styleVars={{ buttonWrapperColor: '#D8D8D8' }}
-        />
-      </div>
-
-      <div ref={HorizontalScrollerRef} className="absolute bottom-20">
+      <div className="absolute bottom-25 flex flex-col gap-10">
         <div
-          ref={HorizontalScrollerContentRef}
-          className="col-span-10 col-start-3 flex gap-x-6 w-max"
+          ref={sliderHeaderRef}
+          className="w-full max-w-screen flex items-center justify-between tr__container mx-0!"
         >
-          {cards.map((item, idx) => {
-            return (
-              <div
-                key={idx}
-                ref={(self) => {
-                  if (cardsRef.current && self) {
-                    cardsRef.current[idx] = self;
-                  }
-                }}
-                className={`overflow-hidden relative w-133.25 min-h-102 p-10 bg-white rounded-lg flex justify-between border`}
-              >
-                <div className="flex-1 flex flex-col items-start justify-between">
-                  <h4>{item.title}</h4>
-                  <div>
-                    {item.awards.map((award, i) => {
-                      return <p key={i}>{award.title}</p>;
+          <BlurTextReveal
+            as="span"
+            html="✦ Recognition follows work done with care."
+            animationType="chars"
+            stagger={0.03}
+            className="title text-light-font block"
+          />
+          <WordShiftButton
+            text="win an award"
+            href="#"
+            styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+          />
+        </div>
+
+        <div ref={HorizontalScrollerRef}>
+          <div
+            ref={HorizontalScrollerContentRef}
+            className="col-span-10 col-start-3 flex gap-x-6 w-max"
+          >
+            {cards.map((item, idx) => {
+              return (
+                <div
+                  key={idx}
+                  ref={(self) => {
+                    if (cardsRef.current && self) {
+                      cardsRef.current[idx] = self;
+                    }
+                  }}
+                  className={`overflow-hidden relative w-134 h-77 p-10 bg-white/90 even:bg-black/90 text-dark-font even:text-light-font rounded-lg flex justify-between`}
+                >
+                  <div className="flex-1 flex flex-col items-start justify-between pr-10">
+                    <BlurTextReveal
+                      as="h4"
+                      html={item.title}
+                      animationType="words"
+                      stagger={0.03}
+                      className="uppercase"
+                    />
+                    <div className="flex flex-col gap-1">
+                      {item.awards.map((award, i) => {
+                        return (
+                          <p key={i} className="small">
+                            {award.title}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="awards-image-wrapper w-full max-w-40 overflow-hidden relative">
+                    {item.awards.map((award, index) => {
+                      return (
+                        <Image
+                          className="inset-0 absolute rounded-sm"
+                          src={award.image}
+                          key={index}
+                          alt={award.title}
+                          height={460}
+                          width={320}
+                        ></Image>
+                      );
                     })}
                   </div>
                 </div>
-                <div className="awards-image-wrapper w-full max-w-[150px] overflow-hidden relative">
-                  {item.awards.map((award, index) => {
-                    return (
-                      <Image
-                        className="inset-0 absolute"
-                        src={award.image}
-                        key={index}
-                        alt={award.title}
-                        height={1024}
-                        width={1024}
-                      ></Image>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
