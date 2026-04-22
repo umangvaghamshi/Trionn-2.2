@@ -140,8 +140,9 @@ export default function KeyFactsNew() {
         </div>
       </div>
       {/* Bottom decoration line (Moved from Work section) */}
-      <div className="js-kf-line-wrap tr__container pointer-events-none absolute bottom-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4 hidden md:block">
+      <div className="js-kf-line-wrap tr__container absolute bottom-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4 hidden md:block">
         <LinePlus
+          key={odoTick}
           lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
           plusClass={"col-span-12 mx-auto translate-x-0!"}
           iconColor={"#272727"}

@@ -2,7 +2,6 @@
 
 import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
-import MagneticLinePlus from "@/components/MagneticLinePlus";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -30,8 +29,12 @@ export default function AboutIntro() {
           </div>
         </div>
         <div className="grid grid-cols-12 gap-x-6 my-25">
-          <div className="col-span-11 col-start-2">
-            <MagneticLinePlus plusCol={9.2} totalCols={12} lineColor="#434343" plusColor="#272727" plusHalfSize={6} bgColor="white" />
+          <div className="col-span-11 col-start-2 ">
+            <LinePlus
+              lineClass={"opacity-15 bg-grey-line"}
+              plusClass={"col-start-9"}
+              iconColor={"#272727"}
+            />
           </div>
         </div>
          

@@ -134,7 +134,7 @@ export default function Footer() {
 
           <div className="tr__container w-full pb-20">
             <LinePlus
-              lineClass={"opacity-20"}
+              lineClass={"opacity-20 bg-cream-line"}
               plusClass={"col-start-9 translate-x-1/2!"}
               iconColor={"#D8D8D8"}
             />
