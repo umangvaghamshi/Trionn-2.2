@@ -16,7 +16,7 @@ import { getCanvasManager } from "@/lib/canvasManager";
  *   import TeamSection from "@/components/TeamSection";
  *   export default function Page() { return <TeamSection />; }
  *
- * Place /public/images/<file>.jpg + <file>.mp4 for each PEOPLE entry.
+ * Place /public/images/<file>.webp + <file>.mp4 for each PEOPLE entry.
  */
 
 type Person = { name: string; file: string; role: string };
@@ -44,7 +44,11 @@ export default function TeamSection() {
   const soundEnabledRef = useRef(soundEnabled);
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
-    if (!soundEnabled && typeof window !== "undefined" && window.speechSynthesis) {
+    if (
+      !soundEnabled &&
+      typeof window !== "undefined" &&
+      window.speechSynthesis
+    ) {
       window.speechSynthesis.cancel();
     }
   }, [soundEnabled]);
@@ -93,10 +97,10 @@ export default function TeamSection() {
     const CARD_SIZES = _mob
       ? [68, 68, 68, 68]
       : _tab
-      ? [80, 95, 110, 125]
-      : _lap
-      ? [105, 120, 138, 155]
-      : [130, 150, 170, 195];
+        ? [80, 95, 110, 125]
+        : _lap
+          ? [105, 120, 138, 155]
+          : [130, 150, 170, 195];
     let _zTop = 10;
 
     function randW() {
@@ -104,16 +108,36 @@ export default function TeamSection() {
     }
 
     const CARD_POS_DESK: [number, number][] = [
-      [0.72, 0.08], [0.28, 0.2], [0.88, 0.46], [0.06, 0.59],
-      [0.64, 0.72], [0.36, 0.86], [0.92, 0.2], [0.14, 0.08],
-      [0.78, 0.59], [0.22, 0.72], [0.68, 0.86], [0.04, 0.33],
-      [0.84, 0.33], [0.18, 0.46],
+      [0.72, 0.08],
+      [0.28, 0.2],
+      [0.88, 0.46],
+      [0.06, 0.59],
+      [0.64, 0.72],
+      [0.36, 0.86],
+      [0.92, 0.2],
+      [0.14, 0.08],
+      [0.78, 0.59],
+      [0.22, 0.72],
+      [0.68, 0.86],
+      [0.04, 0.33],
+      [0.84, 0.33],
+      [0.18, 0.46],
     ];
     const CARD_POS_MOB: [number, number][] = [
-      [0.18, 0.13], [0.5, 0.13], [0.82, 0.13],
-      [0.12, 0.26], [0.37, 0.26], [0.63, 0.26], [0.88, 0.26],
-      [0.12, 0.62], [0.37, 0.62], [0.63, 0.62], [0.88, 0.62],
-      [0.18, 0.76], [0.5, 0.76], [0.82, 0.76],
+      [0.18, 0.13],
+      [0.5, 0.13],
+      [0.82, 0.13],
+      [0.12, 0.26],
+      [0.37, 0.26],
+      [0.63, 0.26],
+      [0.88, 0.26],
+      [0.12, 0.62],
+      [0.37, 0.62],
+      [0.63, 0.62],
+      [0.88, 0.62],
+      [0.18, 0.76],
+      [0.5, 0.76],
+      [0.82, 0.76],
     ];
     const CARD_POS = _mob ? CARD_POS_MOB : CARD_POS_DESK;
 
@@ -168,8 +192,15 @@ export default function TeamSection() {
       const w = randW();
       const h = Math.round(w * RATIO);
       return {
-        i, w, h, baseW: w, baseH: h,
-        ox: 0, oy: 0, x: 0, y: 0,
+        i,
+        w,
+        h,
+        baseW: w,
+        baseH: h,
+        ox: 0,
+        oy: 0,
+        x: 0,
+        y: 0,
         angle: Math.random() * Math.PI * 2,
         phaseY: Math.random() * Math.PI * 2,
         speed: 0.00028 + Math.random() * 0.0002,
@@ -199,7 +230,7 @@ export default function TeamSection() {
         "position:relative;width:100%;height:100%;border-radius:8px;overflow:hidden;background:#0c0c10;";
 
       const img = document.createElement("img");
-      img.src = `/images/${p.file}.jpg`;
+      img.src = `/images/${p.file}.webp`;
       img.alt = p.name;
       img.draggable = false;
       img.style.cssText =
@@ -222,7 +253,8 @@ export default function TeamSection() {
 
     /* ── FLOAT INIT ── */
     function initFloat() {
-      const vw = window.innerWidth, vh = window.innerHeight;
+      const vw = window.innerWidth,
+        vh = window.innerHeight;
 
       if (_mob) {
         const cw = 68;
@@ -234,39 +266,59 @@ export default function TeamSection() {
         const boxTop = topPad + 2 * rowH + boxGap;
         const boxBottom = boxTop + 318 + boxGap;
 
-        const rowsAbove = [[3, 4, 5, 6], [0, 1, 2]];
+        const rowsAbove = [
+          [3, 4, 5, 6],
+          [0, 1, 2],
+        ];
         rowsAbove.forEach((row, ri) => {
           const rowCenterY = boxTop - boxGap - ch / 2 - ri * rowH;
           const totalW = row.length * cw + (row.length - 1) * gap;
           const startX = (vw - totalW) / 2 + cw / 2;
           row.forEach((idx, ci) => {
             const s = state[idx];
-            s.baseW = cw; s.baseH = ch; s.w = cw; s.h = ch;
+            s.baseW = cw;
+            s.baseH = ch;
+            s.w = cw;
+            s.h = ch;
             s.ox = startX + ci * (cw + gap);
             s.oy = rowCenterY;
             s.rx = 5 + Math.random() * 5;
             s.ry = 5 + Math.random() * 5;
-            s.x = s.ox; s.y = s.oy;
+            s.x = s.ox;
+            s.y = s.oy;
             const el = cardEls[idx];
-            if (el) { el.style.width = cw + "px"; el.style.height = ch + "px"; }
+            if (el) {
+              el.style.width = cw + "px";
+              el.style.height = ch + "px";
+            }
           });
         });
 
-        const rowsBelow = [[7, 8, 9, 10], [11, 12, 13]];
+        const rowsBelow = [
+          [7, 8, 9, 10],
+          [11, 12, 13],
+        ];
         rowsBelow.forEach((row, ri) => {
           const rowCenterY = boxBottom + ch / 2 + ri * rowH;
           const totalW = row.length * cw + (row.length - 1) * gap;
           const startX = (vw - totalW) / 2 + cw / 2;
           row.forEach((idx, ci) => {
             const s = state[idx];
-            s.baseW = cw; s.baseH = ch; s.w = cw; s.h = ch;
+            s.baseW = cw;
+            s.baseH = ch;
+            s.w = cw;
+            s.h = ch;
             s.ox = startX + ci * (cw + gap);
             s.oy = rowCenterY;
             s.rx = 5 + Math.random() * 5;
             s.ry = 5 + Math.random() * 5;
-            s.x = s.ox; s.y = s.oy;
+            s.x = s.ox;
+            s.y = s.oy;
             const el = cardEls[idx];
-            if (el) { el.style.width = cw + "px"; el.style.height = ch + "px"; }
+            if (el) {
+              el.style.width = cw + "px";
+              el.style.height = ch + "px";
+            }
           });
         });
 
@@ -284,8 +336,10 @@ export default function TeamSection() {
         const marginV = _mob ? s.h / 2 + 8 : s.h / 2 + 150;
         s.rx = Math.min(s.rx, s.ox - marginH, vw - s.ox - marginH);
         s.ry = Math.min(s.ry, s.oy - marginV, vh - s.oy - marginV);
-        s.rx = Math.max(s.rx, 5); s.ry = Math.max(s.ry, 5);
-        s.x = s.ox; s.y = s.oy;
+        s.rx = Math.max(s.rx, 5);
+        s.ry = Math.max(s.ry, 5);
+        s.x = s.ox;
+        s.y = s.oy;
       });
 
       const PAD = 18;
@@ -293,15 +347,22 @@ export default function TeamSection() {
         let moved = false;
         for (let i = 0; i < state.length; i++) {
           for (let j = i + 1; j < state.length; j++) {
-            const si = state[i], sj = state[j];
-            const dx = si.ox - sj.ox, dy = si.oy - sj.oy;
+            const si = state[i],
+              sj = state[j];
+            const dx = si.ox - sj.ox,
+              dy = si.oy - sj.oy;
             const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
             const minD = (si.w + sj.w) / 2 + PAD;
             if (dist < minD) {
               const push = (minD - dist) / 2;
-              const nx = (dx / dist) * push, ny = (dy / dist) * push;
-              si.ox += nx; si.oy += ny; sj.ox -= nx; sj.oy -= ny;
-              const mi = Math.max(si.w, si.h) / 2 + 4, mj = Math.max(sj.w, sj.h) / 2 + 4;
+              const nx = (dx / dist) * push,
+                ny = (dy / dist) * push;
+              si.ox += nx;
+              si.oy += ny;
+              sj.ox -= nx;
+              sj.oy -= ny;
+              const mi = Math.max(si.w, si.h) / 2 + 4,
+                mj = Math.max(sj.w, sj.h) / 2 + 4;
               si.ox = Math.max(mi, Math.min(vw - mi, si.ox));
               si.oy = Math.max(mi, Math.min(vh - mi, si.oy));
               sj.ox = Math.max(mj, Math.min(vw - mj, sj.ox));
@@ -316,14 +377,21 @@ export default function TeamSection() {
       state.forEach((s) => {
         const z = getCFZone(s.baseW, s.baseH);
         if (s.ox > z.l && s.ox < z.r && s.oy > z.t && s.oy < z.b) {
-          const ddx = s.ox - z.cx, ddy = s.oy - z.cy;
+          const ddx = s.ox - z.cx,
+            ddy = s.oy - z.cy;
           if (Math.abs(ddx) / (z.r - z.l) > Math.abs(ddy) / (z.b - z.t)) {
             s.ox = ddx >= 0 ? z.r : z.l;
           } else {
             s.oy = ddy >= 0 ? z.b : z.t;
           }
-          s.ox = Math.max(s.baseW / 2 + (_mob ? 8 : 40), Math.min(vw - s.baseW / 2 - (_mob ? 8 : 40), s.ox));
-          s.oy = Math.max(s.baseH / 2 + 80, Math.min(vh - s.baseH / 2 - 80, s.oy));
+          s.ox = Math.max(
+            s.baseW / 2 + (_mob ? 8 : 40),
+            Math.min(vw - s.baseW / 2 - (_mob ? 8 : 40), s.ox),
+          );
+          s.oy = Math.max(
+            s.baseH / 2 + 80,
+            Math.min(vh - s.baseH / 2 - 80, s.oy),
+          );
         }
       });
 
@@ -345,7 +413,8 @@ export default function TeamSection() {
       if (lastTime === null) lastTime = ts;
       const dt = Math.min(ts - lastTime, 50);
       lastTime = ts;
-      const vw = window.innerWidth, vh = window.innerHeight;
+      const vw = window.innerWidth,
+        vh = window.innerHeight;
       state.forEach((s, i) => {
         if (!s.floating || s.dragging || s.flyingBack) return;
         s.angle += s.speed * dt;
@@ -359,24 +428,41 @@ export default function TeamSection() {
             s.baseH / 2,
             Math.min(
               (_mobSceneH > 0 ? _mobSceneH : s.oy + s.ry) - s.baseH / 2,
-              Math.max(s.oy - s.ry, Math.min(s.oy + s.ry, ny))
-            )
+              Math.max(s.oy - s.ry, Math.min(s.oy + s.ry, ny)),
+            ),
           );
         } else {
           const clamped = clampDesktopFloatPos(nx, ny, s.baseW, s.baseH);
           const hitX = clamped.x !== nx;
           const hitY = clamped.y !== ny;
-          const preX = hitX ? s.x + (clamped.x - s.x) * DESKTOP_EDGE_EASE : clamped.x;
-          const preY = hitY ? s.y + (clamped.y - s.y) * DESKTOP_EDGE_EASE : clamped.y;
-          const easedAway = easeDesktopAwayFromCenter(preX, preY, s.baseW, s.baseH, s.x, s.y);
+          const preX = hitX
+            ? s.x + (clamped.x - s.x) * DESKTOP_EDGE_EASE
+            : clamped.x;
+          const preY = hitY
+            ? s.y + (clamped.y - s.y) * DESKTOP_EDGE_EASE
+            : clamped.y;
+          const easedAway = easeDesktopAwayFromCenter(
+            preX,
+            preY,
+            s.baseW,
+            s.baseH,
+            s.x,
+            s.y,
+          );
           const targetX = easedAway.x;
           const targetY = easedAway.y;
-          cx = s.x + (targetX - s.x) * (hitX ? DESKTOP_EDGE_EASE : DESKTOP_FLOAT_EASE);
-          cy = s.y + (targetY - s.y) * (hitY ? DESKTOP_EDGE_EASE : DESKTOP_FLOAT_EASE);
+          cx =
+            s.x +
+            (targetX - s.x) * (hitX ? DESKTOP_EDGE_EASE : DESKTOP_FLOAT_EASE);
+          cy =
+            s.y +
+            (targetY - s.y) * (hitY ? DESKTOP_EDGE_EASE : DESKTOP_FLOAT_EASE);
         }
 
-        s.x = cx; s.y = cy;
-        cardEls[i].style.transform = `translate(${s.x - s.baseW / 2}px,${s.y - s.baseH / 2}px)`;
+        s.x = cx;
+        s.y = cy;
+        cardEls[i].style.transform =
+          `translate(${s.x - s.baseW / 2}px,${s.y - s.baseH / 2}px)`;
       });
       void vh;
     }
@@ -385,7 +471,7 @@ export default function TeamSection() {
     // Pause float loop when scene is off-screen
     const loopIo = new IntersectionObserver(
       ([entry]) => manager.setActive(loopId, entry.isIntersecting),
-      { rootMargin: "64px 0px" }
+      { rootMargin: "64px 0px" },
     );
     loopIo.observe(scene);
     initFloat();
@@ -405,8 +491,10 @@ export default function TeamSection() {
     /* ── INTRO REVEAL ── */
     let introObs: IntersectionObserver | null = null;
     (function introReveal() {
-      const vw = window.innerWidth, vh = window.innerHeight;
-      const cx = vw / 2, cy = _mob ? 445 : vh / 2;
+      const vw = window.innerWidth,
+        vh = window.innerHeight;
+      const cx = vw / 2,
+        cy = _mob ? 445 : vh / 2;
 
       cardEls.forEach((el, i) => {
         const s = state[i];
@@ -422,7 +510,10 @@ export default function TeamSection() {
           triggered = true;
           introObs?.disconnect();
 
-          const finalZ = cardEls.map(() => { _zTop++; return _zTop; });
+          const finalZ = cardEls.map(() => {
+            _zTop++;
+            return _zTop;
+          });
           let landedCount = 0;
 
           cardEls.forEach((el, i) => {
@@ -443,20 +534,23 @@ export default function TeamSection() {
                 s.floating = true;
                 landedCount++;
                 if (landedCount === cardEls.length) {
-                  cardEls.forEach((cel, ci) => { cel.style.zIndex = String(finalZ[ci]); });
+                  cardEls.forEach((cel, ci) => {
+                    cel.style.zIndex = String(finalZ[ci]);
+                  });
                 }
               },
             });
           });
         },
-        { threshold: 0.3 }
+        { threshold: 0.3 },
       );
       introObs.observe(scene);
     })();
 
     /* ── HELPERS ── */
     function getCFZone(cardW: number, cardH: number) {
-      const vw = window.innerWidth, vh = window.innerHeight;
+      const vw = window.innerWidth,
+        vh = window.innerHeight;
       const gap = 40 + (cardW || 0) / 2;
       const gapV = (_mob ? 40 : 120) + (cardH || 0) / 2;
       const _fw = _mob ? 268 : _tab ? 280 : _lap ? 300 : 352,
@@ -480,7 +574,12 @@ export default function TeamSection() {
         maxY: window.innerHeight - cardH / 2 - 96,
       };
     }
-    function clampDesktopFloatPos(x: number, y: number, cardW: number, cardH: number) {
+    function clampDesktopFloatPos(
+      x: number,
+      y: number,
+      cardW: number,
+      cardH: number,
+    ) {
       const b = getDesktopBounds(cardW, cardH);
       return {
         x: Math.max(b.minX, Math.min(b.maxX, x)),
@@ -494,7 +593,10 @@ export default function TeamSection() {
       const maxY = (_mobSceneH > 0 ? _mobSceneH : s.oy + s.ry) - s.baseH / 2;
       return {
         x: Math.max(minX, Math.min(maxX, x)),
-        y: Math.max(minY, Math.min(maxY, Math.max(s.oy - s.ry, Math.min(s.oy + s.ry, y)))),
+        y: Math.max(
+          minY,
+          Math.min(maxY, Math.max(s.oy - s.ry, Math.min(s.oy + s.ry, y))),
+        ),
       };
     }
     function getFloatTarget(s: CardState, currentX: number, currentY: number) {
@@ -502,17 +604,33 @@ export default function TeamSection() {
       const rawY = s.oy + Math.sin(s.angle * 0.73 + s.phaseY) * s.ry;
       if (_mob) return clampMobileFloatPos(rawX, rawY, s);
       const dest = clampDesktopFloatPos(rawX, rawY, s.baseW, s.baseH);
-      return easeDesktopAwayFromCenter(dest.x, dest.y, s.baseW, s.baseH, currentX, currentY);
+      return easeDesktopAwayFromCenter(
+        dest.x,
+        dest.y,
+        s.baseW,
+        s.baseH,
+        currentX,
+        currentY,
+      );
     }
     function easeDesktopAwayFromCenter(
-      x: number, y: number, cardW: number, cardH: number,
-      currentX?: number, currentY?: number
+      x: number,
+      y: number,
+      cardW: number,
+      cardH: number,
+      currentX?: number,
+      currentY?: number,
     ) {
       const z = getCFZone(cardW, cardH);
       if (!(x > z.l && x < z.r && y > z.t && y < z.b)) return { x, y };
-      let tx = x, ty = y;
-      const dx = x - z.cx, dy = y - z.cy;
-      if (Math.abs(dx) / Math.max(1, z.r - z.l) > Math.abs(dy) / Math.max(1, z.b - z.t)) {
+      let tx = x,
+        ty = y;
+      const dx = x - z.cx,
+        dy = y - z.cy;
+      if (
+        Math.abs(dx) / Math.max(1, z.r - z.l) >
+        Math.abs(dy) / Math.max(1, z.b - z.t)
+      ) {
         tx = dx >= 0 ? z.r : z.l;
       } else {
         ty = dy >= 0 ? z.b : z.t;
@@ -534,7 +652,10 @@ export default function TeamSection() {
     function getCenterPos() {
       const r = centerFrame.getBoundingClientRect();
       const so = getSceneOffset();
-      return { x: r.left + r.width / 2 - so.dx, y: r.top + r.height / 2 - so.dy };
+      return {
+        x: r.left + r.width / 2 - so.dx,
+        y: r.top + r.height / 2 - so.dy,
+      };
     }
 
     /* ── SCAN SEQUENCE ── */
@@ -543,8 +664,14 @@ export default function TeamSection() {
     let stopFlickerFn: (() => void) | null = null;
 
     function hardResetFrame() {
-      if (activeTl) { activeTl.kill(); activeTl = null; }
-      if (stopFlickerFn) { stopFlickerFn(); stopFlickerFn = null; }
+      if (activeTl) {
+        activeTl.kill();
+        activeTl = null;
+      }
+      if (stopFlickerFn) {
+        stopFlickerFn();
+        stopFlickerFn = null;
+      }
       gsap.killTweensOf(scanLine);
       gsap.killTweensOf(frameDetection);
       gsap.killTweensOf(detectionStatus);
@@ -569,7 +696,10 @@ export default function TeamSection() {
       if (bar) gsap.set(bar, { opacity: 1 });
       vignette.classList.remove("intense");
       vignette.classList.add("visible");
-      if (frameName._twAbort) { frameName._twAbort(); frameName._twAbort = null; }
+      if (frameName._twAbort) {
+        frameName._twAbort();
+        frameName._twAbort = null;
+      }
       frameName.textContent = "";
       frameRole.textContent = "";
     }
@@ -588,7 +718,12 @@ export default function TeamSection() {
       if (cur) cur.remove();
     }
 
-    function typeWrite(el: HTMLElement, text: string, charDelay: number, onDone?: () => void) {
+    function typeWrite(
+      el: HTMLElement,
+      text: string,
+      charDelay: number,
+      onDone?: () => void,
+    ) {
       const CURSOR = "|";
       let i = 0;
       let tid: ReturnType<typeof setTimeout> | null = null;
@@ -599,16 +734,22 @@ export default function TeamSection() {
       function stopAll() {
         if (tid) clearTimeout(tid);
         if (blinkTid) clearInterval(blinkTid);
-        tid = null; blinkTid = null;
+        tid = null;
+        blinkTid = null;
       }
       (el as HTMLElement & { _twAbort?: () => void })._twAbort = () => {
-        stopAll(); done = true; el.textContent = text;
+        stopAll();
+        done = true;
+        el.textContent = text;
       };
       function blink(typed: string) {
         if (blinkTid) clearInterval(blinkTid);
         let on = true;
         blinkTid = setInterval(() => {
-          if (done) { if (blinkTid) clearInterval(blinkTid); return; }
+          if (done) {
+            if (blinkTid) clearInterval(blinkTid);
+            return;
+          }
           on = !on;
           el.textContent = typed + (on ? CURSOR : "");
         }, 300);
@@ -622,7 +763,8 @@ export default function TeamSection() {
           if (onDone) onDone();
           return;
         }
-        const ch = text[i]; i++;
+        const ch = text[i];
+        i++;
         const typed = text.slice(0, i);
         el.textContent = typed + CURSOR;
         let delay = charDelay + (Math.random() * 10 - 5);
@@ -657,10 +799,13 @@ export default function TeamSection() {
         const fw = _mob ? 268 : _tab ? 280 : _lap ? 300 : 352;
         const fh = _mob ? 326 : _tab ? 338 : _lap ? 363 : 426;
         const frameBounds = {
-          l: cp.x - fw / 2, r: cp.x + fw / 2,
-          t: cp.y - fh / 2, b: cp.y + fh / 2,
+          l: cp.x - fw / 2,
+          r: cp.x + fw / 2,
+          t: cp.y - fh / 2,
+          b: cp.y + fh / 2,
         };
-        ps.x = cp.x; ps.y = cp.y;
+        ps.x = cp.x;
+        ps.y = cp.y;
         _zTop++;
         const restoreZ = _zTop;
         prev.style.zIndex = "2";
@@ -672,13 +817,20 @@ export default function TeamSection() {
         let hasAppeared = false;
         const flyProxy = { x: cp.x, y: cp.y };
         gsap.to(flyProxy, {
-          x: destX, y: destY,
-          duration: 1.2, ease: "power2.out",
+          x: destX,
+          y: destY,
+          duration: 1.2,
+          ease: "power2.out",
           onUpdate: () => {
-            ps.x = flyProxy.x; ps.y = flyProxy.y;
+            ps.x = flyProxy.x;
+            ps.y = flyProxy.y;
             prev.style.transform = `translate(${ps.x - ps.baseW / 2}px,${ps.y - ps.baseH / 2}px)`;
             if (!hasAppeared) {
-              const outside = ps.x < frameBounds.l || ps.x > frameBounds.r || ps.y < frameBounds.t || ps.y > frameBounds.b;
+              const outside =
+                ps.x < frameBounds.l ||
+                ps.x > frameBounds.r ||
+                ps.y < frameBounds.t ||
+                ps.y > frameBounds.b;
               if (outside) {
                 hasAppeared = true;
                 prev.style.zIndex = String(restoreZ);
@@ -688,7 +840,8 @@ export default function TeamSection() {
             }
           },
           onComplete: () => {
-            ps.x = destX; ps.y = destY;
+            ps.x = destX;
+            ps.y = destY;
             prev.style.opacity = "1";
             ps.flyingBack = false;
             ps.floating = true;
@@ -702,16 +855,28 @@ export default function TeamSection() {
 
       // VOICE
       function speakRobotic(text: string, onEnd?: () => void) {
-        if (!soundEnabledRef.current) { if (onEnd) onEnd(); return; }
-        if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
+        if (!soundEnabledRef.current) {
+          if (onEnd) onEnd();
+          return;
+        }
+        if (!window.speechSynthesis) {
+          if (onEnd) onEnd();
+          return;
+        }
         window.speechSynthesis.cancel();
         const utt = new SpeechSynthesisUtterance(text);
-        utt.rate = 0.78; utt.pitch = 0.55; utt.volume = 1;
+        utt.rate = 0.78;
+        utt.pitch = 0.55;
+        utt.volume = 1;
         const voices = window.speechSynthesis.getVoices();
         const female =
           voices.find((v) =>
-            /female|woman|zira|samantha|karen|tessa|moira|fiona|victoria|susan|google us english/i.test(v.name)
-          ) || voices.find((v) => v.lang === "en-US") || voices[0];
+            /female|woman|zira|samantha|karen|tessa|moira|fiona|victoria|susan|google us english/i.test(
+              v.name,
+            ),
+          ) ||
+          voices.find((v) => v.lang === "en-US") ||
+          voices[0];
         if (female) utt.voice = female;
         if (onEnd) utt.onend = onEnd;
         window.speechSynthesis.speak(utt);
@@ -725,7 +890,9 @@ export default function TeamSection() {
       };
       const _ac =
         w._trionn_ac ||
-        (w._trionn_ac = new (window.AudioContext || (w.webkitAudioContext as typeof AudioContext))());
+        (w._trionn_ac = new (
+          window.AudioContext || (w.webkitAudioContext as typeof AudioContext)
+        )());
 
       function playDetectedBeep() {
         if (!soundEnabledRef.current) return;
@@ -738,19 +905,23 @@ export default function TeamSection() {
           gain.gain.setValueAtTime(0, now + offset);
           gain.gain.linearRampToValueAtTime(0.07, now + offset + 0.01);
           gain.gain.linearRampToValueAtTime(0, now + offset + 0.07);
-          osc.connect(gain); gain.connect(_ac.destination);
-          osc.start(now + offset); osc.stop(now + offset + 0.1);
+          osc.connect(gain);
+          gain.connect(_ac.destination);
+          osc.start(now + offset);
+          osc.stop(now + offset + 0.1);
         });
       }
       frameName.textContent = "";
       frameRole.textContent = "";
 
-      frameImg.src = `/images/${p.file}.jpg`;
+      frameImg.src = `/images/${p.file}.webp`;
       frameImg.style.opacity = "0";
       frameVid.style.opacity = "0";
       const _img = new Image();
-      _img.onload = () => { frameImg.style.opacity = "0.22"; };
-      _img.src = `/images/${p.file}.jpg`;
+      _img.onload = () => {
+        frameImg.style.opacity = "0.22";
+      };
+      _img.src = `/images/${p.file}.webp`;
       frameVid.src = `/images/${p.file}.mp4`;
       frameVid.load();
 
@@ -761,7 +932,10 @@ export default function TeamSection() {
           if (!flickerTimer) return;
           const b = 0.78 + Math.random() * 0.22;
           scanLine.style.filter = `brightness(${b.toFixed(2)})`;
-          flickerTimer = setTimeout(() => requestAnimationFrame(tick), 25 + Math.random() * 55);
+          flickerTimer = setTimeout(
+            () => requestAnimationFrame(tick),
+            25 + Math.random() * 55,
+          );
         }
         flickerTimer = setTimeout(() => requestAnimationFrame(tick), 0);
       }
@@ -775,8 +949,10 @@ export default function TeamSection() {
       const tl = gsap.timeline();
       activeTl = tl;
 
-      scanGrid.width = FRAME_W; scanGrid.height = FRAME_H;
-      glitchCanvas.width = FRAME_W; glitchCanvas.height = FRAME_H;
+      scanGrid.width = FRAME_W;
+      scanGrid.height = FRAME_H;
+      glitchCanvas.width = FRAME_W;
+      glitchCanvas.height = FRAME_H;
       const sgCtx = scanGrid.getContext("2d")!;
       const gcCtx = glitchCanvas.getContext("2d")!;
 
@@ -786,7 +962,8 @@ export default function TeamSection() {
         sgCtx.clearRect(0, 0, FRAME_W, FRAME_H);
         sgCtx.strokeStyle = `rgba(220,220,220,${alpha})`;
         sgCtx.lineWidth = 0.4;
-        const cols = 12, rows = 15;
+        const cols = 12,
+          rows = 15;
         for (let c = 0; c <= cols; c++) {
           sgCtx.beginPath();
           sgCtx.moveTo((c / cols) * FRAME_W, 0);
@@ -807,7 +984,11 @@ export default function TeamSection() {
       scanLine.style.opacity = "0";
 
       tl.to(scanGrid, { opacity: 1, duration: 0.3 });
-      tl.to(scanLine, { opacity: 1, duration: 0.18, onComplete: () => startFlicker() }, "<+=0.1");
+      tl.to(
+        scanLine,
+        { opacity: 1, duration: 0.18, onComplete: () => startFlicker() },
+        "<+=0.1",
+      );
       tl.to(scanOverlay, { opacity: 1, duration: 0.25 }, "<");
       tl.to(frameDetection, { opacity: 1, duration: 0.2 }, "<");
       tl.to(identifyingText, { opacity: 1, duration: 0.28 }, "<+=0.08");
@@ -815,11 +996,19 @@ export default function TeamSection() {
       tl.add(() => {
         hudDept.textContent = "";
         gsap.to(hudBarFill, { width: "0%", duration: 0 });
-        gsap.to(hudBarFill, { width: "100%", duration: 1.6, ease: "power1.inOut" });
+        gsap.to(hudBarFill, {
+          width: "100%",
+          duration: 1.6,
+          ease: "power1.inOut",
+        });
       });
       tl.to(hudOverlay, { opacity: 1, duration: 0.3 }, "<");
 
-      tl.to(scanLine, { top: FRAME_H + "px", duration: 0.85, ease: "power1.inOut" });
+      tl.to(scanLine, {
+        top: FRAME_H + "px",
+        duration: 0.85,
+        ease: "power1.inOut",
+      });
       tl.to(scanLine, { top: "0px", duration: 0.85, ease: "power1.inOut" });
 
       tl.add(() => stopFlicker());
@@ -859,7 +1048,11 @@ export default function TeamSection() {
         glitch();
       });
 
-      tl.to(frameImg, { opacity: 1, duration: 0.28, ease: "power2.out" }, "+=0.25");
+      tl.to(
+        frameImg,
+        { opacity: 1, duration: 0.28, ease: "power2.out" },
+        "+=0.25",
+      );
 
       tl.add(() => {
         detectionStatus.textContent = "DETECTED...";
@@ -868,7 +1061,11 @@ export default function TeamSection() {
         playDetectedBeep();
         speakRobotic("Detected.");
       }, "<+=0.1");
-      tl.to(detectionStatus, { opacity: 1, duration: 0.4, ease: "power2.out" }, "<");
+      tl.to(
+        detectionStatus,
+        { opacity: 1, duration: 0.4, ease: "power2.out" },
+        "<",
+      );
 
       tl.add(() => {
         frameRole.textContent = p.role;
@@ -880,7 +1077,11 @@ export default function TeamSection() {
         frameVid.style.opacity = "1";
         frameVid.play().catch(() => {});
         frameImg.style.opacity = "0";
-        gsap.to(frameDetection, { opacity: 0, duration: 0.4, ease: "power1.in" });
+        gsap.to(frameDetection, {
+          opacity: 0,
+          duration: 0.4,
+          ease: "power1.in",
+        });
         gsap.to(hudOverlay, { opacity: 0, duration: 0.5, delay: 0.2 });
         vignette.classList.remove("intense");
         vignette.classList.add("visible");
@@ -889,13 +1090,17 @@ export default function TeamSection() {
         });
       }, "+=0.3");
 
-      tl.add(() => { activeTl = null; });
+      tl.add(() => {
+        activeTl = null;
+      });
     }
 
     /* ── DRAG ── */
     let dragIdx = -1;
-    let dragOffX = 0, dragOffY = 0;
-    let dragCX = 0, dragCY = 0;
+    let dragOffX = 0,
+      dragOffY = 0;
+    let dragCX = 0,
+      dragCY = 0;
 
     const cardListeners: Array<() => void> = [];
 
@@ -910,7 +1115,8 @@ export default function TeamSection() {
           s.y = s.oy + Math.sin(s.angle * 0.73 + s.phaseY) * s.ry;
           card.style.transform = `translate(${s.x - s.baseW / 2}px,${s.y - s.baseH / 2}px)`;
           dragIdx = i;
-          dragOffX = 0; dragOffY = 0;
+          dragOffX = 0;
+          dragOffY = 0;
           s.floating = false;
           s.dragging = true;
           card.classList.add("dragging");
@@ -921,7 +1127,8 @@ export default function TeamSection() {
         card.addEventListener("click", onClick);
         cardListeners.push(() => card.removeEventListener("click", onClick));
       } else {
-        const onMouseDown = (e: MouseEvent) => startDrag(e, i, e.clientX, e.clientY);
+        const onMouseDown = (e: MouseEvent) =>
+          startDrag(e, i, e.clientX, e.clientY);
         const onTouchStart = (e: TouchEvent) => {
           const t = e.touches[0];
           startDrag(e, i, t.clientX, t.clientY);
@@ -935,13 +1142,17 @@ export default function TeamSection() {
       }
     });
 
-    function bringToFront(card: HTMLElement) { _zTop++; card.style.zIndex = "10000"; }
+    function bringToFront(card: HTMLElement) {
+      _zTop++;
+      card.style.zIndex = "10000";
+    }
 
     function startDrag(e: Event, i: number, cx: number, cy: number) {
       e.preventDefault();
       if (dragIdx >= 0) return;
       dragIdx = i;
-      dragCX = cx; dragCY = cy;
+      dragCX = cx;
+      dragCY = cy;
       const s = state[i];
       const card = cardEls[i];
       const r = card.getBoundingClientRect();
@@ -955,14 +1166,19 @@ export default function TeamSection() {
       s.dragging = true;
       card.classList.add("dragging");
       bringToFront(card);
-      if (s._flyTween) { s._flyTween.kill(); s._flyTween = null; }
+      if (s._flyTween) {
+        s._flyTween.kill();
+        s._flyTween = null;
+      }
       gsap.killTweensOf(s);
-      void dragCX; void dragCY;
+      void dragCX;
+      void dragCY;
     }
 
     function moveDrag(cx: number, cy: number) {
       if (dragIdx < 0) return;
-      dragCX = cx; dragCY = cy;
+      dragCX = cx;
+      dragCY = cy;
       const s = state[dragIdx];
       const card = cardEls[dragIdx];
       const so = getSceneOffset();
@@ -996,16 +1212,21 @@ export default function TeamSection() {
 
         if (_mob) {
           gsap.to(proxy, {
-            x: cp.x, y: cp.y,
-            duration: 0.35, ease: "power2.inOut",
+            x: cp.x,
+            y: cp.y,
+            duration: 0.35,
+            ease: "power2.inOut",
             onUpdate: () => {
-              s.x = proxy.x; s.y = proxy.y;
+              s.x = proxy.x;
+              s.y = proxy.y;
               card.style.transform = `translate(${proxy.x - proxy.w / 2}px,${proxy.y - proxy.h / 2}px)`;
             },
             onComplete: () => {
               gsap.to(proxy, {
-                w: targetW, h: targetH,
-                duration: 0.3, ease: "power2.inOut",
+                w: targetW,
+                h: targetH,
+                duration: 0.3,
+                ease: "power2.inOut",
                 onUpdate: () => {
                   card.style.width = proxy.w + "px";
                   card.style.height = proxy.h + "px";
@@ -1015,7 +1236,8 @@ export default function TeamSection() {
                   card.classList.remove("dragging");
                   card.style.width = s.baseW + "px";
                   card.style.height = s.baseH + "px";
-                  s.x = s.ox; s.y = s.oy;
+                  s.x = s.ox;
+                  s.y = s.oy;
                   card.style.transform = `translate(${s.x - s.baseW / 2}px,${s.y - s.baseH / 2}px)`;
                   card.style.opacity = "0";
                   card.style.pointerEvents = "none";
@@ -1028,10 +1250,15 @@ export default function TeamSection() {
         } else {
           gsap.to(proxy, {
             id: "__proxy__",
-            x: cp.x, y: cp.y, w: targetW, h: targetH,
-            duration: 0.5, ease: "power2.inOut",
+            x: cp.x,
+            y: cp.y,
+            w: targetW,
+            h: targetH,
+            duration: 0.5,
+            ease: "power2.inOut",
             onUpdate: () => {
-              s.x = proxy.x; s.y = proxy.y;
+              s.x = proxy.x;
+              s.y = proxy.y;
               card.style.width = proxy.w + "px";
               card.style.height = proxy.h + "px";
               card.style.transform = `translate(${proxy.x - proxy.w / 2}px,${proxy.y - proxy.h / 2}px)`;
@@ -1040,7 +1267,8 @@ export default function TeamSection() {
               card.classList.remove("dragging");
               card.style.width = s.baseW + "px";
               card.style.height = s.baseH + "px";
-              s.x = s.ox; s.y = s.oy;
+              s.x = s.ox;
+              s.y = s.oy;
               card.style.transform = `translate(${s.x - s.baseW / 2}px,${s.y - s.baseH / 2}px)`;
               card.style.opacity = "0";
               card.style.pointerEvents = "none";
@@ -1060,13 +1288,18 @@ export default function TeamSection() {
 
         const rp = { x: s.x, y: s.y };
         s._flyTween = gsap.to(rp, {
-          x: dx, y: dy, duration: 2.2, ease: "power3.out",
+          x: dx,
+          y: dy,
+          duration: 2.2,
+          ease: "power3.out",
           onUpdate: () => {
-            s.x = rp.x; s.y = rp.y;
+            s.x = rp.x;
+            s.y = rp.y;
             card.style.transform = `translate(${s.x - s.baseW / 2}px,${s.y - s.baseH / 2}px)`;
           },
           onComplete: () => {
-            s.x = dx; s.y = dy;
+            s.x = dx;
+            s.y = dy;
             s.flyingBack = false;
             s.floating = true;
             s._flyTween = null;
@@ -1175,7 +1408,11 @@ export default function TeamSection() {
           else if (k > SEG) tailFade = (TAIL - (k - SEG)) / TAIL;
           else tailFade = 1;
           const fade = coreFade * tailFade;
-          path.push({ x: pt.x + pt.j * Math.max(0, coreFade), y: pt.y + pt.j * Math.max(0, coreFade), fade });
+          path.push({
+            x: pt.x + pt.j * Math.max(0, coreFade),
+            y: pt.y + pt.j * Math.max(0, coreFade),
+            fade,
+          });
         }
 
         for (let k = 0; k < path.length - 1; k++) {
@@ -1184,7 +1421,9 @@ export default function TeamSection() {
           ctx.moveTo(path[k].x, path[k].y);
           ctx.lineTo(path[k + 1].x, path[k + 1].y);
           ctx.strokeStyle = `rgba(160,190,220,${(0.18 * fade).toFixed(3)})`;
-          ctx.lineWidth = 5; ctx.lineCap = "round"; ctx.lineJoin = "round";
+          ctx.lineWidth = 5;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
           ctx.stroke();
         }
         for (let k = 0; k < path.length - 1; k++) {
@@ -1193,7 +1432,9 @@ export default function TeamSection() {
           ctx.moveTo(path[k].x, path[k].y);
           ctx.lineTo(path[k + 1].x, path[k + 1].y);
           ctx.strokeStyle = `rgba(180,210,240,${(0.4 * fade).toFixed(3)})`;
-          ctx.lineWidth = 1.8; ctx.lineCap = "round"; ctx.lineJoin = "round";
+          ctx.lineWidth = 1.8;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
           ctx.stroke();
         }
         for (let k = 0; k < path.length - 1; k++) {
@@ -1209,22 +1450,33 @@ export default function TeamSection() {
       const arcId = manager.register(arcLoop);
       const arcIo = new IntersectionObserver(
         ([entry]) => manager.setActive(arcId, entry.isIntersecting),
-        { rootMargin: "64px 0px" }
+        { rootMargin: "64px 0px" },
       );
       arcIo.observe(scene);
-      arcLoopCleanup = () => { manager.unregister(arcId); arcIo.disconnect(); };
+      arcLoopCleanup = () => {
+        manager.unregister(arcId);
+        arcIo.disconnect();
+      };
     })();
 
     /* ── MOUSE PARALLAX ── */
-    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-    const onMouseMoveTrack = (e: MouseEvent) => { mouseX = e.clientX; mouseY = e.clientY; };
+    let mouseX = window.innerWidth / 2,
+      mouseY = window.innerHeight / 2;
+    const onMouseMoveTrack = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    };
     document.addEventListener("mousemove", onMouseMoveTrack);
 
     /* ── PROXIMITY PULSE ── */
     const proxId = manager.register(function check() {
       if (dragIdx >= 0) {
         const z = getCFZone(0, 0);
-        const near = mouseX > z.l - 60 && mouseX < z.r + 60 && mouseY > z.t - 60 && mouseY < z.b + 60;
+        const near =
+          mouseX > z.l - 60 &&
+          mouseX < z.r + 60 &&
+          mouseY > z.t - 60 &&
+          mouseY < z.b + 60;
         frameOuter.classList.toggle("proximity", near);
       } else {
         frameOuter.classList.remove("proximity");
@@ -1236,11 +1488,15 @@ export default function TeamSection() {
     const lines: SVGLineElement[] = [];
     PEOPLE.forEach(() => {
       const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      s.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;";
+      s.style.cssText =
+        "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;";
       s.style.zIndex = "2";
       scene.appendChild(s);
       lineSvgs.push(s);
-      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      const line = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "line",
+      );
       line.setAttribute("stroke", "rgba(255,255,255,0.1)");
       line.setAttribute("stroke-width", "1");
       s.appendChild(line);
@@ -1249,12 +1505,19 @@ export default function TeamSection() {
 
     const MAX_SPARKS = 1;
     type Spark = {
-      el: SVGPolylineElement; active: boolean; t: number;
-      lineIdx: number; speed: number; jitter?: number[];
+      el: SVGPolylineElement;
+      active: boolean;
+      t: number;
+      lineIdx: number;
+      speed: number;
+      jitter?: number[];
     };
     const sparks: Spark[] = [];
     for (let i = 0; i < MAX_SPARKS; i++) {
-      const poly = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+      const poly = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "polyline",
+      );
       poly.setAttribute("fill", "none");
       poly.setAttribute("stroke-linecap", "round");
       poly.setAttribute("stroke-linejoin", "round");
@@ -1263,14 +1526,23 @@ export default function TeamSection() {
       sparks.push({ el: poly, active: false, t: 0, lineIdx: -1, speed: 0 });
     }
 
-    function arcSegment(x1: number, y1: number, x2: number, y2: number, t: number, jitter: number[]) {
-      const dx = x2 - x1, dy = y2 - y1;
+    function arcSegment(
+      x1: number,
+      y1: number,
+      x2: number,
+      y2: number,
+      t: number,
+      jitter: number[],
+    ) {
+      const dx = x2 - x1,
+        dy = y2 - y1;
       const len = Math.sqrt(dx * dx + dy * dy);
       const segLen = 24;
       const half = (segLen / len) * 0.5;
       const t0 = Math.max(0, t - half);
       const t1 = Math.min(1, t + half);
-      const nx = -dy / len, ny = dx / len;
+      const nx = -dy / len,
+        ny = dx / len;
       const steps = 6;
       const pts: string[] = [];
       for (let k = 0; k <= steps; k++) {
@@ -1287,14 +1559,19 @@ export default function TeamSection() {
     function maybeFireSpark() {
       const free = sparks.find((s) => !s.active);
       if (!free) return;
-      const candidates = lines.map((_, i) => i).filter((i) => {
-        const card = cardEls[i];
-        const op = parseFloat(card.style.opacity);
-        return !(op === 0 || card.style.opacity === "0");
-      });
+      const candidates = lines
+        .map((_, i) => i)
+        .filter((i) => {
+          const card = cardEls[i];
+          const op = parseFloat(card.style.opacity);
+          return !(op === 0 || card.style.opacity === "0");
+        });
       if (!candidates.length) return;
       const idx = candidates[Math.floor(Math.random() * candidates.length)];
-      const jitter = Array.from({ length: 12 }, () => (Math.random() - 0.5) * 1);
+      const jitter = Array.from(
+        { length: 12 },
+        () => (Math.random() - 0.5) * 1,
+      );
       free.active = true;
       free.t = 0.02;
       free.lineIdx = idx;
@@ -1314,7 +1591,10 @@ export default function TeamSection() {
         const hidden = op === 0 || card.style.opacity === "0";
         const cardZ = parseInt(card.style.zIndex) || 5;
         lineSvgs[i].style.zIndex = String(Math.min(cardZ - 1, 9998));
-        if (hidden) { lines[i].setAttribute("opacity", "0"); return; }
+        if (hidden) {
+          lines[i].setAttribute("opacity", "0");
+          return;
+        }
         const r = card.getBoundingClientRect();
         const ex = r.left + r.width / 2;
         const ey = r.top + r.height / 2;
@@ -1333,34 +1613,48 @@ export default function TeamSection() {
       sparks.forEach((sp) => {
         if (!sp.active) return;
         sp.t += sp.speed;
-        if (sp.t >= 1) { sp.active = false; sp.el.setAttribute("opacity", "0"); return; }
+        if (sp.t >= 1) {
+          sp.active = false;
+          sp.el.setAttribute("opacity", "0");
+          return;
+        }
         const card = cardEls[sp.lineIdx];
         const op = parseFloat(card.style.opacity);
         if (op === 0 || card.style.opacity === "0") {
-          sp.active = false; sp.el.setAttribute("opacity", "0"); return;
+          sp.active = false;
+          sp.el.setAttribute("opacity", "0");
+          return;
         }
-        const fade = sp.t < 0.05 ? sp.t / 0.05 : sp.t > 0.95 ? (1 - sp.t) / 0.05 : 1;
+        const fade =
+          sp.t < 0.05 ? sp.t / 0.05 : sp.t > 0.95 ? (1 - sp.t) / 0.05 : 1;
         sp.jitter = Array.from({ length: 12 }, () => (Math.random() - 0.5) * 1);
         const sr = cardEls[sp.lineIdx].getBoundingClientRect();
-        const pts = arcSegment(cx, cy, sr.left + sr.width / 2, sr.top + sr.height / 2, sp.t, sp.jitter!);
+        const pts = arcSegment(
+          cx,
+          cy,
+          sr.left + sr.width / 2,
+          sr.top + sr.height / 2,
+          sp.t,
+          sp.jitter!,
+        );
         sp.el.setAttribute("points", pts);
         sp.el.setAttribute("stroke", "rgba(160,190,220,0.55)");
         sp.el.setAttribute("stroke-width", "0.9");
         sp.el.setAttribute("opacity", String((fade * 0.95).toFixed(2)));
       });
-
     }
     const linesId = manager.register(updateLines);
     const linesIo = new IntersectionObserver(
       ([entry]) => manager.setActive(linesId, entry.isIntersecting),
-      { rootMargin: "64px 0px" }
+      { rootMargin: "64px 0px" },
     );
     linesIo.observe(scene);
 
     /* ── PRE-LOAD SPEECH VOICES ── */
     if (window.speechSynthesis) {
       window.speechSynthesis.getVoices();
-      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () =>
+        window.speechSynthesis.getVoices();
     }
 
     /* ── CLEANUP ── */
@@ -1394,7 +1688,7 @@ export default function TeamSection() {
           and a couple of state-driven class toggles used by the JS. */}
       <style jsx global>{`
         :root {
-          --ts-font-family: 'Barlow', sans-serif;
+          --ts-font-family: "Barlow", sans-serif;
           --ts-color-bg: #040508;
           --ts-color-hint: rgba(255, 255, 255, 0.75);
           --ts-color-name: #c8c8c8;
@@ -1402,121 +1696,278 @@ export default function TeamSection() {
           --ts-color-scan-id: rgba(255, 255, 255, 0.75);
           --ts-color-detected: rgba(255, 255, 255, 0.92);
         }
-        .ts-root, .ts-root * { box-sizing: border-box; font-family: var(--ts-font-family); }
-        .ts-scene { background: var(--ts-color-bg); }
+        .ts-root,
+        .ts-root * {
+          box-sizing: border-box;
+          font-family: var(--ts-font-family);
+        }
+        .ts-scene {
+          background: var(--ts-color-bg);
+        }
         .ts-crt {
           background: repeating-linear-gradient(
-            0deg, transparent, transparent 2px,
-            rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.06) 2px,
+            rgba(0, 0, 0, 0.06) 4px
           );
           opacity: 0;
-          transition: opacity .4s ease;
+          transition: opacity 0.4s ease;
         }
-        .ts-crt.visible { opacity: 1; }
+        .ts-crt.visible {
+          opacity: 1;
+        }
         .ts-vignette {
-          background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%);
+          background: radial-gradient(
+            ellipse at center,
+            transparent 55%,
+            rgba(0, 0, 0, 0.65) 100%
+          );
           opacity: 0;
-          transition: opacity .4s ease;
+          transition: opacity 0.4s ease;
         }
-        .ts-vignette.visible { opacity: 0.5; }
-        .ts-vignette.intense { opacity: 0.85; }
+        .ts-vignette.visible {
+          opacity: 0.5;
+        }
+        .ts-vignette.intense {
+          opacity: 0.85;
+        }
 
-        .ts-frame-outer { transition: border-color .3s ease; }
-        .ts-center-frame.over .ts-frame-outer { border-color: #3a3a42; }
+        .ts-frame-outer {
+          transition: border-color 0.3s ease;
+        }
+        .ts-center-frame.over .ts-frame-outer {
+          border-color: #3a3a42;
+        }
 
         .ts-frame-detection::before,
         .ts-frame-detection::after {
-          content: ''; position: absolute;
-          width: 32px; height: 32px;
-          border-color: rgba(220,35,15,0.55);
+          content: "";
+          position: absolute;
+          width: 32px;
+          height: 32px;
+          border-color: rgba(220, 35, 15, 0.55);
           border-style: solid;
         }
         .ts-frame-detection::before {
-          top: 24px; left: 24px;
+          top: 24px;
+          left: 24px;
           border-width: 1.5px 0 0 1.5px;
-          transition: top .35s ease, left .35s ease, border-color .4s ease;
+          transition:
+            top 0.35s ease,
+            left 0.35s ease,
+            border-color 0.4s ease;
         }
         .ts-frame-detection::after {
-          bottom: 24px; right: 24px;
+          bottom: 24px;
+          right: 24px;
           border-width: 0 1.5px 1.5px 0;
-          transition: bottom .35s ease, right .35s ease, border-color .4s ease;
+          transition:
+            bottom 0.35s ease,
+            right 0.35s ease,
+            border-color 0.4s ease;
         }
-        .ts-frame-detection.brackets-in::before { top: 14px; left: 14px; }
-        .ts-frame-detection.brackets-in::after  { bottom: 14px; right: 14px; }
+        .ts-frame-detection.brackets-in::before {
+          top: 14px;
+          left: 14px;
+        }
+        .ts-frame-detection.brackets-in::after {
+          bottom: 14px;
+          right: 14px;
+        }
         .ts-frame-detection.detected::before,
-        .ts-frame-detection.detected::after { border-color: rgba(255,255,255,0.85); }
+        .ts-frame-detection.detected::after {
+          border-color: rgba(255, 255, 255, 0.85);
+        }
 
         .ts-scan-line {
-          background: linear-gradient(90deg,
+          background: linear-gradient(
+            90deg,
             transparent 0%,
-            rgba(220,10,0,0.3) 15%,
-            rgba(220,10,0,0.85) 40%,
-            rgba(240,20,10,1) 50%,
-            rgba(220,10,0,0.85) 60%,
-            rgba(220,10,0,0.3) 85%,
-            transparent 100%);
+            rgba(220, 10, 0, 0.3) 15%,
+            rgba(220, 10, 0, 0.85) 40%,
+            rgba(240, 20, 10, 1) 50%,
+            rgba(220, 10, 0, 0.85) 60%,
+            rgba(220, 10, 0, 0.3) 85%,
+            transparent 100%
+          );
           box-shadow:
-            0 0 6px 2px rgba(200,0,0,0.2),
-            0 0 2px 1px rgba(220,10,0,0.5);
+            0 0 6px 2px rgba(200, 0, 0, 0.2),
+            0 0 2px 1px rgba(220, 10, 0, 0.5);
         }
 
         @keyframes ts-borderPulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(160,190,220,0); }
-          50%      { box-shadow: 0 0 12px 3px rgba(160,190,220,0.2); }
+          0%,
+          100% {
+            box-shadow: 0 0 0 0 rgba(160, 190, 220, 0);
+          }
+          50% {
+            box-shadow: 0 0 12px 3px rgba(160, 190, 220, 0.2);
+          }
         }
-        .ts-frame-outer.proximity { animation: ts-borderPulse 1.2s ease-in-out infinite; }
+        .ts-frame-outer.proximity {
+          animation: ts-borderPulse 1.2s ease-in-out infinite;
+        }
 
-        .vcard:active { cursor: grabbing; }
-        .vcard.dragging { z-index: 10000; }
+        .vcard:active {
+          cursor: grabbing;
+        }
+        .vcard.dragging {
+          z-index: 10000;
+        }
 
         /* Responsive frame sizing — matches original media queries */
-        .ts-frame-outer { width: 352px; height: 426px; top: -16px; left: -16px; }
-        .ts-arc-canvas  { width: 352px; height: 426px; top: -16px; left: -16px; }
-        .ts-center-frame-inner { width: 320px; height: 394px; }
+        .ts-frame-outer {
+          width: 352px;
+          height: 426px;
+          top: -16px;
+          left: -16px;
+        }
+        .ts-arc-canvas {
+          width: 352px;
+          height: 426px;
+          top: -16px;
+          left: -16px;
+        }
+        .ts-center-frame-inner {
+          width: 320px;
+          height: 394px;
+        }
 
         @media (min-width: 1025px) and (max-width: 1440px) {
-          .ts-frame-outer { width: 300px; height: 363px; top: -14px; left: -14px; }
-          .ts-arc-canvas  { width: 300px; height: 363px; top: -14px; left: -14px; }
-          .ts-center-frame-inner { width: 272px; height: 335px; }
+          .ts-frame-outer {
+            width: 300px;
+            height: 363px;
+            top: -14px;
+            left: -14px;
+          }
+          .ts-arc-canvas {
+            width: 300px;
+            height: 363px;
+            top: -14px;
+            left: -14px;
+          }
+          .ts-center-frame-inner {
+            width: 272px;
+            height: 335px;
+          }
         }
         @media (min-width: 601px) and (max-width: 1024px) {
-          .ts-frame-outer { width: 280px; height: 338px; top: -14px; left: -14px; }
-          .ts-arc-canvas  { width: 280px; height: 338px; top: -14px; left: -14px; }
-          .ts-center-frame-inner { width: 252px; height: 310px; }
+          .ts-frame-outer {
+            width: 280px;
+            height: 338px;
+            top: -14px;
+            left: -14px;
+          }
+          .ts-arc-canvas {
+            width: 280px;
+            height: 338px;
+            top: -14px;
+            left: -14px;
+          }
+          .ts-center-frame-inner {
+            width: 252px;
+            height: 310px;
+          }
         }
         @media (max-width: 600px) {
-          .ts-scene { height: auto; min-height: 0; overflow-y: auto; overflow-x: hidden; }
-          .ts-center-frame { top: 286px; left: 50%; transform: translateX(-50%); }
-          .ts-frame-outer { width: 268px; height: 326px; top: -4px; left: -4px; }
-          .ts-arc-canvas  { width: 268px; height: 326px; top: -4px; left: -4px; }
-          .ts-center-frame-inner { width: 260px; height: 318px; }
-          .ts-frame-name { font-size: 11px; letter-spacing: 0.12em;
-            text-shadow: 0 1px 8px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.8); }
-          .ts-frame-role { font-size: 9px;
-            text-shadow: 0 1px 6px rgba(0,0,0,0.9), 0 0 16px rgba(0,0,0,0.8); }
-          .ts-frame-hint { font-size: 9px; padding: 0 16px; }
-          .ts-frame-caption {
-            top: auto; bottom: 16px; left: 50%;
-            transform: translateX(-50%); width: 100%; z-index: 25;
+          .ts-scene {
+            height: auto;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
           }
-          .ts-frame-name-row { margin-bottom: 2px; }
-          .ts-ui-tr { top: 20px; right: 16px; }
-          .vcard, .vcard:active { cursor: default; }
+          .ts-center-frame {
+            top: 286px;
+            left: 50%;
+            transform: translateX(-50%);
+          }
+          .ts-frame-outer {
+            width: 268px;
+            height: 326px;
+            top: -4px;
+            left: -4px;
+          }
+          .ts-arc-canvas {
+            width: 268px;
+            height: 326px;
+            top: -4px;
+            left: -4px;
+          }
+          .ts-center-frame-inner {
+            width: 260px;
+            height: 318px;
+          }
+          .ts-frame-name {
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-shadow:
+              0 1px 8px rgba(0, 0, 0, 0.9),
+              0 0 20px rgba(0, 0, 0, 0.8);
+          }
+          .ts-frame-role {
+            font-size: 9px;
+            text-shadow:
+              0 1px 6px rgba(0, 0, 0, 0.9),
+              0 0 16px rgba(0, 0, 0, 0.8);
+          }
+          .ts-frame-hint {
+            font-size: 9px;
+            padding: 0 16px;
+          }
+          .ts-frame-caption {
+            top: auto;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            z-index: 25;
+          }
+          .ts-frame-name-row {
+            margin-bottom: 2px;
+          }
+          .ts-ui-tr {
+            top: 20px;
+            right: 16px;
+          }
+          .vcard,
+          .vcard:active {
+            cursor: default;
+          }
         }
 
-        html, body { background: var(--ts-color-bg); overflow-x: hidden; }
-        html.lenis, html.lenis body { height: auto; }
-        .lenis.lenis-smooth { scroll-behavior: auto !important; }
-        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        html,
+        body {
+          background: var(--ts-color-bg);
+          overflow-x: hidden;
+        }
+        html.lenis,
+        html.lenis body {
+          height: auto;
+        }
+        .lenis.lenis-smooth {
+          scroll-behavior: auto !important;
+        }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+          overscroll-behavior: contain;
+        }
       `}</style>
-
-     
 
       <div className="ts-root">
         {/* Scene */}
-        <div ref={sceneRef} className="ts-scene relative w-screen min-h-screen overflow-hidden">
-          <div ref={crtRef} className="ts-crt absolute inset-0 z-[200] pointer-events-none" />
-          <div ref={vignetteRef} className="ts-vignette absolute inset-0 z-[199] pointer-events-none" />
+        <div
+          ref={sceneRef}
+          className="ts-scene relative w-screen min-h-screen overflow-hidden"
+        >
+          <div
+            ref={crtRef}
+            className="ts-crt absolute inset-0 z-[200] pointer-events-none"
+          />
+          <div
+            ref={vignetteRef}
+            className="ts-vignette absolute inset-0 z-[199] pointer-events-none"
+          />
 
           <div
             ref={centerFrameRef}
@@ -1606,7 +2057,11 @@ export default function TeamSection() {
                 </div>
                 <div
                   className="scan-id-bar overflow-hidden mt-1.5 rounded-[1px]"
-                  style={{ width: "60px", height: "1.5px", background: "rgba(255,255,255,0.12)" }}
+                  style={{
+                    width: "60px",
+                    height: "1.5px",
+                    background: "rgba(255,255,255,0.12)",
+                  }}
                 >
                   <div
                     ref={hudBarFillRef}

@@ -37,26 +37,26 @@ export default function AboutIntro() {
             />
           </div>
         </div>
-         
+
         <div className="grid grid-cols-12 gap-x-6">
           <div className="col-span-11 col-start-2 grid grid-cols-12 gap-x-6 grid-rows-1">
             <div className="left-block grid grid-cols-3 gap-x-6 col-span-3 align-top">
-              <div className="col-span-1">
+              <div className="col-span-6 flex gap-6 items-start">
                 <BlurTextReveal
                   as="span"
                   html={`Est. 2012 —`}
                   animationType="chars"
                   stagger={0.05}
-                  className="title block bg-cream py-1.5 px-2 rounded-sm"
+                  className="title block bg-cream py-1.5 px-2 rounded-sm w-30"
+                />
+                <BlurTextReveal
+                  as="span"
+                  html={`13+ years <br/>shaping digital <br/>direction.`}
+                  animationType="chars"
+                  stagger={0.02}
+                  className="title block"
                 />
               </div>
-              <BlurTextReveal
-                as="span"
-                html={`13+ years <br/>shaping digital <br/>direction.`}
-                animationType="chars"
-                stagger={0.02}
-                className="title block col-span-2"
-              />
             </div>
             <div className="left-block flex flex-col col-span-3 col-start-9">
               <p className="mb-18 max-w-98">

@@ -1,10 +1,11 @@
-'use client';
-import { useRef } from 'react';
-import parse from 'html-react-parser';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { BlurTextReveal } from '@/components/TextAnimation';
-import { WeNotData } from '@/data';
+"use client";
+import { useRef } from "react";
+import parse from "html-react-parser";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import LinePlus from "@/components/LinePlus";
+import { WeNotData } from "@/data";
 
 export default function WeNot() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -19,17 +20,17 @@ export default function WeNot() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top top',
+          start: "top top",
           markers: false,
         },
       });
 
       cardsRef.current.forEach((card, idx) => {
-        const content = card.querySelector('.content');
-        const svgIcon = card.querySelector('.svg-icon');
-        const line = card.querySelector('.line');
+        const content = card.querySelector(".content");
+        const svgIcon = card.querySelector(".svg-icon");
+        const line = card.querySelector(".line");
 
-        gsap.set(line, { scaleX: 0, transformOrigin: 'left' });
+        gsap.set(line, { scaleX: 0, transformOrigin: "left" });
         gsap.set(svgIcon, { autoAlpha: 0 });
         gsap.set(content, { autoAlpha: 0 });
 
@@ -41,38 +42,41 @@ export default function WeNot() {
             autoAlpha: 1,
             rotation: 360,
             duration: 0.4,
-            ease: 'none',
+            ease: "none",
           },
-          '>'
+          ">",
         );
 
         tl.to(
           line,
           {
             scaleX: 1,
-            ease: 'sine',
+            ease: "sine",
           },
-          '<'
+          "<",
         );
 
         tl.to(
           content,
           {
             autoAlpha: 1,
-            ease: 'sine',
+            ease: "sine",
           },
-          '<50%'
+          "<50%",
         );
         tl.addLabel(`end_${idx}_animation`);
       });
     },
-    { scope: sectionRef }
+    { scope: sectionRef },
   );
 
   return (
-    <section ref={sectionRef} className="we-not-section py-37.5 bg-[#F7F7F7] text-dark-font">
+    <section
+      ref={sectionRef}
+      className="we-not-section  bg-[#F7F7F7] text-dark-font"
+    >
       <div className="tr__container relative w-full">
-        <div className="grid grid-cols-12 gap-x-6">
+        <div className="grid grid-cols-12 gap-x-6 py-37.5">
           <div className="col-span-9 col-start-3">
             <BlurTextReveal
               as="span"
@@ -148,13 +152,20 @@ export default function WeNot() {
                         </svg>
                       )}
                     </div>
-                    <p className="content small max-w-83">{parse(card.content)}</p>
+                    <p className="content small max-w-83">
+                      {parse(card.content)}
+                    </p>
                   </div>
                 );
               })}
             </div>
           </div>
         </div>
+        <LinePlus
+          lineClass={"opacity-15 bg-grey-line left-1/2! -translate-x-1/2"}
+          plusClass={"col-span-12 mx-auto translate-x-0!"}
+          iconColor={"#272727"}
+        />
       </div>
     </section>
   );
