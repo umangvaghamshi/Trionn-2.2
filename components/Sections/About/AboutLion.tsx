@@ -122,7 +122,9 @@ export default function AboutLion({
     let disposed = false;
 
     // --------------- Audio ---------------
-    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioCtx = new (
+      window.AudioContext || (window as any).webkitAudioContext
+    )();
     let curtainBuffer: AudioBuffer | null = null;
     let lionGrowlBuffer: AudioBuffer | null = null;
     let dragSource: AudioBufferSourceNode | null = null;
@@ -134,84 +136,90 @@ export default function AboutLion({
     let dragStartTime = 0;
 
     fetch("/audio/curtain.mp3")
-      .then(r => r.arrayBuffer())
-      .then(ab => audioCtx.decodeAudioData(ab))
-      .then(buf => {
+      .then((r) => r.arrayBuffer())
+      .then((ab) => audioCtx.decodeAudioData(ab))
+      .then((buf) => {
         curtainBuffer = buf;
       })
-      .catch(e => console.warn("Failed to load curtain audio", e));
+      .catch((e) => console.warn("Failed to load curtain audio", e));
 
     fetch("/audio/lion-growl.mp3")
-      .then(r => r.arrayBuffer())
-      .then(ab => audioCtx.decodeAudioData(ab))
-      .then(buf => {
+      .then((r) => r.arrayBuffer())
+      .then((ab) => audioCtx.decodeAudioData(ab))
+      .then((buf) => {
         lionGrowlBuffer = buf;
       })
-      .catch(e => console.warn("Failed to load lion growl audio", e));
+      .catch((e) => console.warn("Failed to load lion growl audio", e));
 
     const playDragSound = () => {
       if (!soundEnabledRef.current) return;
       if (audioCtx.state === "suspended") audioCtx.resume();
-      
+
       dragStartTime = audioCtx.currentTime;
 
       if (curtainBuffer) {
         if (dragSource) {
-          try { dragSource.stop(); } catch(e) {}
+          try {
+            dragSource.stop();
+          } catch (e) {}
         }
-        
+
         const duration = curtainBuffer.duration;
         const dragStart = Math.min(0.1, duration * 0.1);
         const dragEnd = Math.min(1.5, duration * 0.5);
-        
+
         dragSource = audioCtx.createBufferSource();
         dragSource.buffer = curtainBuffer;
         dragSource.loop = true;
         dragSource.loopStart = dragStart;
         dragSource.loopEnd = dragEnd;
-        
+
         dragGain = audioCtx.createGain();
         dragGain.gain.value = 0;
-        
+
         dragSource.connect(dragGain);
         dragGain.connect(audioCtx.destination);
-        
+
         dragSource.start(0, dragStart);
       }
 
       if (lionGrowlBuffer) {
         if (growlSource) {
-          try { growlSource.stop(); } catch(e) {}
+          try {
+            growlSource.stop();
+          } catch (e) {}
         }
-        
+
         const duration = lionGrowlBuffer.duration;
         // The audio is about 3 seconds long. Pick a random starting point.
         // Leave at least 0.8 seconds of audio to play so it doesn't cut off instantly.
         const maxStart = Math.max(0, duration - 1.7);
         const randomStart = Math.random() * maxStart;
-        
+
         growlSource = audioCtx.createBufferSource();
         growlSource.buffer = lionGrowlBuffer;
         growlSource.loop = false; // Do not loop
-        
+
         growlGain = audioCtx.createGain();
         growlGain.gain.value = 0;
-        
+
         growlSource.connect(growlGain);
         growlGain.connect(audioCtx.destination);
-        
+
         growlSource.start(0, randomStart);
       }
     };
 
     const stopDragAndPlayRelease = () => {
       if (!soundEnabledRef.current) return;
-      
+
       if (dragGain && dragSource) {
         dragGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.02);
         const src = dragSource;
         setTimeout(() => {
-          try { src.stop(); } catch(e) {}
+          try {
+            src.stop();
+          } catch (e) {}
         }, 50);
       }
       dragSource = null;
@@ -221,30 +229,32 @@ export default function AboutLion({
         growlGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
         const gSrc = growlSource;
         setTimeout(() => {
-          try { gSrc.stop(); } catch(e) {}
+          try {
+            gSrc.stop();
+          } catch (e) {}
         }, 300);
       }
       growlSource = null;
       growlGain = null;
-      
+
       if (audioCtx.state === "suspended") audioCtx.resume();
-      
+
       if (curtainBuffer) {
         const duration = curtainBuffer.duration;
         // Start the release sound further into the clip and make it shorter
         const releaseStart = Math.min(1.8, duration * 0.6);
-        
+
         const relSource = audioCtx.createBufferSource();
         relSource.buffer = curtainBuffer;
-        
+
         const relGain = audioCtx.createGain();
         // Make release sound softer than the drag sound
         relGain.gain.value = 0.4;
         relGain.gain.setTargetAtTime(0, audioCtx.currentTime + 0.2, 0.1); // faster fade out
-        
+
         relSource.connect(relGain);
         relGain.connect(audioCtx.destination);
-        
+
         relSource.start(0, releaseStart);
       }
     };
@@ -290,14 +300,14 @@ export default function AboutLion({
       dragging = true;
       dragStrip = si;
       dragSeg = Math.round((mx / containerW) * SEGS);
-      
+
       lastPointerY = my;
       dragSpeed = 0;
-      
+
       updateDragEnvelope();
       markStripsDirty();
       e.preventDefault();
-      
+
       playDragSound();
     };
 
@@ -312,13 +322,13 @@ export default function AboutLion({
       dragging = true;
       dragStrip = si;
       dragSeg = Math.round((mx / containerW) * SEGS);
-      
+
       lastPointerY = my;
       dragSpeed = 0;
-      
+
       updateDragEnvelope();
       markStripsDirty();
-      
+
       playDragSound();
     };
 
@@ -326,10 +336,10 @@ export default function AboutLion({
       if (!dragging || !stripCanvas || !offY) return;
       const r = stripCanvas.getBoundingClientRect();
       const pointerY = e.clientY - r.top;
-      
+
       dragSpeed += Math.abs(pointerY - lastPointerY);
       lastPointerY = pointerY;
-      
+
       const restY = dragStrip * STEP;
       offY[dragStrip] = pointerY - restY - STRIP_HEIGHT / 2;
       markStripsDirty();
@@ -339,10 +349,10 @@ export default function AboutLion({
       if (!dragging || !stripCanvas || !offY || !e.touches.length) return;
       const r = stripCanvas.getBoundingClientRect();
       const pointerY = e.touches[0].clientY - r.top;
-      
+
       dragSpeed += Math.abs(pointerY - lastPointerY);
       lastPointerY = pointerY;
-      
+
       const restY = dragStrip * STEP;
       offY[dragStrip] = pointerY - restY - STRIP_HEIGHT / 2;
       markStripsDirty();
@@ -352,7 +362,7 @@ export default function AboutLion({
       if (!dragging) return;
       dragging = false;
       markStripsDirty();
-      
+
       stopDragAndPlayRelease();
     };
 
@@ -670,10 +680,10 @@ export default function AboutLion({
         Math.round(state.imageHeight * (rw / state.imageWidth)),
       );
 
-      scene.style.width = `${rw}px`;
-      scene.style.height = `${rh}px`;
-      canvas.style.width = `${rw}px`;
-      canvas.style.height = `${rh}px`;
+      scene.style.width = `${rw / 16}rem`;
+      scene.style.height = `${rh / 16}rem`;
+      canvas.style.width = `${rw / 16}rem`;
+      canvas.style.height = `${rh / 16}rem`;
       canvas.width = Math.max(1, Math.round(rw * dpr));
       canvas.height = Math.max(1, Math.round(rh * dpr));
       gl.viewport(0, 0, canvas.width, canvas.height);
@@ -778,14 +788,14 @@ export default function AboutLion({
       if (dragging && soundEnabledRef.current) {
         let targetVolume = 0;
         let growlVolume = 0;
-        
+
         // As long as there is some drag movement, provide a strong base volume (0.6)
         // so it's clearly audible even at 40-50% system volume.
         // It ramps up to 1.0 for faster dragging.
         if (dragSpeed > 0.5) {
           targetVolume = Math.min(1.0, 0.6 + dragSpeed * 0.02);
         }
-        
+
         // Delay the growl sound slightly (0.4s) so the initial curtain sound plays first.
         // The growl will continue playing as long as you hold the curtain, even if you stop moving your mouse.
         const dragDuration = audioCtx.currentTime - dragStartTime;
@@ -793,20 +803,28 @@ export default function AboutLion({
           // Smoothly fade in the growl
           const growlFade = Math.min(1.0, (dragDuration - 0.4) * 2.0);
           // Base growl volume is 0.4 (audible while holding still), increases slightly if you move the mouse
-          growlVolume = Math.min(0.6, 0.4 + dragSpeed * 0.01) * growlFade; 
+          growlVolume = Math.min(0.6, 0.4 + dragSpeed * 0.01) * growlFade;
         }
-        
+
         if (dragGain) {
           // Faster volume response so it syncs perfectly with starts/stops
-          dragGain.gain.setTargetAtTime(targetVolume, audioCtx.currentTime, 0.03);
+          dragGain.gain.setTargetAtTime(
+            targetVolume,
+            audioCtx.currentTime,
+            0.03,
+          );
         }
-        
+
         if (growlGain) {
-          growlGain.gain.setTargetAtTime(growlVolume, audioCtx.currentTime, 0.05);
+          growlGain.gain.setTargetAtTime(
+            growlVolume,
+            audioCtx.currentTime,
+            0.05,
+          );
         }
-        
+
         // Decay drag speed so the sound stops quickly when the user stops moving their mouse
-        dragSpeed *= 0.7; 
+        dragSpeed *= 0.7;
       }
     };
 
@@ -827,10 +845,14 @@ export default function AboutLion({
       io.disconnect();
 
       if (dragSource) {
-        try { dragSource.stop(); } catch(e) {}
+        try {
+          dragSource.stop();
+        } catch (e) {}
       }
       if (growlSource) {
-        try { growlSource.stop(); } catch(e) {}
+        try {
+          growlSource.stop();
+        } catch (e) {}
       }
       if (audioCtx && audioCtx.state !== "closed") {
         audioCtx.close().catch(() => {});
@@ -865,7 +887,7 @@ export default function AboutLion({
   return (
     <div
       ref={sceneRef}
-      className={`relative inline-block leading-0 w-full max-w-512 aspect-660/143] md:aspect-2048/1200 ${className}`}
+      className={`relative inline-block leading-0 w-full aspect-660/143 md:aspect-2048/1200 ${className}`}
     >
       <canvas ref={glCanvasRef} className="block w-full h-full touch-none" />
       {children}
