@@ -172,8 +172,8 @@ export default function Awards() {
         .fromTo(
           maskRef.current,
           {
-            width: 534,
-            height: 700,
+            width: "33.25rem",
+            height: "43.75rem",
             borderRadius: 999,
           },
           {
