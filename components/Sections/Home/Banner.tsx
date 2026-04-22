@@ -113,7 +113,7 @@ export default function Banner() {
             </div>
             <LinePlus
               customClass={"mt-25 mb-20"}
-              lineClass={"opacity-20 col-start-2"}
+              lineClass={"opacity-20 col-start-2 bg-cream-line"}
               plusClass={"col-start-9"}
               iconColor={"#D8D8D8"}
             />

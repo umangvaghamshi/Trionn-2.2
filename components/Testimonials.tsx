@@ -259,7 +259,7 @@ export default function Testimonials({
         </div>
       </div>
       {showBottomLine && (
-        <div className="tr__container pointer-events-none z-0">
+        <div className="tr__container z-0">
           <LinePlus
             lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
             plusClass={"col-span-12 mx-auto translate-x-0!"}

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { DrawSVGPlugin } from "gsap/dist/DrawSVGPlugin";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { useRef } from "react";
 
 // Register plugins (only on client)
 if (typeof window !== "undefined") {
@@ -15,72 +16,105 @@ interface LinePlusProps {
   lineClass?: string;
   plusClass?: string;
   iconColor?: string;
+  /**
+   * Shift ScrollTrigger start/end when this component lives inside a
+   * CSS-transformed ancestor. Accepts any GSAP offset string, e.g. "100vh"
+   * or "800px". Positive = trigger fires later (element visually shifted up).
+   */
+  scrollOffset?: string;
 }
 export default function LinePlus({
   customClass,
   lineClass,
   plusClass,
   iconColor,
+  scrollOffset = "",
 }: LinePlusProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const drawLine = useRef<HTMLDivElement>(null);
   const plusWrapperRef = useRef<HTMLDivElement>(null);
   const PlusIcon = useRef<SVGSVGElement>(null);
-  const isDrawn = useRef(false);
-  const wasLineComplete = useRef(false);
+  const lineDrawn = useRef(false);
 
-  useEffect(() => {
+  useGSAP(() => {
     if (!drawLine.current) return;
 
-    const setDrawnFromScroll = (progress: number) => {
-      const complete = progress >= 0.95;
-      isDrawn.current = complete;
-      if (wasLineComplete.current && !complete && PlusIcon.current) {
-        gsap.set(PlusIcon.current, { x: 0 });
+    const off = scrollOffset ? ` ${scrollOffset}` : "";
+
+    gsap.to(drawLine.current, {
+      width: "100%",
+      ease: "none",
+      scrollTrigger: {
+        trigger: drawLine.current,
+        start: `top bottom${off}`,
+        end: `top center${off}`,
+        scrub: true,
+        invalidateOnRefresh: true,
+        onLeave: () => {
+          lineDrawn.current = true;
+        },
+        onEnterBack: () => {
+          lineDrawn.current = false;
+        },
+      },
+    });
+    gsap.to(PlusIcon.current, {
+      rotation: 360,
+      duration: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: PlusIcon.current,
+        start: `top bottom${off}`,
+        end: `bottom top${off}`,
+        scrub: true,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    const container = containerRef.current;
+    if (!container || !PlusIcon.current) return;
+
+    let iconRestX: number | null = null;
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (!lineDrawn.current || !drawLine.current || !PlusIcon.current) return;
+
+      const containerRect = container.getBoundingClientRect();
+
+      // Capture rest position on first move after enter (x is 0 at that point)
+      if (iconRestX === null) {
+        const iconRect = PlusIcon.current.getBoundingClientRect();
+        iconRestX = iconRect.left - containerRect.left + iconRect.width / 2;
       }
-      wasLineComplete.current = complete;
+
+      const cursorX = e.clientX - containerRect.left;
+      gsap.to(PlusIcon.current, {
+        x: cursorX - iconRestX,
+        duration: 0.3,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
     };
 
-    const ctx = gsap.context(() => {
-      const lineTween = gsap.to(drawLine.current, {
-        width: "100%",
-        ease: "none",
-        scrollTrigger: {
-          trigger: drawLine.current,
-          start: "top bottom",
-          end: "top center",
-          scrub: true,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            setDrawnFromScroll(self.progress);
-          },
-          onRefresh: (self) => {
-            setDrawnFromScroll(self.progress);
-          },
-        },
-      });
-      // Sync on load / layout when line is already past the draw end (e.g. short viewport)
-      queueMicrotask(() => {
-        const st = lineTween.scrollTrigger;
-        if (st) setDrawnFromScroll(st.progress);
-      });
-
+    const onMouseLeave = () => {
+      if (!lineDrawn.current) return;
+      iconRestX = null;
       gsap.to(PlusIcon.current, {
-        rotation: 360,
-        duration: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: PlusIcon.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-          invalidateOnRefresh: true,
-        },
+        x: 0,
+        duration: 0.6,
+        ease: "power2.out",
+        overwrite: "auto",
       });
-    }, drawLine);
+    };
 
-    return () => ctx.revert();
-  }, []);
+    container.addEventListener("mousemove", onMouseMove);
+    container.addEventListener("mouseleave", onMouseLeave);
+
+    return () => {
+      container.removeEventListener("mousemove", onMouseMove);
+      container.removeEventListener("mouseleave", onMouseLeave);
+    };
+  }, [scrollOffset]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDrawn.current || !containerRef.current || !PlusIcon.current || !drawLine.current) return;
@@ -123,12 +157,10 @@ export default function LinePlus({
   return (
     <div
       ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`relative z-[2] line-plus-block pointer-events-auto grid grid-cols-12 gap-x-6 py-4 cursor-default ${customClass ? customClass : ""}`}
+      className={`relative line-plus-block grid grid-cols-12 gap-x-6 ${customClass ? customClass : ""}`}
     >
       <div
-        className={`line absolute top-1/2 left-0 -translate-y-1/2 bg-cream-line h-[0.063rem] w-0 ${lineClass ? lineClass : ""}`}
+        className={`line absolute top-1/2 left-0 -translate-y-1/2 h-px w-0 ${lineClass ? lineClass : "bg-cream-line"}`}
         ref={drawLine}
       />
       {PlusIcon && (
@@ -136,31 +168,23 @@ export default function LinePlus({
           ref={plusWrapperRef}
           className={`flex items-center justify-center ${plusClass ? plusClass : ""}`}
         >
-          <svg
-            width="13"
-            height="13"
-            viewBox="0 0 13 13"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={`w-3.25 h-3.25`}
-            ref={PlusIcon}
-          >
-            <line
-              x1="6.5"
-              y1="-2.18557e-08"
-              x2="6.5"
-              y2="13"
-              style={{ stroke: iconColor }}
-            />
-            <line
-              x1="13"
-              y1="6.5"
-              x2="-4.37114e-08"
-              y2="6.5"
-              style={{ stroke: iconColor }}
-            />
-          </svg>
-        </div>
+          <line
+            x1="6.5"
+            y1="0"
+            x2="6.5"
+            y2="13"
+            strokeWidth="1"
+            style={{ stroke: iconColor }}
+          />
+          <line
+            x1="0"
+            y1="6.5"
+            x2="13"
+            y2="6.5"
+            strokeWidth="1"
+            style={{ stroke: iconColor }}
+          />
+        </svg>
       )}
     </div>
   );
