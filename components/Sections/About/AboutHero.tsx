@@ -65,7 +65,7 @@ export default function AboutHero() {
     <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center">
       {/* Top: heading */}
       <div className="relative z-10 pt-32 md:pt-40 px-6 md:px-10 w-full mix-blend-difference title-block pointer-events-none">
-        <h1 className="text-center mx-auto h2 max-w-342 text-white">
+        <h1 className="text-center mx-auto max-w-342 text-white">
           We are an independent digital studio built on clarity, thoughtful
           craft, and trust earned worldwide.
         </h1>

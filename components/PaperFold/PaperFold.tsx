@@ -1,10 +1,15 @@
 "use client";
 
 import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
+import { useGSAP } from "@gsap/react";
 import type { PaperFoldProps, PaperFoldCard } from "./types";
 import { usePaperFoldAnimation } from "./usePaperFoldAnimation";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import LinePlus from "@/components/LinePlus";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const DEFAULT_CARDS: PaperFoldCard[] = [
   {
@@ -47,8 +52,41 @@ export default function PaperFold({
   className = "",
 }: PaperFoldProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const valueTitle = useRef<HTMLDivElement>(null);
 
   usePaperFoldAnimation(containerRef, cards.length);
+
+  useGSAP(() => {
+    ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top top",
+      // Use a function to calculate pixels dynamically
+      end: () => {
+        const valueBlock = document.querySelector(
+          ".velue-block",
+        ) as HTMLElement;
+
+        if (!valueBlock) {
+          console.error("Element .velue-block not found!");
+          return "bottom center"; // Fallback
+        }
+
+        const style = window.getComputedStyle(valueBlock);
+        console.log("Padding Bottom:", style.paddingBottom); // See what this logs in the console
+
+        const padding = parseFloat(style.paddingBottom);
+        const headerHeight =
+          document.querySelector(".site-header")?.clientHeight || 100;
+
+        return `bottom ${headerHeight + padding * 2}px`;
+      },
+      pin: valueTitle.current,
+      pinSpacing: false,
+      scrub: false,
+      invalidateOnRefresh: true, // IMPORTANT: Allows recalculation on resize
+      markers: false,
+    });
+  }, []);
 
   return (
     <section
@@ -61,9 +99,9 @@ export default function PaperFold({
           plusClass={"col-start-7"}
           iconColor={"#272727"}
         />
-        <div className="text-dark-font flex flex-col py-37.5">
+        <div className="velue-block text-dark-font flex flex-col py-37.5">
           <div className="grid grid-cols-12 gap-x-6 mb-20">
-            <div className="col-span-4">
+            <div className="col-span-4" ref={valueTitle}>
               <BlurTextReveal
                 as="h2"
                 html={sectionTitle}
