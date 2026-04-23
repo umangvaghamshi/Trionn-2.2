@@ -65,10 +65,18 @@ export default function AboutHero() {
     <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center">
       {/* Top: heading */}
       <div className="relative z-10 pt-32 md:pt-40 px-6 md:px-10 w-full mix-blend-difference title-block pointer-events-none">
-        <h1 className="text-center mx-auto max-w-342 text-white">
+        <BlurTextReveal
+          as="h1"
+          html={`We are an independent digital studio built on clarity, thoughtful
+          craft, and trust earned worldwide.`}
+          animationType="chars"
+          stagger={0.5}
+          className="text-center mx-auto max-w-342 text-[#D8D8D8]"
+        />
+        {/* <h1 className="text-center mx-auto max-w-342 text-white">
           We are an independent digital studio built on clarity, thoughtful
           craft, and trust earned worldwide.
-        </h1>
+        </h1> */}
       </div>
 
       {/* Lion and Marquee container */}
@@ -78,12 +86,12 @@ export default function AboutHero() {
             <BlurTextReveal
               as="span"
               html={`At the intersection of strategy, <br/>design, and technology.`}
-              animationType="chars"
-              stagger={0.05}
+              animationType="words"
+              stagger={0.5}
               className="block text-white uppercase"
             />
           </span>
-          <span className="title  grid grid-cols-12 gap-6 w-full">
+          {/* <span className="title  grid grid-cols-12 gap-6 w-full">
             <BlurTextReveal
               as="span"
               html={`We design and build digital experiences that scale, perform, and endure.`}
@@ -91,7 +99,7 @@ export default function AboutHero() {
               stagger={0.05}
               className="block text-dark-font uppercase col-span-10 col-start-2 max-w-60"
             />
-          </span>
+          </span> */}
         </div>
         {/* Floating captions positioned relative to the container */}
 
@@ -123,14 +131,23 @@ export default function AboutHero() {
             isLoaded ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="relative pointer-events-auto w-full flex justify-center">
+          <div className="relative pointer-events-auto w-full flex justify-center items-end">
             <AboutLion onLoad={() => setIsLoaded(true)}>
               {/* Bottom: marquee — sits ON TOP of the lion canvas, but BEHIND the strips */}
               <div
-                className={`absolute bottom-[15%] md:bottom-[20%] left-0 right-0 z-1 w-full mix-blend-difference text-[#D8D8D8] pointer-events-none transition-opacity duration-1000 delay-300 ${
+                className={`absolute bottom-[15%] md:bottom-[20%] left-0 right-0 z-1 w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${
                   isLoaded ? "opacity-100" : "opacity-0"
                 }`}
               >
+                <div className="tr__container grid grid-cols-12 gap-x mb-25">
+                  <BlurTextReveal
+                    as="span"
+                    html={`We design and build digital experiences that scale, perform, and endure.`}
+                    animationType="chars"
+                    stagger={0.05}
+                    className="block title col-span-10 col-start-2  max-w-60"
+                  />
+                </div>
                 <Marquee gap={0} speed={0.8}>
                   <div className="uppercase mrquee-text flex items-center">
                     <span className="marquee-text-item">Inspire</span>

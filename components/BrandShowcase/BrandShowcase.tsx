@@ -91,138 +91,160 @@ export default function BrandShowcase({
       style={{ backgroundColor }}
     >
       <div className="tr__container text-dark-font">
-        <div className="grid grid-cols-12 gap-6 py-37.5">
+        <div className="flex flex-col py-37.5">
           {/* ── LEFT: Brand names ── */}
-          <div className="flex flex-col justify-between col-span-7">
-            <BlurTextReveal
-              as="span"
-              html={sectionLabel}
-              animationType="words"
-              stagger={0.08}
-              className="title uppercase block max-w-40"
-            />
-            <div className="flex flex-col">
-              {/* Brand name list with clip-path fill overlay */}
-              <div className="flex flex-wrap gap-x-2 mb-20">
-                {brands.map((brand, i) => {
-                  const isLast = i === brands.length - 1;
-                  return (
-                    <span
-                      key={brand.name}
-                      ref={(el) => setTextRef(el, i)}
-                      className="brand-name-item inline-flex items-center cursor-pointer relative h2 leading-[normal]!"
-                      onMouseEnter={() => handleBrandHover(i)}
-                    >
-                      {/* Base layer: always light gray */}
-                      <span className="text-dark-font/20 inline-block pr-1">
-                        {brand.name}
-                      </span>
-
-                      {/* Fill overlay: dark color, clip-path animated from left to right */}
-                      <span
-                        className="text-fill-overlay text-dark-font absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none pr-1"
-                        aria-hidden="true"
-                        style={{
-                          clipPath:
-                            i === 0 ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
-                          pointerEvents: "none",
-                          willChange: "clip-path",
-                        }}
-                      >
-                        {brand.name}
-                      </span>
-
-                      {/* Comma separator */}
-                      {!isLast && (
-                        <span style={{ color: "#c8c8c8", fontWeight: 300 }}>
-                          ,{" "}
-                        </span>
-                      )}
-                    </span>
-                  );
-                })}
-              </div>
+          <div className="grid grid-cols-12 gap-6 mb-10">
+            <div className="flex flex-col justify-between col-span-7">
               <BlurTextReveal
                 as="span"
-                html={footerTagline}
+                html={sectionLabel}
                 animationType="words"
                 stagger={0.08}
-                className="title uppercase block"
+                className="title uppercase block max-w-40"
+              />
+            </div>
+            <div className="col-span-4 shrink-0 flex flex-col col-start-9 justify-end">
+              <BlurTextReveal
+                as="span"
+                html={trustedByLabel}
+                animationType="words"
+                stagger={0.08}
+                className="title uppercase block text-dark-font/60"
               />
             </div>
           </div>
+          <div className="grid grid-cols-12 gap-6">
+            <div className="flex flex-col justify-center col-span-7">
+              <div className="flex flex-col">
+                {/* Brand name list with clip-path fill overlay */}
+                <div className="flex flex-wrap gap-x-2 my-10">
+                  {brands.map((brand, i) => {
+                    // const isLast = i === brands.length - 1;
+                    return (
+                      <span
+                        key={brand.name}
+                        ref={(el) => setTextRef(el, i)}
+                        className="brand-name-item inline-flex items-center cursor-pointer relative h2 leading-none! group"
+                        onMouseEnter={() => handleBrandHover(i)}
+                      >
+                        {/* Base layer: always light gray */}
+                        <span className="text-dark-font/20 inline-block">
+                          <span className="-mt-3 pr-1">{brand.name}</span>
+                          <span className="group-last:hidden">,&nbsp;</span>
+                        </span>
 
-          {/* ── RIGHT: Image card ── */}
-          <div className="col-span-4 shrink-0 flex flex-col col-start-9">
-            <BlurTextReveal
-              as="span"
-              html={trustedByLabel}
-              animationType="words"
-              stagger={0.08}
-              className="title uppercase block text-dark-font/60 mb-10"
-            />
+                        {/* Fill overlay: dark color, clip-path animated from left to right */}
+                        <span
+                          className="text-dark-font absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none"
+                          aria-hidden="true"
+                          // style={{
+                          //   clipPath:
+                          //     i === 0 ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
+                          //   pointerEvents: "none",
+                          //   willChange: "clip-path",
+                          // }}
+                        >
+                          <span
+                            className="text-fill-overlay -mt-3 pr-1"
+                            style={{
+                              clipPath:
+                                i === 0
+                                  ? "inset(0 0% 0 0)"
+                                  : "inset(0 100% 0 0)",
+                              pointerEvents: "none",
+                              willChange: "clip-path",
+                            }}
+                          >
+                            {brand.name}
+                          </span>
+                        </span>
+                        {/* <span>, </span> */}
 
-            {/* Image stack wrapper — overflow visible for outside animations */}
-            <div
-              ref={imageWrapperRef}
-              className="relative w-full aspect-523/594 rounded-md"
-              style={{
-                perspective: "1400px",
-                overflow: needsOverflowVisible ? "visible" : "hidden",
-                marginBottom:
-                  animationVariant === "aceCard" ? "60px" : undefined,
-              }}
-            >
-              {/* All images stacked — only active one is visible */}
-              {brands.map((brand, i) => (
-                <div
-                  key={brand.name}
-                  className="brand-image-layer absolute inset-0 rounded-md overflow-hidden"
-                  style={{
-                    visibility: i === 0 ? "visible" : "hidden",
-                    opacity: i === 0 ? 1 : 0,
-                    transformStyle: "preserve-3d",
-                    willChange: "transform, opacity",
-                  }}
-                >
-                  <Image
-                    src={brand.image}
-                    alt={brand.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 440px"
-                    priority={i < 3}
-                  />
-
-                  {/* Dynamic Gradient mask attached to each card */}
+                        {/* Comma separator */}
+                        {/* {!isLast && (
+                          <span style={{ color: "#c8c8c8", fontWeight: 300 }}>
+                            ,{" "}
+                          </span>
+                        )} */}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            {/* ── RIGHT: Image card ── */}
+            <div className="col-span-4 shrink-0 flex flex-col justify-center col-start-9">
+              {/* Image stack wrapper — overflow visible for outside animations */}
+              <div
+                ref={imageWrapperRef}
+                className="relative w-full aspect-523/594 rounded-md"
+                style={{
+                  perspective: "1400px",
+                  overflow: needsOverflowVisible ? "visible" : "hidden",
+                  marginBottom:
+                    animationVariant === "aceCard" ? "60px" : undefined,
+                }}
+              >
+                {/* All images stacked — only active one is visible */}
+                {brands.map((brand, i) => (
                   <div
-                    className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-black/70 via-black/20 to-transparent pointer-events-none transition-opacity duration-700 ease-out"
-                    // style={{
-                    //   zIndex: 10,
-                    //   opacity: activeIndex === i ? 1 : 0.4,
-                    // }}
-                  />
-
-                  {/* Animated text securely pinned into each card's 3D space */}
-                  <div
-                    className="absolute inset-x-0 bottom-0 p-5 sm:p-6 flex items-end justify-between pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                    key={brand.name}
+                    className="brand-image-layer absolute inset-0 rounded-md overflow-hidden"
                     style={{
-                      zIndex: 11,
-                      opacity: activeIndex === i ? 1 : 0,
-                      transform:
-                        activeIndex === i
-                          ? "translateY(0)"
-                          : "translateY(12px)",
+                      visibility: i === 0 ? "visible" : "hidden",
+                      opacity: i === 0 ? 1 : 0,
+                      transformStyle: "preserve-3d",
+                      willChange: "transform, opacity",
                     }}
                   >
-                    <h3 className="text-white">{brand.name.toLowerCase()}</h3>
-                    {brand.label && (
-                      <span className="title text-white">{brand.label}</span>
-                    )}
+                    <Image
+                      src={brand.image}
+                      alt={brand.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 440px"
+                      priority={i < 3}
+                    />
+
+                    {/* Dynamic Gradient mask attached to each card */}
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-black/70 via-black/20 to-transparent pointer-events-none transition-opacity duration-700 ease-out"
+                      // style={{
+                      //   zIndex: 10,
+                      //   opacity: activeIndex === i ? 1 : 0.4,
+                      // }}
+                    />
+
+                    {/* Animated text securely pinned into each card's 3D space */}
+                    <div
+                      className="absolute inset-x-0 bottom-0 p-10 flex items-end justify-center text-center pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                      style={{
+                        zIndex: 11,
+                        opacity: activeIndex === i ? 1 : 0,
+                        transform:
+                          activeIndex === i
+                            ? "translateY(0)"
+                            : "translateY(12px)",
+                      }}
+                    >
+                      {/* <h3 className="text-white">{brand.name.toLowerCase()}</h3> */}
+                      {brand.label && (
+                        <span className="title text-white">{brand.label}</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
+          </div>
+          <div className="grid grid-cols-12 gap-6 -translate-y-full">
+            <BlurTextReveal
+              as="span"
+              html={footerTagline}
+              animationType="words"
+              stagger={0.08}
+              className="title uppercase block col-span-7"
+            />
           </div>
         </div>
         <LinePlus
