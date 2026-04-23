@@ -127,7 +127,7 @@ export default function AboutHero() {
 
         {/* Lion — natural document flow, scales proportionally */}
         <div
-          className={`relative z-1 w-full flex justify-center pointer-events-none transition-opacity duration-1000 ${
+          className={`relative w-full flex justify-center pointer-events-none transition-opacity duration-1000 ${
             isLoaded ? "opacity-100" : "opacity-0"
           }`}
         >
