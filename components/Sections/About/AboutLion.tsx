@@ -674,22 +674,29 @@ export default function AboutLion({
     const applyCanvasSize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const vw = Math.max(window.innerWidth, 1);
-      const rw = Math.min(state.imageWidth, vw);
-      const rh = Math.max(
+      // Lion canvas is capped at the image's natural width so it never gets
+      // stretched/blurred, but the scene (and strip overlay) span full viewport
+      // width so the strips always reach the edges of the screen.
+      const cw = Math.min(state.imageWidth, vw);
+      const ch = Math.max(
         1,
-        Math.round(state.imageHeight * (rw / state.imageWidth)),
+        Math.round(state.imageHeight * (cw / state.imageWidth)),
       );
 
-      scene.style.width = `${rw / 16}rem`;
-      scene.style.height = `${rh / 16}rem`;
-      canvas.style.width = `${rw / 16}rem`;
-      canvas.style.height = `${rh / 16}rem`;
-      canvas.width = Math.max(1, Math.round(rw * dpr));
-      canvas.height = Math.max(1, Math.round(rh * dpr));
+      // Use px (not rem) — this app uses a fluid root font-size
+      // (`calc(1000vw / var(--size))`), so 1rem is not 16px. Using rem here
+      // would desync the CSS height of the scene from the strip canvas height,
+      // leaving the bottom of the lion without strip coverage on big screens.
+      scene.style.width = `${vw}px`;
+      scene.style.height = `${ch}px`;
+      canvas.style.width = `${cw}px`;
+      canvas.style.height = `${ch}px`;
+      canvas.width = Math.max(1, Math.round(cw * dpr));
+      canvas.height = Math.max(1, Math.round(ch * dpr));
       gl.viewport(0, 0, canvas.width, canvas.height);
       state.width = canvas.width;
       state.height = canvas.height;
-      buildStrips(rw, rh);
+      buildStrips(vw, ch);
     };
 
     const updatePointer = (cx: number, cy: number) => {
@@ -887,9 +894,15 @@ export default function AboutLion({
   return (
     <div
       ref={sceneRef}
-      className={`relative inline-block leading-0 w-full aspect-660/143 md:aspect-2048/1200 ${className}`}
+      // Reserve space up-front using CSS (aspect-ratio + max-height) so the
+      // layout doesn't collapse before the WebGL canvas loads. JS still takes
+      // over with precise px dimensions once the image is ready.
+      className={`relative leading-0 mx-auto w-screen aspect-[660/1434] max-h-[1434px] md:aspect-[2048/1200] md:max-h-[1200px] ${className}`}
     >
-      <canvas ref={glCanvasRef} className="block w-full h-full touch-none" />
+      <canvas
+        ref={glCanvasRef}
+        className="block mx-auto touch-none h-full aspect-[660/1434] md:aspect-[2048/1200]"
+      />
       {children}
       <div
         ref={stripContainerRef}
@@ -898,9 +911,9 @@ export default function AboutLion({
           mixBlendMode: "luminosity",
           opacity: 0.9,
           WebkitMaskImage:
-            "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%)",
+            "linear-gradient(to bottom, transparent 0%, black 18%, black 100%), linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
           maskImage:
-            "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%), linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%)",
+            "linear-gradient(to bottom, transparent 0%, black 18%, black 100%), linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
           WebkitMaskComposite: "destination-in",
           maskComposite: "intersect",
         }}
