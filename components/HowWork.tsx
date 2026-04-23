@@ -105,7 +105,7 @@ export default function HowWork() {
   return (
     <section
       ref={sectionRef}
-      className="bg-[#0A0A0A] py-37.5 min-h-screen relative text-light-font"
+      className="bg-[#040508] py-37.5 min-h-screen relative text-light-font"
     >
       <div className="tr__container relative w-full grid grid-cols-12 gap-x-6 h-full">
         <div className="grid grid-cols-12 gap-x-6 mb-20 col-span-12">
