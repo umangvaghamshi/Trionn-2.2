@@ -111,7 +111,7 @@ export default function Testimonials({
             }
       }
     >
-      <div className="tr__container min-h-screen py-25">
+      <div className="tr__container min-h-screen py-37.5">
         <div className="grid grid-cols-12 gap-6">
           <BlurTextReveal
             as="h2"
