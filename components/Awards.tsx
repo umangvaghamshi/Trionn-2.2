@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const cards = [
   {
-    title: "✦ GSAP",
+    title: "GSAP",
     awards: [
       {
         title: "Website of the day  — (2X)",
@@ -26,7 +26,7 @@ const cards = [
     ],
   },
   {
-    title: "✦ CSSDA",
+    title: "CSSDA",
     awards: [
       {
         title: "2X - Website of the day",
@@ -35,7 +35,7 @@ const cards = [
     ],
   },
   {
-    title: "✦ Orpetron",
+    title: "Orpetron",
     awards: [
       {
         title: "Website of the day  — (2X)",
@@ -48,20 +48,7 @@ const cards = [
     ],
   },
   {
-    title: "✦ Awwwards",
-    awards: [
-      {
-        title: "2X - Honnerable Mention",
-        image: "/images/rushi.webp",
-      },
-      {
-        title: "Website of the day  — (2X)",
-        image: "/images/awards.webp",
-      },
-    ],
-  },
-  {
-    title: "✦ The FWA",
+    title: "Awwwards",
     awards: [
       {
         title: "2X - Honnerable Mention",
@@ -74,7 +61,20 @@ const cards = [
     ],
   },
   {
-    title: "✦ A Design Awards",
+    title: "The FWA",
+    awards: [
+      {
+        title: "2X - Honnerable Mention",
+        image: "/images/rushi.webp",
+      },
+      {
+        title: "Website of the day  — (2X)",
+        image: "/images/awards.webp",
+      },
+    ],
+  },
+  {
+    title: "A Design Awards",
     awards: [
       {
         title: "Silver Medal",
@@ -87,7 +87,7 @@ const cards = [
     ],
   },
   {
-    title: "✦ Landing.Love",
+    title: "Landing.Love",
     awards: [
       {
         title: "Website of the day  — (2X)",
@@ -96,7 +96,7 @@ const cards = [
     ],
   },
   {
-    title: "✦ CSS Winner",
+    title: "CSS Winner",
     awards: [
       {
         title: "2X - Website of the day",
@@ -105,7 +105,7 @@ const cards = [
     ],
   },
   {
-    title: "✦ CSSnectar",
+    title: "CSSnectar",
     awards: [
       {
         title: "Website of the day  — (2X)",
@@ -114,7 +114,7 @@ const cards = [
     ],
   },
   {
-    title: "✦ Codrops",
+    title: "Codrops",
     awards: [
       {
         title: "Website of the day  — (2X)",
@@ -203,14 +203,14 @@ export default function Awards() {
           },
           "<",
         )
-        .to(
-          scrollTextRef.current,
-          {
-            y: window.innerHeight,
-            duration: 0.15,
-          },
-          "<",
-        )
+        // .to(
+        //   scrollTextRef.current,
+        //   {
+        //     y: window.innerHeight,
+        //     duration: 0.15,
+        //   },
+        //   "<",
+        // )
 
         // 4️⃣ Slider starts sliding EXACTLY here
         .to(
@@ -404,7 +404,7 @@ export default function Awards() {
             className="title text-light-font block"
           />
           <WordShiftButton
-            text="win an award"
+            text="win an award?"
             href="#"
             styleVars={{ buttonWrapperColor: "#D8D8D8" }}
           />
@@ -424,7 +424,7 @@ export default function Awards() {
                       cardsRef.current[idx] = self;
                     }
                   }}
-                  className={`overflow-hidden relative w-134 h-77 p-10 bg-white/90 even:bg-black/90 text-dark-font even:text-light-font rounded-lg flex justify-between`}
+                  className={`overflow-hidden relative w-134 h-77 p-10 bg-white/90 hover:bg-black/90 text-dark-font hover:text-light-font rounded-lg flex justify-between transition-all duration-500 ease-in-out`}
                 >
                   <div className="flex-1 flex flex-col items-start justify-between pr-10">
                     <BlurTextReveal
@@ -432,12 +432,15 @@ export default function Awards() {
                       html={item.title}
                       animationType="words"
                       stagger={0.03}
-                      className="uppercase"
+                      className="uppercase transition-all duration-500 ease-in-out"
                     />
                     <div className="flex flex-col gap-1">
                       {item.awards.map((award, i) => {
                         return (
-                          <p key={i} className="small">
+                          <p
+                            key={i}
+                            className="small transition-all duration-500 ease-in-out"
+                          >
                             {award.title}
                           </p>
                         );

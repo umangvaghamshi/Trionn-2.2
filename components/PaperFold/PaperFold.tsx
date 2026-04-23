@@ -65,6 +65,9 @@ export default function PaperFold({
         const valueBlock = document.querySelector(
           ".velue-block",
         ) as HTMLElement;
+        const bottomText = document.querySelector(
+          ".bottom-text",
+        ) as HTMLElement;
 
         if (!valueBlock) {
           console.error("Element .velue-block not found!");
@@ -72,13 +75,12 @@ export default function PaperFold({
         }
 
         const style = window.getComputedStyle(valueBlock);
-        console.log("Padding Bottom:", style.paddingBottom); // See what this logs in the console
 
         const padding = parseFloat(style.paddingBottom);
         const headerHeight =
           document.querySelector(".site-header")?.clientHeight || 100;
-
-        return `bottom ${headerHeight + padding * 2}px`;
+        const bottomTextHeight = bottomText.clientHeight;
+        return `bottom ${headerHeight + bottomTextHeight + padding * 2 + 12}px`;
       },
       pin: valueTitle.current,
       pinSpacing: false,
@@ -154,7 +156,7 @@ export default function PaperFold({
                 html={footerTagline}
                 animationType="chars"
                 stagger={0.05}
-                className="text-dark-font title block"
+                className="text-dark-font title block bottom-text"
               />
             </div>
           </div>
