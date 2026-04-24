@@ -14,8 +14,6 @@ const BG = "#0a0a0a";
 const FG = "#e8e8e8";
 const MUTED = "#666666";
 const DIM = "#333333";
-const BORDER = "#1a1a1a";
-const ACCENT = "#c8a882";
 
 export default function ServicesOrbitExperience() {
   const lenis = useLenis();
@@ -92,25 +90,28 @@ export default function ServicesOrbitExperience() {
 
   useGSAP(() => {
     if (!canvasWrapRef.current) return;
-    ScrollTrigger.create({
+    const st = ScrollTrigger.create({
       trigger: "#services-orbit-scope",
       start: "top top",
       end: "bottom bottom",
       pin: canvasWrapRef.current,
       pinSpacing: false,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
       markers: false,
     });
+    return () => st.kill();
   }, []);
 
   return (
     <div
       id="services-orbit-scope"
-      className="services-orbit-scope min-h-screen font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[#e8e8e8] overflow-x-hidden"
+      className="services-orbit-scope relative min-h-screen font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[#e8e8e8] overflow-x-hidden"
       style={{ background: BG, color: FG }}
     >
       <div
         ref={canvasWrapRef}
-        className="absolute inset-0 w-full h-screen z-0 [isolation:isolate] [transform:translateZ(0)] [backface-visibility:hidden] max-[768px]:[contain:layout_style] max-[768px]:[transform:translateZ(0)]"
+        className="absolute top-0 left-0 w-full h-screen z-0 [isolation:isolate] [transform:translateZ(0)] [backface-visibility:hidden] max-[768px]:[contain:layout_style] max-[768px]:[transform:translateZ(0)]"
       >
         <canvas
           ref={mainCanvasRef}
@@ -267,108 +268,19 @@ export default function ServicesOrbitExperience() {
         </div>
       </section>
 
+      {/* Zero-height sentinel — required by useServicesOrbitScene.
+          Its top Y = bottom of sec3, which is what computePhaseScrollUntilSec4Top
+          uses as the "phase = 1" anchor (orbit/grid/woosh all complete here).
+          The IntersectionObserver on this element still fires on a 0-height rect
+          as it crosses viewport edges, so canvas pin/unpin stays correct.
+          Do NOT give this element any height — doing so reintroduces a blank section. */}
       <section
         ref={sec4Ref}
-        className="sec-cta relative z-[1] flex min-h-screen w-screen flex-col justify-between overflow-hidden border-t px-6 pt-12 pb-14 sm:px-14"
-        style={{ background: "#000000", borderColor: BORDER }}
+        aria-hidden="true"
+        className="sec-orbit-anchor pointer-events-none relative z-[1] block w-screen"
+        style={{ height: 0 }}
         id="sec4"
-      >
-        <div
-          className="cta-bg-text pointer-events-none absolute -bottom-[0.15em] -right-[0.04em] select-none leading-none font-black uppercase text-transparent sm:-bottom-[0.15em]"
-          style={{
-            fontSize: "clamp(6rem, 28vw, 28rem)",
-            WebkitTextStroke: "1px rgba(232,232,232,0.04)",
-          }}
-        >
-          START
-        </div>
-        <div
-          className="cta-top-label relative z-[1] flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.14em]"
-          style={{ color: MUTED }}
-        >
-          <span className="text-[0.65rem]" style={{ color: FG }}>
-            ✦
-          </span>{" "}
-          NEXT STEP
-        </div>
-        <div className="cta-inner relative z-[1] flex flex-col gap-8">
-          <h2
-            className="cta-title text-[clamp(2.2rem,10vw,8.5rem)] font-extrabold uppercase leading-[0.92] tracking-[-0.035em] sm:text-[clamp(3rem,7vw,8.5rem)]"
-            style={{ color: FG }}
-          >
-            Have a project
-            <br />
-            in mind?
-          </h2>
-          <p
-            className="cta-sub max-w-[36ch] text-[0.9rem] leading-[1.7] tracking-[0.02em]"
-            style={{ color: MUTED }}
-          >
-            We turn ambitious visions into
-            <br />
-            award-worthy digital experiences.
-          </p>
-          <a
-            className="cta-btn inline-flex w-fit items-center gap-[1.2rem] px-8 py-4 text-[0.72rem] uppercase tracking-[0.18em] no-underline transition-[background,color] duration-[250ms]"
-            style={{ background: FG, color: BG }}
-            href="#"
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = ACCENT;
-              e.currentTarget.style.color = BG;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = FG;
-              e.currentTarget.style.color = BG;
-            }}
-          >
-            <span>BEGIN THE CONVERSATION</span>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M3 9H15M15 9L10 4M15 9L10 14"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-        </div>
-        <div
-          className="cta-footer-row relative z-[1] flex flex-col items-start justify-between gap-4 border-t pt-6 sm:flex-row sm:items-center"
-          style={{ borderColor: BORDER }}
-        >
-          <span
-            className="cta-copy text-[0.68rem] tracking-[0.1em]"
-            style={{ color: MUTED }}
-          >
-            © 2026 TRIONN® All rights reserved.
-          </span>
-          <div className="cta-links flex gap-8">
-            {["Instagram", "Behance", "LinkedIn"].map((label) => (
-              <a
-                key={label}
-                href="#"
-                className="text-[0.68rem] uppercase tracking-[0.14em] no-underline transition-colors duration-200"
-                style={{ color: MUTED }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = FG;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = MUTED;
-                }}
-              >
-                {label}
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
+      />
     </div>
   );
 }
