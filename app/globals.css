@@ -269,3 +269,22 @@ canvas {
 .custom-arrow.right:hover .second {
   @apply translate-x-0;
 }
+
+.accordion__title .icon::before,
+.accordion__title .icon::after {
+  content: "";
+  @apply bg-black absolute top-1/2 left-1/2 -translate-1/2 rounded-sm transition-all duration-500;
+}
+.accordion__title .icon::before {
+  @apply h-[0.813rem] w-[0.063rem];
+}
+.accordion__title .icon::after {
+  @apply h-[0.063rem] w-[0.813rem];
+}
+.accordion__title .icon.open::before,
+.accordion__title .icon.open::after {
+  @apply bg-black;
+}
+.accordion__title .icon.open::before {
+  @apply h-0 w-0;
+}

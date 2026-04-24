@@ -6,6 +6,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import { WordShiftButton } from "@/components/Button";
+import Marquee from "@/components/Marquee";
 
 gsap.registerPlugin(ScrollTrigger);
 import { useServicesOrbitScene } from "./useServicesOrbitScene";
@@ -14,6 +17,27 @@ const BG = "#0a0a0a";
 const FG = "#e8e8e8";
 const MUTED = "#666666";
 const DIM = "#333333";
+
+const CROSS_ICON = (
+  <svg
+    width="40"
+    height="40"
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="mx-[4.582vw] w-[2.291vw] h-[2.291vw] shrink-0"
+    aria-hidden
+  >
+    <line
+      x1="20.2256"
+      y1="-2.18557e-08"
+      x2="20.2256"
+      y2="40"
+      stroke="#FFFFFF"
+    />
+    <line x1="40" y1="20.226" x2="-4.37114e-08" y2="20.226" stroke="#FFFFFF" />
+  </svg>
+);
 
 export default function ServicesOrbitExperience() {
   const lenis = useLenis();
@@ -111,7 +135,7 @@ export default function ServicesOrbitExperience() {
     >
       <div
         ref={canvasWrapRef}
-        className="absolute top-0 left-0 w-full h-screen z-0 [isolation:isolate] [transform:translateZ(0)] [backface-visibility:hidden] max-[768px]:[contain:layout_style] max-[768px]:[transform:translateZ(0)]"
+        className="absolute top-0 left-0 w-full h-screen z-0 isolate transform-[translateZ(0)] backface-hidden max-[768px]:contain-[layout_style] max-[768px]:transform-[translateZ(0)]"
       >
         <canvas
           ref={mainCanvasRef}
@@ -126,42 +150,38 @@ export default function ServicesOrbitExperience() {
         />
       </div>
 
-      <section className="sec-expertise relative z-[1] flex min-h-screen w-screen flex-col justify-between bg-transparent px-6 pt-12 pb-14 sm:px-10 sm:pt-12 sm:pb-14 [contain:layout_style] [transform:translateZ(0)] [backface-visibility:hidden]">
-        <div className="exp-left flex flex-col gap-[1.2rem]">
-          <div
-            className="exp-top-label flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.14em]"
-            style={{ color: MUTED }}
-          >
-            <span className="diamond text-[0.65rem]" style={{ color: FG }}>
-              ✦
-            </span>{" "}
-            WHAT WE DO BEST
+      <section className="sec-expertise relative z-1 flex min-h-screen w-screen flex-col justify-center bg-transparent px-6 pt-12 pb-14 sm:px-10 sm:pt-12 sm:pb-14 contain-[layout_style] transform-[translateZ(0)] backface-hidden text-light-font">
+        <div className="exp-left flex flex-col gap-4 justify-center items-center">
+          <div className="exp-top-label">
+            <BlurTextReveal
+              as="span"
+              html="✦ WHAT WE DO BEST"
+              animationType="chars"
+              stagger={0.05}
+              className="title block text-center"
+            />
           </div>
-          <h2
-            className="exp-title text-[clamp(2.8rem,12vw,8rem)] font-extrabold uppercase leading-[0.92] tracking-[-0.03em] sm:text-[clamp(3.8rem,7vw,8rem)]"
-            style={{ color: FG }}
-          >
-            AREA OF
-            <br />
-            EXPERTISE
-          </h2>
+          <BlurTextReveal
+            as="h1"
+            html="Area of expertise"
+            animationType="chars"
+            stagger={0.05}
+            className="text-center"
+          />
         </div>
-        <div className="exp-bottom flex justify-start sm:justify-end">
-          <div className="exp-services flex flex-col items-start gap-[0.9rem] sm:items-end">
-            <p
-              className="srv-heading text-[0.68rem] uppercase tracking-[0.16em]"
-              style={{ color: MUTED }}
+        <div className="exp-bottom flex justify-center max-w-130 text-center mx-auto mt-auto absolute bottom-20 left-1/2 -translate-x-1/2">
+          <div className="exp-services flex flex-col justify-center items-center">
+            <ul
+              ref={servicesListRef}
+              className="srv-list flex justify-center list-none flex-wrap gap-2"
             >
-              SERVICES
-            </p>
-            <ul ref={servicesListRef} className="srv-list flex list-none flex-col gap-[0.28rem] sm:items-end">
               {(
                 [
+                  "A.I. Development",
+                  "Web Development",
                   "Product Design",
                   "Website & Mobile Design",
                   "WordPress Development",
-                  "Web Development",
-                  "A.I. Development",
                   "Branding",
                 ] as const
               ).map((label, i) => (
@@ -169,11 +189,7 @@ export default function ServicesOrbitExperience() {
                   key={label}
                   role="presentation"
                   onMouseEnter={() => setActiveService(i)}
-                  className={`cursor-pointer text-[0.95rem] transition-colors duration-200 ${
-                    activeService === i
-                      ? "font-semibold"
-                      : "font-normal"
-                  }`}
+                  className={`cursor-pointer title transition-colors duration-200 `}
                   style={{
                     color: activeService === i ? FG : MUTED,
                   }}
@@ -189,82 +205,62 @@ export default function ServicesOrbitExperience() {
 
       <section
         ref={sec2Ref}
-        className="sec-focused relative z-[1] flex min-h-screen w-screen items-center bg-transparent [contain:layout_style] [transform:translateZ(0)]"
+        className="sec-focused relative z-1 flex min-h-screen w-screen items-center bg-transparent contain-[layout_style] transform-[translateZ(0)]"
         id="sec2"
       >
-        <div className="foc-inner ml-0 flex flex-col gap-8 px-6 sm:ml-[30%] sm:gap-[2.8rem] sm:px-14">
-          <h2
-            className="foc-title max-w-[90vw] text-[clamp(1.8rem,7vw,5.6rem)] font-bold leading-[1.08] tracking-[-0.025em] sm:max-w-none sm:text-[clamp(2.4rem,4.8vw,5.6rem)]"
-            style={{ color: FG }}
-          >
-            Focused disciplines
-            <br />
-            where strategy, design,
-            <br />
-            and technology work
-            <br />
-            as one.
-          </h2>
-          <a
-            className="foc-cta inline-flex w-fit items-center gap-[1.4rem] border-b pb-2 text-[0.72rem] uppercase tracking-[0.16em] no-underline transition-[border-color] duration-200"
-            style={{ color: FG, borderColor: DIM }}
-            href="#"
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = FG;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = DIM;
-            }}
-          >
-            LET&apos;S CONNECT <span className="text-base tracking-normal">→</span>
-          </a>
+        <div className="foc-inner tr__container grid grid-cols-12 gap-6 text-light-font">
+          <div className="col-span-6 col-start-5 gap-20 flex flex-col">
+            <BlurTextReveal
+              as="h2"
+              html="Focused disciplines where strategy, design, and technology work as one."
+              animationType="chars"
+              stagger={0.05}
+              duration={2}
+              className="max-w-200 foc-title"
+            />
+            <div className="flex gap-10 foc-cta">
+              <WordShiftButton
+                text="View our projects"
+                href="#"
+                styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+              />
+              <WordShiftButton
+                text="let's connect"
+                href="#"
+                styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+              />
+            </div>
+          </div>
         </div>
       </section>
 
       <section
         ref={sec3Ref}
-        className="sec-disciplines relative z-[1] flex min-h-screen w-screen items-center justify-center bg-transparent [contain:layout_style]"
+        className="sec-disciplines relative z-1 flex min-h-screen w-screen items-center justify-center bg-transparent contain-[layout_style]"
         id="sec3"
       >
-        <div className="disc-inner flex w-full flex-col items-center gap-[2.8rem] px-4">
-          <div className="disc-words flex w-full max-w-[100vw] flex-col items-center justify-center gap-0.5 sm:flex-row sm:gap-0">
-            <span
-              className="disc-word min-w-0 shrink text-center text-[clamp(2.4rem,14vw,12rem)] font-extrabold tracking-[-0.03em] uppercase whitespace-nowrap sm:text-[clamp(3.2rem,9.5vw,12rem)]"
-              style={{ color: FG }}
-            >
-              BRANDING
-            </span>
-            <span
-              className="disc-plus px-0 text-[clamp(1.2rem,5vw,5rem)] font-light leading-none opacity-70 sm:px-[clamp(1rem,2.5vw,3rem)] sm:text-[clamp(1.8rem,4vw,5rem)]"
-              style={{ color: FG }}
-            >
-              +
-            </span>
-            <span
-              className="disc-word min-w-0 shrink text-center text-[clamp(2.4rem,14vw,12rem)] font-extrabold tracking-[-0.03em] uppercase whitespace-nowrap sm:text-[clamp(3.2rem,9.5vw,12rem)]"
-              style={{ color: FG }}
-            >
-              A.I.
-            </span>
-            <span
-              className="disc-plus px-0 text-[clamp(1.2rem,5vw,5rem)] font-light leading-none opacity-70 sm:px-[clamp(1rem,2.5vw,3rem)] sm:text-[clamp(1.8rem,4vw,5rem)]"
-              style={{ color: FG }}
-            >
-              +
-            </span>
-            <span
-              className="disc-word min-w-0 shrink text-center text-[clamp(2.4rem,14vw,12rem)] font-extrabold tracking-[-0.03em] uppercase whitespace-nowrap sm:text-[clamp(3.2rem,9.5vw,12rem)]"
-              style={{ color: FG }}
-            >
-              DESIGN
-            </span>
+        <div className="disc-inner flex w-full flex-col items-center justify-center gap-20">
+          <Marquee gap={0} speed={0.8}>
+            <div className="uppercase mrquee-text flex items-center">
+              <span className="marquee-text-item">Branding</span>
+              {CROSS_ICON}
+              <span className="marquee-text-item">A.I.</span>
+              {CROSS_ICON}
+              <span className="marquee-text-item">Design</span>
+              {CROSS_ICON}
+              <span className="marquee-text-item">Develpment</span>
+              {CROSS_ICON}
+            </div>
+          </Marquee>
+          <div className="tr__container w-full">
+            <BlurTextReveal
+              as="span"
+              html="Capabilities shaped to scale with ambition."
+              animationType="chars"
+              stagger={0.05}
+              className="title block text-center"
+            />
           </div>
-          <p
-            className="disc-sub text-center text-[0.72rem] uppercase tracking-[0.18em]"
-            style={{ color: MUTED }}
-          >
-            CAPABILITIES SHAPED TO SCALE WITH AMBITION.
-          </p>
         </div>
       </section>
 
@@ -277,7 +273,7 @@ export default function ServicesOrbitExperience() {
       <section
         ref={sec4Ref}
         aria-hidden="true"
-        className="sec-orbit-anchor pointer-events-none relative z-[1] block w-screen"
+        className="sec-orbit-anchor pointer-events-none relative z-1 block w-screen"
         style={{ height: 0 }}
         id="sec4"
       />

@@ -1,21 +1,22 @@
-'use client';
-import React, { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import parse from 'html-react-parser';
-import { BlurTextReveal } from '@/components/TextAnimation';
-import LinePlus from '@/components/LinePlus';
-import Accordion from '@/components/Accordion';
-import { faqData } from '@/data';
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import parse from "html-react-parser";
+import { BlurTextReveal } from "@/components/TextAnimation";
+import LinePlus from "@/components/LinePlus";
+import Accordion from "@/components/Accordion";
+import { faqData } from "@/data";
+import TechAccordion from "@/components/TechAccordion";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Technology() {
   return (
-    <section className="py-37.5">
+    <section className="py-37.5 bg-white">
       <div className="tr__container relative w-full text-dark-font flex flex-col">
         <div className="grid grid-cols-12 gap-x-6 pb-37.5">
           <BlurTextReveal
@@ -41,12 +42,12 @@ export default function Technology() {
           />
         </div>
         <LinePlus
-          customClass={''}
-          lineClass={'opacity-15 bg-grey-line'}
-          plusClass={'col-span-8 col-start-5 -translate-x-1/2'}
-          iconColor={'#272727'}
+          customClass={""}
+          lineClass={"opacity-15 bg-grey-line"}
+          plusClass={"col-span-8 col-start-5 -translate-x-1/2"}
+          iconColor={"#272727"}
         />
-        <Accordion items={faqData} customClass={'service-faq'} />
+        <TechAccordion items={faqData} customClass={"tech-faq"} />
       </div>
     </section>
   );

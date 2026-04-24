@@ -1,4 +1,4 @@
-import { StaticImageData } from 'next/image';
+import { StaticImageData } from "next/image";
 
 export type workDataItem = {
   id: number | string;
@@ -36,4 +36,13 @@ export type WeNotType = {
 export type FaqItemType = {
   title: string;
   content: string[] | string;
+};
+
+export type TechCategory = {
+  heading: string;
+  items: string[];
+};
+export type TechFaqItemType = {
+  title: string;
+  content: TechCategory[];
 };
