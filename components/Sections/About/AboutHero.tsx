@@ -70,7 +70,8 @@ export default function AboutHero() {
           html={`We are an independent digital studio built on clarity, thoughtful
           craft, and trust earned worldwide.`}
           animationType="chars"
-          stagger={0.5}
+          stagger={0.05}
+          duration={2}
           className="text-center mx-auto max-w-342 text-[#D8D8D8]"
         />
         {/* <h1 className="text-center mx-auto max-w-342 text-white">

@@ -217,7 +217,6 @@ export function useServicesOrbitScene(
     getSmoothScroll,
     getScrollProgress,
     soundEnabledRef,
-    canvasWrapRef,
     sec4Ref,
     servicesListRef,
   } = options;
@@ -230,8 +229,6 @@ export function useServicesOrbitScene(
   useEffect(() => {
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
-
-    const isFirefox = /firefox/i.test(navigator.userAgent);
 
     let W = window.innerWidth;
     let H = window.innerHeight;
@@ -801,46 +798,9 @@ export function useServicesOrbitScene(
     weldFx.setGlowCanvas(glowCanvasRef.current);
     weldFx.init(scene, camera, [orbitLineTop, orbitLineBottom, orbitLineMid]);
 
-    let sec4Top = 0;
-    let canvasPinned = false;
-    const canvasWrap = canvasWrapRef.current;
-    const sec4 = sec4Ref.current;
-
-    const onSec4Intersect: IntersectionObserverCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (!canvasWrap) return;
-        const smooth = getSmoothScroll();
-        if (entry.isIntersecting && !canvasPinned) {
-          sec4Top = Math.round(smooth);
-          canvasPinned = true;
-          if (isFirefox) {
-            canvasWrap.style.position = "fixed";
-            canvasWrap.style.top = "0";
-          } else {
-            canvasWrap.style.position = "absolute";
-            canvasWrap.style.top = `${sec4Top}px`;
-          }
-        } else if (!entry.isIntersecting && canvasPinned) {
-          canvasPinned = false;
-          if (isFirefox) {
-            canvasWrap.style.transform = "";
-          } else {
-            canvasWrap.style.position = "fixed";
-            canvasWrap.style.top = "0";
-          }
-        }
-      });
-    };
-
-    let observer: IntersectionObserver | null = null;
-    if (sec4 && canvasWrap) {
-      observer = new IntersectionObserver(onSec4Intersect, { threshold: 0 });
-      observer.observe(sec4);
-      if (isFirefox) {
-        canvasWrap.style.position = "fixed";
-        canvasWrap.style.top = "0";
-      }
-    }
+    /* Canvas pinning is owned by GSAP ScrollTrigger in ServicesOrbitExperience.tsx.
+       Do NOT swap position:fixed/absolute here — the two mechanisms fought on
+       reverse scroll and caused the icons to flash/snap at the marquee section. */
 
     let wooshCtx: AudioContext | null = null;
     let wooshBuf: AudioBuffer | null = null;
@@ -1448,11 +1408,6 @@ export function useServicesOrbitScene(
       orbitLineMid.updateMatrixWorld(true);
 
       renderer.render(scene, camera);
-
-      if (isFirefox && canvasPinned && canvasWrap) {
-        const offset = sec4Top - _smoothScroll;
-        canvasWrap.style.transform = `translateY(${offset}px)`;
-      }
     }
 
     function rebuildOrbitGeometry() {
@@ -1531,7 +1486,6 @@ export function useServicesOrbitScene(
       wooshGestureHandlers.forEach(({ ev, fn }) =>
         document.removeEventListener(ev, fn),
       );
-      observer?.disconnect();
       weldFx.dispose();
 
       scene.traverse((obj) => {
