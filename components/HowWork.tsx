@@ -103,104 +103,106 @@ export default function HowWork() {
   );
 
   return (
-    <section
-      ref={sectionRef}
-      className="bg-[#040508] py-37.5 min-h-screen relative text-light-font"
-    >
-      <div className="tr__container relative w-full grid grid-cols-12 gap-x-6 h-full">
-        <div className="grid grid-cols-12 gap-x-6 mb-20 col-span-12">
-          <BlurTextReveal
-            as="span"
-            html={`Our process`}
-            animationType="chars"
-            stagger={0.05}
-            className="title block col-span-2 pt-4"
-          />
-          <div className="col-span-10">
+    <section className="bg-[#040508] relative">
+      <div
+        ref={sectionRef}
+        className="py-37.5 min-h-screen relative text-light-font"
+      >
+        <div className="tr__container relative w-full grid grid-cols-12 gap-x-6 h-full">
+          <div className="grid grid-cols-12 gap-x-6 mb-20 col-span-12">
             <BlurTextReveal
-              as="h2"
-              html={`How we work`}
+              as="span"
+              html={`Our process`}
               animationType="chars"
               stagger={0.05}
-              className="mb-6"
+              className="title block col-span-2 pt-4"
             />
-            <p className="small max-w-50 opacity-50">
-              A repeatable method applied across every engagement.
-            </p>
+            <div className="col-span-10">
+              <BlurTextReveal
+                as="h2"
+                html={`How we work`}
+                animationType="chars"
+                stagger={0.05}
+                className="mb-6"
+              />
+              <p className="small max-w-50 opacity-50">
+                A repeatable method applied across every engagement.
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="col-span-9 col-start-3 gap-x-6 relative">
-          <div className="grid grid-cols-12 text-light-font">
-            {cards.map((card, idx) => {
-              return (
-                <div
-                  ref={(self) => {
-                    if (self && cardsRef.current) {
-                      cardsRef.current[idx] = self;
-                    }
-                  }}
-                  key={idx}
-                  className="col-span-4 relative pb-20 pr-6 last:pr-0"
-                >
-                  <span className="title step-no text-light-font mb-9 block">
-                    Step - {card.id}
-                  </span>
+          <div className="col-span-9 col-start-3 gap-x-6 relative">
+            <div className="grid grid-cols-12 text-light-font">
+              {cards.map((card, idx) => {
+                return (
+                  <div
+                    ref={(self) => {
+                      if (self && cardsRef.current) {
+                        cardsRef.current[idx] = self;
+                      }
+                    }}
+                    key={idx}
+                    className="col-span-4 relative pb-20 pr-6 last:pr-0"
+                  >
+                    <span className="title step-no text-light-font mb-9 block">
+                      Step - {card.id}
+                    </span>
 
-                  <h3 className="work-title block mb-8">{card.title}</h3>
-                  <p className="content small max-w-87.5">{card.content}</p>
-                  <div className="fill-line absolute left-0 bottom-0 w-full">
-                    <div className="line absolute top-1/2 -translate-y-1/2 bg-cream-line/20 h-px w-full"></div>
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 13 13"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="plus-follow top-1/2 -translate-1/2 absolute"
-                    >
-                      <line
-                        x1="6.5"
-                        y1="-2.18557e-08"
-                        x2="6.5"
-                        y2="13"
-                        style={{ stroke: "#D8D8D8" }}
-                      />
-                      <line
-                        x1="13"
-                        y1="6.5"
-                        x2="-4.37114e-08"
-                        y2="6.5"
-                        style={{ stroke: "#D8D8D8" }}
-                      />
-                    </svg>
+                    <h3 className="work-title block mb-8">{card.title}</h3>
+                    <p className="content small max-w-87.5">{card.content}</p>
+                    <div className="fill-line absolute left-0 bottom-0 w-full">
+                      <div className="line absolute top-1/2 -translate-y-1/2 bg-cream-line/20 h-px w-full"></div>
+                      <svg
+                        width="13"
+                        height="13"
+                        viewBox="0 0 13 13"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="plus-follow top-1/2 -translate-1/2 absolute"
+                      >
+                        <line
+                          x1="6.5"
+                          y1="-2.18557e-08"
+                          x2="6.5"
+                          y2="13"
+                          style={{ stroke: "#D8D8D8" }}
+                        />
+                        <line
+                          x1="13"
+                          y1="6.5"
+                          x2="-4.37114e-08"
+                          y2="6.5"
+                          style={{ stroke: "#D8D8D8" }}
+                        />
+                      </svg>
 
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 13 13"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="-translate-x-1/2 plus"
-                    >
-                      <line
-                        x1="6.5"
-                        y1="-2.18557e-08"
-                        x2="6.5"
-                        y2="13"
-                        style={{ stroke: "#D8D8D8" }}
-                      />
-                      <line
-                        x1="13"
-                        y1="6.5"
-                        x2="-4.37114e-08"
-                        y2="6.5"
-                        style={{ stroke: "#D8D8D8" }}
-                      />
-                    </svg>
+                      <svg
+                        width="13"
+                        height="13"
+                        viewBox="0 0 13 13"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="-translate-x-1/2 plus"
+                      >
+                        <line
+                          x1="6.5"
+                          y1="-2.18557e-08"
+                          x2="6.5"
+                          y2="13"
+                          style={{ stroke: "#D8D8D8" }}
+                        />
+                        <line
+                          x1="13"
+                          y1="6.5"
+                          x2="-4.37114e-08"
+                          y2="6.5"
+                          style={{ stroke: "#D8D8D8" }}
+                        />
+                      </svg>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
