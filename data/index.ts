@@ -1,4 +1,10 @@
-import { workDataItem, TestimonialsDataItem, HowWorkType, WeNotType, FaqItemType } from "./dataType";
+import {
+  workDataItem,
+  TestimonialsDataItem,
+  HowWorkType,
+  WeNotType,
+  TechFaqItemType,
+} from "./dataType";
 
 export const headerSection = {
   logo: "/images/logo.svg",
@@ -162,17 +168,17 @@ export const TestimonialsData: TestimonialsDataItem[] = [
 export const HowWorkData: HowWorkType[] = [
   {
     id: 1,
-    title: 'Understand',
+    title: "Understand",
     content: `We begin by listening. Understanding your vision, challenges, and context allows us to define the right problem before designing the solution.`,
   },
   {
     id: 2,
-    title: 'Design & Build',
+    title: "Design & Build",
     content: `We translate insight into systems — shaping thoughtful design, refined interactions, and robust execution with care and precision.`,
   },
   {
     id: 3,
-    title: 'Refine & Evolve',
+    title: "Refine & Evolve",
     content: `Through iteration and detail-driven refinement, we deliver work that's purposeful, scalable, and built to stand the test of time.`,
   },
 ];
@@ -194,128 +200,225 @@ export const WeNotData: WeNotType[] = [
 
 export const ServicesListData = [
   {
-    title: 'Product Design',
+    title: "Product Design",
     description:
-      'We design digital products by aligning user needs, business goals, and system logic. Every decision is guided by clarity, usability, and long-term value.',
-    subText: 'Closely shaped alongside <br/>strategy and development.',
-    imgUrl: '/images/service.jpg',
+      "We design digital products by aligning user needs, business goals, and system logic. Every decision is guided by clarity, usability, and long-term value.",
+    subText: "Closely shaped alongside <br/>strategy and development.",
+    imgUrl: "/images/service.jpg",
     capabilities: [
-      { capabilitiesItem: 'Product strategy' },
-      { capabilitiesItem: 'Interface design' },
-      { capabilitiesItem: 'UX architecture' },
-      { capabilitiesItem: 'Design system' },
-      { capabilitiesItem: 'Prototyping & validation' },
-      { capabilitiesItem: 'AI integrations for websites & web apps' },
+      { capabilitiesItem: "Product strategy" },
+      { capabilitiesItem: "Interface design" },
+      { capabilitiesItem: "UX architecture" },
+      { capabilitiesItem: "Design system" },
+      { capabilitiesItem: "Prototyping & validation" },
+      { capabilitiesItem: "AI integrations for websites & web apps" },
     ],
   },
   {
-    title: 'Website & Mobile Design',
+    title: "Website & Mobile Design",
     description:
-      'We craft responsive digital experiences that feel natural across screens. Design systems are built to remain flexible as products evolve.',
-    subText: 'Designed to perform <br/>consistently on every device.',
-    imgUrl: '/images/service.jpg',
+      "We craft responsive digital experiences that feel natural across screens. Design systems are built to remain flexible as products evolve.",
+    subText: "Designed to perform <br/>consistently on every device.",
+    imgUrl: "/images/service.jpg",
     capabilities: [
-      { capabilitiesItem: 'High-fidelity web designs' },
-      { capabilitiesItem: 'mobile app designs' },
-      { capabilitiesItem: 'Lo-fi mockups & wireframes' },
-      { capabilitiesItem: 'Responsive designs' },
-      { capabilitiesItem: 'UX/UI design' },
-      { capabilitiesItem: 'Customized design solutions' },
+      { capabilitiesItem: "High-fidelity web designs" },
+      { capabilitiesItem: "mobile app designs" },
+      { capabilitiesItem: "Lo-fi mockups & wireframes" },
+      { capabilitiesItem: "Responsive designs" },
+      { capabilitiesItem: "UX/UI design" },
+      { capabilitiesItem: "Customized design solutions" },
     ],
   },
   {
-    title: 'WordPress Development',
+    title: "WordPress Development",
     description:
-      'We develop custom WordPress solutions focused on performance and control. Clean architecture ensures ease of management and scalability.',
-    subText: 'Built to adapt as content <br/>and products grow.',
-    imgUrl: '/images/service.jpg',
+      "We develop custom WordPress solutions focused on performance and control. Clean architecture ensures ease of management and scalability.",
+    subText: "Built to adapt as content <br/>and products grow.",
+    imgUrl: "/images/service.jpg",
     capabilities: [
-      { capabilitiesItem: 'Websites' },
-      { capabilitiesItem: 'Landing pages' },
-      { capabilitiesItem: 'Web apps' },
-      { capabilitiesItem: 'Custom development solutions' },
-      { capabilitiesItem: 'Integrations' },
-      { capabilitiesItem: 'Support' },
+      { capabilitiesItem: "Websites" },
+      { capabilitiesItem: "Landing pages" },
+      { capabilitiesItem: "Web apps" },
+      { capabilitiesItem: "Custom development solutions" },
+      { capabilitiesItem: "Integrations" },
+      { capabilitiesItem: "Support" },
     ],
   },
   {
-    title: 'Web Development',
+    title: "Web Development",
     description:
-      'We build robust web applications with performance at the core. Our focus remains on reliability, security, and scalability.',
-    subText: 'Engineered to support <br/>complex digital products.',
-    imgUrl: '/images/service.jpg',
+      "We build robust web applications with performance at the core. Our focus remains on reliability, security, and scalability.",
+    subText: "Engineered to support <br/>complex digital products.",
+    imgUrl: "/images/service.jpg",
     capabilities: [
-      { capabilitiesItem: 'Frontend development' },
-      { capabilitiesItem: 'Backend development' },
-      { capabilitiesItem: 'Cloud Infrastructure & DevOps' },
-      { capabilitiesItem: 'Software architecture consultancy' },
+      { capabilitiesItem: "Frontend development" },
+      { capabilitiesItem: "Backend development" },
+      { capabilitiesItem: "Cloud Infrastructure & DevOps" },
+      { capabilitiesItem: "Software architecture consultancy" },
     ],
   },
   {
-    title: 'AI & Intelligent Automation',
+    title: "AI & Intelligent Automation",
     description:
-      'We implement intelligent automation to simplify digital workflows. Systems are designed to enhance efficiency without adding complexity.',
-    subText: 'Integrated seamlessly into <br/>existing platforms.',
-    imgUrl: '/images/service.jpg',
+      "We implement intelligent automation to simplify digital workflows. Systems are designed to enhance efficiency without adding complexity.",
+    subText: "Integrated seamlessly into <br/>existing platforms.",
+    imgUrl: "/images/service.jpg",
     capabilities: [
-      { capabilitiesItem: 'AI-powered chatbots & assistants' },
-      { capabilitiesItem: 'Content generation' },
-      { capabilitiesItem: 'AI-driven search & recommendations' },
-      { capabilitiesItem: 'AI workflow automation with n8n' },
-      { capabilitiesItem: 'AI integrations for websites & web apps' },
-      { capabilitiesItem: 'Custom development solutions' },
+      { capabilitiesItem: "AI-powered chatbots & assistants" },
+      { capabilitiesItem: "Content generation" },
+      { capabilitiesItem: "AI-driven search & recommendations" },
+      { capabilitiesItem: "AI workflow automation with n8n" },
+      { capabilitiesItem: "AI integrations for websites & web apps" },
+      { capabilitiesItem: "Custom development solutions" },
     ],
   },
   {
-    title: 'Branding',
+    title: "Branding",
     description:
-      'We create visual identities rooted in clarity and consistency. Every element is designed to work across digital environments.',
-    subText: 'Built to extend across <br/>products and experiences.',
-    imgUrl: '/images/service.jpg',
+      "We create visual identities rooted in clarity and consistency. Every element is designed to work across digital environments.",
+    subText: "Built to extend across <br/>products and experiences.",
+    imgUrl: "/images/service.jpg",
     capabilities: [
-      { capabilitiesItem: 'Branding' },
-      { capabilitiesItem: 'Brand guidelines & brandbook' },
-      { capabilitiesItem: 'Creative direction' },
-      { capabilitiesItem: 'Identity design' },
-      { capabilitiesItem: 'logo design' },
+      { capabilitiesItem: "Branding" },
+      { capabilitiesItem: "Brand guidelines & brandbook" },
+      { capabilitiesItem: "Creative direction" },
+      { capabilitiesItem: "Identity design" },
+      { capabilitiesItem: "logo design" },
     ],
   },
 ];
 
-export const faqData: FaqItemType[] = [
+export const faqData: TechFaqItemType[] = [
   {
-    title: 'Front-end',
-    content:
-      'Inspiring product design drives attention, increases interaction, and fosters loyalty, positioning you ahead of the competition.',
+    title: "Front-end",
+    content: [
+      {
+        heading: "Frameworks & Libraries",
+        items: ["React.js", "JavaScript (ES6+)", "jQuery", "GSAP"],
+      },
+      {
+        heading: "Styling & UI",
+        items: ["Bootstrap", "Tailwind CSS", "Sass (SCSS)", "LESS"],
+      },
+      {
+        heading: "Web & Animation",
+        items: [
+          "Animated Websites",
+          "Interactive UI / Motion Design",
+          "Responsive & Performance-Optimized Frontends",
+        ],
+      },
+    ],
   },
   {
-    title: 'Back-end',
-    content:
-      'Our website and mobile app designs deliver exceptional quality and creative mastery, built to attract and keep users coming back.',
+    title: "Back-end",
+    content: [
+      {
+        heading: "Languages & Runtime",
+        items: ["PHP", "Node.js"],
+      },
+      {
+        heading: "Frameworks",
+        items: ["Express.js"],
+      },
+      {
+        heading: "Platforms & Systems",
+        items: ["Magento", "WordPress"],
+      },
+      {
+        heading: "APIs & Integrations",
+        items: ["REST APIs", "Headless architecture support"],
+      },
+    ],
   },
   {
-    title: 'Databases & Content Management',
-    content:
-      'Impactful branding positions startups for success, signaling credibility and earning audience loyalty.',
+    title: "Databases & Content Management",
+    content: [
+      {
+        heading: "Databases",
+        items: ["MySQL", "MongoDB"],
+      },
+      {
+        heading: "Headless / CMS",
+        items: ["Contentful", "WordPress CMS", "HubSpot CMS"],
+      },
+    ],
   },
   {
-    title: 'Cloud Services',
-    content:
-      'Successful marketing design captures attention, conveys your brand&apos;s essence, and inspires trust in its value.',
+    title: "Cloud Services",
+    content: [
+      {
+        heading: "Cloud Platforms",
+        items: [
+          "Amazon Web Services (AWS)",
+          "Google Cloud Platform (GCP)",
+          "DigitalOcean",
+        ],
+      },
+      {
+        heading: "Cloud Capabilities",
+        items: [
+          "Scalable cloud hosting",
+          "Managed databases",
+          "Cloud-based deployments",
+        ],
+      },
+    ],
   },
   {
-    title: 'DevOps & Infrastructure',
-    content:
-      'Our WordPress development delivers more than design—it crafts experiences that engage visitors and turn them into loyal users.',
+    title: "DevOps & Infrastructure",
+    content: [
+      {
+        heading: "Version Control",
+        items: ["Git", "GitHub"],
+      },
+      {
+        heading: "CI / CD",
+        items: ["GitHub Actions"],
+      },
+      {
+        heading: "Automation & Workflows",
+        items: ["n8n (Workflow Automation)"],
+      },
+    ],
   },
   {
-    title: 'AI & Intelligent Automation',
-    content:
-      'Develop digital products faster and more cost-effectively with a product-focused, design-conscious partner dedicated to your success.',
+    title: "AI & Intelligent Automation",
+    content: [
+      {
+        heading: "AI Platforms & APIs",
+        items: [
+          "OpenAI API (GPT models)",
+          "OpenAI SDK (Node.js / PHP integrations)",
+        ],
+      },
+      {
+        heading: "AI Capabilities",
+        items: [
+          "AI-powered chatbots & assistants",
+          "Content generation (text, email, CMS content)",
+          "AI-driven search & recommendations",
+          "AI workflow automation with n8n",
+          "AI integrations for websites & web apps",
+        ],
+      },
+    ],
   },
   {
-    title: 'Marketing, Email & Integrations',
-    content:
-      'Exceptional product design sparks curiosity, drives meaningful interactions, and builds lasting loyalty-empowering your brand.',
+    title: "Marketing, Email & Integrations",
+    content: [
+      {
+        heading: "Email & Communication",
+        items: [
+          "HubSpot",
+          "HubSpot Email Templates",
+          "SendGrid Email Templates",
+        ],
+      },
+      {
+        heading: "Marketing Automation",
+        items: ["CRM & Email Automation", "API-driven campaign workflows"],
+      },
+    ],
   },
 ];
