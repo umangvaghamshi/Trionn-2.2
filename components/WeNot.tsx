@@ -20,7 +20,7 @@ export default function WeNot() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top top",
+          start: "top 90%",
           markers: false,
         },
       });
@@ -40,7 +40,7 @@ export default function WeNot() {
           svgIcon,
           {
             autoAlpha: 1,
-            rotation: 360,
+            ...(idx !== cards.length - 1 && { rotation: 360 }),
             duration: 0.4,
             ease: "none",
           },
@@ -86,7 +86,7 @@ export default function WeNot() {
               className="title uppercase mb-10 block"
             />
             <p className="max-w-50 mb-13">
-              We're not the right fit for everyone — and that's intentional.
+              We&rsquo;re not the right fit for everyone — and that&rsquo;s intentional.
             </p>
             <div className="grid grid-cols-9">
               {cards.map((card, idx) => {
