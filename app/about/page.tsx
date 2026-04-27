@@ -22,7 +22,7 @@ const Page = () => {
       <AboutTeam />
       <WeNot />
       <Awards />
-      <BrandShowcase animationVariant="crossDissolve" />
+      <BrandShowcase />
       <Testimonials disableScrollEffect />
       <div className="min-h-screen bg-[#0C0C0C]"></div>
     </div>
