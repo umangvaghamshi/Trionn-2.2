@@ -19,6 +19,8 @@ function setLayerHidden(layer: HTMLElement) {
 export function useBrandShowcase() {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(0);
+  /** Brand index after the last settled hover; `null` after pointer leaves (allows re-hovering the same name). */
+  const committedBrandRef = useRef<number | null>(null);
   const imageWrapperRef = useRef<HTMLDivElement>(null);
   const textRefs = useRef<HTMLSpanElement[]>([]);
   const currentTl = useRef<gsap.core.Timeline | null>(null);
@@ -41,7 +43,10 @@ export function useBrandShowcase() {
 
   const handleBrandHover = useCallback(
     (index: number) => {
-      if (index === activeIndexRef.current) {
+      if (
+        index === activeIndexRef.current &&
+        committedBrandRef.current === index
+      ) {
         queuedIndexRef.current = null;
         return;
       }
@@ -106,6 +111,7 @@ export function useBrandShowcase() {
             }
           });
 
+          committedBrandRef.current = index;
           playQueuedHover(index);
         },
       });
@@ -191,9 +197,53 @@ export function useBrandShowcase() {
           duration: 0.6,
           ease: 'power2.out',
           delay: 0.3,
+          onComplete: () => {
+            committedBrandRef.current = 0;
+          },
         }
       );
     }
+  }, []);
+
+  /** Pointer left the brands row: collapse fills, idle images, clear queue. */
+  const deactivateBrandHover = useCallback(() => {
+    currentTl.current?.kill();
+    currentTl.current = null;
+    isAnimating.current = false;
+    queuedIndexRef.current = null;
+    committedBrandRef.current = null;
+
+    textRefs.current.forEach((ref) => {
+      const overlay = ref?.querySelector<HTMLElement>('.text-fill-overlay');
+      if (!overlay) return;
+      gsap.killTweensOf(overlay);
+      gsap.to(overlay, {
+        clipPath: 'inset(0 100% 0 0)',
+        duration: 0.28,
+        ease: 'power2.in',
+        overwrite: true,
+      });
+    });
+
+    const wrapper = imageWrapperRef.current;
+    if (wrapper) {
+      const images = wrapper.querySelectorAll<HTMLElement>('.brand-image-layer');
+      images.forEach((layer, index) => {
+        if (index === 0) {
+          gsap.killTweensOf(layer);
+          gsap.set(layer, {
+            visibility: 'visible',
+            opacity: 1,
+            zIndex: 1,
+          });
+        } else {
+          setLayerHidden(layer);
+        }
+      });
+    }
+
+    activeIndexRef.current = 0;
+    setActiveIndex(0);
   }, []);
 
   useEffect(() => {
@@ -206,5 +256,6 @@ export function useBrandShowcase() {
     setTextRef,
     handleBrandHover,
     playEntryAnimation,
+    deactivateBrandHover,
   };
 }

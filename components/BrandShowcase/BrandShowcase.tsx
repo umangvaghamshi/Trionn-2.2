@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import type { BrandShowcaseProps, Brand } from "./types";
 import { useBrandShowcase } from "./useBrandShowcase";
@@ -68,11 +68,16 @@ export default function BrandShowcase({
     setTextRef,
     handleBrandHover,
     playEntryAnimation,
+    deactivateBrandHover,
   } = useBrandShowcase();
 
+  const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const cardMotionTlRef = useRef<gsap.core.Timeline | null>(null);
   const hasHoveredRef = useRef(false);
+  const pointerInsideBrandsRef = useRef(false);
+  const [isPointerInsideBrands, setIsPointerInsideBrands] = useState(false);
+  const lastPointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
 
   useEffect(() => {
     playEntryAnimation();
@@ -156,16 +161,19 @@ export default function BrandShowcase({
 
     cardMotionTlRef.current?.kill();
     gsap.killTweensOf(imageWrapper);
+
+    deactivateBrandHover();
+
     gsap.to(imageWrapper, {
       opacity: 0,
-      y: "+=32",
-      scale: 0.9,
-      rotate: -8,
-      duration: 0.34,
-      ease: "power2.out",
-      overwrite: "auto",
+      y: "+=26",
+      scale: 0.92,
+      rotate: -5,
+      duration: 0.44,
+      ease: "power2.inOut",
+      overwrite: true,
     });
-  }, [imageWrapperRef]);
+  }, [deactivateBrandHover, imageWrapperRef]);
 
   const handleBrandEnter = useCallback(
     (index: number, target: HTMLSpanElement) => {
@@ -196,18 +204,84 @@ export default function BrandShowcase({
   }, [imageWrapperRef]);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    const brands = containerRef.current;
+    if (!brands) return;
 
-    container.addEventListener("mouseleave", hideCard);
+    const onPointerEnter = () => {
+      pointerInsideBrandsRef.current = true;
+      setIsPointerInsideBrands(true);
+    };
+    const onPointerLeave = () => {
+      pointerInsideBrandsRef.current = false;
+      setIsPointerInsideBrands(false);
+      hideCard();
+    };
+
+    brands.addEventListener("pointerenter", onPointerEnter);
+    brands.addEventListener("pointerleave", onPointerLeave);
 
     return () => {
-      container.removeEventListener("mouseleave", hideCard);
+      brands.removeEventListener("pointerenter", onPointerEnter);
+      brands.removeEventListener("pointerleave", onPointerLeave);
     };
   }, [hideCard]);
 
+  const syncPointerOverBrands = useCallback(() => {
+    const brands = containerRef.current;
+    const { x, y } = lastPointerRef.current;
+    if (!brands || x < 0 || y < 0) return;
+
+    const topEl = document.elementFromPoint(x, y);
+    const stillOver = !!(topEl && brands.contains(topEl));
+    if (!stillOver && pointerInsideBrandsRef.current) {
+      pointerInsideBrandsRef.current = false;
+      setIsPointerInsideBrands(false);
+      hideCard();
+    }
+  }, [hideCard]);
+
   useEffect(() => {
-    if (!hasHoveredRef.current) return;
+    const onPointerMove = (e: PointerEvent) => {
+      lastPointerRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("scroll", syncPointerOverBrands, {
+      capture: true,
+      passive: true,
+    });
+    return () => {
+      document.removeEventListener("scroll", syncPointerOverBrands, {
+        capture: true,
+      });
+    };
+  }, [syncPointerOverBrands]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || typeof IntersectionObserver === "undefined") return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) {
+          pointerInsideBrandsRef.current = false;
+          setIsPointerInsideBrands(false);
+          hideCard();
+        }
+      },
+      { threshold: 0 }
+    );
+    io.observe(section);
+    return () => io.disconnect();
+  }, [hideCard]);
+
+  useEffect(() => {
+    if (!hasHoveredRef.current || !pointerInsideBrandsRef.current) return;
 
     const activeBrand = containerRef.current?.querySelectorAll<HTMLSpanElement>(
       ".brand-name-item"
@@ -219,7 +293,8 @@ export default function BrandShowcase({
 
   return (
     <section
-      className={`brand-showcase relative w-full overflow-hidden ${className}`}
+      ref={sectionRef}
+      className={`brand-showcase relative w-full overflow-hidden min-h-screen ${className}`}
       style={{ backgroundColor }}
     >
       <div className="tr__container text-dark-font relative">
@@ -243,7 +318,9 @@ export default function BrandShowcase({
                 key={brand.name}
                 ref={(el) => setTextRef(el, i)}
                 className={`brand-name-item inline-flex items-center cursor-pointer relative h2 leading-none! group ${
-                  activeIndex === i ? "z-30" : "z-10"
+                  isPointerInsideBrands && activeIndex === i
+                    ? "z-30"
+                    : "z-10"
                 }`}
                 onMouseEnter={(event) =>
                   handleBrandEnter(i, event.currentTarget)
@@ -261,8 +338,7 @@ export default function BrandShowcase({
                   <span
                     className="text-fill-overlay -mt-3 pr-1"
                     style={{
-                      clipPath:
-                        i === 0 ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
+                      clipPath: "inset(0 100% 0 0)",
                       pointerEvents: "none",
                       willChange: "clip-path",
                     }}
