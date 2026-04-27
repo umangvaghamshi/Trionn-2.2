@@ -705,7 +705,7 @@ export default function DribbleSection() {
     <>
       <div
         ref={sectionRef}
-        className="relative z-10 h-screen bg-[#C3C3C3] py-30 overflow-hidden"
+        className="relative z-10 h-screen bg-[#C3C3C3] py-20 overflow-hidden"
       >
         <canvas
           ref={canvasRef}
@@ -725,14 +725,14 @@ export default function DribbleSection() {
               stagger={0.05}
               className="text-dark-font mb-6 relative"
             />
-            <p className="relative">
+            <p className="relative small">
               Exploring ideas through
               <br />
               daily design practice.
             </p>
           </div>
           <div className="w-full flex items-end justify-between">
-            <p className="max-w-80 w-full block relative z-5">
+            <p className="max-w-80 w-full block relative z-5 small">
               Concepts, explorations, and interface experiments—shared openly as
               part of our creative process.
             </p>

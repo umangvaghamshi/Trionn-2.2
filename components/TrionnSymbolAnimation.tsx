@@ -119,12 +119,12 @@ export function TrionnSymbolAnimation({
       />
 
       {/* Cursor Follow Marquee */}
-      <CursorFollowMarquee
+      {/* <CursorFollowMarquee
         text="Hold to blast. Touch lines at your own risk."
         containerRef={canvasWrapRef}
         excludeSelectors={["#keyfacts-section", ".stripe-item", "#nav"]}
         show={showMarquee}
-      />
+      /> */}
     </div>
   );
 }

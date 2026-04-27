@@ -1029,11 +1029,11 @@ export default function TrionnServices({
       {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
       <div
         ref={stickyWrapRef}
-        className={`relative w-full overflow-hidden bg-[#000] ${embedded ? "h-full min-h-[100dvh]" : "h-[100dvh]"}`}
+        className={`relative w-full overflow-hidden bg-[#000] ${embedded ? "h-full min-h-dvh" : "h-dvh"}`}
       >
         <div
           ref={scrimRef}
-          className="pointer-events-none absolute inset-0 z-[25] bg-white"
+          className="pointer-events-none absolute inset-0 z-25 bg-white"
           style={{ opacity: embedded ? 1 : 0 }}
           aria-hidden
         />
@@ -1041,7 +1041,7 @@ export default function TrionnServices({
         <canvas
           ref={canvasRef}
           id="c"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block h-[100dvh] w-auto max-w-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block h-dvh w-auto max-w-none"
           style={{ opacity: embedded ? 0 : 1 }}
         />
 
@@ -1096,7 +1096,7 @@ export default function TrionnServices({
         </div>
         <div
           ref={typographyRef}
-          className="tr__container relative flex h-full flex-col items-center justify-between py-30 z-30"
+          className="tr__container relative flex h-full flex-col items-center justify-between py-20 z-30"
         >
           <div data-services-copy className="relative z-20 block">
             <BlurTextReveal
@@ -1128,7 +1128,7 @@ export default function TrionnServices({
             <div className="hidden w-1/3 lg:block"></div>
             <div
               data-services-copy
-              className="w-full text-center sm:w-1/2 lg:w-1/3 relative min-h-[3rem]"
+              className="w-full text-center sm:w-1/2 lg:w-1/3 relative min-h-12"
             >
               <div
                 ref={textLightRef}
@@ -1142,7 +1142,7 @@ export default function TrionnServices({
                   className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
                 />
               </div>
-              <div
+              {/* <div
                 ref={textDarkRef}
                 className="absolute inset-0 flex items-center justify-center"
               >
@@ -1153,7 +1153,7 @@ export default function TrionnServices({
                   stagger={0.05}
                   className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
                 />
-              </div>
+              </div> */}
             </div>
             <div className="flex w-full justify-end sm:w-1/2 lg:w-1/3">
               <WordShiftButton

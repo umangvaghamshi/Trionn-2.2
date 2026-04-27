@@ -59,7 +59,7 @@ export default function AboutTeam() {
             animationType="chars"
             stagger={0.08}
           />
-          <p className="max-w-95">
+          <p className="max-w-86 small">
             Let&apos;s give it up for our designers, coders, and strategists who
             make it all happen!
           </p>
