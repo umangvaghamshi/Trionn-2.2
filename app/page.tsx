@@ -6,7 +6,6 @@ import {
 } from "@/components/Sections/Home";
 import TrionnSymbolAnimation from "@/components/TrionnSymbolAnimation";
 import Testimonials from "@/components/Testimonials";
-import ScheduleButton from "@/components/ScheduleButton";
 import DribbleSection from "@/components/DribbleSection";
 
 const Page = () => {
@@ -35,7 +34,6 @@ const Page = () => {
       <WorkServicesSequence />
       <Testimonials showBottomLine />
       <DribbleSection />
-      <ScheduleButton />
     </>
   );
 };

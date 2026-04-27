@@ -104,7 +104,7 @@ export default function KeyFactsNew() {
             stagger={0.05}
             className="text-dark-font block"
           />
-          <p className="text-dark-font max-w-50">
+          <p className="text-dark-font max-w-40 small">
             A snapshot of our experience and impact.
           </p>
         </div>
@@ -119,7 +119,7 @@ export default function KeyFactsNew() {
             html={`Our business partners`}
             animationType="chars"
             stagger={0.05}
-            className="text-black title text-center block"
+            className="text-black small uppercase text-center block"
           />
           <div className="partners-list flex justify-center -mx-10">
             {partnersLogo.map((item, index) => (

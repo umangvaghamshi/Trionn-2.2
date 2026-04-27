@@ -113,7 +113,7 @@ export default function PaperFold({
               />
             </div>
             <div className="col-span-7 flex items-end">
-              <p className="max-w-100">{sectionSubtitle}</p>
+              <p className="max-w-100 small">{sectionSubtitle}</p>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-x-6">
@@ -125,22 +125,13 @@ export default function PaperFold({
                 {cards.map((card, i) => {
                   return (
                     <div key={i} className="paperfold-card relative origin-top">
-                      <div
-                        className="paperfold-card-inner grid grid-cols-7 gap-6 p-8 bg-white rounded-sm"
-                        // style={{
-                        //   backgroundColor: "#ffffff",
-                        //   borderBottom: "4px solid rgba(0,0,0,0.06)",
-                        // }}
-                      >
+                      <div className="paperfold-card-inner grid grid-cols-7 gap-6 p-8 bg-white rounded-sm">
                         <div className="col-span-3 flex items-center">
                           <h3>{card.title}</h3>
                         </div>
                         <div className="col-span-3 flex items-center col-start-5 ">
                           <p className="small">{card.description}</p>
                         </div>
-                        {/* <p className="flex-1 text-[10px] sm:text-[11.5px] md:text-[13px] lg:text-[13.5px] text-[#666] leading-[1.5] sm:leading-[1.6] md:leading-[1.7] font-light">
-                          {card.description}
-                        </p> */}
                       </div>
                       {/* Shadow overlay for fold depth */}
                       <div

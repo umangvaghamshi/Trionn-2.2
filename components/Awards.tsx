@@ -360,7 +360,7 @@ export default function Awards() {
       {/* 2. Marquee Component (Centered) */}
       <div className="z-10 flex flex-col justify-center min-h-screen pt-37.5 pb-25 mix-blend-difference">
         <div
-          className="tr__container w-full absolute top-37.5 left-0"
+          className="tr__container w-full absolute top-37.5 left-0 flex justify-between items-end"
           ref={titleContainerRef}
         >
           <BlurTextReveal
@@ -368,7 +368,12 @@ export default function Awards() {
             html="Results matter most. Awards add recognition and value."
             animationType="words"
             stagger={0.03}
-            className="title max-w-50 text-light-font block"
+            className="small max-w-40 text-light-font block"
+          />
+          <WordShiftButton
+            text="win an award?"
+            href="#"
+            styleVars={{ buttonWrapperColor: "#D8D8D8" }}
           />
         </div>
         {/* Using your component */}
@@ -438,7 +443,7 @@ export default function Awards() {
       <div className="absolute bottom-25 flex flex-col gap-10">
         <div
           ref={sliderHeaderRef}
-          className="w-full max-w-screen flex items-center justify-between tr__container mx-0!"
+          className="w-full max-w-screen flex items-center justify-center tr__container mx-0!"
         >
           <BlurTextReveal
             as="span"
@@ -447,13 +452,7 @@ export default function Awards() {
             stagger={0.03}
             className="title text-light-font block"
           />
-          <WordShiftButton
-            text="win an award?"
-            href="#"
-            styleVars={{ buttonWrapperColor: "#D8D8D8" }}
-          />
         </div>
-
         <div ref={HorizontalScrollerRef}>
           <div
             ref={HorizontalScrollerContentRef}
@@ -472,11 +471,11 @@ export default function Awards() {
                 >
                   <div className="flex-1 flex flex-col items-start justify-between pr-10">
                     <BlurTextReveal
-                      as="h4"
+                      as="p"
                       html={item.title}
                       animationType="words"
                       stagger={0.03}
-                      className="uppercase transition-all duration-500 ease-in-out"
+                      className="transition-all duration-500 ease-in-out"
                     />
                     <div className="flex flex-col gap-1">
                       {item.awards.map((award, i) => {
