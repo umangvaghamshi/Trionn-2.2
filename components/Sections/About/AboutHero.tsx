@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Marquee from "@/components/Marquee";
 import AboutLion from "./AboutLion";
 import { BlurTextReveal } from "@/components/TextAnimation";
+import { SplitText } from "gsap/all";
+
+gsap.registerPlugin(SplitText);
 
 const CROSS_ICON = (
   <svg
@@ -37,6 +40,26 @@ const CROSS_ICON = (
  */
 export default function AboutHero() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const splitTextRef = useRef<HTMLHeadingElement>(null);
+
+  useGSAP(() => {
+    if (!isLoaded) return;
+
+    const split = new SplitText(splitTextRef.current, {
+      type: "chars",
+      aria: "none",
+      charsClass: "chars",
+      smartWrap: true,
+      autoSplit: true,
+    });
+
+    gsap.fromTo(
+      split.chars,
+      { color: "rgba(216,216,216,0.1)" },
+      { delay: 0.5, color: "#d8d8d8", stagger: 0.02, ease: "none" },
+    );
+  }, [isLoaded]);
+
   useGSAP(() => {
     const updateHeight = () => {
       const titleBlock = document.querySelector(".title-block") as HTMLElement;
@@ -62,22 +85,16 @@ export default function AboutHero() {
   }, []);
 
   return (
-    <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center">
+    <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center min-h-screen">
       {/* Top: heading */}
-      <div className="relative z-10 pt-32 md:pt-40 px-6 md:px-10 w-full mix-blend-difference title-block pointer-events-none">
-        <BlurTextReveal
-          as="h1"
-          html={`We are an independent digital studio built on clarity, thoughtful
-          craft, and trust earned worldwide.`}
-          animationType="chars"
-          stagger={0.05}
-          duration={2}
-          className="text-center mx-auto max-w-342 text-[#D8D8D8]"
-        />
-        {/* <h1 className="text-center mx-auto max-w-342 text-white">
+      <div className="relative z-20 pt-32 md:pt-40 px-6 md:px-10 w-full mix-blend-difference title-block pointer-events-none">
+        <h1
+          ref={splitTextRef}
+          className="text-center mx-auto max-w-342 text-[rgba(216,216,216,0.1)]"
+        >
           We are an independent digital studio built on clarity, thoughtful
           craft, and trust earned worldwide.
-        </h1> */}
+        </h1>
       </div>
 
       {/* Lion and Marquee container */}
@@ -92,39 +109,7 @@ export default function AboutHero() {
               className="block text-white uppercase"
             />
           </span>
-          {/* <span className="title  grid grid-cols-12 gap-6 w-full">
-            <BlurTextReveal
-              as="span"
-              html={`We design and build digital experiences that scale, perform, and endure.`}
-              animationType="chars"
-              stagger={0.05}
-              className="block text-dark-font uppercase col-span-10 col-start-2 max-w-60"
-            />
-          </span> */}
         </div>
-        {/* Floating captions positioned relative to the container */}
-
-        {/* <p
-          className={`pointer-events-none absolute top-[8%] md:top-[10%] left-1/2 -translate-x-1/2 text-center text-[0.625rem] md:text-[0.688rem] tracking-[0.2em] uppercase text-black/85 leading-[1.55] whitespace-nowrap z-10 transition-opacity duration-1000 ${
-            isLoaded ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          AT THE INTERSECTION OF STRATEGY,
-          <br />
-          DESIGN, AND TECHNOLOGY.
-        </p> */}
-
-        {/* <p
-          className={`pointer-events-none absolute top-[50%] md:top-[55%] left-[4%] md:left-[10%] text-[0.625rem] md:text-[0.688rem] tracking-[0.2em] uppercase text-black/85 leading-[1.6] max-w-[18ch] z-10 transition-opacity duration-1000 delay-150 ${
-            isLoaded ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          WE DESIGN AND BUILD DIGITAL
-          <br />
-          EXPERIENCES THAT SCALE,
-          <br />
-          PERFORM, AND ENDURE.
-        </p> */}
 
         {/* Lion — natural document flow, scales proportionally */}
         <div
