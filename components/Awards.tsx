@@ -11,6 +11,8 @@ import { WordShiftButton } from "@/components/Button";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const STRIPE_COUNT = 5;
+
 const cards = [
   {
     title: "GSAP",
@@ -139,6 +141,8 @@ export default function Awards() {
 
   const cardsRef = useRef<HTMLDivElement[]>([]);
 
+  const stripesRef = useRef<HTMLDivElement[]>([]);
+
   useGSAP(
     () => {
       const section = HorizontalScrollerRef.current;
@@ -147,6 +151,9 @@ export default function Awards() {
       if (!section || !sliderEl) return;
 
       const scrollDistance = sliderEl.scrollWidth - window.innerWidth + 40;
+
+      const stripes = stripesRef.current;
+      gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
 
       // 1️⃣ Initial state
       gsap.set(sliderEl, {
@@ -158,11 +165,12 @@ export default function Awards() {
         scrollTrigger: {
           trigger: awardsSectionRef.current,
           start: "top top",
-          end: () => `+=500%`,
+          end: () => `+=600%`,
           scrub: 1,
           pin: true,
           markers: false,
           anticipatePin: 1,
+          pinSpacing: true,
         },
       });
 
@@ -231,6 +239,42 @@ export default function Awards() {
           { autoAlpha: 1, duration: 0.05 },
           "<50%",
         );
+
+      // ---- Pull next sibling flush — skip GSAP's injected pin spacer ----
+      // ScrollTrigger inserts a spacer div after the pinned element, so
+      // nextElementSibling hits that spacer, not the real next section.
+      // Walk siblings until we find the actual next section element.
+      const brandShowcase = document.querySelector(
+        ".brand-showcase",
+      ) as HTMLElement | null;
+
+      if (brandShowcase) {
+        gsap.set(brandShowcase, { marginTop: "-100vh", ease: "none" });
+      }
+
+      // ---- Stripe reveal after all cards are done ----
+      tl.addLabel("stripes_start");
+
+      // Match stripe phase duration exactly to card phase duration so both
+      // consume equal scroll distance.
+      const staggerAmount = 0.5;
+      const perStripe = 1 - staggerAmount;
+      const totalStripeDuration = 0.15; // cards phase length
+
+      for (let i = 0; i < STRIPE_COUNT; i++) {
+        const staggerIdx = STRIPE_COUNT - 1 - i;
+        const stripeOffset =
+          (staggerAmount * staggerIdx) / (STRIPE_COUNT - 1 || 1);
+        const start = stripeOffset * totalStripeDuration;
+        const end = start + perStripe * totalStripeDuration;
+
+        tl.fromTo(
+          stripes[i]!,
+          { scaleY: 0 },
+          { scaleY: 1, duration: end - start, ease: "none" },
+          `stripes_start+=${start}`,
+        );
+      }
     },
     { scope: awardsSectionRef },
   );
@@ -466,6 +510,26 @@ export default function Awards() {
             })}
           </div>
         </div>
+      </div>
+
+      {/* Stripe overlay — animates in after card timeline completes */}
+      <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
+        {Array.from({ length: STRIPE_COUNT }).map((_, index) => (
+          <div
+            key={index}
+            ref={(el) => {
+              stripesRef.current[index] = el!;
+            }}
+            className="flex-1 w-full"
+            style={{
+              background: "#fff",
+              willChange: "transform",
+              transformOrigin: "bottom",
+              marginTop: index > 0 ? "-0.5px" : undefined,
+              paddingBottom: "0.5px",
+            }}
+          />
+        ))}
       </div>
     </section>
   );
