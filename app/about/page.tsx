@@ -17,7 +17,7 @@ const Page = () => {
       <AboutHero />
       <AboutIntro />
       <PaperFold />
-      <HowWork />
+      <HowWork stripeImage="/images/founder.webp" />
       <Founder />
       <AboutTeam />
       <WeNot />
