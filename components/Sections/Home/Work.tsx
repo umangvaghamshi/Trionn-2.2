@@ -45,8 +45,8 @@ export default function Work({
           className="flex h-[min(80vh,860px)] flex-nowrap items-center will-change-transform"
         >
           {/* ── Intro Text Block (Responsive width) ── */}
-          <div className="pointer-events-auto flex w-screen md:w-[50vw] shrink-0 h-full flex-col justify-center px-6 md:px-10">
-            <div className="title-block flex flex-col gap-6 md:gap-12">
+          <div className="pointer-events-auto flex w-screen md:w-[50vw] shrink-0 h-full flex-col justify-center items-center px-6 md:px-10">
+            <div className="title-block flex flex-col items-center text-center gap-6 md:gap-12">
               <BlurTextReveal
                 as="h2"
                 html={`Selected work <br />&amp; explorations`}
@@ -54,7 +54,7 @@ export default function Work({
                 stagger={0.05}
                 className="text-dark-font text-[2.5rem] leading-[1.1] md:text-5xl font-medium tracking-tight"
               />
-              <div className="self-start whitespace-nowrap">
+              <div className="whitespace-nowrap">
                 <WordShiftButton text="view all projects" href="#" />
               </div>
             </div>
@@ -93,7 +93,7 @@ export default function Work({
             <div className="js-work-card-inner w-full will-change-transform px-4 md:px-10 lg:px-16 xl:px-20">
               <div className="relative flex flex-col items-center justify-center w-full pointer-events-auto">
                 <div className="group flex flex-col items-center justify-center gap-10 text-center cursor-pointer w-full h-full">
-                  <h3 className=" text-dark-font transition-transform duration-700">
+                  <h3 className=" text-dark-font transition-transform duration-700 max-w-150">
                     Discover our complete collection of digital experiences,
                     brands, and platforms.
                   </h3>
