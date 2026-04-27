@@ -89,8 +89,22 @@ export default function LinePlus({
       }
 
       const cursorX = e.clientX - containerRect.left;
+      const lineRect = drawLine.current.getBoundingClientRect();
+      const lineLeft = lineRect.left - containerRect.left;
+      const lineRight = lineRect.right - containerRect.left;
+      const iconHalf = PlusIcon.current.getBoundingClientRect().width / 2;
+      const minCenter = lineLeft + iconHalf;
+      const maxCenter = lineRight - iconHalf;
+      let targetCenterX = cursorX;
+      if (maxCenter >= minCenter) {
+        targetCenterX = Math.min(Math.max(cursorX, minCenter), maxCenter);
+      } else {
+        // Line shorter than icon: keep plus centered on the line
+        targetCenterX = (lineLeft + lineRight) / 2;
+      }
+
       gsap.to(PlusIcon.current, {
-        x: cursorX - iconRestX,
+        x: targetCenterX - iconRestX!,
         duration: 0.3,
         ease: "power2.out",
         overwrite: "auto",
