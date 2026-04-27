@@ -5,9 +5,20 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useRef } from "react";
 
-const STRIPE_COUNT = 6;
+const DEFAULT_STRIPE_COUNT = 6;
+const DEFAULT_STRIPE_COLOR = "#040508";
 
-export default function HowWork() {
+interface HowWorkProps {
+  stripeCount?: number;
+  stripeColor?: string;
+  stripeImage?: string;
+}
+
+export default function HowWork({
+  stripeCount = DEFAULT_STRIPE_COUNT,
+  stripeColor = DEFAULT_STRIPE_COLOR,
+  stripeImage,
+}: HowWorkProps) {
   const outerRef = useRef<HTMLElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
@@ -123,10 +134,10 @@ export default function HowWork() {
       const perStripe = 1 - staggerAmount;
       const totalStripeDuration = 1.2; // cards phase length
 
-      for (let i = 0; i < STRIPE_COUNT; i++) {
-        const staggerIdx = STRIPE_COUNT - 1 - i;
+      for (let i = 0; i < stripeCount; i++) {
+        const staggerIdx = stripeCount - 1 - i;
         const stripeOffset =
-          (staggerAmount * staggerIdx) / (STRIPE_COUNT - 1 || 1);
+          (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
         const start = stripeOffset * totalStripeDuration;
         const end = start + perStripe * totalStripeDuration;
 
@@ -248,7 +259,7 @@ export default function HowWork() {
 
         {/* Stripe overlay — animates in after card timeline completes */}
         <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
-          {Array.from({ length: STRIPE_COUNT }).map((_, index) => (
+          {Array.from({ length: stripeCount }).map((_, index) => (
             <div
               key={index}
               ref={(el) => {
@@ -256,11 +267,15 @@ export default function HowWork() {
               }}
               className="flex-1 w-full"
               style={{
-                backgroundImage: "url('/images/founder.webp')",
-                backgroundSize: "cover",
-                backgroundPosition: "top center",
-                backgroundAttachment: "fixed",
-                backgroundRepeat: "no-repeat",
+                ...(stripeImage
+                  ? {
+                      backgroundImage: `url('${stripeImage}')`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "top center",
+                      backgroundAttachment: "fixed",
+                      backgroundRepeat: "no-repeat",
+                    }
+                  : { backgroundColor: stripeColor }),
                 willChange: "transform",
                 transformOrigin: "bottom",
                 marginTop: index > 0 ? "-0.5px" : undefined,
