@@ -5,9 +5,13 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useRef } from "react";
 
+const STRIPE_COUNT = 6;
+
 export default function HowWork() {
+  const outerRef = useRef<HTMLElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
+  const stripesRef = useRef<HTMLDivElement[]>([]);
 
   const cards = HowWorkData;
 
@@ -15,14 +19,19 @@ export default function HowWork() {
     () => {
       if (!cardsRef.current.length) return;
 
+      const stripes = stripesRef.current;
+
+      gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: `+=150%`,
+          end: `+=350%`,
           pin: true,
           scrub: true,
           markers: false,
+          pinSpacing: true,
         },
         defaults: {
           ease: "none",
@@ -98,12 +107,43 @@ export default function HowWork() {
 
         tl.addLabel(`card_${idx}_end`);
       });
+
+      // ---- Pull next sibling flush — no gap after pin spacer ----
+      const nextSection = outerRef.current?.nextElementSibling as HTMLElement | null;
+      if (nextSection) {
+        gsap.set(nextSection, { marginTop: "-100vh",ease:'none' });
+      }
+
+      // ---- Stripe reveal after all cards are done ----
+      tl.addLabel("stripes_start");
+
+      // Match stripe phase duration exactly to card phase duration so both
+      // consume equal scroll distance.
+      const staggerAmount = 0.6;
+      const perStripe = 1 - staggerAmount;
+      const totalStripeDuration = 1.2; // cards phase length
+
+      for (let i = 0; i < STRIPE_COUNT; i++) {
+        const staggerIdx = STRIPE_COUNT - 1 - i;
+        const stripeOffset =
+          (staggerAmount * staggerIdx) / (STRIPE_COUNT - 1 || 1);
+        const start = stripeOffset * totalStripeDuration;
+        const end = start + perStripe * totalStripeDuration;
+
+        tl.fromTo(
+          stripes[i]!,
+          { scaleY: 0 },
+          { scaleY: 1, duration: end - start, ease: "none" },
+          `stripes_start+=${start}`,
+        );
+      }
+
     },
     { scope: sectionRef },
   );
 
   return (
-    <section className="bg-[#040508] relative">
+    <section ref={outerRef} className="bg-[#040508] relative">
       <div
         ref={sectionRef}
         className="py-37.5 min-h-screen relative text-light-font"
@@ -204,6 +244,30 @@ export default function HowWork() {
               })}
             </div>
           </div>
+        </div>
+
+        {/* Stripe overlay — animates in after card timeline completes */}
+        <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
+          {Array.from({ length: STRIPE_COUNT }).map((_, index) => (
+            <div
+              key={index}
+              ref={(el) => {
+                stripesRef.current[index] = el!;
+              }}
+              className="flex-1 w-full"
+              style={{
+                backgroundImage: "url('/images/founder.webp')",
+                backgroundSize: "cover",
+                backgroundPosition: "top center",
+                backgroundAttachment: "fixed",
+                backgroundRepeat: "no-repeat",
+                willChange: "transform",
+                transformOrigin: "bottom",
+                marginTop: index > 0 ? "-0.5px" : undefined,
+                paddingBottom: "0.5px",
+              }}
+            />
+          ))}
         </div>
       </div>
     </section>
