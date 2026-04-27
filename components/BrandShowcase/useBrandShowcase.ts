@@ -205,7 +205,7 @@ export function useBrandShowcase() {
     }
   }, []);
 
-  /** Pointer left the brands row: collapse fills, idle images, clear queue. */
+  /** Pointer left the brands row: collapse text fills and clear queue. Keeps the last-hovered image visible for the card outro. */
   const deactivateBrandHover = useCallback(() => {
     currentTl.current?.kill();
     currentTl.current = null;
@@ -228,8 +228,9 @@ export function useBrandShowcase() {
     const wrapper = imageWrapperRef.current;
     if (wrapper) {
       const images = wrapper.querySelectorAll<HTMLElement>('.brand-image-layer');
-      images.forEach((layer, index) => {
-        if (index === 0) {
+      const keep = activeIndexRef.current;
+      images.forEach((layer, i) => {
+        if (i === keep) {
           gsap.killTweensOf(layer);
           gsap.set(layer, {
             visibility: 'visible',
@@ -241,9 +242,6 @@ export function useBrandShowcase() {
         }
       });
     }
-
-    activeIndexRef.current = 0;
-    setActiveIndex(0);
   }, []);
 
   useEffect(() => {
