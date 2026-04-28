@@ -3,8 +3,31 @@ import { BlurTextReveal, FadeOnScroll } from "@/components/TextAnimation";
 import LinePlus from "@/components/LinePlus";
 import { WordShiftButton } from "@/components/Button";
 import BlurTextRotate from "@/components/TextAnimation/BlurTextRotate";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Banner() {
+  const statsRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (!statsRef.current) return;
+    gsap.set(statsRef.current, { autoAlpha: 1 });
+    ScrollTrigger.create({
+      trigger: statsRef.current,
+      start: "top center",
+      onEnter: () => gsap.to(statsRef.current, { autoAlpha: 0, duration: 0.3 }),
+      onLeaveBack: () => gsap.to(statsRef.current, { autoAlpha: 1, duration: 0.3 }),
+    });
+  }, []);
+
+
+  
+
+
   return (
     <div
       className="text-light-font relative mix-blend-difference"
@@ -65,6 +88,7 @@ export default function Banner() {
               scale, and impact.
             </p> */}
             <div
+              ref={statsRef}
               className="col-span-4 flex text-center items-end justify-center col-start-5"
               id="s1-stats"
             >
@@ -74,6 +98,7 @@ export default function Banner() {
                 animationType="chars"
                 stagger={0.05}
                 className="title block"
+                start="top bottom"
               />
               {/* <span className="block text-sm mb-2 text-light-font/50 leading-4 -tracking-[0.02em] uppercase text-center">
                 Hold to blast

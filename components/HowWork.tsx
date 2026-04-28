@@ -11,13 +11,11 @@ const DEFAULT_STRIPE_COLOR = "#040508";
 interface HowWorkProps {
   stripeCount?: number;
   stripeColor?: string;
-  stripeImage?: string;
 }
 
 export default function HowWork({
   stripeCount = DEFAULT_STRIPE_COUNT,
   stripeColor = DEFAULT_STRIPE_COLOR,
-  stripeImage,
 }: HowWorkProps) {
   const outerRef = useRef<HTMLElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -123,31 +121,38 @@ export default function HowWork({
       const nextSection = outerRef.current
         ?.nextElementSibling as HTMLElement | null;
       if (nextSection) {
-        gsap.set(nextSection, { marginTop: "-100vh", ease: "none" });
+        if (stripeCount > 0) {
+          gsap.set(nextSection, { marginTop: "-100vh", ease: "none" });
+        } else {
+          tl.to({}, { duration: 1 }); // Hold for 1 sec
+          gsap.set(nextSection, { marginTop: "-100vh", ease: "none" });
+        }
       }
 
       // ---- Stripe reveal after all cards are done ----
-      tl.addLabel("stripes_start");
+      if (stripeCount > 0) {
+        tl.addLabel("stripes_start");
 
-      // Match stripe phase duration exactly to card phase duration so both
-      // consume equal scroll distance.
-      const staggerAmount = 0.6;
-      const perStripe = 1 - staggerAmount;
-      const totalStripeDuration = 1.2; // cards phase length
+        // Match stripe phase duration exactly to card phase duration so both
+        // consume equal scroll distance.
+        const staggerAmount = 0.6;
+        const perStripe = 1 - staggerAmount;
+        const totalStripeDuration = 1.2; // cards phase length
 
-      for (let i = 0; i < stripeCount; i++) {
-        const staggerIdx = stripeCount - 1 - i;
-        const stripeOffset =
-          (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
-        const start = stripeOffset * totalStripeDuration;
-        const end = start + perStripe * totalStripeDuration;
+        for (let i = 0; i < stripeCount; i++) {
+          const staggerIdx = stripeCount - 1 - i;
+          const stripeOffset =
+            (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
+          const start = stripeOffset * totalStripeDuration;
+          const end = start + perStripe * totalStripeDuration;
 
-        tl.fromTo(
-          stripes[i]!,
-          { scaleY: 0 },
-          { scaleY: 1, duration: end - start, ease: "none" },
-          `stripes_start+=${start}`,
-        );
+          tl.fromTo(
+            stripes[i]!,
+            { scaleY: 0 },
+            { scaleY: 1, duration: end - start, ease: "none" },
+            `stripes_start+=${start}`,
+          );
+        }
       }
     },
     { scope: sectionRef },
@@ -255,32 +260,26 @@ export default function HowWork({
         </div>
 
         {/* Stripe overlay — animates in after card timeline completes */}
-        <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
-          {Array.from({ length: stripeCount }).map((_, index) => (
-            <div
-              key={index}
-              ref={(el) => {
-                stripesRef.current[index] = el!;
-              }}
-              className="flex-1 w-full"
-              style={{
-                ...(stripeImage
-                  ? {
-                      backgroundImage: `url('${stripeImage}')`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "top center",
-                      backgroundAttachment: "fixed",
-                      backgroundRepeat: "no-repeat",
-                    }
-                  : { backgroundColor: stripeColor }),
-                willChange: "transform",
-                transformOrigin: "bottom",
-                marginTop: index > 0 ? "-0.5px" : undefined,
-                paddingBottom: "0.5px",
-              }}
-            />
-          ))}
-        </div>
+        {stripeCount > 0 && (
+          <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
+            {Array.from({ length: stripeCount }).map((_, index) => (
+              <div
+                key={index}
+                ref={(el) => {
+                  stripesRef.current[index] = el!;
+                }}
+                className="flex-1 w-full"
+                style={{
+                  backgroundColor: stripeColor,
+                  willChange: "transform",
+                  transformOrigin: "bottom",
+                  marginTop: index > 0 ? "-0.5px" : undefined,
+                  paddingBottom: "0.5px",
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
