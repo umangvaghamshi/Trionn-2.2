@@ -9,12 +9,14 @@ const DEFAULT_STRIPE_COUNT = 6;
 const DEFAULT_STRIPE_COLOR = "#040508";
 
 interface HowWorkProps {
+  theme?: "light" | "dark";
   stripeCount?: number;
   stripeColor?: string;
   stripeImage?: string;
 }
 
 export default function HowWork({
+  theme = "dark",
   stripeCount = DEFAULT_STRIPE_COUNT,
   stripeColor = DEFAULT_STRIPE_COLOR,
   stripeImage,
@@ -154,7 +156,10 @@ export default function HowWork({
   );
 
   return (
-    <section ref={outerRef} className="bg-[#040508] relative text-light-font">
+    <section
+      ref={outerRef}
+      className={`relative ${theme === "dark" ? "bg-[#040508] text-light-font" : "bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] text-dark-font"}`}
+    >
       <div ref={sectionRef} className="py-37.5 min-h-screen relative">
         <div className="tr__container relative w-full grid grid-cols-12 gap-x-6 h-full">
           <div className="grid grid-cols-12 gap-x-6 mb-20 col-span-12">
@@ -198,7 +203,9 @@ export default function HowWork({
                     <h3 className="work-title block mb-8">{card.title}</h3>
                     <p className="content small max-w-87.5">{card.content}</p>
                     <div className="fill-line absolute left-0 bottom-0 w-full">
-                      <div className="line absolute top-1/2 -translate-y-1/2 bg-cream-line/20 h-px w-full"></div>
+                      <div
+                        className={`line absolute top-1/2 -translate-y-1/2 h-px w-full ${theme === "dark" ? "bg-cream-line/20" : "bg-grey-line/15"}`}
+                      ></div>
                       <svg
                         width="13"
                         height="13"
@@ -212,14 +219,18 @@ export default function HowWork({
                           y1="-2.18557e-08"
                           x2="6.5"
                           y2="13"
-                          style={{ stroke: "#D8D8D8" }}
+                          style={{
+                            stroke: theme === "dark" ? "#D8D8D8" : "#272727",
+                          }}
                         />
                         <line
                           x1="13"
                           y1="6.5"
                           x2="-4.37114e-08"
                           y2="6.5"
-                          style={{ stroke: "#D8D8D8" }}
+                          style={{
+                            stroke: theme === "dark" ? "#D8D8D8" : "#272727",
+                          }}
                         />
                       </svg>
 
@@ -236,14 +247,18 @@ export default function HowWork({
                           y1="-2.18557e-08"
                           x2="6.5"
                           y2="13"
-                          style={{ stroke: "#D8D8D8" }}
+                          style={{
+                            stroke: theme === "dark" ? "#D8D8D8" : "#272727",
+                          }}
                         />
                         <line
                           x1="13"
                           y1="6.5"
                           x2="-4.37114e-08"
                           y2="6.5"
-                          style={{ stroke: "#D8D8D8" }}
+                          style={{
+                            stroke: theme === "dark" ? "#D8D8D8" : "#272727",
+                          }}
                         />
                       </svg>
                     </div>
