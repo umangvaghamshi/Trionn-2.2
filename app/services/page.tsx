@@ -6,11 +6,11 @@ import Technology from "@/components/Technology";
 export default function ServicesOrbitPage() {
   return (
     <>
-    <ServicesOrbitExperience />
-    <Services />
-    <Technology />
-    <HowWork />
-    <div className="h-screen" />
+      <ServicesOrbitExperience />
+      <Services />
+      <Technology />
+      <HowWork theme="light" />
+      <div className="h-screen" />
     </>
-  ); 
+  );
 }
