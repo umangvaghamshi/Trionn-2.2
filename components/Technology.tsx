@@ -1,18 +1,8 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import parse from "html-react-parser";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import LinePlus from "@/components/LinePlus";
-import Accordion from "@/components/Accordion";
 import { faqData } from "@/data";
 import TechAccordion from "@/components/TechAccordion";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Technology() {
   return (

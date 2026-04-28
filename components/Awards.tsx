@@ -368,7 +368,7 @@ export default function Awards() {
             html="Results matter most. Awards add recognition and value."
             animationType="words"
             stagger={0.03}
-            className="small max-w-40 text-light-font block"
+            className="small max-w-54 text-light-font block uppercase"
           />
           <WordShiftButton
             text="win an award?"

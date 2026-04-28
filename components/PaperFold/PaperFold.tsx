@@ -96,14 +96,18 @@ export default function PaperFold({
       className={`paperfold-section relative w-full bg-[linear-gradient(0deg,#D2D2D2_0%,#FFFFFF_100%)] ${className}`}
     >
       <div className="tr__container flex flex-col">
-        <LinePlus
-          lineClass={"opacity-15 bg-grey-line"}
-          plusClass={"col-start-7"}
-          iconColor={"#272727"}
-        />
+        <div className="grid grid-cols-12 gap-x-6">
+          <div className="col-span-10 col-start-2 ">
+            <LinePlus
+              lineClass={"opacity-15 bg-grey-line left-1/2! -translate-x-1/2"}
+              plusClass={"mx-auto translate-x-0! col-span-12"}
+              iconColor={"#272727"}
+            />
+          </div>
+        </div>
         <div className="velue-block text-dark-font flex flex-col py-37.5">
           <div className="grid grid-cols-12 gap-x-6 mb-20">
-            <div className="col-span-4" ref={valueTitle}>
+            <div className="col-span-3 col-start-2" ref={valueTitle}>
               <BlurTextReveal
                 as="h2"
                 html={sectionTitle}
