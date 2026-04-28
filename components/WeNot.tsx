@@ -85,8 +85,9 @@ export default function WeNot() {
               stagger={0.05}
               className="title uppercase mb-10 block"
             />
-            <p className="max-w-50 mb-13">
-              We&rsquo;re not the right fit for everyone — and that&rsquo;s intentional.
+            <p className="max-w-50 mb-13 small">
+              We&rsquo;re not the right fit for everyone — and that&rsquo;s
+              intentional.
             </p>
             <div className="grid grid-cols-9">
               {cards.map((card, idx) => {

@@ -13,7 +13,7 @@ export function HeaderSoundToggle() {
       title={soundEnabled ? "Mute sound" : "Enable sound"}
       aria-pressed={soundEnabled}
       aria-label={soundEnabled ? "Mute sound" : "Enable sound"}
-      className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center text-white/80 shadow-sm backdrop-blur-sm transition hover:text-white"
+      className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center text-white/80 shadow-sm backdrop-blur-sm transition hover:text-white"
     >
       {soundEnabled ? <SoundOnGlyph /> : <SoundOffGlyph />}
     </button>

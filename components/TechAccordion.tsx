@@ -79,14 +79,7 @@ export default function TechAccordion({
                 onClick={() => toggleItem(index)}
               >
                 <span className="h3 col-span-1">{index + 1}.</span>
-
-                <BlurTextReveal
-                  as="h3"
-                  html={item.title}
-                  animationType="chars"
-                  stagger={0.05}
-                  className="col-span-8 col-start-5 pr-20"
-                />
+                <h3 className="col-span-8 col-start-5 pr-20">{item.title}</h3>
 
                 {/* + / - */}
                 <span
