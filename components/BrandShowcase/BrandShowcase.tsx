@@ -341,7 +341,7 @@ export default function BrandShowcase({
                       aria-hidden="true"
                     >
                       <span
-                        className="text-fill-overlay -mt-3 pr-1 duration-500"
+                        className="text-fill-overlay -mt-3 pr-1 duration-300"
                         style={{
                           clipPath: "inset(0 100% 0 0)",
                           pointerEvents: "none",

@@ -121,7 +121,7 @@ export function useBrandShowcase() {
           oldOverlay,
           {
             clipPath: 'inset(0 100% 0 0)',
-            duration: 0.3,
+            duration: 0.1,
             ease: 'power2.out',
           },
           0
@@ -134,7 +134,7 @@ export function useBrandShowcase() {
           newOverlay,
           {
             clipPath: 'inset(0 0% 0 0)',
-            duration: 0.3,
+            duration: 0.1,
             ease: 'power2.out',
           },
           0.08
@@ -194,9 +194,9 @@ export function useBrandShowcase() {
         { clipPath: 'inset(0 100% 0 0)' },
         {
           clipPath: 'inset(0 0% 0 0)',
-          duration: 0.6,
-          ease: 'power2.out',
-          delay: 0.3,
+          duration: 0.3,
+          ease: 'power3.out',
+          delay: 0.1,
           onComplete: () => {
             committedBrandRef.current = 0;
           },
@@ -205,7 +205,7 @@ export function useBrandShowcase() {
     }
   }, []);
 
-  /** Pointer left the brands row: collapse text fills and clear queue. Keeps the last-hovered image visible for the card outro. */
+  /** Pointer left the brands row: clear queue; snap all text fills off (no tween). Keeps the last-hovered image visible for the card outro. */
   const deactivateBrandHover = useCallback(() => {
     currentTl.current?.kill();
     currentTl.current = null;
@@ -217,12 +217,7 @@ export function useBrandShowcase() {
       const overlay = ref?.querySelector<HTMLElement>('.text-fill-overlay');
       if (!overlay) return;
       gsap.killTweensOf(overlay);
-      gsap.to(overlay, {
-        clipPath: 'inset(0 100% 0 0)',
-        duration: 0.28,
-        ease: 'power2.in',
-        overwrite: true,
-      });
+      gsap.set(overlay, { clipPath: 'inset(0 100% 0 0)' });
     });
 
     const wrapper = imageWrapperRef.current;
