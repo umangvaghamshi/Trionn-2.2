@@ -22,6 +22,7 @@ interface LinePlusProps {
    * or "800px". Positive = trigger fires later (element visually shifted up).
    */
   scrollOffset?: string;
+  scrub?: boolean | number;
 }
 
 export default function LinePlus({
@@ -30,6 +31,7 @@ export default function LinePlus({
   plusClass,
   iconColor,
   scrollOffset = "",
+  scrub = true,
 }: LinePlusProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const drawLine = useRef<HTMLDivElement>(null);
@@ -48,8 +50,9 @@ export default function LinePlus({
         trigger: drawLine.current,
         start: `top bottom${off}`,
         end: `top center${off}`,
-        scrub: true,
+        scrub,
         invalidateOnRefresh: true,
+        markers: false,
         onLeave: () => {
           lineDrawn.current = true;
         },
