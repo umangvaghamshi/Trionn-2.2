@@ -64,8 +64,8 @@ export default function Founder() {
           <div className="col-span-10 col-start-2 ">
             <LinePlus
               customClass="grid-cols-10!"
-              lineClass={"opacity-20 bg-cream-line"}
-              plusClass={"col-span-12 mx-auto translate-x-1/2!"}
+              lineClass={"opacity-20 bg-cream-line left-1/2! -translate-x-1/2"}
+              plusClass={"col-span-12 mx-auto translate-x-0!"}
               iconColor={"#D8D8D8"}
             />
           </div>
@@ -81,7 +81,7 @@ export default function Founder() {
               <h2>“</h2>
             </div>
             <div className="flex justify-between items-start">
-              <p className="small text-light-font/60 max-w-75">
+              <p className="small text-light-font max-w-75">
                 Recognized by global design platforms and trusted by brands
                 across industries.
               </p>

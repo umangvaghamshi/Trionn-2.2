@@ -120,9 +120,10 @@ export default function HowWork({
       });
 
       // ---- Pull next sibling flush — no gap after pin spacer ----
-      const nextSection = outerRef.current?.nextElementSibling as HTMLElement | null;
+      const nextSection = outerRef.current
+        ?.nextElementSibling as HTMLElement | null;
       if (nextSection) {
-        gsap.set(nextSection, { marginTop: "-100vh",ease:'none' });
+        gsap.set(nextSection, { marginTop: "-100vh", ease: "none" });
       }
 
       // ---- Stripe reveal after all cards are done ----
@@ -148,17 +149,13 @@ export default function HowWork({
           `stripes_start+=${start}`,
         );
       }
-
     },
     { scope: sectionRef },
   );
 
   return (
-    <section ref={outerRef} className="bg-[#040508] relative">
-      <div
-        ref={sectionRef}
-        className="py-37.5 min-h-screen relative text-light-font"
-      >
+    <section ref={outerRef} className="bg-[#040508] relative text-light-font">
+      <div ref={sectionRef} className="py-37.5 min-h-screen relative">
         <div className="tr__container relative w-full grid grid-cols-12 gap-x-6 h-full">
           <div className="grid grid-cols-12 gap-x-6 mb-20 col-span-12">
             <BlurTextReveal
@@ -182,7 +179,7 @@ export default function HowWork({
             </div>
           </div>
           <div className="col-span-9 col-start-3 gap-x-6 relative">
-            <div className="grid grid-cols-12 text-light-font">
+            <div className="grid grid-cols-12">
               {cards.map((card, idx) => {
                 return (
                   <div
@@ -194,7 +191,7 @@ export default function HowWork({
                     key={idx}
                     className="col-span-4 relative pb-20 pr-6 last:pr-0"
                   >
-                    <span className="title step-no text-light-font mb-9 block">
+                    <span className="title step-no mb-9 block">
                       Step - {card.id}
                     </span>
 
