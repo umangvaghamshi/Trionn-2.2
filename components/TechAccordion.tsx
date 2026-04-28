@@ -3,6 +3,8 @@ import parser from "html-react-parser";
 import { useRef, useState } from "react";
 import { TechFaqItemType } from "@/data/dataType";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 import LinePlus from "@/components/LinePlus";
 import { BlurTextReveal } from "@/components/TextAnimation";
 
@@ -30,6 +32,7 @@ export default function TechAccordion({
           opacity: 0,
           duration: 0.5,
           ease: "power3.inOut",
+          onComplete: () => ScrollTrigger.refresh(),
         });
       }
     }
@@ -41,6 +44,7 @@ export default function TechAccordion({
         opacity: 0,
         duration: 0.5,
         ease: "power3.inOut",
+        onComplete: () => ScrollTrigger.refresh(),
       });
       setOpenIndex(null);
     } else {
@@ -57,6 +61,7 @@ export default function TechAccordion({
           ease: "power3.inOut",
           onComplete: () => {
             gsap.set(current, { height: "auto" });
+            ScrollTrigger.refresh();
           },
         },
       );
@@ -130,6 +135,7 @@ export default function TechAccordion({
               lineClass={"opacity-15 bg-grey-line"}
               plusClass={"col-span-8 col-start-5 -translate-x-1/2"}
               iconColor={"#272727"}
+              scrub={false}
             />
           </div>
         );
