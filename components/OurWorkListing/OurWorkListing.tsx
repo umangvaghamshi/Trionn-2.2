@@ -2016,7 +2016,7 @@ export default function OurWorkListing() {
             >
               <div
                 id="logo-svg-wrap"
-                className="absolute inset-0 w-full h-full z-1 pointer-events-none perspective-midrange transform-3d"
+                className="absolute inset-0 w-full h-full z-1 pointer-events-none perspective-midrange transform-3d translate-x-[5%]"
               >
                 <svg
                   className="logo-t-path"
