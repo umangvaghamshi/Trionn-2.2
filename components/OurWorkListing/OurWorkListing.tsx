@@ -1985,7 +1985,7 @@ export default function OurWorkListing() {
   }, []);
 
   return (
-    <div className="bg-[#040508] text-white relative overflow-x-hidden font-sans">
+    <div className="bg-[#040508] text-white relative overflow-hidden font-sans">
       <style>{styles}</style>
 
       <div id="header-dot" />
