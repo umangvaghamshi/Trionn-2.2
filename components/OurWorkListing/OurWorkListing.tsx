@@ -1985,7 +1985,7 @@ export default function OurWorkListing() {
   }, []);
 
   return (
-    <div className="bg-[#040508] text-white relative overflow-hidden font-sans">
+    <div className="bg-[#040508] text-light-font relative overflow-hidden font-sans">
       <style>{styles}</style>
 
       <div id="header-dot" />
@@ -2153,10 +2153,12 @@ export default function OurWorkListing() {
             <div className="card-info flex flex-col gap-4">
               <div className="flex justify-between">
                 <h2 className="h3 w-7/12">{p.title}</h2>
-                <p className="text-light-font/60 w-5/12 text-right">{p.year}</p>
+                <p className="text-light-font/60 w-5/12 text-right small">
+                  {p.year}
+                </p>
               </div>
               <div className="flex justify-between">
-                <p className="text-light-font/60 w-7/12">
+                <p className="text-light-font/60 w-7/12 small">
                   {p.desc.split("\n").map((line, j, arr) => (
                     <span key={j}>
                       {line}
@@ -2203,7 +2205,7 @@ export default function OurWorkListing() {
               styleVars={{ buttonWrapperColor: "#D8D8D8" }}
             />
           </div>
-          <h3 className="text-center">
+          <h3 className="text-center text-light-font">
             Every project begins with a conversation — let&apos;s start yours.{" "}
             <br />
             We work with studios, founders, and brands who care about craft.{" "}
