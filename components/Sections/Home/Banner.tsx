@@ -20,13 +20,10 @@ export default function Banner() {
       trigger: statsRef.current,
       start: "top center",
       onEnter: () => gsap.to(statsRef.current, { autoAlpha: 0, duration: 0.3 }),
-      onLeaveBack: () => gsap.to(statsRef.current, { autoAlpha: 1, duration: 0.3 }),
+      onLeaveBack: () =>
+        gsap.to(statsRef.current, { autoAlpha: 1, duration: 0.3 }),
     });
   }, []);
-
-
-  
-
 
   return (
     <div
@@ -107,10 +104,10 @@ export default function Banner() {
             <div className="col-span-4 flex justify-end col-start-9">
               <div className="flex flex-col max-w-65 gap-6 w-full">
                 <div
-                  className="flex border border-light-font overflow-hidden rounded-sm min-h-18 text-light-font title"
+                  className="flex border border-[#24262E] overflow-hidden rounded-sm min-h-18 text-light-font title"
                   id="s1-body"
                 >
-                  <div className="flex flex-col justify-center items-center min-w-26 border-r border-light-font text-center gap-2 p-4">
+                  <div className="flex flex-col justify-center items-center min-w-26 border-r border-[#24262E] text-center gap-2 p-4">
                     <svg
                       width="43"
                       height="27"
@@ -182,7 +179,7 @@ export default function Banner() {
             </div>
             <LinePlus
               customClass={"mt-25 mb-20"}
-              lineClass={"opacity-20 col-start-2 bg-cream-line"}
+              lineClass={"col-start-2 bg-[#24262E]"}
               plusClass={"col-start-9"}
               iconColor={"#D8D8D8"}
             />
