@@ -229,7 +229,8 @@ canvas {
 }
 
 /* Hover */
-.link:hover::before {
+.link:hover::before,
+.link.active::before {
   transform: scaleX(1);
   transform-origin: left;
 }

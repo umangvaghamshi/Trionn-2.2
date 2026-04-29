@@ -14,7 +14,7 @@ export default function Header({
     <>
       <header
         id="nav"
-        className="site-header fixed w-full z-99 flex justify-between items-center py-8 transition-all duration-300 ease-in-out mix-blend-difference"
+        className="site-header fixed w-full z-99 flex justify-between items-center py-6 transition-all duration-300 ease-in-out mix-blend-difference"
       >
         <div className="tr__container w-full flex items-center justify-between">
           <Link className="logo relative" href={`/`}>
