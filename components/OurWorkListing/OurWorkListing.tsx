@@ -2010,16 +2010,9 @@ export default function OurWorkListing() {
             ))}
           </div>
           <div className="tr__container w-full flex flex-col items-center">
-            <BlurTextReveal
-              as="h1"
-              html="Our work"
-              animationType="chars"
-              stagger={0.08}
-              className="z-2"
-            />
             <div
               id="logo-circle"
-              className="relative w-80 h-80 flex items-center justify-center pointer-events-none z-20 shrink-0 mb-6 transform-3d will-change-transform"
+              className="relative w-80 h-80 flex items-center justify-center pointer-events-none z-20 shrink-0 transform-3d will-change-transform"
             >
               <div
                 id="logo-svg-wrap"
@@ -2111,6 +2104,13 @@ export default function OurWorkListing() {
                 </svg>
               </div>
             </div>
+            <BlurTextReveal
+              as="h1"
+              html="Our work"
+              animationType="chars"
+              stagger={0.08}
+              className="z-2 mb-6"
+            />
             <div
               id="line-origin"
               className="absolute w-0 h-0 top-1/2 left-1/2 pointer-events-none invisible"
