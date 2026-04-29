@@ -47,7 +47,7 @@ export default function Footer() {
   return (
     <FooterAtmosphereProvider>
       <footer
-        className="site-footer relative z-2 flex min-h-screen flex-col overflow-hidden bg-[#000000] text-light-font isolate"
+        className="site-footer relative z-2 flex min-h-screen flex-col overflow-hidden bg-[#040508] text-light-font isolate"
         style={{ marginTop: "-100vh" }}
       >
         {/* z-[5]: fog draws over wire SVG (z-[2]) like trionn-logo-footer; text stays z-20 */}
@@ -134,7 +134,6 @@ export default function Footer() {
 
           <div className="tr__container w-full pb-20">
             <LinePlus
-              lineClass={"opacity-20 bg-cream-line"}
               plusClass={"col-start-9 translate-x-1/2!"}
               iconColor={"#D8D8D8"}
             />
