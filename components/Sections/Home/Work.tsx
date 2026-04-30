@@ -1,18 +1,17 @@
 "use client";
 
-import React, { useRef } from "react";
-import LinePlus from "@/components/LinePlus";
-import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import WorkProjectPanel, {
   type WorkProjectPanelHandle,
 } from "@/components/Sections/Home/WorkProjectPanel";
+import { BlurTextReveal } from "@/components/TextAnimation";
 import { workData } from "@/data";
-import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useRef } from "react";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export type WorkHandle = {
   playPanel: (index: number) => void;
@@ -26,6 +25,77 @@ export default function Work({
   workHandleRef?: React.MutableRefObject<WorkHandle | null>;
 }) {
   const panelRefs = useRef<(WorkProjectPanelHandle | null)[]>([]);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const borderLineRef = useRef<HTMLDivElement>(null);
+  const plusIconRef = useRef<SVGSVGElement>(null);
+
+  useGSAP(
+    () => {
+      if (!borderLineRef.current || !trackRef.current) return;
+
+      gsap.set(borderLineRef.current, {
+        scaleY: 0,
+        transformOrigin: "center center",
+      });
+      gsap.set(plusIconRef.current, { rotation: 0 });
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.to(borderLineRef.current, {
+        scaleY: 1,
+        duration: 2,
+        ease: "power2.out",
+      }).to(
+        plusIconRef.current,
+        {
+          rotation: 360,
+          duration: 2,
+          ease: "power2.out",
+        },
+        "<",
+      );
+
+      // Where in the viewport the track's right edge must reach to trigger the draw.
+      // 0 = left edge of viewport, 0.5 = center, 1 = right edge.
+      const TRIGGER_AT = 1;
+
+      let played = false;
+      let plusHidden = false;
+      const check = () => {
+        if (!trackRef.current) return;
+        const right = trackRef.current.getBoundingClientRect().right;
+        if (!played && right <= window.innerWidth * TRIGGER_AT) {
+          played = true;
+          tl.play();
+        }
+        // Hide the plus icon once the track's right edge passes the viewport's left edge.
+        const shouldHide = right <= 0;
+        if (shouldHide !== plusHidden) {
+          plusHidden = shouldHide;
+          gsap.to(plusIconRef.current, {
+            autoAlpha: shouldHide ? 0 : 1,
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        }
+      };
+
+      const st = ScrollTrigger.create({ onUpdate: check, onRefresh: check });
+      // Also poll on rAF since the track's transform updates inside another ST's onUpdate
+      let rafId = 0;
+      const loop = () => {
+        check();
+        rafId = requestAnimationFrame(loop);
+      };
+      rafId = requestAnimationFrame(loop);
+
+      return () => {
+        st.kill();
+        cancelAnimationFrame(rafId);
+      };
+    },
+    { scope: sectionRef },
+  );
 
   // Wire handle so parent can fire individual panel timelines
   if (workHandleRef) {
@@ -37,9 +107,12 @@ export default function Work({
   }
 
   return (
-    <div className="relative h-full w-full bg-[linear-gradient(0deg,#D2D2D2_0%,#FFFFFF_100%)]">
+    <div
+      ref={sectionRef}
+      className="relative overflow-visible h-full w-full bg-[linear-gradient(0deg,#D2D2D2_0%,#FFFFFF_100%)]"
+    >
       {/* Horizontal track — GSAP scrubs translateX via trackRef */}
-      <div className="absolute inset-0 flex items-center overflow-visible z-10">
+      <div className="absolute inset-0 flex items-center overflow-hidden z-10">
         <div
           ref={trackRef}
           className="flex h-[min(80vh,860px)] flex-nowrap items-center will-change-transform"
@@ -85,7 +158,7 @@ export default function Work({
           ))}
 
           {/* ── View All Projects card ── */}
-          <div className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-full items-center pointer-events-none">
+          <div className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-full items-center pointer-events-none min-h-screen">
             <div
               className="js-card-line absolute left-0 top-1/2 -translate-y-1/2 h-screen w-px bg-grey-line/30 origin-top"
               style={{ transform: "scaleY(0)" }}
@@ -105,6 +178,39 @@ export default function Work({
             </div>
           </div>
         </div>
+      </div>
+      {/* Section right-border line + plus icon (independent timeline) */}
+      <div className="absolute right-0 top-0 h-full w-0 pointer-events-none z-20">
+        <div
+          ref={borderLineRef}
+          className="absolute top-0 -left-px h-full w-px bg-[#2F323B]/40"
+        />
+        <svg
+          ref={plusIconRef}
+          width="13"
+          height="13"
+          viewBox="0 0 13 13"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-visible z-[30] svg-plus-icon"
+        >
+          <line
+            x1="6.5"
+            y1="0"
+            x2="6.5"
+            y2="13"
+            strokeWidth="1"
+            stroke="#2F323B"
+          />
+          <line
+            x1="0"
+            y1="6.5"
+            x2="13"
+            y2="6.5"
+            strokeWidth="1"
+            stroke="#2F323B"
+          />
+        </svg>
       </div>
     </div>
   );
