@@ -104,10 +104,10 @@ export default function Banner() {
             <div className="col-span-4 flex justify-end col-start-9">
               <div className="flex flex-col max-w-65 gap-6 w-full">
                 <div
-                  className="flex border border-[#24262E] overflow-hidden rounded-sm min-h-18 text-light-font title"
+                  className="flex border border-[#2F323B] overflow-hidden rounded-sm min-h-18 text-light-font title"
                   id="s1-body"
                 >
-                  <div className="flex flex-col justify-center items-center min-w-26 border-r border-[#24262E] text-center gap-2 p-4">
+                  <div className="flex flex-col justify-center items-center min-w-26 border-r border-[#2F323B] text-center gap-2 p-4">
                     <svg
                       width="43"
                       height="27"
@@ -179,7 +179,7 @@ export default function Banner() {
             </div>
             <LinePlus
               customClass={"mt-25 mb-20"}
-              lineClass={"col-start-2 bg-[#24262E]"}
+              lineClass={"col-start-2 bg-[#2F323B]"}
               plusClass={"col-start-9"}
               iconColor={"#D8D8D8"}
             />

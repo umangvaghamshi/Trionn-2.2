@@ -48,7 +48,7 @@ export default function AboutTeam() {
           </div>
         </div>
         <LinePlus
-          lineClass={"bg-[#24262E] left-1/2! -translate-x-1/2"}
+          lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
           plusClass={"col-span-12 mx-auto translate-x-0!"}
           iconColor={"#D8D8D8"}
         />
