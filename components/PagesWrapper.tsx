@@ -14,8 +14,13 @@ export default async function PagesWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body cz-shortcut-listen="true" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning style={{ backgroundColor: '#040508' }}>
+      <body cz-shortcut-listen="true" suppressHydrationWarning style={{ backgroundColor: '#040508' }}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.style.backgroundColor = "#040508"; document.body.style.backgroundColor = "#040508";`,
+          }}
+        />
         <SiteSoundProvider>
           <TransitionProvider>
             <PageLoader />

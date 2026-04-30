@@ -382,9 +382,16 @@ export default function PageLoader() {
   return (
     <>
       {/* Belt overlay */}
-      <div ref={overlayRef} className="trionn-overlay">
+      <div ref={overlayRef} className="trionn-overlay active">
         {Array.from({ length: BELT_COUNT }, (_, i) => (
-          <div key={i} ref={(el) => { if (el) beltRefs.current[i] = el; }} className="trionn-belt" />
+          <div
+            key={i}
+            ref={(el) => {
+              if (el) beltRefs.current[i] = el;
+            }}
+            className="trionn-belt"
+            style={{ transform: "scaleY(1)" }}
+          />
         ))}
       </div>
 
