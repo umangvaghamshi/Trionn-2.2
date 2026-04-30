@@ -39,35 +39,29 @@ export default function Work({
       });
       gsap.set(plusIconRef.current, { rotation: 0 });
 
-      const tl = gsap.timeline({ paused: true });
-
-      tl.to(borderLineRef.current, {
-        scaleY: 1,
-        duration: 2,
-        ease: "power2.out",
-      }).to(
-        plusIconRef.current,
-        {
-          rotation: 360,
-          duration: 2,
-          ease: "power2.out",
-        },
-        "<",
-      );
-
-      // Where in the viewport the track's right edge must reach to trigger the draw.
-      // 0 = left edge of viewport, 0.5 = center, 1 = right edge.
-      const TRIGGER_AT = 1;
-
-      let played = false;
       let plusHidden = false;
+      const rotQuickTo = gsap.quickTo(plusIconRef.current, "rotation", {
+        duration: 0.3,
+        ease: "power2.out",
+      });
+      const lineQuickTo = gsap.quickTo(borderLineRef.current, "scaleY", {
+        duration: 0.3,
+        ease: "power2.out",
+      });
       const check = () => {
         if (!trackRef.current) return;
+        const vw = window.innerWidth;
         const right = trackRef.current.getBoundingClientRect().right;
-        if (!played && right <= window.innerWidth * TRIGGER_AT) {
-          played = true;
-          tl.play();
-        }
+        // Scrub plus-icon rotation from 0° → 360° as the track's right edge
+        // travels from the viewport's right edge to its left edge.
+        const rotScrub = gsap.utils.clamp(0, 1, 1 - right / vw);
+        rotQuickTo(rotScrub * 360);
+
+        // Scrub border-line draw 0 → 1 as the track's right edge travels from
+        // the viewport's right edge to the viewport's center (finishes early).
+        const lineScrub = gsap.utils.clamp(0, 1, (vw - right) / (vw * 0.5));
+        lineQuickTo(lineScrub);
+
         // Hide the plus icon once the track's right edge passes the viewport's left edge.
         const shouldHide = right <= 0;
         if (shouldHide !== plusHidden) {
@@ -166,7 +160,7 @@ export default function Work({
             <div className="js-work-card-inner w-full will-change-transform px-4 md:px-10 lg:px-16 xl:px-20">
               <div className="relative flex flex-col items-center justify-center w-full pointer-events-auto">
                 <div className="group flex flex-col items-center justify-center gap-10 text-center cursor-pointer w-full h-full">
-                  <h3 className=" text-dark-font transition-transform duration-700 max-w-90">
+                  <h3 className=" text-dark-font transition-transform duration-700 max-w-116">
                     Discover our complete collection of digital experiences,
                     brands, and platforms.
                   </h3>
@@ -183,7 +177,7 @@ export default function Work({
       <div className="absolute right-0 top-0 h-full w-0 pointer-events-none z-20">
         <div
           ref={borderLineRef}
-          className="absolute top-0 -left-px h-full w-px bg-[#2F323B]/40"
+          className="absolute top-0 -left-px h-full w-px bg-grey-line/30"
         />
         <svg
           ref={plusIconRef}
