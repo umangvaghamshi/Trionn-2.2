@@ -137,6 +137,25 @@ export default function PageLoader() {
   const dot1Ref = useRef<HTMLSpanElement>(null);
   const dot2Ref = useRef<HTMLSpanElement>(null);
   const hasRun = useRef(false);
+  const scrollLockRaf = useRef<number>(0);
+
+  // Continuous brute-force scroll lock during loader phases
+  useEffect(() => {
+    if (phase !== "loader") {
+      if (scrollLockRaf.current) cancelAnimationFrame(scrollLockRaf.current);
+      return;
+    }
+
+    const lock = () => {
+      window.scrollTo(0, 0);
+      scrollLockRaf.current = requestAnimationFrame(lock);
+    };
+    scrollLockRaf.current = requestAnimationFrame(lock);
+
+    return () => {
+      if (scrollLockRaf.current) cancelAnimationFrame(scrollLockRaf.current);
+    };
+  }, [phase]);
 
   /* ── sweep-out animation ───────────────────────────────────────────── */
   const sweepOut = useCallback((cb: () => void) => {
