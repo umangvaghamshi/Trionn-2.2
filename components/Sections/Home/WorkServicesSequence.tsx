@@ -94,7 +94,7 @@ export default function WorkServicesSequence() {
 
         cardEls.forEach((card, index) => {
           const inner = card.querySelector<HTMLElement>(".js-work-card-inner");
-          const line = card.querySelector<HTMLElement>(".js-card-line");
+          const lines = card.querySelectorAll<HTMLElement>(".js-card-line");
           if (!inner) return;
 
           // Card center on screen
@@ -139,9 +139,9 @@ export default function WorkServicesSequence() {
           }
 
           // Divider line draws top→bottom when card enters viewport
-          if (line && norm < 1.1 && !lineFired.has(index)) {
+          if (lines.length && norm < 1.1 && !lineFired.has(index)) {
             lineFired.add(index);
-            gsap.to(line, {
+            gsap.to(lines, {
               scaleY: 1,
               duration: 1.2,
               ease: "power2.out",
@@ -222,7 +222,7 @@ export default function WorkServicesSequence() {
 
       <div
         ref={workLayerRef}
-        className="absolute inset-0 z-2 overflow-hidden pointer-events-none will-change-transform"
+        className="absolute inset-0 z-2 overflow-visible pointer-events-none will-change-transform"
       >
         <Work trackRef={workTrackRef} workHandleRef={workHandleRef} />
       </div>
