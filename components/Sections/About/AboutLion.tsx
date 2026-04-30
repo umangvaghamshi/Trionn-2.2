@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useSiteSound } from "@/components/SiteSoundContext";
+import { useTransitionReady } from "@/components/Transition";
 
 const MOBILE_BREAKPOINT = 768;
 const STRIP_HEIGHT = 28;
@@ -102,8 +103,10 @@ export default function AboutLion({
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const stripContainerRef = useRef<HTMLDivElement>(null);
   const loadedRef = useRef(false);
+  const transitionReady = useTransitionReady();
 
   useEffect(() => {
+    if (!transitionReady) return;
     const scene = sceneRef.current;
     const canvas = glCanvasRef.current;
     const stripContainer = stripContainerRef.current;
@@ -889,7 +892,7 @@ export default function AboutLion({
       gl.deleteBuffer(posBuf);
       gl.deleteProgram(prog);
     };
-  }, []);
+  }, [transitionReady]);
 
   return (
     <div

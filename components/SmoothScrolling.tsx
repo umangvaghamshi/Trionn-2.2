@@ -33,11 +33,11 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // Disable scroll while page is loading, enable after everything is loaded
+  // Disable scroll while page is loading/transitioning, enable after transition completes
   useEffect(() => {
     const lenis = lenisRef.current?.lenis;
 
-    // Stop Lenis immediately to prevent scrolling during load
+    // Stop Lenis immediately to prevent scrolling during load/transition
     if (lenis) {
       lenis.stop();
     }
@@ -50,15 +50,31 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
       }
     };
 
-    // If the page is already fully loaded, enable immediately
+    const stopScroll = () => {
+      if (lenisRef.current?.lenis) {
+        lenisRef.current.lenis.stop();
+      }
+    };
+
+    // Enable scroll when page loader completes
+    window.addEventListener('trionn-loader:complete', enableScroll);
+    // Enable scroll when page transition completes
+    window.addEventListener('trionn-transition:complete', enableScroll);
+    // Stop scroll when belts close (transition in progress)
+    window.addEventListener('trionn-transition:belts-closed', stopScroll);
+
+    // Fallback: if no transition system, enable on window load
     if (document.readyState === 'complete') {
-      enableScroll();
-    } else {
-      window.addEventListener('load', enableScroll);
+      // Check if the transition system has already completed
+      if (document.documentElement.dataset.trionnLoaderComplete === 'true') {
+        enableScroll();
+      }
     }
 
     return () => {
-      window.removeEventListener('load', enableScroll);
+      window.removeEventListener('trionn-loader:complete', enableScroll);
+      window.removeEventListener('trionn-transition:complete', enableScroll);
+      window.removeEventListener('trionn-transition:belts-closed', stopScroll);
     };
   }, []);
 
