@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useTrionnSymbolAudio } from "./useTrionnSymbolAudio";
 import { getCanvasManager } from "@/lib/canvasManager";
+import { useTransitionReady } from "@/components/Transition";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -210,7 +211,10 @@ export function useTrionnSymbolScene(
     hoveredMesh: null as THREE.Object3D | null,
   });
 
+  const transitionReady = useTransitionReady();
+
   useEffect(() => {
+    if (!transitionReady) return;
     const st = stateRef.current;
     const wrap = canvasWrapRef.current;
     const glowCanvas = glowCanvasRef.current as HTMLCanvasElement;
@@ -1151,7 +1155,7 @@ export function useTrionnSymbolScene(
       audio.stopAllSounds();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [transitionReady]);
 
   return { audio, stateRef };
 }
