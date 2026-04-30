@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 import { useSiteSound } from "@/components/SiteSoundContext";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
@@ -230,22 +228,6 @@ export default function OurWorkListing() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Force scroll to top, mirroring inline head script.
-    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    const forceTop = () => {
-      document.documentElement.scrollTop = 0;
-      if (document.body) document.body.scrollTop = 0;
-      window.scrollTo(0, 0);
-    };
-    forceTop();
-    window.addEventListener("beforeunload", forceTop);
-    window.addEventListener("pagehide", forceTop);
-    const onPageShow = () => {
-      forceTop();
-      requestAnimationFrame(forceTop);
-    };
-    window.addEventListener("pageshow", onPageShow);
-
     // ===== main.js: project-card sizing/position =====
     const posMap: Record<string, { ml: string; mr: string }> = {
       left: { ml: "4%", mr: "auto" },
@@ -269,23 +251,9 @@ export default function OurWorkListing() {
       if (img) img.style.aspectRatio = sm.ar;
     });
 
-    // ===== Lenis =====
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 1.5,
-    } as any);
-    (window as any)._lenis = lenis;
-    window.scrollTo(0, 0);
-    (lenis as any).scrollTo(0, { immediate: true, force: true });
-    requestAnimationFrame(() => {
-      window.scrollTo(0, 0);
-      (lenis as any).scrollTo(0, { immediate: true, force: true });
-    });
-    gsap.ticker.add((time: number) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
+    // Lenis is provided globally by <SmoothScrolling>; reuse the shared instance
+    // so ScrollTrigger stays in sync with the same scroll source the rest of the
+    // app uses.
 
     // ===== intro.js =====
     const clamp = (v: number, min: number, max: number) =>
@@ -1891,8 +1859,6 @@ export default function OurWorkListing() {
     document.addEventListener("mousemove", onTiltMove);
 
     function startIntro() {
-      window.scrollTo(0, 0);
-      (lenis as any).scrollTo(0, { immediate: true, force: true });
       ensureLogoSvg();
       computeRadii();
       drawLogoFill(0);
@@ -1943,9 +1909,6 @@ export default function OurWorkListing() {
     return () => {
       flagCancelled = true;
       if (flag) flag.dispose();
-      window.removeEventListener("beforeunload", forceTop);
-      window.removeEventListener("pagehide", forceTop);
-      window.removeEventListener("pageshow", onPageShow);
       window.removeEventListener("resize", onResize);
       if (plResizeHandler)
         window.removeEventListener("resize", plResizeHandler);
@@ -1966,10 +1929,6 @@ export default function OurWorkListing() {
       if (_refreshRaf) cancelAnimationFrame(_refreshRaf);
       clearTimeout(fallbackPL);
       if (st) st.kill();
-      try {
-        lenis.destroy();
-      } catch {}
-      delete (window as any)._lenis;
       delete (window as any)._mouseTilt;
       delete (window as any)._thumbAnimReady;
       delete (window as any)._thumbAnimDone;
