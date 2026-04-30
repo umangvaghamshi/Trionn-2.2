@@ -8,6 +8,7 @@ import { useSiteSound } from "@/components/SiteSoundContext";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
+import { useTransitionReady } from "@/components/Transition";
 
 type Project = {
   pos: "left" | "right" | "center";
@@ -227,8 +228,10 @@ export default function OurWorkListing() {
     soundEnabledRef.current = soundEnabled;
   }, [soundEnabled]);
 
+  const ready = useTransitionReady();
+
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !ready) return;
 
     // Force scroll to top, mirroring inline head script.
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
@@ -518,7 +521,8 @@ export default function OurWorkListing() {
     function drawLogoFill(fillProgress: number, ts?: number) {
       const e = ensureLogoSvg();
       if (!e) return;
-      if (fillProgress <= 0.001 && logoIntroStart) {
+      if (!logoIntroStart && ts) logoIntroStart = ts;
+      if (fillProgress <= 0.001) {
         resetSvgStrips();
         drawLogoIntroParts(ts ?? performance.now());
         return;
@@ -1125,9 +1129,9 @@ export default function OurWorkListing() {
         a.volume = 0.9;
         a.playbackRate = 0.7 + Math.random() * 0.6;
         const pr = a.play();
-        if (pr && (pr as any).catch) (pr as any).catch(() => {});
+        if (pr && (pr as any).catch) (pr as any).catch(() => { });
         _sc = 0.05;
-      } catch (e) {}
+      } catch (e) { }
     }
     function spark() {
       if (soundEnabledRef.current === false || _sc > 0) return;
@@ -1142,7 +1146,7 @@ export default function OurWorkListing() {
             s.start(0);
             _sc = 0.05;
             return;
-          } catch (e) {}
+          } catch (e) { }
         }
         playHtmlSpark();
       };
@@ -1152,7 +1156,7 @@ export default function OurWorkListing() {
     }
     const onFirstInteraction = () => {
       initAudio();
-      if (actx && actx.state === "suspended") actx.resume().catch(() => {});
+      if (actx && actx.state === "suspended") actx.resume().catch(() => { });
       [
         "pointerdown",
         "mousedown",
@@ -1979,10 +1983,10 @@ export default function OurWorkListing() {
       if (actx) {
         try {
           actx.close();
-        } catch {}
+        } catch { }
       }
     };
-  }, []);
+  }, [ready]);
 
   return (
     <div className="bg-[#040508] text-light-font relative overflow-hidden font-sans">
@@ -2021,6 +2025,7 @@ export default function OurWorkListing() {
                 <svg
                   className="logo-t-path"
                   id="t1"
+                  style={{ opacity: 0 }}
                   viewBox="0 0 578 586"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -2049,6 +2054,7 @@ export default function OurWorkListing() {
                 <svg
                   className="logo-t-path"
                   id="t2"
+                  style={{ opacity: 0 }}
                   viewBox="0 0 578 586"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -2077,6 +2083,7 @@ export default function OurWorkListing() {
                 <svg
                   className="logo-t-path"
                   id="t3"
+                  style={{ opacity: 0 }}
                   viewBox="0 0 578 586"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -2268,6 +2275,7 @@ const styles = `
 #logo-svg-wrap svg.logo-t-path {
   position: absolute; inset: 0; width: 100%; height: 100%;
   overflow: visible; transform-origin: 50% 50%; will-change: transform, opacity;
+  opacity: 0;
 }
 #logo-svg-wrap .logo-t-path > path {
   stroke: #303640; stroke-width: 1.5; stroke-opacity: 0.7; vector-effect: non-scaling-stroke;

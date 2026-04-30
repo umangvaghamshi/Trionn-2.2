@@ -38,13 +38,17 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     const lenis = lenisRef.current?.lenis;
 
     // Stop Lenis immediately to prevent scrolling during load/transition
+    // Also hide the scrollbar so it doesn't flash during the overlay
     if (lenis) {
       lenis.stop();
     }
+    document.documentElement.style.overflow = 'hidden';
 
     const enableScroll = () => {
       if (lenisRef.current?.lenis) {
         lenisRef.current.lenis.start();
+        // Show the scrollbar now that the page is ready
+        document.documentElement.style.overflow = '';
         // Refresh ScrollTrigger after load (skip full recalc for perf)
         ScrollTrigger.refresh();
       }
@@ -53,6 +57,8 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     const stopScroll = () => {
       if (lenisRef.current?.lenis) {
         lenisRef.current.lenis.stop();
+        // Hide the scrollbar during transition
+        document.documentElement.style.overflow = 'hidden';
       }
     };
 
@@ -60,6 +66,8 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     window.addEventListener('trionn-loader:complete', enableScroll);
     // Enable scroll when page transition completes
     window.addEventListener('trionn-transition:complete', enableScroll);
+    // Stop scroll when transition starts
+    window.addEventListener('trionn-transition:start', stopScroll);
     // Stop scroll when belts close (transition in progress)
     window.addEventListener('trionn-transition:belts-closed', stopScroll);
 
@@ -74,6 +82,7 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     return () => {
       window.removeEventListener('trionn-loader:complete', enableScroll);
       window.removeEventListener('trionn-transition:complete', enableScroll);
+      window.removeEventListener('trionn-transition:start', stopScroll);
       window.removeEventListener('trionn-transition:belts-closed', stopScroll);
     };
   }, []);
