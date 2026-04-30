@@ -209,7 +209,7 @@ export default function HowWork({
                     <p className="content small max-w-87.5">{card.content}</p>
                     <div className="fill-line absolute left-0 bottom-0 w-full">
                       <div
-                        className={`line absolute top-1/2 -translate-y-1/2 h-px w-full ${theme === "dark" ? "bg-[#24262E]" : "bg-grey-line/15"}`}
+                        className={`line absolute top-1/2 -translate-y-1/2 h-px w-full ${theme === "dark" ? "bg-[#2F323B]" : "bg-grey-line/15"}`}
                       ></div>
                       <svg
                         width="13"
