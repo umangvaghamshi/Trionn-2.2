@@ -5,6 +5,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import SplitText from 'gsap/SplitText';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTransitionReady } from '@/components/Transition';
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
@@ -35,6 +36,8 @@ interface BlurTextRevealProps {
     duration?: number;
   };
   onCompleteAnimation?: () => void;
+  /** If true (default), wait for page loader/transition to finish before animating */
+  waitForTransition?: boolean;
 }
 
 const BlurTextReveal = ({
@@ -62,8 +65,10 @@ const BlurTextReveal = ({
     fade: 0.4,
     duration: 0.3,
   },
-  onCompleteAnimation
+  onCompleteAnimation,
+  waitForTransition = true,
 }: BlurTextRevealProps) => {
+  const transitionReady = useTransitionReady();
   const textRef = useRef<HTMLElement | null>(null);
 
   const randomCharFlicker = (
@@ -97,6 +102,8 @@ const BlurTextReveal = ({
 
   useGSAP(() => {
     if (!textRef.current) return;
+    // Gate: don't start animation until loader/transition completes
+    if (waitForTransition && !transitionReady) return;
 
     const split = new SplitText(textRef.current, {
       type: 'chars,words,lines',
@@ -167,12 +174,13 @@ const BlurTextReveal = ({
       tl.kill();
       split.revert();
     };
-  }, []);
+  }, [transitionReady, waitForTransition]);
 
   return (
     <Tag
       ref={textRef}
       className={className}
+      style={{ visibility: 'hidden' }}
       dangerouslySetInnerHTML={html ? { __html: html } : undefined}
     >
       {!html ? text : null}

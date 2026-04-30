@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTransitionReady } from "@/components/Transition";
 import * as THREE from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 import gsap from "gsap";
@@ -226,7 +227,10 @@ export function useServicesOrbitScene(
     muteWoosh: () => {},
   });
 
+  const transitionReady = useTransitionReady();
+
   useEffect(() => {
+    if (!transitionReady) return;
     const canvas = mainCanvasRef.current;
     if (!canvas) return;
 
@@ -1517,7 +1521,7 @@ export function useServicesOrbitScene(
       };
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [transitionReady]);
 
   return orbitAudioRef;
 }

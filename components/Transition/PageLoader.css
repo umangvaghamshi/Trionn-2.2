@@ -1,0 +1,143 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Page Loader & Page Transition — Overlay Styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Overlay container (shared by loader + transition) ────────────────── */
+.trionn-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+}
+.trionn-overlay.active {
+  pointer-events: all;
+  visibility: visible;
+}
+
+/* ── Belt strips ──────────────────────────────────────────────────────── */
+.trionn-belt {
+  width: 100%;
+  flex: 1;
+  background: #D2D2D2;
+  transform: scaleY(0);
+  will-change: transform;
+  transform-origin: center center;
+  /* Force own compositor layer — isolates from canvas/WebGL jank below */
+  backface-visibility: hidden;
+  contain: layout style paint;
+}
+
+/* ── Center overlay (logo + counter + tagline + label) ────────────────── */
+.trionn-overlay-center {
+  position: fixed;
+  inset: 0;
+  z-index: 9001;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  visibility: hidden;
+  perspective: 800px;
+}
+
+/* ── T Logo wrap ──────────────────────────────────────────────────────── */
+.trionn-logo-wrap {
+  position: relative;
+  width: clamp(160px, 22vw, 280px);
+  height: clamp(163px, 22.3vw, 284px);
+}
+.trionn-logo-wrap svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.trionn-t-path {
+  opacity: 0;
+}
+
+/* ── Page label (transition only) ─────────────────────────────────────── */
+.trionn-page-label {
+  font-family: "Martian-Mono-Light", monospace;
+  font-size: clamp(9px, 1vw, 11px);
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: #111;
+  margin-top: 16px;
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* ── Odometer counter ─────────────────────────────────────────────────── */
+.trionn-counter {
+  opacity: 0;
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+.trionn-slot-reel {
+  width: 14px;
+  height: 18px;
+  overflow: hidden;
+  position: relative;
+}
+.trionn-slot-strip {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: none;
+}
+.trionn-slot-digit {
+  font-family: "Martian-Mono-Light", monospace;
+  font-size: clamp(11px, 1.2vw, 13px);
+  letter-spacing: 0.1em;
+  color: rgba(0, 0, 0, 0.55);
+  line-height: 18px;
+  text-align: center;
+  height: 18px;
+}
+
+/* ── Tagline (Inspire · Innovate · Impact) ────────────────────────────── */
+.trionn-tagline {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 1;
+}
+.trionn-tag-word {
+  font-family: "Martian-Mono-Light", monospace;
+  font-size: clamp(8px, 0.9vw, 10px);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #111;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.trionn-tag-word.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.trionn-tag-dot {
+  font-family: "Martian-Mono-Light", monospace;
+  font-size: 8px;
+  color: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.4s 0.15s;
+}
+.trionn-tag-dot.visible {
+  opacity: 1;
+}

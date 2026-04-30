@@ -1,10 +1,19 @@
 "use client";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { TransitionLink } from "@/components/Transition";
 import { menu } from "@/data";
 
 export default function NavLinks() {
   const pathname = usePathname();
+
+  // Map route paths to transition labels
+  const labelMap: Record<string, string> = {
+    "/": "Home",
+    "/about": "About",
+    "/work": "Our Work",
+    "/services": "Services",
+  };
+
   return (
     <>
       <div className="menu-wrapper">
@@ -13,12 +22,13 @@ export default function NavLinks() {
             const isActive = pathname === item.url;
             return (
               <li className="menu-item" key={index}>
-                <Link
+                <TransitionLink
                   className={`link menu block uppercase text-white py-1 ${isActive ? "active" : ""}`}
                   href={item.url}
+                  transitionLabel={labelMap[item.url] || item.title}
                 >
                   {item.title}
-                </Link>
+                </TransitionLink>
               </li>
             );
           })}
