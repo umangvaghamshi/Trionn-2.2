@@ -140,7 +140,7 @@ export default function LinePlus({
       className={`relative line-plus-block grid grid-cols-12 gap-x-6 ${customClass ? customClass : ""}`}
     >
       <div
-        className={`line absolute top-1/2 left-0 -translate-y-1/2 h-px w-0 ${lineClass ? lineClass : "bg-[#24262E]"}`}
+        className={`line absolute top-1/2 left-0 -translate-y-1/2 h-px w-0 ${lineClass ? lineClass : "bg-[#2F323B]"}`}
         ref={drawLine}
       />
       <svg
