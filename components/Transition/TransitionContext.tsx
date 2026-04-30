@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -13,6 +14,7 @@ import {
 /* ──────────────────────────────────────────────────────────────────────────
    Events dispatched on `window` so any component can listen:
      • "trionn-loader:complete"      — initial page loader finished
+     • "trionn-transition:start"     — between-page transition started (belts beginning to close)
      • "trionn-transition:complete"   — between-page transition finished
      • "trionn-transition:belts-closed" — belts fully cover the screen (safe to swap page)
    ────────────────────────────────────────────────────────────────────────── */
@@ -55,6 +57,13 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
   const [phase, setPhase] = useState<TransitionPhase>("loader");
   const [transitionLabel, setTransitionLabel] = useState("");
   const [isContentVisible, setContentVisible] = useState(false);
+
+  // Dispatch transition start event
+  useEffect(() => {
+    if (phase === "sweep-in") {
+      window.dispatchEvent(new CustomEvent("trionn-transition:start"));
+    }
+  }, [phase]);
 
   // Promise resolver for belts-closed sync
   const beltsClosedResolveRef = useRef<(() => void) | null>(null);
