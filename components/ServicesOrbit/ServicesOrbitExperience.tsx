@@ -16,7 +16,6 @@ import { useServicesOrbitScene } from "./useServicesOrbitScene";
 const BG = "#0a0a0a";
 const FG = "#e8e8e8";
 const MUTED = "#666666";
-const DIM = "#333333";
 
 const CROSS_ICON = (
   <svg
@@ -51,7 +50,9 @@ export default function ServicesOrbitExperience() {
   const servicesListRef = useRef<HTMLUListElement>(null);
   const soundEnabledRef = useRef(false);
 
-  const [activeService, setActiveService] = useState(1);
+  const stripesRef = useRef<HTMLDivElement[]>([]);
+
+  const [activeService, setActiveService] = useState<number | null>(null);
   const { soundEnabled } = useSiteSound();
 
   const getSmoothScroll = useCallback(() => {
@@ -117,14 +118,67 @@ export default function ServicesOrbitExperience() {
     const st = ScrollTrigger.create({
       trigger: "#services-orbit-scope",
       start: "top top",
-      end: "bottom bottom",
+      end: "bottom top",
       pin: canvasWrapRef.current,
       pinSpacing: false,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
       markers: false,
     });
     return () => st.kill();
+  }, []);
+
+  useGSAP(() => {
+    if (!sec3Ref.current) return;
+
+    const stripes = stripesRef.current;
+    gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sec3Ref.current,
+        start: "top top",
+        end: "+=100%",
+        pin: sec3Ref.current,
+        pinSpacing: true,
+        markers: false,
+        scrub: true,
+      },
+      defaults: { ease: "none" },
+    });
+
+    // ---- Pull next sibling flush — no gap after pin spacer ----
+    const nextSection = document.getElementById("services-orbit-scope")
+      ?.nextElementSibling as HTMLElement | null;
+    if (nextSection) {
+      gsap.set(nextSection, { marginTop: "-100vh" });
+    }
+
+    const stripeCount = stripes.length;
+    const staggerAmount = 0.5;
+    const perStripe = 1 - staggerAmount;
+    const totalStripeDuration = 1;
+
+    tl.addLabel("stripes_start");
+
+    for (let i = 0; i < stripeCount; i++) {
+      const staggerIdx = stripeCount - 1 - i;
+      const stripeOffset =
+        (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
+      const start = stripeOffset * totalStripeDuration;
+      const end = start + perStripe * totalStripeDuration;
+
+      tl.fromTo(
+        stripes[i]!,
+        { scaleY: 0 },
+        { scaleY: 1, duration: end - start, ease: "none" },
+        `stripes_start+=${start}`,
+      );
+    }
+
+    tl.to({}, { duration: 0.2 });
+
+    return () => {
+      tl.kill();
+    };
   }, []);
 
   return (
@@ -146,7 +200,6 @@ export default function ServicesOrbitExperience() {
           ref={glowCanvasRef}
           id="glow-canvas"
           className="pointer-events-none absolute top-0 left-0"
-          style={{ position: "absolute", top: 0, left: 0 }}
         />
       </div>
 
@@ -189,11 +242,13 @@ export default function ServicesOrbitExperience() {
                   key={label}
                   role="presentation"
                   onMouseEnter={() => setActiveService(i)}
-                  className={`cursor-pointer title transition-colors duration-200 `}
+                  onMouseLeave={() => setActiveService(null)}
+                  className="cursor-pointer title transition-colors duration-200"
                   style={{
                     color: activeService === i ? FG : MUTED,
                   }}
                   onFocus={() => setActiveService(i)}
+                  onBlur={() => setActiveService(null)}
                 >
                   {label}
                 </li>
@@ -261,6 +316,28 @@ export default function ServicesOrbitExperience() {
               className="title block text-center"
             />
           </div>
+        </div>
+
+        {/* ── Stripes overlay (covers content after animation ends) ── */}
+        <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              ref={(el) => {
+                if (el) stripesRef.current[i] = el;
+              }}
+              style={{
+                flex: 1,
+                width: "100%",
+                marginTop: i > 0 ? "-0.5px" : undefined,
+                paddingBottom: "0.5px",
+                backgroundColor: "#fff",
+                transform: "scaleY(0)",
+                transformOrigin: "bottom",
+                willChange: "transform",
+              }}
+            />
+          ))}
         </div>
       </section>
 

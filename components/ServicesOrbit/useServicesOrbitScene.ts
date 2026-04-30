@@ -1009,7 +1009,7 @@ export function useServicesOrbitScene(
 
       /* scene.js — same bands on `phase` */
       const phaseB = smoothstep(0.1, 0.22, phase);
-      const phaseC = smoothstep(0.5, 0.62, phase);
+      const phaseC = smoothstep(0.25, 0.40, phase);
       const scrollingUp = phase < prevPhase;
       prevPhase = phase;
 
