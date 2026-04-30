@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ReactLenis, type LenisRef } from 'lenis/react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useLayoutEffect } from 'react';
+import { useTransition } from './Transition/TransitionContext';
 gsap.registerPlugin(ScrollTrigger);
 
 type SmoothScrollingProps = {
@@ -15,6 +16,7 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
   const lenisRef = useRef<LenisRef | null>(null);
   const isSpacePressed = useRef(false);
   const pathname = usePathname();
+  const { isLoaderComplete, phase } = useTransition();
 
   // Disable browser scroll restoration globally
   useLayoutEffect(() => {
@@ -22,6 +24,57 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
       window.history.scrollRestoration = 'manual';
     }
   }, []);
+
+  // Force overflow hidden if loader is active or transition is in progress
+  useLayoutEffect(() => {
+    const isLoading = !isLoaderComplete || phase !== 'idle';
+
+    const blockScroll = (e: Event) => {
+      if (e.type === 'keydown') {
+        const keys = [' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'];
+        if (!keys.includes((e as KeyboardEvent).key)) return;
+      }
+      if (e.cancelable) e.preventDefault();
+    };
+
+    if (isLoading) {
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      lenisRef.current?.lenis?.stop();
+
+      // Nuclear option: prevent wheel, touchmove, and keydown at the window level
+      window.addEventListener('wheel', blockScroll, { passive: false });
+      window.addEventListener('touchmove', blockScroll, { passive: false });
+      window.addEventListener('keydown', blockScroll, { passive: false });
+    } else {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+      if (lenisRef.current?.lenis) {
+        lenisRef.current.lenis.start();
+        lenisRef.current.lenis.scrollTo(0, { immediate: true });
+      }
+      window.scrollTo(0, 0);
+    }
+
+    return () => {
+      window.removeEventListener('wheel', blockScroll);
+      window.removeEventListener('touchmove', blockScroll);
+      window.removeEventListener('keydown', blockScroll);
+    };
+  }, [isLoaderComplete, phase]);
+
+  // Sync Lenis stopped state with loader/transition state
+  useEffect(() => {
+    const lenis = lenisRef.current?.lenis;
+    if (!lenis) return;
+
+    const isLoading = !isLoaderComplete || phase !== 'idle';
+    if (isLoading) {
+      lenis.stop();
+    } else {
+      lenis.start();
+    }
+  }, [isLoaderComplete, phase]);
 
   // Reset scroll position on route change and page load
   useLayoutEffect(() => {
@@ -35,15 +88,6 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
 
   // Disable scroll while page is loading/transitioning, enable after transition completes
   useEffect(() => {
-    const lenis = lenisRef.current?.lenis;
-
-    // Stop Lenis immediately to prevent scrolling during load/transition
-    // Also hide the scrollbar so it doesn't flash during the overlay
-    if (lenis) {
-      lenis.stop();
-    }
-    document.documentElement.style.overflow = 'hidden';
-
     const enableScroll = () => {
       if (lenisRef.current?.lenis) {
         lenisRef.current.lenis.start();
@@ -168,6 +212,7 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     wheelMultiplier: 0.8,
     touchMultiplier: 2,
     infinite: false,
+    stopped: !isLoaderComplete, // Start stopped if loader is active
   };
 
   return (
