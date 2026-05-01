@@ -4,6 +4,7 @@ import {
   HowWorkType,
   WeNotType,
   TechFaqItemType,
+  ProjectsType,
 } from "./dataType";
 
 export const headerSection = {
@@ -418,6 +419,210 @@ export const faqData: TechFaqItemType[] = [
       {
         heading: "Marketing Automation",
         items: ["CRM & Email Automation", "API-driven campaign workflows"],
+      },
+    ],
+  },
+];
+
+export const projects: ProjectsType[] = [
+  {
+    visibleInHome: true,
+    pos: "left",
+    size: "large",
+    title: "Loftloom",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/loftloom/loftloom.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "loftloom",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/loftloom/loftloom-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/loftloom/loftloom-2_1.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/loftloom/loftloom-2_2.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/loftloom/loftloom-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/loftloom/loftloom-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/loftloom/loftloom-6.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/loftloom/loftloom-6.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: true,
+    pos: "left",
+    size: "large",
+    title: "Pulse Studio",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/pulse-studio/pulse-studio.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "pulse-studio",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-3_1.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-3_2.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-6.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-7.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-8.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/pulse-studio/pulse-studio-9.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: true,
+    pos: "left",
+    size: "large",
+    title: "Onedot design agency",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/onedot/onedot.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "onedot",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/onedot/onedot-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/onedot/onedot-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/onedot/onedot-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/onedot/onedot-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/onedot/onedot-5_1.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/onedot/onedot-5_2.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/onedot/onedot-6.webp",
+        layout: "single",
       },
     ],
   },

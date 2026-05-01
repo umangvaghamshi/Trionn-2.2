@@ -6,14 +6,14 @@ import gsap from "gsap";
 import Image from "next/image";
 import parse from "html-react-parser";
 import { WordShiftButton } from "@/components/Button";
-import type { workDataItem } from "@/data/dataType";
+import type { ProjectsType } from "@/data/dataType";
 
 export type WorkProjectPanelHandle = {
   play: () => void;
 };
 
 type WorkProjectPanelProps = {
-  item: workDataItem;
+  item: ProjectsType;
 };
 
 const WorkProjectPanel = forwardRef<
@@ -109,11 +109,11 @@ const WorkProjectPanel = forwardRef<
 
           {/* Right: Year & Link */}
           <div className="flex flex-col sm:flex-row justify-between">
-            <p ref={subTitleRef} className="small text-dark-font/60 max-w-54">
-              {parse(item.subtitle)}
+            <p ref={subTitleRef} className="small text-dark-font/60 max-w-80">
+              {parse(item.subTitle)}
             </p>
             <div className="" ref={linkWrapRef}>
-              <WordShiftButton text="Explore project" href="#" />
+              <WordShiftButton text="Explore project" href={`work/${item.slug}`} />
             </div>
           </div>
         </div>
