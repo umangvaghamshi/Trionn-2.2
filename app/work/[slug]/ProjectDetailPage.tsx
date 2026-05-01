@@ -75,7 +75,7 @@ export default function ProjectDetailPage({ project }: { project: any }) {
               styleVars={{ buttonWrapperColor: "#D8D8D8" }}
             />
           </div>
-          <div className="col-span-12 lg:col-span-8 py-20 grid grid-cols-2 gap-6">
+          <div className="col-span-12 lg:col-span-8 py-37.5 grid grid-cols-2 gap-6">
             {project.content.map((item: any, index: number) => (
               <div
                 key={index}
