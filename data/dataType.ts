@@ -46,3 +46,28 @@ export type TechFaqItemType = {
   title: string;
   content: TechCategory[];
 };
+
+export type TabData = {
+  id: string;
+  label: string;
+  content: string;
+};
+export type ProjectContent = {
+  image: string;
+  layout: "single" | "grid";
+};
+
+export type ProjectsType = {
+  visibleInHome?: boolean;
+  pos: "left" | "right" | "center";
+  size: "small" | "medium" | "large" | "xlarge";
+  title: string;
+  subTitle: string;
+  year: string;
+  image: string;
+  category: string[];
+  slug: string;
+  tabs: TabData[];
+  liveURL?: string;
+  content: ProjectContent[];
+};

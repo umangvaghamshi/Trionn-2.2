@@ -5,7 +5,7 @@ import WorkProjectPanel, {
   type WorkProjectPanelHandle,
 } from "@/components/Sections/Home/WorkProjectPanel";
 import { BlurTextReveal } from "@/components/TextAnimation";
-import { workData } from "@/data";
+import { projects } from "@/data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -128,9 +128,9 @@ export default function Work({
           </div>
 
           {/* ── Project Cards with divider lines ── */}
-          {workData.map((item, i) => (
+          {projects.map((item, index) => (
             <div
-              key={item.id}
+              key={index}
               className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-full items-center pointer-events-none"
             >
               {/* Vertical divider line — draws top→bottom on scrub */}
@@ -143,7 +143,7 @@ export default function Work({
               <div className="js-work-card-inner w-full will-change-transform px-4 md:px-20">
                 <WorkProjectPanel
                   ref={(el) => {
-                    panelRefs.current[i] = el;
+                    panelRefs.current[index] = el;
                   }}
                   item={item}
                 />
@@ -165,7 +165,7 @@ export default function Work({
                     brands, and platforms.
                   </h3>
                   <div className="relative inline-flex items-center gap-4 transition-transform duration-700 mt-2">
-                    <WordShiftButton text="view all projects" href="#" />
+                    <WordShiftButton text="view all projects" href="/work" />
                   </div>
                 </div>
               </div>
