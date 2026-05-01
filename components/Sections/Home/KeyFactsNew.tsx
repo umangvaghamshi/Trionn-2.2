@@ -99,7 +99,7 @@ export default function KeyFactsNew() {
         <div className="title-block flex flex-col items-center mb-20 gap-6 text-center">
           <BlurTextReveal
             as="h2"
-            html={`Key facts`}
+            text={`Key facts`}
             animationType="chars"
             stagger={0.05}
             className="text-dark-font block"
@@ -116,7 +116,7 @@ export default function KeyFactsNew() {
         <div className="partners-block mt-29 flex flex-col gap-6">
           <BlurTextReveal
             as="span"
-            html={`Our business partners`}
+            text={`Our business partners`}
             animationType="chars"
             stagger={0.05}
             className="text-black small uppercase text-center block"

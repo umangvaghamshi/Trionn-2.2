@@ -720,7 +720,7 @@ export default function DribbleSection() {
           >
             <BlurTextReveal
               as="h2"
-              html="Design in motion"
+              text="Design in motion"
               animationType="chars"
               stagger={0.05}
               className="text-dark-font mb-6 relative"

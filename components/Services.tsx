@@ -64,7 +64,7 @@ export default function Services() {
                   as="span"
                   html={service.subText}
                   animationType="chars"
-                  stagger={0.05}
+                  stagger={0.02}
                   className="title block mb-12"
                 />
                 <Image
@@ -80,9 +80,9 @@ export default function Services() {
                   <div className="service-title-block mb-25">
                     <BlurTextReveal
                       as="h3"
-                      html={service.title}
+                      text={service.title}
                       animationType="chars"
-                      stagger={0.05}
+                      stagger={0.02}
                       className="service-title mb-10 text-[3.5rem]! leading-10.5! -tracking-[0.04em]!"
                     />
                     <p className="small max-w-99">
@@ -92,7 +92,7 @@ export default function Services() {
                   <div className="service-info max-w-99">
                     <BlurTextReveal
                       as="span"
-                      html="Our Core Capabilities"
+                      text="Our Core Capabilities"
                       animationType="chars"
                       stagger={0.05}
                       className="title block mb-10 opacity-60!"
@@ -127,7 +127,7 @@ export default function Services() {
         />
         <BlurTextReveal
           as="span"
-          html="✦ Services are outputs. Systems are outcomes."
+          text="✦ Services are outputs. Systems are outcomes."
           animationType="chars"
           stagger={0.05}
           className="title block text-center"

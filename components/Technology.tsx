@@ -11,21 +11,21 @@ export default function Technology() {
         <div className="grid grid-cols-12 gap-x-6 pb-37.5">
           <BlurTextReveal
             as="h2"
-            html="technology"
+            text="technology"
             animationType="chars"
             stagger={0.08}
             className="mrquee-text leading-[0.8]! uppercase z-2 col-span-10 col-start-3"
           />
           <BlurTextReveal
             as="h2"
-            html="stack"
+            text="stack"
             animationType="chars"
             stagger={0.08}
             className="mrquee-text leading-[0.8]! uppercase z-2 col-span-5 col-start-8"
           />
           <BlurTextReveal
             as="span"
-            html="Built with performance-first, scalable front-end architecture."
+            text="Built with performance-first, scalable front-end architecture."
             animationType="words"
             stagger={0.08}
             className="title z-2 col-span-8 col-start-5 max-w-70 -translate-y-full block"

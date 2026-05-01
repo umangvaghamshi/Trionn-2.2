@@ -170,7 +170,7 @@ export default function HowWork({
           <div className="grid grid-cols-12 gap-x-6 mb-20 col-span-12">
             <BlurTextReveal
               as="span"
-              html={`Our process`}
+              text={`Our process`}
               animationType="chars"
               stagger={0.05}
               className="title block col-span-2 pt-4"
@@ -178,7 +178,7 @@ export default function HowWork({
             <div className="col-span-10">
               <BlurTextReveal
                 as="h2"
-                html={`How we work`}
+                text={`How we work`}
                 animationType="chars"
                 stagger={0.05}
                 className="mb-6"
