@@ -57,7 +57,7 @@ export default function Vision() {
           <div className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6 pb-10">
             <BlurTextReveal
               as="span"
-              html={`✦ From idea to outcome.`}
+              text={`✦ From idea to outcome.`}
               animationType="chars"
               stagger={0.05}
               className="title z-3 col-span-12 text-center"

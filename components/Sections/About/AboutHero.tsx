@@ -128,9 +128,9 @@ export default function AboutHero() {
                 <div className="tr__container grid grid-cols-12 gap-x mb-25">
                   <BlurTextReveal
                     as="span"
-                    html={`We design and build digital experiences that scale, perform, and endure.`}
+                    text={`We design and build digital experiences that scale, perform, and endure.`}
                     animationType="chars"
-                    stagger={0.05}
+                    stagger={0.02}
                     className="block title col-span-10 col-start-2  max-w-60"
                   />
                 </div>

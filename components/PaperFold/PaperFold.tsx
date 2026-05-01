@@ -110,7 +110,7 @@ export default function PaperFold({
             <div className="col-span-3 col-start-2" ref={valueTitle}>
               <BlurTextReveal
                 as="h2"
-                html={sectionTitle}
+                text={sectionTitle}
                 animationType="chars"
                 stagger={0.05}
                 className="text-dark-font block"
@@ -148,7 +148,7 @@ export default function PaperFold({
               </div>
               <BlurTextReveal
                 as="span"
-                html={footerTagline}
+                text={footerTagline}
                 animationType="chars"
                 stagger={0.05}
                 className="text-dark-font title block bottom-text"

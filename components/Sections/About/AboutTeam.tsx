@@ -17,21 +17,21 @@ export default function AboutTeam() {
           <div className="grid grid-cols-12 gap-x-6 ">
             <BlurTextReveal
               as="h2"
-              html="Different"
+              text="Different"
               animationType="chars"
               stagger={0.08}
               className="mrquee-text leading-[0.8]! uppercase z-2 col-span-11 col-start-2"
             />
             <BlurTextReveal
               as="h2"
-              html="skills. One"
+              text="skills. One"
               animationType="chars"
               stagger={0.08}
               className="mrquee-text leading-[0.8]! uppercase z-2 col-span-10 col-start-4"
             />
             <BlurTextReveal
               as="h2"
-              html="standard."
+              text="standard."
               animationType="chars"
               stagger={0.08}
               className="mrquee-text leading-[0.8]! uppercase z-2 col-span-6 col-start-7"
@@ -39,7 +39,7 @@ export default function AboutTeam() {
             <div className="relative col-span-8 col-start-4 max-w-[16rem]">
               <BlurTextReveal
                 as="span"
-                html="A collective shaped by shared standards, not job titles."
+                text="A collective shaped by shared standards, not job titles."
                 animationType="words"
                 stagger={0.08}
                 className="title uppercase z-2 absolute -translate-y-full block"
@@ -55,7 +55,7 @@ export default function AboutTeam() {
         <div className="pt-25 flex flex-col items-center text-center gap-6">
           <BlurTextReveal
             as="h2"
-            html="Our team"
+            text="Our team"
             animationType="chars"
             stagger={0.08}
           />

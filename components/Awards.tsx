@@ -365,7 +365,7 @@ export default function Awards() {
         >
           <BlurTextReveal
             as="span"
-            html="Results matter most. Awards add recognition and value."
+            text="Results matter most. Awards add recognition and value."
             animationType="words"
             stagger={0.03}
             className="small max-w-54 text-light-font block uppercase"
@@ -447,7 +447,7 @@ export default function Awards() {
         >
           <BlurTextReveal
             as="span"
-            html="✦ Recognition follows work done with care."
+            text="✦ Recognition follows work done with care."
             animationType="chars"
             stagger={0.03}
             className="title text-light-font block"
@@ -472,7 +472,7 @@ export default function Awards() {
                   <div className="flex-1 flex flex-col items-start justify-between pr-10">
                     <BlurTextReveal
                       as="p"
-                      html={item.title}
+                      text={item.title}
                       animationType="words"
                       stagger={0.03}
                       className="transition-all duration-500 ease-in-out"

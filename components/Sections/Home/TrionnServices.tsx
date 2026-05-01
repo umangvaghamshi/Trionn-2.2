@@ -1101,7 +1101,7 @@ export default function TrionnServices({
           <div data-services-copy className="relative z-20 block">
             <BlurTextReveal
               as="span"
-              html={`OUR SERVICES`}
+              text={`OUR SERVICES`}
               animationType="chars"
               stagger={0.05}
               className={`title text-center relative z-20 block transition-colors duration-500 ${embedded ? "" : "text-light-font"}`}
@@ -1136,7 +1136,7 @@ export default function TrionnServices({
               >
                 <BlurTextReveal
                   as="span"
-                  html={`✦ Design with intent. Built to work.`}
+                  text={`✦ Design with intent. Built to work.`}
                   animationType="chars"
                   stagger={0.05}
                   className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
