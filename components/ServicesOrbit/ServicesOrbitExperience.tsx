@@ -9,9 +9,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import Marquee from "@/components/Marquee";
+import { useServicesOrbitScene } from "./useServicesOrbitScene";
 
 gsap.registerPlugin(ScrollTrigger);
-import { useServicesOrbitScene } from "./useServicesOrbitScene";
+
 
 const BG = "#0a0a0a";
 const FG = "#e8e8e8";
@@ -208,7 +209,7 @@ export default function ServicesOrbitExperience() {
           <div className="exp-top-label">
             <BlurTextReveal
               as="span"
-              html="✦ WHAT WE DO BEST"
+              text="✦ WHAT WE DO BEST"
               animationType="chars"
               stagger={0.05}
               className="title block text-center"
@@ -216,7 +217,7 @@ export default function ServicesOrbitExperience() {
           </div>
           <BlurTextReveal
             as="h1"
-            html="Area of expertise"
+            text="Area of expertise"
             animationType="chars"
             stagger={0.05}
             className="text-center"
@@ -267,10 +268,9 @@ export default function ServicesOrbitExperience() {
           <div className="col-span-6 col-start-5 gap-20 flex flex-col">
             <BlurTextReveal
               as="h2"
-              html="Focused disciplines where strategy, design, and technology work as one."
+              text="Focused disciplines where strategy, design, and technology work as one."
               animationType="chars"
-              stagger={0.05}
-              duration={2}
+              stagger={0.01}
               className="max-w-200 foc-title"
             />
             <div className="flex gap-10 foc-cta">
@@ -310,9 +310,9 @@ export default function ServicesOrbitExperience() {
           <div className="tr__container w-full">
             <BlurTextReveal
               as="span"
-              html="Capabilities shaped to scale with ambition."
+              text="Capabilities shaped to scale with ambition."
               animationType="chars"
-              stagger={0.05}
+              stagger={0.02}
               className="title block text-center"
             />
           </div>

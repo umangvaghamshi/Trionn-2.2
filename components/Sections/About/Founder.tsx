@@ -25,7 +25,7 @@ export default function Founder() {
           <div className="col-span-10 col-start-2">
             <BlurTextReveal
               as="h2"
-              html={`Sunny Rathod`}
+              text={`Sunny Rathod`}
               animationType="chars"
               stagger={0.05}
               className="mb-6"
@@ -45,9 +45,9 @@ export default function Founder() {
             />
             <BlurTextReveal
               as="span"
-              html={`Awwwards Jury, shaping digital experiences for global brands.`}
+              text={`Awwwards Jury, shaping digital experiences for global brands.`}
               animationType="chars"
-              stagger={0.05}
+              stagger={0.02}
               className="title max-w-50"
             />
           </div>
@@ -87,9 +87,9 @@ export default function Founder() {
               </p>
               <BlurTextReveal
                 as="span"
-                html={`This belief shapes how we approach every project.`}
+                text={`This belief shapes how we approach every project.`}
                 animationType="chars"
-                stagger={0.05}
+                stagger={0.02}
                 className="title max-w-56 pl-4 border-light-font border-l-2"
               />
             </div>

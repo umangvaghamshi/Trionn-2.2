@@ -40,7 +40,7 @@ export default function Banner() {
               >
                 <BlurTextReveal
                   as="h1"
-                  html="Designed to"
+                  text="Designed to"
                   animationType="chars"
                   stagger={0.08}
                   className="z-2"
@@ -91,7 +91,7 @@ export default function Banner() {
             >
               <BlurTextReveal
                 as="span"
-                html={`hold to 💥 blast`}
+                text={`hold to 💥 blast`}
                 animationType="chars"
                 stagger={0.05}
                 className="title block"
@@ -163,7 +163,7 @@ export default function Banner() {
               <div className="col-span-1 ">
                 <BlurTextReveal
                   as="span"
-                  html={`about`}
+                  text={`about`}
                   animationType="chars"
                   stagger={0.05}
                   className="title mt-4 block"
@@ -187,9 +187,9 @@ export default function Banner() {
               <div className="col-span-3 col-start-2 max-w-57 ">
                 <BlurTextReveal
                   as="span"
-                  html={`We design for longevity — clarity first, craft always, built to scale.`}
+                  text={`We design for longevity — clarity first, craft always, built to scale.`}
                   animationType="chars"
-                  stagger={0.05}
+                  stagger={0.01}
                   className="title block"
                 />
               </div>

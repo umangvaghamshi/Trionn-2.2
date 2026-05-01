@@ -2072,7 +2072,7 @@ export default function OurWorkListing() {
             </div>
             <BlurTextReveal
               as="h1"
-              html="Our work"
+              text="Our work"
               animationType="chars"
               stagger={0.08}
               className="z-2 mb-6"

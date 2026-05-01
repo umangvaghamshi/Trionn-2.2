@@ -16,7 +16,7 @@ export default function AboutIntro() {
           <div className="col-span-11 col-start-2 mb-10">
             <BlurTextReveal
               as="span"
-              html={`At Trionn,`}
+              text={`At Trionn,`}
               animationType="chars"
               stagger={0.05}
               className="title block mb-4"

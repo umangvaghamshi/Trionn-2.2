@@ -303,7 +303,7 @@ export default function BrandShowcase({
           <div className="mb-10">
             <BlurTextReveal
               as="span"
-              html={sectionLabel}
+              text={sectionLabel}
               animationType="words"
               stagger={0.08}
               className="title block text-center text-dark-font max-w-40"

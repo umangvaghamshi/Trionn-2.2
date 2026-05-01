@@ -115,7 +115,7 @@ export default function Testimonials({
         <div className="grid grid-cols-12 gap-6">
           <BlurTextReveal
             as="h2"
-            html="Client stories"
+            text="Client stories"
             animationType="chars"
             stagger={0.05}
             className="text-dark-font col-span-5 col-start-2"

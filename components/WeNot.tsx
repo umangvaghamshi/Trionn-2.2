@@ -80,7 +80,7 @@ export default function WeNot() {
           <div className="col-span-9 col-start-3">
             <BlurTextReveal
               as="span"
-              html={`Who we're not for`}
+              text={`Who we're not for`}
               animationType="chars"
               stagger={0.05}
               className="title uppercase mb-10 block"
