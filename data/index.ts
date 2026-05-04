@@ -479,7 +479,7 @@ export const projects: ProjectsType[] = [
         layout: "single",
       },
       {
-        image: "/images/projects/loftloom/loftloom-6.webp",
+        image: "/images/projects/loftloom/loftloom-5.webp",
         layout: "single",
       },
       {
@@ -490,8 +490,8 @@ export const projects: ProjectsType[] = [
   },
   {
     visibleInHome: true,
-    pos: "left",
-    size: "large",
+    pos: "right",
+    size: "medium",
     title: "Pulse Studio",
     subTitle:
       "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
@@ -565,8 +565,8 @@ export const projects: ProjectsType[] = [
   },
   {
     visibleInHome: true,
-    pos: "left",
-    size: "large",
+    pos: "center",
+    size: "xlarge",
     title: "Onedot design agency",
     subTitle:
       "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
@@ -622,6 +622,743 @@ export const projects: ProjectsType[] = [
       },
       {
         image: "/images/projects/onedot/onedot-6.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "left",
+    size: "small",
+    title: "GridFree.AI",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/gridfree-ai/gridfree-ai.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "gridfree-ai",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/gridfree-ai/gridfree-ai-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/gridfree-ai/gridfree-ai-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/gridfree-ai/gridfree-ai-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/gridfree-ai/gridfree-ai-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/gridfree-ai/gridfree-ai-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/gridfree-ai/gridfree-ai-6.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "right",
+    size: "large",
+    title: "Novaglam",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/novaglam/novaglam.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "novaglam",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/novaglam/novaglam-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/novaglam/novaglam-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/novaglam/novaglam-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/novaglam/novaglam-4_1.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/novaglam/novaglam-4_2.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/novaglam/novaglam-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/novaglam/novaglam-6.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/novaglam/novaglam-7.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "left",
+    size: "medium",
+    title: "FirstGround Coffee",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/first-ground/first-ground.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "first-ground",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/first-ground/first-ground-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/first-ground/first-ground-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/first-ground/first-ground-3_1.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/first-ground/first-ground-3_2.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/first-ground/first-ground-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/first-ground/first-ground-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/first-ground/first-ground-6.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "center",
+    size: "xlarge",
+    title: "Techno",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/techno/techno.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "techno",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/techno/techno-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/techno/techno-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/techno/techno-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/techno/techno-4.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "right",
+    size: "small",
+    title: "Reelix",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/reelix/reelix.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "reelix",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/reelix/reelix-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reelix/reelix-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reelix/reelix-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reelix/reelix-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reelix/reelix-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reelix/reelix-6.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reelix/reelix-7.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "left",
+    size: "large",
+    title: "Clara Helthcare",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/clara-helthcare/clara-helthcare.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "clara-helthcare",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/clara-helthcare/clara-helthcare-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/clara-helthcare/clara-helthcare-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/clara-helthcare/clara-helthcare-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/clara-helthcare/clara-helthcare-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/clara-helthcare/clara-helthcare-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/clara-helthcare/clara-helthcare-6.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/clara-helthcare/clara-helthcare-7.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/clara-helthcare/clara-helthcare-8.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "right",
+    size: "medium",
+    title: "Z1FLUX Solar",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/z1-flux-solar/z1-flux-solar.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "z1-flux-solar",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-6_1.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-6_2.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-7.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-8.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/z1-flux-solar/z1-flux-solar-9.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "center",
+    size: "xlarge",
+    title: "Improvi.AI",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/improvi/improvi.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "improvi-ai",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/improvi/improvi-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/improvi/improvi-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/improvi/improvi-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/improvi/improvi-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/improvi/improvi-5_1.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/improvi/improvi-5_2.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/improvi/improvi-6.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/improvi/improvi-7.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/improvi/improvi-8.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/improvi/improvi-9.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/improvi/improvi-10.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "left",
+    size: "small",
+    title: "Myworker Ai",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/myworker/myworker.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "myworker-ai",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/myworker/myworker-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/myworker/myworker-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/myworker/myworker-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/myworker/myworker-4_1.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/myworker/myworker-4_2.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/myworker/myworker-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/myworker/myworker-6.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/myworker/myworker-7.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/myworker/myworker-8.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/myworker/myworker-9.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/myworker/myworker-10.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/myworker/myworker-11.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "right",
+    size: "large",
+    title: "Reyden",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/reyden/reyden.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "reyden",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/reyden/reyden-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reyden/reyden-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reyden/reyden-3_1.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/reyden/reyden-3_2.webp",
+        layout: "grid",
+      },
+      {
+        image: "/images/projects/reyden/reyden-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reyden/reyden-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/reyden/reyden-6.webp",
+        layout: "single",
+      },
+    ],
+  },
+  {
+    visibleInHome: false,
+    pos: "left",
+    size: "medium",
+    title: "DFZ",
+    subTitle:
+      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    year: "2025",
+    image: "/images/projects/dfz/dfz.webp",
+    category: ["Brand", "Website", "Digital System"],
+    slug: "dfz",
+    tabs: [
+      {
+        id: "challenge",
+        label: "THE CHALLENGE",
+        content:
+          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+      },
+      {
+        id: "approach",
+        label: "APPROACH",
+        content:
+          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+      },
+      {
+        id: "outcome",
+        label: "OUTCOME",
+        content:
+          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+      },
+    ],
+    liveURL: "#",
+    content: [
+      {
+        image: "/images/projects/dfz/dfz-1.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/dfz/dfz-2.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/dfz/dfz-3.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/dfz/dfz-4.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/dfz/dfz-5.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/dfz/dfz-6.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/dfz/dfz-7.webp",
+        layout: "single",
+      },
+      {
+        image: "/images/projects/dfz/dfz-8.webp",
         layout: "single",
       },
     ],

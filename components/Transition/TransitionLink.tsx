@@ -32,6 +32,9 @@ export default function TransitionLink({
       // Resolve href to string
       const target = typeof href === "string" ? href : href.pathname ?? "/";
 
+      // Skip anchor-only links (e.g. href="#" or href="#section")
+      if (target.startsWith("#") || target === "") return;
+
       // Skip if already on this page or transition in progress
       if (target === pathname || phase !== "idle") return;
 
