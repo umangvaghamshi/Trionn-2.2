@@ -14,6 +14,9 @@ gsap.registerPlugin(ScrollTrigger);
 export default function ProjectDetailPage({ project }: { project: any }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const leftColRef = useRef<HTMLDivElement>(null);
+  const rightColRef = useRef<HTMLDivElement>(null);
+
+  const [activeTab, setActiveTab] = React.useState(project.tabs?.[0]?.id || "");
 
   useGSAP(
     () => {
@@ -29,22 +32,37 @@ export default function ProjectDetailPage({ project }: { project: any }) {
           pinSpacing: false,
           anticipatePin: 1,
         });
+
+        if (!project.tabs || project.tabs.length === 0) return;
+        project.tabs.forEach((tab: any, i: number) => {
+          ScrollTrigger.create({
+            trigger: rightColRef.current,
+            // We use refresh() logic to ensure height is calculated after images load
+            start: () =>
+              `top+=${(i * (rightColRef.current?.offsetHeight || 0)) / project.tabs.length} top`,
+            end: () =>
+              `top+=${((i + 1) * (rightColRef.current?.offsetHeight || 0)) / project.tabs.length} top`,
+            onToggle: (self) => {
+              if (self.isActive) setActiveTab(tab.id);
+            },
+          });
+        });
       });
 
       return () => mm.revert();
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [project.tabs] },
   );
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full bg-[#262623] z-3 overflow-hidden text-light-font"
+      className="relative w-full bg-[#040508] z-3 overflow-hidden text-light-font"
     >
       <div className="tr__container flex flex-col justify-between">
         <div className="grid grid-cols-12 gap-6">
           <div
-            className="col-span-4 py-37.5 flex flex-col justify-between gap-10 min-h-screen max-h-screen"
+            className="col-span-4 pt-37.5 pb-25 flex flex-col justify-between gap-10 min-h-screen max-h-screen left-block"
             ref={leftColRef}
           >
             <div className="title-block flex flex-col">
@@ -59,7 +77,7 @@ export default function ProjectDetailPage({ project }: { project: any }) {
                 />
                 <p className="text-light-font/60 small">{project.year}</p>
               </div>
-              <p className="small max-w-100 text-light-font/60">
+              <p className="small max-w-70 text-light-font/60">
                 {project.subTitle}
               </p>
               <ul className="mt-10 list-disc pl-4">
@@ -68,14 +86,24 @@ export default function ProjectDetailPage({ project }: { project: any }) {
                 ))}
               </ul>
             </div>
-            <Tabs tabs={project.tabs} className="max-w-100" />
+            {project.tabs && (
+              <Tabs
+                tabs={project.tabs}
+                activeTabId={activeTab}
+                onTabChange={setActiveTab}
+                className="max-w-135"
+              />
+            )}
             <WordShiftButton
               text="view live"
               href={project.liveURL}
               styleVars={{ buttonWrapperColor: "#D8D8D8" }}
             />
           </div>
-          <div className="col-span-12 lg:col-span-8 py-37.5 grid grid-cols-2 gap-6">
+          <div
+            className="col-span-12 lg:col-span-8 pt-37.5 pb-25 grid grid-cols-2 gap-6 right-block"
+            ref={rightColRef}
+          >
             {project.content.map((item: any, index: number) => (
               <div
                 key={index}
@@ -93,6 +121,11 @@ export default function ProjectDetailPage({ project }: { project: any }) {
             ))}
           </div>
         </div>
+        <LinePlus
+          lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
+          plusClass={"col-span-12 mx-auto translate-x-0!"}
+          iconColor={"#D8D8D8"}
+        />
       </div>
     </section>
   );
