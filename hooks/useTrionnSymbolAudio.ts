@@ -113,7 +113,7 @@ export function useTrionnSymbolAudio() {
     if (glassBufferRef.current) {
       doPlay(glassBufferRef.current);
     } else {
-      loadBuffer("/sounds/glass-shatter.mp3", (buf) => {
+      loadBuffer("/assets/glass-shatter.mp3", (buf) => {
         glassBufferRef.current = buf;
         doPlay(buf);
       });
@@ -152,7 +152,7 @@ export function useTrionnSymbolAudio() {
     if (joinBufferRef.current) {
       doPlay(joinBufferRef.current);
     } else {
-      loadBuffer("/sounds/join-zoom.mp3", (buf) => {
+      loadBuffer("/assets/join-zoom.mp3", (buf) => {
         joinBufferRef.current = buf;
         doPlay(buf);
       });
@@ -201,7 +201,7 @@ export function useTrionnSymbolAudio() {
     if (wooshBufferRef.current) {
       doStart(wooshBufferRef.current);
     } else {
-      loadBuffer("/sounds/woosh-loop.mp3", (buf) => {
+      loadBuffer("/assets/woosh-loop.mp3", (buf) => {
         wooshBufferRef.current = buf;
         doStart(buf);
       });
@@ -250,55 +250,115 @@ export function useTrionnSymbolAudio() {
     if (wooshBufferRef.current) {
       doStart(wooshBufferRef.current);
     } else {
-      loadBuffer("/sounds/woosh-loop.mp3", (buf) => {
+      loadBuffer("/assets/woosh-loop.mp3", (buf) => {
         wooshBufferRef.current = buf;
         doStart(buf);
       });
     }
   }, [getCtx, loadBuffer]);
 
-  // Spark Sound
-  const sparkAudioCtxRef = useRef<AudioContext | null>(null);
+  // Lightning / weld spark — home hero only: trionn_hero_final_new/assets/spark.mp3 as /assets/hero-spark.mp3
+  // (Other pages keep /assets/spark.mp3 — e.g. OurWorkListing.)
+  const HERO_SPARK_SRC = "/assets/hero-spark.mp3";
+  const SPARK_VOLUME = 0.16;
   const sparkBufferRef = useRef<AudioBuffer | null>(null);
-  const sparkGainRef = useRef<GainNode | null>(null);
-  const sparkReadyRef = useRef(false);
+  const sparkLoadingRef = useRef(false);
+  const currentSparkSrcRef = useRef<AudioBufferSourceNode | null>(null);
+  const currentSparkGainRef = useRef<GainNode | null>(null);
   const sparkCooldownRef = useRef(0);
+  const lastSparkSoundStartedRef = useRef(false);
 
-  const initSparkAudio = useCallback(() => {
-    const ctx = new (
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext })
-        .webkitAudioContext
-    )();
-    sparkAudioCtxRef.current = ctx;
-    const gain = ctx.createGain();
-    gain.gain.value = 1.0;
-    gain.connect(ctx.destination);
-    sparkGainRef.current = gain;
-    fetch("/sounds/spark.mp3")
+  const preloadSparkBuffer = useCallback(() => {
+    if (sparkBufferRef.current || sparkLoadingRef.current) return;
+    sparkLoadingRef.current = true;
+    const ctx = getCtx();
+    fetch(HERO_SPARK_SRC)
       .then((r) => r.arrayBuffer())
       .then((ab) => ctx.decodeAudioData(ab))
       .then((buf) => {
         sparkBufferRef.current = buf;
-        sparkReadyRef.current = true;
+        sparkLoadingRef.current = false;
       })
-      .catch((e) => console.warn("WeldFX spark audio error", e));
+      .catch((e) => {
+        sparkLoadingRef.current = false;
+        console.warn("Hero spark audio error (hero-spark.mp3)", e);
+      });
+  }, [getCtx]);
+
+  const stopSparkSound = useCallback((fadeTime?: number) => {
+    const ctx = audioCtxRef.current;
+    const src = currentSparkSrcRef.current;
+    const gain = currentSparkGainRef.current;
+    currentSparkSrcRef.current = null;
+    currentSparkGainRef.current = null;
+    if (!src || !ctx) return;
+    const ft = fadeTime == null ? 0.035 : fadeTime;
+    try {
+      if (gain) {
+        gain.gain.cancelScheduledValues(ctx.currentTime);
+        gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + ft);
+      }
+      setTimeout(
+        () => {
+          try {
+            src.stop();
+          } catch (_) {}
+        },
+        Math.max(20, ft * 1000 + 20),
+      );
+    } catch (_) {
+      try {
+        src.stop();
+      } catch (_) {}
+    }
   }, []);
 
-  const playSparkSound = useCallback(() => {
-    if (!soundEnabledRef.current) return;
-    if (!sparkReadyRef.current || sparkCooldownRef.current > 0) return;
-    if (!sparkAudioCtxRef.current) return;
-    if (sparkAudioCtxRef.current.state === "suspended")
-      sparkAudioCtxRef.current.resume();
-    try {
-      const src = sparkAudioCtxRef.current.createBufferSource();
-      src.buffer = sparkBufferRef.current!;
-      src.playbackRate.value = 0.75 + Math.random() * 0.5;
-      src.connect(sparkGainRef.current!);
-      src.start(0);
-      sparkCooldownRef.current = 0.08 + Math.random() * 0.07;
-    } catch (_) {}
+  const playSparkSound = useCallback(
+    (opts?: { sound?: boolean }) => {
+      lastSparkSoundStartedRef.current = false;
+      if (opts?.sound === false) return false;
+      if (!soundEnabledRef.current) return false;
+      const ctx = getCtx();
+      if (ctx.state === "suspended") void ctx.resume();
+      if (!sparkBufferRef.current || sparkCooldownRef.current > 0)
+        return false;
+
+      stopSparkSound(0.015);
+
+      try {
+        const src = ctx.createBufferSource();
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(SPARK_VOLUME, ctx.currentTime);
+        src.buffer = sparkBufferRef.current;
+        src.playbackRate.value = 1.0;
+        src.connect(gain);
+        gain.connect(ctx.destination);
+        currentSparkSrcRef.current = src;
+        currentSparkGainRef.current = gain;
+        src.start(0);
+        src.onended = () => {
+          if (currentSparkSrcRef.current === src) {
+            currentSparkSrcRef.current = null;
+            currentSparkGainRef.current = null;
+          }
+        };
+        sparkCooldownRef.current = 0.08;
+        lastSparkSoundStartedRef.current = true;
+        return true;
+      } catch (_) {
+        currentSparkSrcRef.current = null;
+        currentSparkGainRef.current = null;
+        return false;
+      }
+    },
+    [getCtx, stopSparkSound],
+  );
+
+  const didSparkSoundStart = useCallback(() => {
+    const v = lastSparkSoundStartedRef.current;
+    lastSparkSoundStartedRef.current = false;
+    return v;
   }, []);
 
   // Hover Beep Sound
@@ -313,7 +373,7 @@ export function useTrionnSymbolAudio() {
           .webkitAudioContext
       )();
       hoverAudioCtxRef.current = hCtx;
-      fetch("/sounds/hover-beep.mp3")
+      fetch("/assets/hover-beep.mp3")
         .then((r) => r.arrayBuffer())
         .then((ab) => hCtx.decodeAudioData(ab))
         .then((buf) => {
@@ -357,7 +417,8 @@ export function useTrionnSymbolAudio() {
     stopVibrateSound();
     stopWooshSound();
     stopExplodeSound();
-  }, [stopVibrateSound, stopWooshSound, stopExplodeSound]);
+    stopSparkSound(0.05);
+  }, [stopVibrateSound, stopWooshSound, stopExplodeSound, stopSparkSound]);
 
   return {
     soundEnabledRef,
@@ -372,7 +433,9 @@ export function useTrionnSymbolAudio() {
     autoStartWoosh,
     playSparkSound,
     playHoverBeep,
-    initSparkAudio,
+    preloadSparkBuffer,
+    stopSparkSound,
+    didSparkSoundStart,
     initHoverAudio,
     stopAllSounds,
     sparkCooldownRef,

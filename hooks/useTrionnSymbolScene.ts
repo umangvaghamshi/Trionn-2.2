@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { ScrollSmoother } from "gsap/ScrollSmoother";
+import { useLenis } from "lenis/react";
 import { useTrionnSymbolAudio } from "./useTrionnSymbolAudio";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useTransitionReady } from "@/components/Transition";
@@ -58,6 +58,11 @@ interface Bolt {
 const BOLT_COUNT = 5;
 const BOLT_SEGS = 9;
 const LINE_SEGS = 80;
+/** Line draw-in per frame (higher = faster intro). Reference HTML used 0.006; slightly sped up for product feel. */
+const LINE_DRAW_SPEED = 0.0205;
+/** Smoothed line undraw vs scroll (matches scene.js) */
+const LINE_UNDRAW_SCROLL_RANGE = 0.44;
+const LINE_UNDRAW_EASE = 0.045;
 const GLOW_COLORS = [0xffffff, 0x88ddff, 0x44aaff, 0x0066ff, 0x00ccff, 0xaaddff, 0x0044cc];
 const GLOW_LAYERS = [
   { color: 0x0033cc, maxOpacity: 0.12 },
@@ -151,12 +156,29 @@ function buildShapes(): THREE.Shape[] {
 
 export function useTrionnSymbolScene(
   canvasWrapRef: React.RefObject<HTMLDivElement | null>,
-  glowCanvasRef: React.RefObject<HTMLCanvasElement | null>,
   s4ElRef: React.RefObject<HTMLDivElement | null>,
   scrollHintRef: React.RefObject<HTMLDivElement | null>,
   vibrateElsRef: React.RefObject<(HTMLElement | null)[]>
 ) {
   const audio = useTrionnSymbolAudio();
+  const lenis = useLenis();
+  const lenisScrollRef = useRef(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!lenis) {
+      lenisScrollRef.current = window.scrollY;
+      return;
+    }
+    lenisScrollRef.current = lenis.scroll;
+    const onScroll = () => {
+      lenisScrollRef.current = lenis.scroll;
+    };
+    lenis.on("scroll", onScroll);
+    return () => {
+      lenis.off("scroll", onScroll);
+    };
+  }, [lenis]);
 
   const stateRef = useRef({
     scrollProgress: 0,
@@ -199,7 +221,11 @@ export function useTrionnSymbolScene(
     bolts: [] as Bolt[],
     lineCanvas: null as HTMLCanvasElement | null,
     lctx: null as CanvasRenderingContext2D | null,
-    glowCtx: null as CanvasRenderingContext2D | null,
+    smoothUndrawAmt: 0,
+    sparkHoverActive: false,
+    sparkBurstLeft: 0,
+    sparkSoundPlayed: false,
+    sparkWasAway: true,
     lineState: [{ prog: 0 }, { prog: 0 }, { prog: 0 }] as LineState[],
     pulses: [
       { line: 0, phase: 0, speed: 1.4, len: 0.03, active: false, rest: 0.5, dir: 1 },
@@ -217,8 +243,7 @@ export function useTrionnSymbolScene(
     if (!transitionReady) return;
     const st = stateRef.current;
     const wrap = canvasWrapRef.current;
-    const glowCanvas = glowCanvasRef.current as HTMLCanvasElement;
-    if (!wrap || !glowCanvas) return;
+    if (!wrap) return;
 
     // ── Viewport variables ────────────────────────────────────────────────────
     let viewportW = window.innerWidth;
@@ -226,22 +251,41 @@ export function useTrionnSymbolScene(
 
     function getRenderPixelRatio() {
       const isMobile = viewportW < 768;
-      return Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 1.2);
+      return Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 1.5);
     }
 
-    // ── Glow canvas ──────────────────────────────────────────────────────────
-    glowCanvas.width = viewportW;
-    glowCanvas.height = viewportH;
-    st.glowCtx = glowCanvas.getContext('2d');
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // ── Line overlay canvas ──────────────────────────────────────────────────
-    const lineCanvas = document.createElement('canvas');
-    lineCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2;';
+    // ── Offscreen 2D canvas → composited as fullscreen texture (trionn_hero_final_new)
+    const lineCanvas = document.createElement("canvas");
     lineCanvas.width = viewportW;
     lineCanvas.height = viewportH;
-    wrap.appendChild(lineCanvas);
     st.lineCanvas = lineCanvas;
-    st.lctx = lineCanvas.getContext('2d');
+    st.lctx = lineCanvas.getContext("2d");
+
+    const overlayTexture = new THREE.CanvasTexture(lineCanvas);
+    overlayTexture.minFilter = THREE.LinearFilter;
+    overlayTexture.magFilter = THREE.LinearFilter;
+    overlayTexture.generateMipmaps = false;
+
+    const overlayScene = new THREE.Scene();
+    const overlayCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const overlayMaterial = new THREE.MeshBasicMaterial({
+      map: overlayTexture,
+      transparent: true,
+      depthTest: false,
+      depthWrite: false,
+      toneMapped: false,
+    });
+    const overlayMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(2, 2),
+      overlayMaterial,
+    );
+    overlayMesh.renderOrder = 10000;
+    overlayScene.add(overlayMesh);
 
     // ── Three.js renderer ────────────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
@@ -253,14 +297,23 @@ export function useTrionnSymbolScene(
     wrap.appendChild(renderer.domElement);
     st.renderer = renderer;
 
-    // ── Scene + Camera ───────────────────────────────────────────────────────
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0c0c0c);
     st.scene = scene;
 
-    const getZoom = () => viewportW < 768 ? 9 : viewportW < 1024 ? 7.5 : 6;
-    const camera = new THREE.PerspectiveCamera(42, viewportW / viewportH, 0.1, 200);
-    camera.position.set(0, 0, getZoom());
+    // ── Scene + Camera (device framing matches trionn_hero_final_new/js/scene.js) ─
+    /** Above 1440: desktop; 1024–1440 laptop; 768–1023 tablet; under 768: mobile — smaller sx + camera z from HTML. */
+    function getDeviceFrame() {
+      const w = viewportW;
+      if (w > 1440) return { fov: 42, z: 6.0, sx: 1.0, x: 0, y: 0 };
+      if (w >= 1024) return { fov: 40, z: 6.28, sx: 0.9, x: 0, y: -0.02 };
+      if (w >= 768) return { fov: 38, z: 7.55, sx: 0.84, x: 0, y: -0.035 };
+      return { fov: 36, z: 9.35, sx: 0.74, x: 0, y: -0.055 };
+    }
+
+    const initialFrame = getDeviceFrame();
+    const camera = new THREE.PerspectiveCamera(initialFrame.fov, viewportW / viewportH, 0.1, 200);
+    camera.position.set(0, 0, initialFrame.z);
     st.camera = camera;
 
     // ── Lights ───────────────────────────────────────────────────────────────
@@ -320,11 +373,10 @@ export function useTrionnSymbolScene(
       bevelSize: 0.006,
       bevelSegments: 1,
     };
-    const edgeBright = new THREE.LineBasicMaterial({ color: 0x555555, transparent: true, opacity: 0.08 });
-    const edgeRimMat = new THREE.LineBasicMaterial({ color: 0x666666, transparent: true, opacity: 0.05 });
+    const edgeBright = new THREE.LineBasicMaterial({ color: 0x363e4d, transparent: true, opacity: 0.08 });
+    const edgeRimMat = new THREE.LineBasicMaterial({ color: 0x363e4d, transparent: true, opacity: 0.05 });
 
     const group = new THREE.Group();
-    group.position.z = -extCfg.depth! / 2;
     st.group = group;
 
     const particles: Particle[] = [];
@@ -387,9 +439,25 @@ export function useTrionnSymbolScene(
       particles.push({ mesh: r2, explodeDir: new THREE.Vector3(0, 0, 0), spinAxis: new THREE.Vector3(0, 1, 0), spinSpeed: 0, delay: 0, shapeIdx, isEdge: true });
     }
 
+    /** Match scene.js: FOV + camera z + uniform symbol scale + optical center nudge. */
+    function applyCameraFrame() {
+      const f = getDeviceFrame();
+      camera.fov = f.fov;
+      camera.position.z = f.z;
+      camera.updateProjectionMatrix();
+    }
+
+    function applySymbolScale() {
+      const f = getDeviceFrame();
+      const depth = extCfg.depth ?? 0.42;
+      group.scale.set(f.sx, f.sx, f.sx);
+      group.position.set(f.x, f.y, -depth / 2);
+    }
+
     buildShapes().forEach((shape, i) => buildParticles(shape, i));
     st.particles = particles;
     scene.add(group);
+    applySymbolScale();
 
     // ── WeldFX bolts ─────────────────────────────────────────────────────────
     function makeGlowLine(color: number): { line: THREE.Line; pts: Float32Array } {
@@ -422,7 +490,7 @@ export function useTrionnSymbolScene(
     for (let i = 0; i < BOLT_COUNT; i++) st.bolts.push(makeBolt());
 
     // ── Spark & hover beep audio ─────────────────────────────────────────────
-    audio.initSparkAudio();
+    audio.preloadSparkBuffer();
     audio.initHoverAudio();
 
     // ── Attachment points for 2D lines ───────────────────────────────────────
@@ -473,11 +541,11 @@ export function useTrionnSymbolScene(
     }
 
     // ── 2D glow draw ─────────────────────────────────────────────────────────
-    function drawGlow() {
-      const gCtx = st.glowCtx;
-      if (!gCtx) return;
-      const gW = glowCanvas.width, gH = glowCanvas.height;
-      gCtx.clearRect(0, 0, gW, gH);
+    function drawBoltGlow2D() {
+      const gCtx = st.lctx;
+      if (!gCtx || !lineCanvas) return;
+      const gW = lineCanvas.width;
+      const gH = lineCanvas.height;
       st.bolts.forEach((b) => {
         if (!b.active || b.life <= 0) return;
         const fade = b.life / b.maxLife;
@@ -637,14 +705,19 @@ export function useTrionnSymbolScene(
     }
 
     // ── Draw all 2D overlay lines ─────────────────────────────────────────────
-    function drawLines() {
+    function drawLines(opts?: { skipClear?: boolean }) {
       const lctx = st.lctx;
       if (!lctx || !lineCanvas) return;
-      lctx.clearRect(0, 0, lineCanvas.width, lineCanvas.height);
+      if (!opts?.skipClear) lctx.clearRect(0, 0, lineCanvas.width, lineCanvas.height);
       st.lineTime += 0.016;
 
       const lineNorm = st.lastScroll / viewportH;
-      const undrawAmt = Math.max(0, Math.min(1, (lineNorm - 0.08) / 0.20));
+      const targetUndrawAmt = Math.max(
+        0,
+        Math.min(1, (lineNorm - 0.08) / LINE_UNDRAW_SCROLL_RANGE),
+      );
+      st.smoothUndrawAmt += (targetUndrawAmt - st.smoothUndrawAmt) * LINE_UNDRAW_EASE;
+      const undrawAmt = st.smoothUndrawAmt;
       if (undrawAmt >= 1.0) return;
 
       const dotsVis = undrawAmt < 0.95 ? 1.0 : Math.max(0, 1 - (undrawAmt - 0.95) / 0.05);
@@ -654,7 +727,7 @@ export function useTrionnSymbolScene(
         if (undrawAmt >= 1.0) {
           s2.prog = 0;
         } else if (s2.prog < 1 && undrawAmt < 0.1 && st.introAmt < 0.25) {
-          s2.prog = Math.min(1, s2.prog + 0.014);
+          s2.prog = Math.min(1, s2.prog + LINE_DRAW_SPEED);
         }
       });
 
@@ -670,45 +743,85 @@ export function useTrionnSymbolScene(
       const ptsR = buildTwoSegPts(originL.x, originL.y + CH * 0.130, ar.x, ar.y, CW, CH * 0.10, 3.0);
       const ptsB = buildTwoSegPts(originL.x, originL.y - CH * 0.070, ab.x, ab.y, CW, -CH * 0.065, 2.0);
 
-      // Weld FX proximity trigger (only after connector lines finish intro draw)
+      // Weld FX — burst + single thunder clip per hover (trionn_hero_final_new scene.js)
       st.weldCooldown -= 0.016;
-      const linesFullyDrawn =
-        st.lineState[0].prog >= 1 && st.lineState[1].prog >= 1 && st.lineState[2].prog >= 1;
-      if (inS1 && st.weldCooldown <= 0 && linesFullyDrawn) {
+      const baseLinesReadyForSpark =
+        inS1 &&
+        undrawAmt < 0.02 &&
+        st.lineState.every((s) => s.prog >= 0.995);
+
+      if (baseLinesReadyForSpark) {
         const allLinePts = [ptsL, ptsR, ptsB];
         let hitResult: { x: number; y: number } | null = null;
         let hitLineIdx = -1;
         for (let li = 0; li < allLinePts.length; li++) {
           const h = mouseNearLine(allLinePts[li], 14);
-          if (h) { hitResult = h; hitLineIdx = li; break; }
+          if (h) {
+            hitResult = h;
+            hitLineIdx = li;
+            break;
+          }
         }
+
         if (hitResult !== null) {
-          function unproj2(sx: number, sy: number): THREE.Vector3 {
-            const nx = (sx / CW) * 2 - 1, ny = -(sy / CH) * 2 + 1;
-            const v = new THREE.Vector3(nx, ny, 0.5).unproject(camera);
-            const d = v.sub(camera.position).normalize();
-            return camera.position.clone().add(d.multiplyScalar(-camera.position.z / d.z));
+          if (!st.sparkHoverActive && st.sparkWasAway) {
+            st.sparkHoverActive = true;
+            st.sparkBurstLeft = 5 + Math.floor(Math.random() * 2);
+            st.sparkSoundPlayed = false;
+            st.sparkWasAway = false;
           }
-          const wp = unproj2(hitResult.x, hitResult.y);
-          const otherIdxs = [0, 1, 2].filter((i) => i !== hitLineIdx);
-          const count = Math.random() > 0.5 ? 1 : 2;
-          const targetIdxs = otherIdxs.sort(() => Math.random() - 0.5).slice(0, count);
-          const nearWpts: THREE.Vector3[] = [];
-          targetIdxs.forEach((li) => {
-            const pts = allLinePts[li];
-            let bestD = Infinity, bestPt: LinePt | null = null;
-            for (let i = 0; i < pts.length; i++) {
-              const ddx = pts[i].x - hitResult!.x, ddy = pts[i].y - hitResult!.y;
-              const dd = ddx * ddx + ddy * ddy;
-              if (dd < bestD) { bestD = dd; bestPt = pts[i]; }
+
+          if (st.weldCooldown <= 0 && st.sparkBurstLeft > 0) {
+            function unproj2(sx: number, sy: number): THREE.Vector3 {
+              const nx = (sx / CW) * 2 - 1;
+              const ny = -(sy / CH) * 2 + 1;
+              const v = new THREE.Vector3(nx, ny, 0.5).unproject(camera);
+              const d = v.sub(camera.position).normalize();
+              return camera.position.clone().add(d.multiplyScalar(-camera.position.z / d.z));
             }
-            if (bestPt) nearWpts.push(unproj2(bestPt.x, bestPt.y));
-          });
-          if (nearWpts.length > 0) {
-            triggerWeld(wp, nearWpts);
-            st.weldCooldown = 0.05 + Math.random() * 0.08;
+            const wp = unproj2(hitResult.x, hitResult.y);
+            const otherIdxs = [0, 1, 2].filter((i) => i !== hitLineIdx);
+            const count = Math.random() > 0.5 ? 1 : 2;
+            const targetIdxs = otherIdxs.sort(() => Math.random() - 0.5).slice(0, count);
+            const nearWpts: THREE.Vector3[] = [];
+            targetIdxs.forEach((li) => {
+              const pts = allLinePts[li];
+              let bestD = Infinity;
+              let bestPt: LinePt | null = null;
+              for (let i = 0; i < pts.length; i++) {
+                const ddx = pts[i].x - hitResult!.x;
+                const ddy = pts[i].y - hitResult!.y;
+                const dd = ddx * ddx + ddy * ddy;
+                if (dd < bestD) {
+                  bestD = dd;
+                  bestPt = pts[i];
+                }
+              }
+              if (bestPt) nearWpts.push(unproj2(bestPt.x, bestPt.y));
+            });
+            if (nearWpts.length > 0) {
+              const played = triggerWeld(wp, nearWpts, !st.sparkSoundPlayed);
+              if (played) {
+                if (!st.sparkSoundPlayed && audio.didSparkSoundStart())
+                  st.sparkSoundPlayed = true;
+                st.sparkBurstLeft--;
+                if (st.sparkBurstLeft <= 0) audio.stopSparkSound(0.05);
+              }
+            }
           }
+        } else {
+          if (st.sparkHoverActive) audio.stopSparkSound(0.05);
+          st.sparkHoverActive = false;
+          st.sparkBurstLeft = 0;
+          st.sparkSoundPlayed = false;
+          st.sparkWasAway = true;
         }
+      } else {
+        if (st.sparkHoverActive) audio.stopSparkSound(0.05);
+        st.sparkHoverActive = false;
+        st.sparkBurstLeft = 0;
+        st.sparkSoundPlayed = false;
+        st.sparkWasAway = true;
       }
 
       drawLine(lctx, ptsL, 0.40, 1, st.lineState[0].prog, undrawAmt, symCenter2.x, symCenter2.y, symScreenR);
@@ -797,8 +910,13 @@ export function useTrionnSymbolScene(
     }
 
     // ── Weld trigger ──────────────────────────────────────────────────────────
-    function triggerWeld(hitPoint: THREE.Vector3, nearWpts: THREE.Vector3[]) {
-      if (st.weldCooldown > 0) return;
+    function triggerWeld(
+      hitPoint: THREE.Vector3,
+      nearWpts: THREE.Vector3[],
+      allowSound: boolean,
+    ): boolean {
+      if (st.weldCooldown > 0) return false;
+      if (!nearWpts.length) return false;
       st.bolts.forEach((b) => {
         const tgt = nearWpts[Math.floor(Math.random() * nearWpts.length)];
         const midTarget = {
@@ -808,16 +926,20 @@ export function useTrionnSymbolScene(
         };
         spawnBolt(b, hitPoint, midTarget);
       });
-      audio.playSparkSound();
+      audio.playSparkSound({ sound: allowSound });
+      st.weldCooldown = 0.04 + Math.random() * 0.06;
+      return true;
     }
 
     // ── Update bolt lifetimes ─────────────────────────────────────────────────
-    function updateBolts(smoothDt: number) {
+    function stepBolts(smoothDt: number) {
       audio.sparkCooldownRef.current -= smoothDt;
       st.bolts.forEach((b) => {
         if (!b.active) {
           (b.line.material as THREE.LineBasicMaterial).opacity = 0;
-          b.glowLines.forEach((g) => { (g.line.material as THREE.LineBasicMaterial).opacity = 0; });
+          b.glowLines.forEach((g) => {
+            (g.line.material as THREE.LineBasicMaterial).opacity = 0;
+          });
           b.travelLight.intensity = 0;
           return;
         }
@@ -825,7 +947,9 @@ export function useTrionnSymbolScene(
         if (b.life <= 0) {
           b.active = false;
           (b.line.material as THREE.LineBasicMaterial).opacity = 0;
-          b.glowLines.forEach((g) => { (g.line.material as THREE.LineBasicMaterial).opacity = 0; });
+          b.glowLines.forEach((g) => {
+            (g.line.material as THREE.LineBasicMaterial).opacity = 0;
+          });
           b.travelLight.intensity = 0;
           return;
         }
@@ -833,13 +957,13 @@ export function useTrionnSymbolScene(
         const flicker = 0.7 + Math.random() * 0.3;
         (b.line.material as THREE.LineBasicMaterial).opacity = fade * flicker;
         b.glowLines.forEach((g, gi) => {
-          (g.line.material as THREE.LineBasicMaterial).opacity = GLOW_LAYERS[gi].maxOpacity * fade * flicker;
+          (g.line.material as THREE.LineBasicMaterial).opacity =
+            GLOW_LAYERS[gi].maxOpacity * fade * flicker;
         });
         const tIdx = Math.floor((1 - fade) * BOLT_SEGS) * 3;
         b.travelLight.position.set(b.pts[tIdx], b.pts[tIdx + 1], b.pts[tIdx + 2]);
         b.travelLight.intensity = (8.0 + Math.random() * 6.0) * fade;
       });
-      drawGlow();
     }
 
     // ── Raycaster ────────────────────────────────────────────────────────────
@@ -856,7 +980,7 @@ export function useTrionnSymbolScene(
       const t = clock.getElapsedTime();
 
       // Smooth scroll state — read smoothed scroll to stay in sync with ScrollSmoother
-      const scroll = ScrollSmoother.get()?.scrollTop() ?? window.scrollY;
+      const scroll = lenisScrollRef.current ?? window.scrollY;
       st.lastScroll = scroll;
       const norm = scroll / viewportH;
       st.lastNorm = norm;
@@ -886,7 +1010,7 @@ export function useTrionnSymbolScene(
       mouse.x = st.mouseX;
       mouse.y = st.mouseY;
       if (!st.dragging) {
-        st.rotY += 0.005;
+        st.rotY += prefersReducedMotion ? 0.0015 : 0.0042;
         st.rotX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, st.rotX));
         group.rotation.x += (st.rotX + mouse.y * 0.22 - group.rotation.x) * 0.06;
         group.rotation.y += (st.rotY + mouse.x * 0.22 - group.rotation.y) * 0.06;
@@ -902,7 +1026,9 @@ export function useTrionnSymbolScene(
         const nowHit = hits.length > 0 ? hits[0].object : null;
         if (nowHit !== st.hoveredMesh) {
           if (nowHit) {
-            (nowHit as THREE.Mesh & { _flash?: number })._flash = 1.0;
+            const hm = nowHit as THREE.Mesh & { _flash?: number; _flashActive?: boolean };
+            hm._flash = 1.0;
+            hm._flashActive = true;
             audio.playHoverBeep();
           }
           st.hoveredMesh = nowHit;
@@ -910,21 +1036,6 @@ export function useTrionnSymbolScene(
       } else {
         st.hoveredMesh = null;
       }
-      particles.forEach((p) => {
-        if (p.isEdge) return;
-        const mat = (p.mesh as THREE.Mesh).material as THREE.MeshPhysicalMaterial;
-        const m = p.mesh as THREE.Mesh & { _flash?: number };
-        if (m._flash === undefined) m._flash = 0;
-        m._flash! *= 0.94;
-        if (m._flash! < 0.002) m._flash = 0;
-        const f = m._flash!;
-        mat.envMapIntensity = 3.0 + f * 2.0;
-        mat.roughness = 0.08 - f * 0.08;
-        mat.clearcoatRoughness = 0.05 - f * 0.05;
-        mat.emissiveIntensity = 0.15 + f * 0.15;
-        mat.transmission = 0.35 + f * 0.50;
-        mat.opacity = 0.88 - f * 0.25;
-      });
 
       // Proximity hover
       const projected = symCenter3D.clone().project(camera);
@@ -1009,6 +1120,27 @@ export function useTrionnSymbolScene(
         p.mesh.rotation.z = p.spinAxis.z * p.spinSpeed * amt * Math.PI;
       });
 
+      // Premium hover flash — same as trionn_hero_final_new/js/scene.js (1292–1309): only meshes
+      // with active flash; hold/blast do not retint face glass (env + transmission stay base).
+      particles.forEach((p) => {
+        if (p.isEdge) return;
+        const mesh = p.mesh as THREE.Mesh & { _flash?: number; _flashActive?: boolean };
+        if (!mesh._flashActive && !mesh._flash) return;
+        const mat = mesh.material as THREE.MeshPhysicalMaterial;
+        mesh._flash = (mesh._flash || 0) * 0.92;
+        if (mesh._flash < 0.002) {
+          mesh._flash = 0;
+          mesh._flashActive = false;
+        }
+        const f = mesh._flash;
+        mat.envMapIntensity = 3.0 + f * 1.6;
+        mat.roughness = Math.max(0.02, 0.08 - f * 0.06);
+        mat.clearcoatRoughness = Math.max(0.01, 0.05 - f * 0.035);
+        mat.emissiveIntensity = 0.15 + f * 0.1;
+        mat.transmission = 0.35 + f * 0.32;
+        mat.opacity = 0.88 - f * 0.16;
+      });
+
       // Orbiting lights
       if (st.p1) {
         st.p1.position.x = Math.sin(t * 0.6) * 4;
@@ -1024,14 +1156,27 @@ export function useTrionnSymbolScene(
       // Env map update — throttled to every 6 frames, only when something is moving
       group.visible = false;
       if (!st.envReady) { cubeCamera.update(renderer, scene); st.envReady = true; }
-      else if ((frameCount++ % 6) === 0 && (st.introAmt > 0.01 || st.clickBurst > 0.01 || st.scrollProgress > 0.01 || st.dragging)) {
+      else if ((frameCount++ % 6) === 0 && (st.introAmt > 0.01 || st.clickBurst > 0.01 || st.scrollProgress > 0.01 || st.dragging || st.holding)) {
         cubeCamera.update(renderer, scene);
       }
       group.visible = true;
 
       renderer.render(scene, camera);
-      drawLines();
-      updateBolts(0.016);
+
+      const lc = st.lineCanvas;
+      const lctx2 = st.lctx;
+      if (lc && lctx2) {
+        lctx2.clearRect(0, 0, lc.width, lc.height);
+        drawBoltGlow2D();
+        drawLines({ skipClear: true });
+        overlayTexture.needsUpdate = true;
+        renderer.autoClear = false;
+        renderer.clearDepth();
+        renderer.render(overlayScene, overlayCamera);
+        renderer.autoClear = true;
+      }
+
+      stepBolts(0.016);
 
       // Woosh volume
       if (audio.soundEnabledRef.current && audio.audioCtxRef.current) {
@@ -1128,12 +1273,12 @@ export function useTrionnSymbolScene(
       viewportW = window.innerWidth;
       viewportH = window.innerHeight;
       camera.aspect = viewportW / viewportH;
-      camera.updateProjectionMatrix();
+      applyCameraFrame();
       renderer.setPixelRatio(getRenderPixelRatio());
       renderer.setSize(viewportW, viewportH);
       lineCanvas.width = viewportW; lineCanvas.height = viewportH;
-      glowCanvas.width = viewportW; glowCanvas.height = viewportH;
-      camera.position.z = getZoom();
+      overlayTexture.needsUpdate = true;
+      applySymbolScale();
     };
     window.addEventListener('resize', onResize);
 
@@ -1146,7 +1291,11 @@ export function useTrionnSymbolScene(
       window.removeEventListener('resize', onResize);
       renderer.dispose();
       if (wrap.contains(renderer.domElement)) wrap.removeChild(renderer.domElement);
-      if (wrap.contains(lineCanvas)) wrap.removeChild(lineCanvas);
+      overlayMesh.geometry.dispose();
+      const om = overlayMesh.material as THREE.MeshBasicMaterial;
+      if (om.map) om.map.dispose();
+      om.dispose();
+      overlayTexture.dispose();
       particles.forEach((p) => {
         p.mesh.geometry.dispose();
         if (Array.isArray(p.mesh.material)) p.mesh.material.forEach((m) => m.dispose());
