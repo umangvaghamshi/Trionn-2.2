@@ -2,16 +2,17 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/all';
-import SplitText from 'gsap/SplitText'; // GSAP Club plugin
+import SplitText from 'gsap/SplitText';
 import { ElementType, useRef } from 'react';
+import { useTransitionReady } from '@/components/Transition';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 interface FadeOnScrollProps {
-  text?: string; // plain text
-  html?: string; // raw HTML
-  as?: ElementType; // h1, h2, p, div, etc.
-  className?: string; // styling
+  text?: string;
+  html?: string;
+  as?: ElementType;
+  className?: string;
   scrub?: boolean;
   stagger?: number;
 }
@@ -25,42 +26,41 @@ const FadeOnScroll = ({
   stagger = 0.03,
 }: FadeOnScrollProps) => {
   const textRef = useRef<HTMLElement>(null);
+  const transitionReady = useTransitionReady();
+
   useGSAP(() => {
-    if (!textRef.current) return;
+    if (!textRef.current || !transitionReady) return;
 
     const split = new SplitText(textRef.current, {
       type: 'chars',
       aria: 'none',
       charsClass: 'chars',
-      autoSplit: true,
       smartWrap: true,
-      onSplit: (self) => {
-        return gsap.to(self.chars, {
-          color: '#d8d8d8',
-          stagger,
-          scrollTrigger: {
-            trigger: self.chars,
-            endTrigger: self.chars[self.chars.length - 1],
-            markers: false,
-            scrub,
-            // once: true,
-            start: 'top 80%',
-            end: 'bottom center',
-            // refreshPriority: 1,
-          },
-        });
+    });
+
+    const tl = gsap.to(split.chars, {
+      color: '#d8d8d8',
+      stagger,
+      scrollTrigger: {
+        trigger: textRef.current,
+        endTrigger: split.chars[split.chars.length - 1],
+        scrub,
+        start: 'top 80%',
+        end: 'bottom center',
       },
     });
 
     return () => {
+      tl.scrollTrigger?.kill();
+      tl.kill();
       split.revert();
     };
-  }, []);
+  }, [transitionReady]);
 
   return (
     <Tag
       ref={textRef}
-      className={`${className}  text-[rgba(216,216,216,0.1)]`}
+      className={`${className} text-[rgba(216,216,216,0.1)]`}
       dangerouslySetInnerHTML={html ? { __html: html } : undefined}
     >
       {!html ? text : null}

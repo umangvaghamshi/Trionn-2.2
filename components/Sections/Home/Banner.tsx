@@ -7,11 +7,14 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTransitionReady } from "@/components/Transition";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Banner() {
   const statsRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const transitionReady = useTransitionReady();
 
   useGSAP(() => {
     if (!statsRef.current) return;
@@ -24,6 +27,21 @@ export default function Banner() {
         gsap.to(statsRef.current, { autoAlpha: 1, duration: 0.3 }),
     });
   }, []);
+
+  useGSAP(() => {
+    if (!ctaRef.current || !transitionReady) return;
+    gsap.set(ctaRef.current, { autoAlpha: 0, filter: "blur(12px)" });
+    gsap.to(ctaRef.current, {
+      autoAlpha: 1,
+      filter: "blur(0px)",
+      duration: 0.8,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ctaRef.current,
+        start: "top 90%",
+      },
+    });
+  }, [transitionReady]);
 
   return (
     <div
@@ -71,7 +89,11 @@ export default function Banner() {
                 />
               </span> */}
             </div>
-            <div id="s1-cta">
+            <div
+              id="s1-cta"
+              ref={ctaRef}
+              style={{ visibility: "hidden", willChange: "filter, opacity" }}
+            >
               <WordShiftButton
                 text="get in touch"
                 href="#"
@@ -138,10 +160,16 @@ export default function Banner() {
                     </span>
                   </div>
                 </div>
-                <p className="text-justify" id="s1-sub">
-                  Websites, digital products, brands, and systems built for
-                  clarity, scale, and impact.
-                </p>
+                <div id="s1-sub" >
+                  <BlurTextReveal
+                    as="p"
+                    text="Websites, digital products, brands, and systems built for clarity, scale, and impact."
+                    animationType="words"
+                    stagger={0.05}
+                    start="top 90%"
+                    className="text-justify"
+                  />
+                </div>
               </div>
             </div>
           </div>
