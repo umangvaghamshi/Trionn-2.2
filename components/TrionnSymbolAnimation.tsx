@@ -6,9 +6,12 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
-import CursorFollowMarquee from "./CursorFollowMarquee";
+// import CursorFollowMarquee from "./CursorFollowMarquee";
+// import { createPerfMonitor } from "@/lib/perf-monitor";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// const perfMonitorEnabled = process.env.NODE_ENV !== "production";
 
 interface TrionnSymbolAnimationProps {
   /** IDs of elements that should receive the vibrate/orbit effect */
@@ -20,7 +23,6 @@ export function TrionnSymbolAnimation({
 }: TrionnSymbolAnimationProps) {
   // ── DOM refs ──────────────────────────────────────────────────────────────
   const canvasWrapRef = useRef<HTMLDivElement>(null);
-  const glowCanvasRef = useRef<HTMLCanvasElement>(null);
   const s4ElRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
   const vibrateElsRef = useRef<(HTMLElement | null)[]>([]);
@@ -41,9 +43,8 @@ export function TrionnSymbolAnimation({
   }, [vibrateElementIds]);
 
   // ── Scene + audio via hook ────────────────────────────────────────────────
-  const { audio } = useTrionnSymbolScene(
+  const { audio, stateRef } = useTrionnSymbolScene(
     canvasWrapRef,
-    glowCanvasRef,
     s4ElRef,
     scrollHintRef,
     vibrateElsRef,
@@ -59,6 +60,51 @@ export function TrionnSymbolAnimation({
     audio.setSoundEnabled(true);
     audio.autoStartWoosh();
   }, [soundEnabled, audio]);
+
+  // ── Perf monitor ──────────────────────────────────────────────────────────
+  // useEffect(() => {
+  //   let rafId: number;
+  //   let lastTime = performance.now();
+  //   let monitor: ReturnType<typeof createPerfMonitor> | null = null;
+
+  //   const syncClockAfterBackground = () => {
+  //     lastTime = performance.now();
+  //   };
+  //   document.addEventListener("visibilitychange", syncClockAfterBackground);
+  //   window.addEventListener("focus", syncClockAfterBackground);
+
+  //   function waitForRenderer() {
+  //     const renderer = stateRef.current?.renderer ?? null;
+  //     if (!renderer) {
+  //       rafId = requestAnimationFrame(waitForRenderer);
+  //       return;
+  //     }
+  //     monitor = createPerfMonitor({
+  //       label: "Trionn Hero Canvas",
+  //       enabled: perfMonitorEnabled,
+  //       renderer,
+  //       position: "top-right",
+  //       toggleKey: "p",
+  //     });
+  //     lastTime = performance.now();
+  //     function tick() {
+  //       const now = performance.now();
+  //       const dt = (now - lastTime) / 1000;
+  //       lastTime = now;
+  //       monitor!.tick(dt, { sleeping: !heroActiveRef.current });
+  //       rafId = requestAnimationFrame(tick);
+  //     }
+  //     rafId = requestAnimationFrame(tick);
+  //   }
+ 
+  //   rafId = requestAnimationFrame(waitForRenderer);
+  //   return () => {
+  //     document.removeEventListener("visibilitychange", syncClockAfterBackground);
+  //     window.removeEventListener("focus", syncClockAfterBackground);
+  //     cancelAnimationFrame(rafId);
+  //     monitor?.destroy();
+  //   };
+  // }, [perfMonitorEnabled]);
 
   // ── Sticky pin via GSAP ScrollTrigger ────────────────────────────────────
   useGSAP(() => {
@@ -110,12 +156,6 @@ export function TrionnSymbolAnimation({
       <div
         ref={canvasWrapRef}
         className="absolute inset-0 w-full h-screen z-0 pointer-events-none"
-      />
-
-      {/* Glow canvas */}
-      <canvas
-        ref={glowCanvasRef}
-        className="fixed inset-0 w-full min-h-screen pointer-events-none z-3"
       />
 
       {/* Cursor Follow Marquee */}
