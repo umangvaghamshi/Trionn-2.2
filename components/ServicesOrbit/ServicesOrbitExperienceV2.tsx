@@ -5,14 +5,13 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import Marquee from "@/components/Marquee";
-import { useServicesOrbitScene } from "./useServicesOrbitScene";
+import { useServicesOrbitSceneV2 } from "./useServicesOrbitSceneV2";
 
 gsap.registerPlugin(ScrollTrigger);
-
 
 const BG = "#0a0a0a";
 const FG = "#e8e8e8";
@@ -39,11 +38,15 @@ const CROSS_ICON = (
   </svg>
 );
 
-export default function ServicesOrbitExperience() {
-  const lenis = useLenis();
+/** Same layout as `ServicesOrbitExperience`; WebGL background uses the optimized single-canvas pipeline (see `useServicesOrbitSceneV2`). */
+export default function ServicesOrbitExperienceV2() {
+  /** Every Lenis scroll tick (incl. initial callback) — avoids reading stale scroll between RAF / React renders. */
+  const lenisScrollMirrorRef = useRef(0);
+  const lenis = useLenis((l) => {
+    lenisScrollMirrorRef.current = l.scroll;
+  });
 
   const mainCanvasRef = useRef<HTMLCanvasElement>(null);
-  const glowCanvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWrapRef = useRef<HTMLDivElement>(null);
   const sec2Ref = useRef<HTMLElement>(null);
   const sec3Ref = useRef<HTMLElement>(null);
@@ -58,10 +61,10 @@ export default function ServicesOrbitExperience() {
 
   const getSmoothScroll = useCallback(() => {
     if (typeof window === "undefined") return 0;
-    return lenis?.scroll ?? window.scrollY;
+    if (typeof lenis?.scroll === "number") return lenis.scroll;
+    return lenisScrollMirrorRef.current || window.scrollY;
   }, [lenis]);
 
-  /** Fallback normalized scroll when #sec4 is missing; orbit/grid use anchored phase from sec4 in the scene hook. */
   const getScrollProgress = useCallback(() => {
     if (typeof window === "undefined") return 0;
     if (lenis) {
@@ -78,6 +81,7 @@ export default function ServicesOrbitExperience() {
   useEffect(() => {
     const onResize = () => {
       lenis?.resize();
+      ScrollTrigger.refresh();
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
@@ -87,6 +91,7 @@ export default function ServicesOrbitExperience() {
     if (!lenis) return;
     const ro = new ResizeObserver(() => {
       lenis.resize();
+      requestAnimationFrame(() => ScrollTrigger.refresh());
     });
     const s2 = sec2Ref.current;
     const s3 = sec3Ref.current;
@@ -95,7 +100,16 @@ export default function ServicesOrbitExperience() {
     return () => ro.disconnect();
   }, [lenis]);
 
-  const orbitAudioRef = useServicesOrbitScene(mainCanvasRef, glowCanvasRef, {
+  /** Pin + min-height sections: refresh ST + Lenis after layout so phase anchor (sec4) matches DOM consistently. */
+  useLayoutEffect(() => {
+    const id = requestAnimationFrame(() => {
+      lenis?.resize();
+      ScrollTrigger.refresh();
+    });
+    return () => cancelAnimationFrame(id);
+  }, [lenis]);
+
+  const orbitAudioRef = useServicesOrbitSceneV2(mainCanvasRef, {
     getSmoothScroll,
     getScrollProgress,
     soundEnabledRef,
@@ -117,7 +131,7 @@ export default function ServicesOrbitExperience() {
   useGSAP(() => {
     if (!canvasWrapRef.current) return;
     const st = ScrollTrigger.create({
-      trigger: "#services-orbit-scope",
+      trigger: "#services-orbit-scope-v2",
       start: "top top",
       end: "bottom top",
       pin: canvasWrapRef.current,
@@ -146,9 +160,9 @@ export default function ServicesOrbitExperience() {
       defaults: { ease: "none" },
     });
 
-    // ---- Pull next sibling flush — no gap after pin spacer ----
-    const nextSection = document.getElementById("services-orbit-scope")
-      ?.nextElementSibling as HTMLElement | null;
+    const nextSection = document.getElementById(
+      "services-orbit-scope-v2",
+    )?.nextElementSibling as HTMLElement | null;
     if (nextSection) {
       gsap.set(nextSection, { marginTop: "-100vh" });
     }
@@ -184,7 +198,7 @@ export default function ServicesOrbitExperience() {
 
   return (
     <div
-      id="services-orbit-scope"
+      id="services-orbit-scope-v2"
       className="services-orbit-scope relative min-h-screen font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[#e8e8e8] overflow-x-hidden"
       style={{ background: BG, color: FG }}
     >
@@ -194,13 +208,8 @@ export default function ServicesOrbitExperience() {
       >
         <canvas
           ref={mainCanvasRef}
-          id="main-canvas"
+          id="main-canvas-services-v2"
           className="block h-full w-full"
-        />
-        <canvas
-          ref={glowCanvasRef}
-          id="glow-canvas"
-          className="pointer-events-none absolute top-0 left-0"
         />
       </div>
 
@@ -262,7 +271,7 @@ export default function ServicesOrbitExperience() {
       <section
         ref={sec2Ref}
         className="sec-focused relative z-1 flex min-h-screen w-screen items-center bg-transparent contain-[layout_style] transform-[translateZ(0)]"
-        id="sec2"
+        id="sec2-v2"
       >
         <div className="foc-inner tr__container grid grid-cols-12 gap-6 text-light-font">
           <div className="col-span-6 col-start-5 gap-20 flex flex-col">
@@ -292,7 +301,7 @@ export default function ServicesOrbitExperience() {
       <section
         ref={sec3Ref}
         className="sec-disciplines relative z-1 flex min-h-screen w-screen items-center justify-center bg-transparent contain-[layout_style]"
-        id="sec3"
+        id="sec3-v2"
       >
         <div className="disc-inner flex w-full flex-col items-center justify-center gap-20">
           <Marquee gap={0} speed={0.8}>
@@ -318,7 +327,6 @@ export default function ServicesOrbitExperience() {
           </div>
         </div>
 
-        {/* ── Stripes overlay (covers content after animation ends) ── */}
         <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-30">
           {Array.from({ length: 5 }).map((_, i) => (
             <div
@@ -341,18 +349,12 @@ export default function ServicesOrbitExperience() {
         </div>
       </section>
 
-      {/* Zero-height sentinel — required by useServicesOrbitScene.
-          Its top Y = bottom of sec3, which is what computePhaseScrollUntilSec4Top
-          uses as the "phase = 1" anchor (orbit/grid/woosh all complete here).
-          The IntersectionObserver on this element still fires on a 0-height rect
-          as it crosses viewport edges, so canvas pin/unpin stays correct.
-          Do NOT give this element any height — doing so reintroduces a blank section. */}
       <section
         ref={sec4Ref}
         aria-hidden="true"
         className="sec-orbit-anchor pointer-events-none relative z-1 block w-screen"
         style={{ height: 0 }}
-        id="sec4"
+        id="sec4-v2"
       />
     </div>
   );

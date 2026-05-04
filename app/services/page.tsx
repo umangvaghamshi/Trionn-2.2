@@ -1,12 +1,12 @@
 import HowWork from "@/components/HowWork";
 import Services from "@/components/Services";
-import ServicesOrbitExperience from "@/components/ServicesOrbit/ServicesOrbitExperience";
+import ServicesOrbitExperienceV2 from "@/components/ServicesOrbit/ServicesOrbitExperienceV2";
 import Technology from "@/components/Technology";
 
 export default function ServicesOrbitPage() {
   return (
     <>
-      <ServicesOrbitExperience />
+      <ServicesOrbitExperienceV2 />
       <Services />
       <Technology />
       <HowWork theme="light" />
