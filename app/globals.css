@@ -293,3 +293,7 @@ canvas {
 .accordion__title .icon.open::before {
   @apply h-0 w-0;
 }
+
+.tab-content ul {
+  @apply list-disc pl-4;
+}

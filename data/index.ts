@@ -431,29 +431,40 @@ export const projects: ProjectsType[] = [
     size: "large",
     title: "Loftloom",
     subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+      "Seamless real estate platform for effortless property discovery.",
     year: "2025",
     image: "/images/projects/loftloom/loftloom.webp",
-    category: ["Brand", "Website", "Digital System"],
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "Interaction Design",
+    ],
     slug: "loftloom",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "LoftLoom required simplifying a complex real estate journey while maintaining a calm and premium experience. The platform had to manage listings, filters, maps, and multiple user actions without overwhelming users. The key challenge was creating clarity within a data-heavy system while keeping the interface intuitive and refined.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "Trionn focused on clarity, hierarchy, and seamless navigation across the platform. Clean layouts, balanced spacing, and minimal visual noise were used to reduce cognitive load. Interactions were refined to feel smooth and natural, guiding users effortlessly from discovery to decision.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The final product delivers a seamless and visually balanced real estate experience. Users can explore and manage properties with ease through an intuitive interface. Trionn shaped LoftLoom into a refined platform that elevates everyday property interactions.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Defined UX strategy and structured user journeys.</li><li>Designed a refined and scalable interface system.</li><li>Developed responsive frontend with smooth interactions.</li><li>Optimized property discovery, maps, and dashboard flows.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -494,29 +505,40 @@ export const projects: ProjectsType[] = [
     size: "medium",
     title: "Pulse Studio",
     subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+      "A motion-led studio website showcasing artists, projects, and culture.",
     year: "2025",
     image: "/images/projects/pulse-studio/pulse-studio.webp",
-    category: ["Brand", "Website", "Digital System"],
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "Creative Direction",
+    ],
     slug: "pulse-studio",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "Pulse Studio needed a digital presence that could capture the energy of music without relying on sound. The experience had to feel immersive, expressive, and culturally relevant. At the same time, it needed to stay clear and structured across multiple content layers. Balancing emotion with usability was key.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "We crafted a rhythm-driven experience where motion leads the storytelling. A minimal yet bold visual system with strong imagery and refined typography sets the tone. Smooth transitions and fluid interactions create a sense of flow across the journey. Every detail was designed to feel intentional and alive.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The result is an immersive digital experience that feels dynamic and engaging. Pulse Studio stands out as a platform that communicates culture through motion and design. It enhances storytelling while maintaining clarity and usability. The final product leaves a strong and memorable impression.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Designed a rhythm-driven UI that translates sound into motion and interaction.</li><li>Crafted a cinematic visual system with bold imagery and refined typography.</li><li>Developed smooth, performance-focused animations for a seamless experience.</li><li>Built a cohesive storytelling framework reflecting Pulse Studio's culture and energy.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -567,31 +589,43 @@ export const projects: ProjectsType[] = [
     visibleInHome: true,
     pos: "center",
     size: "xlarge",
-    title: "Onedot design agency",
+    title: "One.Dot",
     subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+      "A studio website showcasing work, services, and client journeys.",
     year: "2025",
     image: "/images/projects/onedot/onedot.webp",
-    category: ["Brand", "Website", "Digital System"],
-    slug: "onedot",
+    category: [
+      "Brand Design",
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "Creative Direction",
+    ],
+    slug: "One.Dot",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "ONE.DOT required a digital presence that felt minimal yet expressive. The key challenge was balancing visual refinement with usability across multiple sections like work, services, and contact. It needed to communicate credibility without adding clutter. Every interaction had to feel intentional while maintaining smooth performance.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "We built a structured design system focused on typography, spacing, and clarity. The layout was kept clean and modular to guide users naturally through the experience. Subtle animations and transitions were introduced to enhance flow without distraction. Every element was carefully refined to maintain consistency and precision.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The final experience feels seamless, modern, and confident. Users can explore content effortlessly while engaging with a strong visual identity. The platform elevates the brand with clarity and purpose. It delivers both aesthetic impact and smooth performance across the entire journey.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Designed a clean and scalable UI system for consistency across all pages.</li><li>Developed a high-performance website with smooth interactions and transitions.</li><li>Structured content to improve clarity, navigation, and user flow.</li><li>Crafted a refined visual language aligned with the brand identity.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -630,33 +664,18 @@ export const projects: ProjectsType[] = [
     visibleInHome: false,
     pos: "left",
     size: "small",
-    title: "GridFree.AI",
+    title: "GridFree AI",
     subTitle:
       "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
     year: "2025",
     image: "/images/projects/gridfree-ai/gridfree-ai.webp",
-    category: ["Brand", "Website", "Digital System"],
-    slug: "gridfree-ai",
-    tabs: [
-      {
-        id: "challenge",
-        label: "THE CHALLENGE",
-        content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
-      },
-      {
-        id: "approach",
-        label: "APPROACH",
-        content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
-      },
-      {
-        id: "outcome",
-        label: "OUTCOME",
-        content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
-      },
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "Interaction Design",
     ],
+    slug: "gridfree-ai",
     liveURL: "#",
     content: [
       {
@@ -691,29 +710,40 @@ export const projects: ProjectsType[] = [
     size: "large",
     title: "Novaglam",
     subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+      "The fashion e-commerce platform for browsing curated collections.",
     year: "2025",
     image: "/images/projects/novaglam/novaglam.webp",
-    category: ["Brand", "Website", "Digital System"],
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "E-commerce Experience",
+    ],
     slug: "novaglam",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "Novaglam needed to translate a strong fashion identity into a digital experience that felt editorial and premium. The key challenge was balancing visual storytelling with usability, ensuring smooth product discovery. Maintaining consistency across multiple pages while keeping performance fast and clean was equally important.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "We crafted a minimal, editorial-inspired design using bold typography and vibrant imagery. The layout was structured to guide users naturally from browsing to product exploration. Development focused on smooth interactions, responsive behavior, and optimized performance across devices.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The result is a refined e-commerce experience that feels both modern and expressive. Novaglam delivers a seamless journey with strong visual impact and intuitive navigation. The platform elevates the brand while supporting effortless product discovery and engagement.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Designed a clean, editorial UI with strong typography and visual hierarchy.</li><li>Developed a responsive and high-performance e-commerce experience.</li><li>Created intuitive navigation for smooth product discovery.</li><li>Optimized interactions and layouts for a seamless user journey.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -756,31 +786,42 @@ export const projects: ProjectsType[] = [
     visibleInHome: false,
     pos: "left",
     size: "medium",
-    title: "FirstGround Coffee",
+    title: "First Ground Coffee",
     subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+      "An ecommerce platform for discovering and buying premium coffee.",
     year: "2025",
     image: "/images/projects/first-ground/first-ground.webp",
-    category: ["Brand", "Website", "Digital System"],
-    slug: "first-ground",
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "E-commerce Experience",
+      "Brand Experience",
+    ],
+    slug: "first-ground-coffee",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "FirstGround Coffee needed a digital presence that goes beyond a typical ecommerce store. The challenge was to balance storytelling with seamless product discovery without overwhelming the user. It required building a strong brand identity while maintaining clarity, usability, and performance across the entire experience.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "We created a clean, editorial-style interface that blends brand storytelling with structured ecommerce. Bold typography, minimal layouts, and curated imagery establish a calm yet premium feel. The experience was designed to guide users naturally from exploration to purchase with intuitive interactions and smooth navigation.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The final result is a cohesive and modern digital platform that elevates the brand experience. It delivers a seamless journey from discovery to checkout while maintaining a strong visual identity. FirstGround now stands as a premium coffee brand with a clear, confident, and engaging online presence.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Designed a clean and modern UIUX system focused on clarity and flow.</li><li>Developed a fast and responsive ecommerce experience across devices.</li><li>Crafted a strong visual identity through typography and imagery.</li><li>Optimized user journeys for seamless discovery and conversion.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -824,28 +865,13 @@ export const projects: ProjectsType[] = [
       "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
     year: "2025",
     image: "/images/projects/techno/techno.webp",
-    category: ["Brand", "Website", "Digital System"],
-    slug: "techno",
-    tabs: [
-      {
-        id: "challenge",
-        label: "THE CHALLENGE",
-        content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
-      },
-      {
-        id: "approach",
-        label: "APPROACH",
-        content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
-      },
-      {
-        id: "outcome",
-        label: "OUTCOME",
-        content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
-      },
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "Interaction Design",
     ],
+    slug: "techno",
     liveURL: "#",
     content: [
       {
@@ -872,29 +898,41 @@ export const projects: ProjectsType[] = [
     size: "small",
     title: "Reelix",
     subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+      "Filmmaking studio showcasing projects, services and storytelling.",
     year: "2025",
     image: "/images/projects/reelix/reelix.webp",
-    category: ["Brand", "Website", "Digital System"],
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "Creative Direction",
+      "Motion Design",
+    ],
     slug: "reelix",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "Reelix needed to express cinematic depth without becoming visually overwhelming. The challenge was to translate filmmaking craft into a structured digital experience that still felt emotional and immersive. It had to balance storytelling, clarity, and performance across every section. At the same time, the platform needed to feel editorial, refined, and easy to navigate.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "We designed the experience like a film sequence, guided by rhythm and pacing. Bold typography and cinematic visuals were used to create hierarchy and flow. Each section was carefully structured to move the user naturally from story to story. Subtle motion and transitions were added to enhance the narrative without distraction.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The final experience feels cinematic, clear, and intentional. Reelix now showcases its work with stronger impact and better storytelling flow. The platform elevates the brand while keeping the focus on the craft behind each project. It leaves a lasting impression through simplicity, emotion, and precision.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Crafted a cinematic UIUX system focused on storytelling and clarity.</li><li>Designed and developed a fully responsive, high-performance website.</li><li>Built structured project showcases with strong visual hierarchy.</li><li>Implemented subtle motion and transitions to enhance user flow.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -933,65 +971,50 @@ export const projects: ProjectsType[] = [
     visibleInHome: false,
     pos: "left",
     size: "large",
-    title: "Clara Helthcare",
+    title: "Clara Healthcare",
     subTitle:
       "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
     year: "2025",
-    image: "/images/projects/clara-helthcare/clara-helthcare.webp",
-    category: ["Brand", "Website", "Digital System"],
-    slug: "clara-helthcare",
-    tabs: [
-      {
-        id: "challenge",
-        label: "THE CHALLENGE",
-        content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
-      },
-      {
-        id: "approach",
-        label: "APPROACH",
-        content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
-      },
-      {
-        id: "outcome",
-        label: "OUTCOME",
-        content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
-      },
+    image: "/images/projects/clara-healthcare/clara-healthcare.webp",
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "Interaction Design",
     ],
+    slug: "clara-healthcare",
     liveURL: "#",
     content: [
       {
-        image: "/images/projects/clara-helthcare/clara-helthcare-1.webp",
+        image: "/images/projects/clara-healthcare/clara-healthcare-1.webp",
         layout: "single",
       },
       {
-        image: "/images/projects/clara-helthcare/clara-helthcare-2.webp",
+        image: "/images/projects/clara-healthcare/clara-healthcare-2.webp",
         layout: "single",
       },
       {
-        image: "/images/projects/clara-helthcare/clara-helthcare-3.webp",
+        image: "/images/projects/clara-healthcare/clara-healthcare-3.webp",
         layout: "single",
       },
       {
-        image: "/images/projects/clara-helthcare/clara-helthcare-4.webp",
+        image: "/images/projects/clara-healthcare/clara-healthcare-4.webp",
         layout: "single",
       },
       {
-        image: "/images/projects/clara-helthcare/clara-helthcare-5.webp",
+        image: "/images/projects/clara-healthcare/clara-healthcare-5.webp",
         layout: "single",
       },
       {
-        image: "/images/projects/clara-helthcare/clara-helthcare-6.webp",
+        image: "/images/projects/clara-healthcare/clara-healthcare-6.webp",
         layout: "single",
       },
       {
-        image: "/images/projects/clara-helthcare/clara-helthcare-7.webp",
+        image: "/images/projects/clara-healthcare/clara-healthcare-7.webp",
         layout: "single",
       },
       {
-        image: "/images/projects/clara-helthcare/clara-helthcare-8.webp",
+        image: "/images/projects/clara-healthcare/clara-healthcare-8.webp",
         layout: "single",
       },
     ],
@@ -1000,31 +1023,42 @@ export const projects: ProjectsType[] = [
     visibleInHome: false,
     pos: "right",
     size: "medium",
-    title: "Z1FLUX Solar",
-    subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    title: "Z1Flux Solar",
+    subTitle: "Solar technology and manufacturing showcase website.",
     year: "2025",
     image: "/images/projects/z1-flux-solar/z1-flux-solar.webp",
-    category: ["Brand", "Website", "Digital System"],
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "Interaction Design",
+      "Creative Direction",
+    ],
     slug: "z1-flux-solar",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "Z1Flux Solar needed a digital experience that reflects both industrial scale and technological precision. The challenge was to present complex capabilities and high-capacity production in a clear and engaging way. It required balancing strong visual storytelling with structured content. All while maintaining performance and clarity across devices.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "We crafted a minimal, high-contrast visual system driven by typography and composition. Modular layouts simplified dense information into digestible sections. Subtle motion and interactions were used to guide users naturally through the experience. Every detail was refined to feel precise, responsive, and premium.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The result is a high-impact digital experience crafted by Trionn that positions Z1Flux Solar as a forward-thinking brand. It communicates scale and credibility while remaining intuitive and visually striking. The platform creates a seamless journey and strengthens overall brand perception. A refined blend of engineering precision and modern digital craft.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Strategic UX planning and content structuring for complex industrial storytelling.</li><li>Minimal UI design system with strong typography and premium visual balance.</li> <li>High-performance front-end development with smooth interactions and responsiveness.</li><li>Motion and interaction design to enhance flow, clarity, and user engagement.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -1075,31 +1109,41 @@ export const projects: ProjectsType[] = [
     visibleInHome: false,
     pos: "center",
     size: "xlarge",
-    title: "Improvi.AI",
-    subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+    title: "Improvi AI",
+    subTitle: "AI-powered productivity platform for faster, smarter workflows",
     year: "2025",
     image: "/images/projects/improvi/improvi.webp",
-    category: ["Brand", "Website", "Digital System"],
+    category: [
+      "AI Product Design",
+      "UI/UX Design",
+      "Web Design",
+      "Interaction Design",
+    ],
     slug: "improvi-ai",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "Improvi.ai needed to simplify a complex AI-driven product into an experience that feels intuitive and clear. The core challenge was communicating advanced capabilities without overwhelming users. At the same time, the platform had to feel modern and trustworthy. Balancing clarity with innovation became the key focus.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "We structured the experience around clarity, using strong hierarchy and simplified content flows. A minimal design system allowed the product's intelligence to stand out naturally. Thoughtful interactions and smooth transitions guided users through the journey. Every detail was refined to feel fast, clean, and confident.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The result is a seamless digital experience that makes AI feel accessible and easy to understand. Users can quickly grasp the product's value and navigate it effortlessly. The platform now reflects a strong, forward-thinking identity. Trionn helped transform complexity into a clear and engaging product story.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Defined a clear product narrative and simplified user journey.</li><li>Designed a modern interface aligned with AI-driven experiences.</li><li>Built smooth interactions focused on usability and performance.</li><li>Developed a scalable front-end optimized for speed and clarity.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -1154,31 +1198,42 @@ export const projects: ProjectsType[] = [
     visibleInHome: false,
     pos: "left",
     size: "small",
-    title: "Myworker Ai",
+    title: "MyWorker AI",
     subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+      "AI platform simplifying hiring, management, and workforce scaling.",
     year: "2025",
     image: "/images/projects/myworker/myworker.webp",
-    category: ["Brand", "Website", "Digital System"],
+    category: [
+      "AI Product Design",
+      "UI/UX Design",
+      "Web Development",
+      "Interaction Design",
+    ],
     slug: "myworker-ai",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "MyWorker.ai needed to present a complex AI-driven workforce platform in a way that feels simple and approachable. The product included multiple features that could easily overwhelm users. The key challenge was balancing clarity with capability. At the same time, the brand had to feel modern, intelligent, and trustworthy.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "Trionn focused on simplifying the experience through clear structure and intuitive flows. We reduced friction by guiding users step by step across the platform. The design language was kept clean and minimal to enhance understanding. Subtle interactions were added to bring depth without adding complexity.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The result is a streamlined platform that feels easy to use yet powerful in capability. Users can quickly understand and navigate the system with confidence. The refined design improves engagement and builds trust in the product. MyWorker.ai now stands as a scalable and polished digital experience.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Designed intuitive user flows to simplify complex workforce processes.</li><li>Developed a clean and scalable front-end experience.</li><li>Created a modern and minimal visual design system.</li><li>Improved usability and engagement across key product journeys.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -1239,29 +1294,40 @@ export const projects: ProjectsType[] = [
     size: "large",
     title: "Reyden",
     subTitle:
-      "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
+      "Engineering industrial solutions focused on precision and performance.",
     year: "2025",
     image: "/images/projects/reyden/reyden.webp",
-    category: ["Brand", "Website", "Digital System"],
+    category: [
+      "AI Product Design",
+      "UI/UX Design",
+      "Web Development",
+      "Interaction Design",
+    ],
     slug: "reyden",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "Reyden operates in a technically complex space where information can easily feel heavy and difficult to navigate. The goal was to transform this into a clear and engaging digital experience without losing depth. It required simplifying structure while maintaining credibility. The challenge was to make industrial feel modern, refined, and accessible.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "We created a structured design system that balances clarity with a premium visual language. Content was reorganized to improve flow and readability across all sections. Subtle motion and interactions were introduced to guide users naturally through the experience. Every detail was aligned to reflect precision and innovation.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The final experience presents Reyden as a confident and forward-thinking industrial brand. Complex information is now easier to understand and navigate. The website feels clean, structured, and engaging across devices. It strengthens both usability and brand perception at every touchpoint.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Designed a clean and structured UI focused on clarity and usability.</li><li>Developed a responsive website with smooth and optimized performance.</li><li>Simplified complex content into intuitive and easy to navigate layouts.</li><li>Crafted refined interactions to enhance engagement without distraction.</li></ul>",
       },
     ],
     liveURL: "#",
@@ -1300,31 +1366,42 @@ export const projects: ProjectsType[] = [
     visibleInHome: false,
     pos: "left",
     size: "medium",
-    title: "DFZ",
+    title: "DFZ Watch",
     subTitle:
       "A focused digital project designed to bring clarity, motion, and structure to a growing product ecosystem.",
     year: "2025",
     image: "/images/projects/dfz/dfz.webp",
-    category: ["Brand", "Website", "Digital System"],
+    category: [
+      "UI/UX Design",
+      "Web Design",
+      "Web Development",
+      "Interaction Design",
+    ],
     slug: "dfz",
     tabs: [
       {
         id: "challenge",
-        label: "THE CHALLENGE",
+        label: "The challenge",
         content:
-          "The goal was to translate a complex idea into a clear, scalable digital experience — without losing personality or intent.",
+          "DFZ Watch required a digital platform that could present luxury timepieces with both clarity and sophistication. The challenge was to organize a wide product range without overwhelming the user. It also needed to balance strong visual appeal with smooth usability. Performance and responsiveness had to remain consistent across devices.",
       },
       {
         id: "approach",
-        label: "APPROACH",
+        label: "Approach",
         content:
-          "We focused on iterative design sprints and deep user research to ensure every touchpoint felt intentional.",
+          "We designed a clean and structured interface that highlights each product with precision. The layout uses strong hierarchy, refined typography, and ample spacing for a premium feel. Subtle interactions were added to enhance browsing without distraction. The overall experience was crafted to feel smooth, intuitive, and visually refined.",
       },
       {
         id: "outcome",
-        label: "OUTCOME",
+        label: "Outcome",
         content:
-          "A 40% increase in user engagement and a design system that scales across multiple product lines.",
+          "The final result is a seamless eCommerce experience that reflects the brand's luxury positioning. Users can explore and navigate products effortlessly across all devices. The design creates a strong visual identity while maintaining usability. It delivers both performance and a polished, high-end digital presence.",
+      },
+      {
+        id: "wedid",
+        label: "What we did",
+        content:
+          "<ul><li>Designed a premium user interface focused on clarity and elegance.</li><li>Developed a responsive website with smooth and refined interactions.</li><li>Created a structured product browsing experience for easy navigation.</li><li>Aligned visual direction with the brand's luxury positioning.</li></ul>",
       },
     ],
     liveURL: "#",
