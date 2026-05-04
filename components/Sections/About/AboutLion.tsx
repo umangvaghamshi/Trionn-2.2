@@ -892,7 +892,7 @@ export default function AboutLion({
       gl.deleteBuffer(posBuf);
       gl.deleteProgram(prog);
     };
-  }, [transitionReady]);
+  }, [transitionReady,onLoad]);
 
   return (
     <div
