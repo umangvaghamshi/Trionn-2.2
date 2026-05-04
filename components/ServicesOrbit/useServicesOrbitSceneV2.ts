@@ -6,7 +6,7 @@ import * as THREE from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 import { mergePanelGeometries } from "./mergePanelGeometries";
 import gsap from "gsap";
-import { createPerfMonitor } from "@/lib/perf-monitor";
+// import { createPerfMonitor } from "@/lib/perf-monitor";
 import { createWeldFxWebgl } from "./weldFxWebgl";
 
 const ORBIT_TOTAL_PTS = 361;
@@ -264,12 +264,12 @@ export function useServicesOrbitSceneV2(
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
 
-    const perfMonitor = createPerfMonitor({
-      renderer,
-      label: "Services Orbit V2",
-      enabled: process.env.NODE_ENV !== "production",
-      position: "bottom-right",
-    });
+    // const perfMonitor = createPerfMonitor({
+    //   renderer,
+    //   label: "Services Orbit V2",
+    //   enabled: process.env.NODE_ENV !== "production",
+    //   position: "bottom-right",
+    // });
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0a);
@@ -1103,7 +1103,7 @@ export function useServicesOrbitSceneV2(
             wooshGain.gain.setTargetAtTime(0, wooshCtx.currentTime, 0.15);
           }
         }
-        perfMonitor.tick(dt, { sleeping: true, gsap });
+        // perfMonitor.tick(dt, { sleeping: true, gsap });
         return;
       }
       resumeCanvasGSAP();
@@ -1588,7 +1588,7 @@ export function useServicesOrbitSceneV2(
       orbitLineMid.updateMatrixWorld(true);
 
       renderer.render(scene, camera);
-      perfMonitor.tick(dt, { gsap });
+      // perfMonitor.tick(dt, { gsap });
     }
 
     function rebuildOrbitGeometry() {
@@ -1651,7 +1651,7 @@ export function useServicesOrbitSceneV2(
 
     return () => {
       gsap.ticker.remove(orbitTick);
-      perfMonitor.destroy();
+      // perfMonitor.destroy();
       window.removeEventListener("resize", onResize);
       document.removeEventListener("mousedown", onMouseDown);
       document.removeEventListener("mousemove", onMouseMoveDrag);
