@@ -50,7 +50,7 @@ const WorkProjectPanel = forwardRef<
       });
 
       // No clip-path wipe — just reveal text and lines
-      tl.to(yearRef.current, { autoAlpha: 0.6, duration: 0.5 })
+      tl.to(yearRef.current, { autoAlpha: 1, duration: 0.5 })
         .to(
           titleRef.current,
           { autoAlpha: 1, ease: "sine", duration: 0.7 },
@@ -58,7 +58,7 @@ const WorkProjectPanel = forwardRef<
         )
         .to(
           subTitleRef.current,
-          { autoAlpha: 0.6, ease: "sine", duration: 0.6 },
+          { autoAlpha: 1, ease: "sine", duration: 0.6 },
           "<",
         )
         .to(linkWrapRef.current, { autoAlpha: 1, duration: 0.4 }, "<50%");
@@ -85,7 +85,7 @@ const WorkProjectPanel = forwardRef<
     >
       {/* Image — directly visible, no clip-path wipe */}
       <Link
-        href={item.slug}
+        href={`work/${item.slug}`}
         className="relative w-full aspect-670/460 overflow-hidden rounded-sm"
       >
         <Image
@@ -106,14 +106,14 @@ const WorkProjectPanel = forwardRef<
             <h3 ref={titleRef} className="m-0">
               {item.title}
             </h3>
-            <p ref={yearRef} className="m-0 text-dark-font/60">
+            <p ref={yearRef} className="m-0">
               {item.year}
             </p>
           </div>
 
           {/* Right: Year & Link */}
           <div className="flex flex-col sm:flex-row justify-between">
-            <p ref={subTitleRef} className="small text-dark-font/60 max-w-80">
+            <p ref={subTitleRef} className="small max-w-80">
               {parse(item.subTitle)}
             </p>
             <div className="" ref={linkWrapRef}>

@@ -67,7 +67,7 @@ export type ProjectsType = {
   image: string;
   category: string[];
   slug: string;
-  tabs: TabData[];
+  tabs?: TabData[];
   liveURL?: string;
   content: ProjectContent[];
 };
