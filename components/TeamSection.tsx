@@ -5,6 +5,8 @@ import gsap from "gsap";
 import { useLenis } from "lenis/react";
 import { useSiteSound } from "@/components/SiteSoundContext";
 import { getCanvasManager } from "@/lib/canvasManager";
+import { useTransitionReady } from "@/components/Transition";
+import { useGSAP } from "@gsap/react";
 
 /**
  * TeamSection — App Router compatible client component.
@@ -41,6 +43,7 @@ const PEOPLE: Person[] = [
 export default function TeamSection() {
   useLenis(); // subscribe to the global Lenis instance provided by SmoothScrolling
   const { soundEnabled } = useSiteSound();
+  const transitionReady = useTransitionReady();
   const soundEnabledRef = useRef(soundEnabled);
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
@@ -78,10 +81,8 @@ export default function TeamSection() {
   const frameNameRef = useRef<HTMLDivElement>(null);
   const frameRoleRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Guard against SSR — we're already in a "use client" component
-    // but useEffect won't run on the server, so window/document are safe here.
-    if (typeof window === "undefined") return;
+  useGSAP(() => {
+    if (!transitionReady) return;
 
     crtRef.current?.classList.add("visible");
     vignetteRef.current?.classList.add("visible");
@@ -1679,7 +1680,7 @@ export default function TeamSection() {
       if (stopFlickerFn) stopFlickerFn();
       if (window.speechSynthesis) window.speechSynthesis.cancel();
     };
-  }, []);
+  }, [transitionReady]);
 
   return (
     <>
@@ -1937,11 +1938,6 @@ export default function TeamSection() {
           }
         }
 
-        html,
-        body {
-          background: var(--ts-color-bg);
-          overflow-x: hidden;
-        }
         html.lenis,
         html.lenis body {
           height: auto;
