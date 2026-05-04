@@ -171,6 +171,10 @@ export default function PageLoader() {
   const t1Ref = useRef<SVGSVGElement>(null);
   const t2Ref = useRef<SVGSVGElement>(null);
   const t3Ref = useRef<SVGSVGElement>(null);
+  /* T-shape stroke path refs (inner <path> elements, for selective fade) */
+  const sp1Ref = useRef<SVGPathElement>(null);
+  const sp2Ref = useRef<SVGPathElement>(null);
+  const sp3Ref = useRef<SVGPathElement>(null);
   /* Particle group refs */
   const pg1Ref = useRef<SVGGElement>(null);
   const pg2Ref = useRef<SVGGElement>(null);
@@ -306,7 +310,7 @@ export default function PageLoader() {
         const sfs = performance.now();
         (function sf(now: number) {
           const fr = Math.min((now - sfs) / BORDER_FADE_DUR, 1);
-          [t1Ref.current, t2Ref.current, t3Ref.current].forEach((p) => { if (p) p.style.opacity = String(1 - fr); });
+          [sp1Ref.current, sp2Ref.current, sp3Ref.current].forEach((p) => { if (p) p.style.opacity = String(1 - fr); });
           borderSvg.style.opacity = String(1 - fr);
           if (fr < 1) requestAnimationFrame(sf); else cb();
         })(performance.now());
@@ -489,39 +493,41 @@ export default function PageLoader() {
     tPaths.forEach((t) => { t.style.opacity = "0"; });
 
     runIntroAnimation(() => {
-      showCenterLogoOnly(() => {
-        // T shapes exit
-        animTOut(t2Ref.current!, 0, 80, -50, "X", 0, -24);
-        animTOut(t1Ref.current!, 120, 0, 60, "Y", 100, -32);
-        animTOut(t3Ref.current!, -120, 0, -60, "Y", 200, 28);
+      setTimeout(() => {
+        showCenterLogoOnly(() => {
+          // T shapes exit
+          animTOut(t2Ref.current!, 0, 80, -50, "X", 0, -24);
+          animTOut(t1Ref.current!, 120, 0, 60, "Y", 100, -32);
+          animTOut(t3Ref.current!, -120, 0, -60, "Y", 200, 28);
 
-        // Fade tagline + counter
-        const fadeTargets = [counterRef.current, word1Ref.current, word2Ref.current, word3Ref.current, dot1Ref.current, dot2Ref.current];
-        fadeTargets.forEach((el) => {
-          if (el) { el.style.transition = "opacity 0.4s"; el.style.opacity = "0"; }
+          // Fade tagline + counter
+          const fadeTargets = [counterRef.current, word1Ref.current, word2Ref.current, word3Ref.current, dot1Ref.current, dot2Ref.current];
+          fadeTargets.forEach((el) => {
+            if (el) { el.style.transition = "opacity 0.4s"; el.style.opacity = "0"; }
+          });
+
+          expandBoxFullscreen(() => {
+            setContentVisible(true);
+
+            const fadeStart = performance.now();
+            (function fadeTick(now: number) {
+              const r = Math.min((now - fadeStart) / FINAL_FADE_DUR, 1), op = String(1 - r);
+              box.style.opacity = op; whiteOverlay.style.opacity = op;
+              if (r < 1) {
+                requestVisibleFrame(fadeTick);
+              } else {
+                center.style.visibility = "hidden"; center.style.display = "none";
+                box.style.display = "none"; whiteOverlay.style.display = "none";
+                box.style.cssText = "background:#D2D2D2;";
+                [cornerTLRef, cornerTRRef, cornerBLRef, cornerBRRef].forEach((r) => { if (r.current) r.current.style.cssText = ""; });
+                overlay.classList.remove("active");
+                setTimeout(() => { center.style.display = ""; }, CENTER_RESTORE_DELAY);
+                markLoaderComplete();
+              }
+            })(performance.now());
+          });
         });
-
-        expandBoxFullscreen(() => {
-          setContentVisible(true);
-
-          const fadeStart = performance.now();
-          (function fadeTick(now: number) {
-            const r = Math.min((now - fadeStart) / FINAL_FADE_DUR, 1), op = String(1 - r);
-            box.style.opacity = op; whiteOverlay.style.opacity = op;
-            if (r < 1) {
-              requestVisibleFrame(fadeTick);
-            } else {
-              center.style.visibility = "hidden"; center.style.display = "none";
-              box.style.display = "none"; whiteOverlay.style.display = "none";
-              box.style.cssText = "background:#D2D2D2;";
-              [cornerTLRef, cornerTRRef, cornerBLRef, cornerBRRef].forEach((r) => { if (r.current) r.current.style.cssText = ""; });
-              overlay.classList.remove("active");
-              setTimeout(() => { center.style.display = ""; }, CENTER_RESTORE_DELAY);
-              markLoaderComplete();
-            }
-          })(performance.now());
-        });
-      });
+      }, 150);
     });
   }, [phase, markLoaderComplete, setContentVisible, runIntroAnimation, showCenterLogoOnly, animTOut, expandBoxFullscreen]);
 
@@ -578,7 +584,7 @@ export default function PageLoader() {
                 <path fillRule="evenodd" clipRule="evenodd" d={T1_PATH} />
               </clipPath>
             </defs>
-            <path fillRule="evenodd" clipRule="evenodd" d={T1_PATH} fill="none" stroke="#aaa" strokeWidth="1.5" />
+            <path ref={sp1Ref} fillRule="evenodd" clipRule="evenodd" d={T1_PATH} fill="none" stroke="#aaa" strokeWidth="1.5" />
             <g clipPath="url(#pl-clip1)" ref={pg1Ref} />
             <g clipPath="url(#pl-clip1)" ref={lg1Ref} />
           </svg>
@@ -590,7 +596,7 @@ export default function PageLoader() {
                 <path fillRule="evenodd" clipRule="evenodd" d={T2_PATH} />
               </clipPath>
             </defs>
-            <path fillRule="evenodd" clipRule="evenodd" d={T2_PATH} fill="none" stroke="#aaa" strokeWidth="1.5" />
+            <path ref={sp2Ref} fillRule="evenodd" clipRule="evenodd" d={T2_PATH} fill="none" stroke="#aaa" strokeWidth="1.5" />
             <g clipPath="url(#pl-clip2)" ref={pg2Ref} />
             <g clipPath="url(#pl-clip2)" ref={lg2Ref} />
           </svg>
@@ -602,7 +608,7 @@ export default function PageLoader() {
                 <path fillRule="evenodd" clipRule="evenodd" d={T3_PATH} />
               </clipPath>
             </defs>
-            <path fillRule="evenodd" clipRule="evenodd" d={T3_PATH} fill="none" stroke="#aaa" strokeWidth="1.5" />
+            <path ref={sp3Ref} fillRule="evenodd" clipRule="evenodd" d={T3_PATH} fill="none" stroke="#aaa" strokeWidth="1.5" />
             <g clipPath="url(#pl-clip3)" ref={pg3Ref} />
             <g clipPath="url(#pl-clip3)" ref={lg3Ref} />
           </svg>
