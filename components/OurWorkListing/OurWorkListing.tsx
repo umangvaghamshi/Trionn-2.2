@@ -6,7 +6,7 @@ import { useSiteSound } from "@/components/SiteSoundContext";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
-import { useTransitionReady } from "@/components/Transition";
+import { TransitionLink, useTransitionReady } from "@/components/Transition";
 
 import { projects } from "@/data";
 // type Project = {
@@ -2113,13 +2113,13 @@ export default function OurWorkListing() {
             data-size={project.size}
           >
             <div className="card-thumb overflow-hidden mb-6 rounded-sm relative">
-              <a
+              <TransitionLink
                 href={`work/${project.slug}`}
                 className="thumb-link"
                 aria-label={`Open ${project.title}`}
               >
                 <img src={project.image} alt={project.title} />
-              </a>
+              </TransitionLink>
             </div>
             <div className="card-info flex flex-col gap-4">
               <div className="flex justify-between">
