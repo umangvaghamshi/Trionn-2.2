@@ -150,7 +150,7 @@ const rotDirs = [1, -1, -1, 1];
 
 /* ════════════════════════════════════════════════════════════════════════ */
 export default function PageLoader() {
-  const { phase, markLoaderComplete, setContentVisible } = useTransition();
+  const { phase, isLoaderComplete, markLoaderComplete, setContentVisible } = useTransition();
 
   /* ── DOM refs ────────────────────────────────────────────────────────── */
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -534,8 +534,8 @@ export default function PageLoader() {
   /* ── JSX ─────────────────────────────────────────────────────────────── */
   return (
     <>
-      {/* White fullscreen cover (visible at start) */}
-      <div ref={whiteOverlayRef} className="pl-white-overlay" />
+      {/* White fullscreen cover (visible at start, hidden once loader is done) */}
+      <div ref={whiteOverlayRef} className="pl-white-overlay" style={isLoaderComplete ? { display: "none" } : undefined} />
 
       {/* Belt overlay */}
       <div ref={overlayRef} className="pl-overlay">
