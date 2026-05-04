@@ -8,213 +8,222 @@ import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
 import { useTransitionReady } from "@/components/Transition";
 
-type Project = {
-  pos: "left" | "right" | "center";
-  size: "small" | "medium" | "large" | "xlarge";
-  title: string;
-  desc: string;
-  year: string;
-  img: string;
-  link?: boolean;
-};
+import { projects } from "@/data";
+// type Project = {
+//   pos: "left" | "right" | "center";
+//   size: "small" | "medium" | "large" | "xlarge";
+//   title: string;
+//   desc: string;
+//   year: string;
+//   img: string;
+//   link?: boolean;
+// };
 
-const PROJECTS: Project[] = [
-  {
-    pos: "left",
-    size: "large",
-    title: "Velora Studio",
-    desc: "Architecture design\nfor a modern brand.",
-    year: "2025",
-    img: "/assets/orbit-01.jpg",
-    link: true,
-  },
-  {
-    pos: "right",
-    size: "medium",
-    title: "Northform™",
-    desc: "Brand identity system\nand visual language.",
-    year: "2025",
-    img: "/assets/orbit-02.jpg",
-  },
-  {
-    pos: "center",
-    size: "xlarge",
-    title: "Neue Montreal",
-    desc: "Typography system\nfor digital products.",
-    year: "2024",
-    img: "/assets/orbit-03.jpg",
-    link: true,
-  },
-  {
-    pos: "left",
-    size: "small",
-    title: "One.Dot",
-    desc: "Tailored website design\nfor refined brands.",
-    year: "2025",
-    img: "/assets/orbit-04.jpg",
-  },
-  {
-    pos: "right",
-    size: "large",
-    title: "Axora Ceramics",
-    desc: "Brand identity and\neditorial design.",
-    year: "2025",
-    img: "/assets/orbit-05.jpg",
-    link: true,
-  },
-  {
-    pos: "left",
-    size: "medium",
-    title: "Grinex Projects",
-    desc: "Sustainable material\nbrand system.",
-    year: "2025",
-    img: "/assets/orbit-07.jpg",
-  },
-  {
-    pos: "center",
-    size: "xlarge",
-    title: "Royal Festival",
-    desc: "Visual identity for\nan event series.",
-    year: "2024",
-    img: "/assets/orbit-08.jpg",
-    link: true,
-  },
-  {
-    pos: "right",
-    size: "small",
-    title: "Formline Studio",
-    desc: "Interface design for\nselected work.",
-    year: "2025",
-    img: "/assets/orbit-09.jpg",
-  },
-  {
-    pos: "left",
-    size: "large",
-    title: "Molson Coors",
-    desc: "Office building\narchitecture design.",
-    year: "2024",
-    img: "/assets/orbit-01.jpg",
-    link: true,
-  },
-  {
-    pos: "right",
-    size: "medium",
-    title: "Dark Identity",
-    desc: "Branding and digital\nsystems at scale.",
-    year: "2025",
-    img: "/assets/orbit-02.jpg",
-  },
-  {
-    pos: "center",
-    size: "xlarge",
-    title: "Typeform Lab",
-    desc: "Font design and\ntype specimen work.",
-    year: "2024",
-    img: "/assets/orbit-03.jpg",
-    link: true,
-  },
-  {
-    pos: "left",
-    size: "small",
-    title: "Refined Co.",
-    desc: "Minimal website for\na luxury consultancy.",
-    year: "2025",
-    img: "/assets/orbit-04.jpg",
-  },
-  {
-    pos: "right",
-    size: "large",
-    title: "Bloom Studio",
-    desc: "Ceramic brand identity\nand packaging design.",
-    year: "2024",
-    img: "/assets/orbit-05.jpg",
-    link: true,
-  },
-  {
-    pos: "left",
-    size: "medium",
-    title: "Zero Point",
-    desc: "Sustainable brand\nfor architecture firm.",
-    year: "2025",
-    img: "/assets/orbit-07.jpg",
-  },
-  {
-    pos: "center",
-    size: "xlarge",
-    title: "Festival Noir",
-    desc: "Event identity and\nmotion design work.",
-    year: "2024",
-    img: "/assets/orbit-08.jpg",
-    link: true,
-  },
-  {
-    pos: "right",
-    size: "large",
-    title: "Selected Works",
-    desc: "Portfolio curation and\nUI/UX direction.",
-    year: "2025",
-    img: "/assets/orbit-09.jpg",
-    link: true,
-  },
-  {
-    pos: "left",
-    size: "medium",
-    title: "Archi Collective",
-    desc: "Architecture studio\nbranding system.",
-    year: "2024",
-    img: "/assets/orbit-01.jpg",
-  },
-  {
-    pos: "right",
-    size: "small",
-    title: "Identity Works",
-    desc: "Complete brand identity\nand digital presence.",
-    year: "2025",
-    img: "/assets/orbit-02.jpg",
-  },
-  {
-    pos: "center",
-    size: "xlarge",
-    title: "Letterform",
-    desc: "Custom typeface for\na global publication.",
-    year: "2024",
-    img: "/assets/orbit-03.jpg",
-    link: true,
-  },
-  {
-    pos: "right",
-    size: "medium",
-    title: "Dot Collective",
-    desc: "Brand system for a\ncreative collective.",
-    year: "2025",
-    img: "/assets/orbit-04.jpg",
-  },
-];
+// const PROJECTS: Project[] = [
+//   {
+//     pos: "left",
+//     size: "large",
+//     title: "Velora Studio",
+//     desc: "Architecture design\nfor a modern brand.",
+//     year: "2025",
+//     img: "/assets/orbit-01.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "right",
+//     size: "medium",
+//     title: "Northform™",
+//     desc: "Brand identity system\nand visual language.",
+//     year: "2025",
+//     img: "/assets/orbit-02.jpg",
+//   },
+//   {
+//     pos: "center",
+//     size: "xlarge",
+//     title: "Neue Montreal",
+//     desc: "Typography system\nfor digital products.",
+//     year: "2024",
+//     img: "/assets/orbit-03.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "left",
+//     size: "small",
+//     title: "One.Dot",
+//     desc: "Tailored website design\nfor refined brands.",
+//     year: "2025",
+//     img: "/assets/orbit-04.jpg",
+//   },
+//   {
+//     pos: "right",
+//     size: "large",
+//     title: "Axora Ceramics",
+//     desc: "Brand identity and\neditorial design.",
+//     year: "2025",
+//     img: "/assets/orbit-05.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "left",
+//     size: "medium",
+//     title: "Grinex Projects",
+//     desc: "Sustainable material\nbrand system.",
+//     year: "2025",
+//     img: "/assets/orbit-07.jpg",
+//   },
+//   {
+//     pos: "center",
+//     size: "xlarge",
+//     title: "Royal Festival",
+//     desc: "Visual identity for\nan event series.",
+//     year: "2024",
+//     img: "/assets/orbit-08.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "right",
+//     size: "small",
+//     title: "Formline Studio",
+//     desc: "Interface design for\nselected work.",
+//     year: "2025",
+//     img: "/assets/orbit-09.jpg",
+//   },
+//   {
+//     pos: "left",
+//     size: "large",
+//     title: "Molson Coors",
+//     desc: "Office building\narchitecture design.",
+//     year: "2024",
+//     img: "/assets/orbit-01.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "right",
+//     size: "medium",
+//     title: "Dark Identity",
+//     desc: "Branding and digital\nsystems at scale.",
+//     year: "2025",
+//     img: "/assets/orbit-02.jpg",
+//   },
+//   {
+//     pos: "center",
+//     size: "xlarge",
+//     title: "Typeform Lab",
+//     desc: "Font design and\ntype specimen work.",
+//     year: "2024",
+//     img: "/assets/orbit-03.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "left",
+//     size: "small",
+//     title: "Refined Co.",
+//     desc: "Minimal website for\na luxury consultancy.",
+//     year: "2025",
+//     img: "/assets/orbit-04.jpg",
+//   },
+//   {
+//     pos: "right",
+//     size: "large",
+//     title: "Bloom Studio",
+//     desc: "Ceramic brand identity\nand packaging design.",
+//     year: "2024",
+//     img: "/assets/orbit-05.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "left",
+//     size: "medium",
+//     title: "Zero Point",
+//     desc: "Sustainable brand\nfor architecture firm.",
+//     year: "2025",
+//     img: "/assets/orbit-07.jpg",
+//   },
+//   {
+//     pos: "center",
+//     size: "xlarge",
+//     title: "Festival Noir",
+//     desc: "Event identity and\nmotion design work.",
+//     year: "2024",
+//     img: "/assets/orbit-08.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "right",
+//     size: "large",
+//     title: "Selected Works",
+//     desc: "Portfolio curation and\nUI/UX direction.",
+//     year: "2025",
+//     img: "/assets/orbit-09.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "left",
+//     size: "medium",
+//     title: "Archi Collective",
+//     desc: "Architecture studio\nbranding system.",
+//     year: "2024",
+//     img: "/assets/orbit-01.jpg",
+//   },
+//   {
+//     pos: "right",
+//     size: "small",
+//     title: "Identity Works",
+//     desc: "Complete brand identity\nand digital presence.",
+//     year: "2025",
+//     img: "/assets/orbit-02.jpg",
+//   },
+//   {
+//     pos: "center",
+//     size: "xlarge",
+//     title: "Letterform",
+//     desc: "Custom typeface for\na global publication.",
+//     year: "2024",
+//     img: "/assets/orbit-03.jpg",
+//     link: true,
+//   },
+//   {
+//     pos: "right",
+//     size: "medium",
+//     title: "Dot Collective",
+//     desc: "Brand system for a\ncreative collective.",
+//     year: "2025",
+//     img: "/assets/orbit-04.jpg",
+//   },
+// ];
 
 const ORBIT_IMGS = [
-  "/assets/orbit-01.jpg",
-  "/assets/orbit-02.jpg",
-  "/assets/orbit-03.jpg",
-  "/assets/orbit-04.jpg",
-  "/assets/orbit-05.jpg",
-  "/assets/orbit-07.jpg",
-  "/assets/orbit-08.jpg",
-  "/assets/orbit-09.jpg",
+  "/images/projects/loftloom/loftloom.webp",
+  "/images/projects/pulse-studio/pulse-studio.webp",
+  "/images/projects/onedot/onedot.webp",
+  "/images/projects/gridfree-ai/gridfree-ai.webp",
+  "/images/projects/novaglam/novaglam.webp",
+  "/images/projects/first-ground/first-ground.webp",
+  "/images/projects/techno/techno.webp",
+  "/images/projects/reelix/reelix.webp",
+  "/images/projects/clara-helthcare/clara-helthcare.webp",
+  "/images/projects/z1-flux-solar/z1-flux-solar.webp",
+  "/images/projects/improvi/improvi.webp",
+  "/images/projects/myworker/myworker.webp",
+  "/images/projects/reyden/reyden.webp",
+  "/images/projects/dfz/dfz.webp",
 ];
 
 const FT_THUMBS = [
-  "/assets/orbit-01.jpg",
-  "/assets/orbit-02.jpg",
-  "/assets/orbit-03.jpg",
-  "/assets/orbit-04.jpg",
-  "/assets/orbit-05.jpg",
-  "/assets/orbit-07.jpg",
-  "/assets/orbit-08.jpg",
-  "/assets/orbit-09.jpg",
-  "/assets/orbit-01.jpg",
-  "/assets/orbit-03.jpg",
-  "/assets/orbit-05.jpg",
-  "/assets/orbit-07.jpg",
+  "/images/projects/loftloom/loftloom.webp",
+  "/images/projects/pulse-studio/pulse-studio.webp",
+  "/images/projects/onedot/onedot.webp",
+  "/images/projects/gridfree-ai/gridfree-ai.webp",
+  "/images/projects/novaglam/novaglam.webp",
+  "/images/projects/first-ground/first-ground.webp",
+  "/images/projects/techno/techno.webp",
+  "/images/projects/reelix/reelix.webp",
+  "/images/projects/clara-helthcare/clara-helthcare.webp",
+  "/images/projects/z1-flux-solar/z1-flux-solar.webp",
+  "/images/projects/improvi/improvi.webp",
+  "/images/projects/myworker/myworker.webp",
+  "/images/projects/reyden/reyden.webp",
+  "/images/projects/dfz/dfz.webp",
 ];
 
 export default function OurWorkListing() {
@@ -1097,9 +1106,9 @@ export default function OurWorkListing() {
         a.volume = 0.9;
         a.playbackRate = 0.7 + Math.random() * 0.6;
         const pr = a.play();
-        if (pr && (pr as any).catch) (pr as any).catch(() => { });
+        if (pr && (pr as any).catch) (pr as any).catch(() => {});
         _sc = 0.05;
-      } catch (e) { }
+      } catch (e) {}
     }
     function spark() {
       if (soundEnabledRef.current === false || _sc > 0) return;
@@ -1114,7 +1123,7 @@ export default function OurWorkListing() {
             s.start(0);
             _sc = 0.05;
             return;
-          } catch (e) { }
+          } catch (e) {}
         }
         playHtmlSpark();
       };
@@ -1124,7 +1133,7 @@ export default function OurWorkListing() {
     }
     const onFirstInteraction = () => {
       initAudio();
-      if (actx && actx.state === "suspended") actx.resume().catch(() => { });
+      if (actx && actx.state === "suspended") actx.resume().catch(() => {});
       [
         "pointerdown",
         "mousedown",
@@ -1942,7 +1951,7 @@ export default function OurWorkListing() {
       if (actx) {
         try {
           actx.close();
-        } catch { }
+        } catch {}
       }
     };
   }, [ready]);
@@ -2096,36 +2105,32 @@ export default function OurWorkListing() {
       />
 
       <main id="projects-grid">
-        {PROJECTS.map((p, i) => (
+        {projects.map((project, i) => (
           <article
             key={i}
             className="project-card"
-            data-pos={p.pos}
-            data-size={p.size}
+            data-pos={project.pos}
+            data-size={project.size}
           >
             <div className="card-thumb overflow-hidden mb-6 rounded-sm relative">
-              {p.link ? (
-                <a
-                  href="#"
-                  className="thumb-link"
-                  aria-label={`Open ${p.title}`}
-                >
-                  <img src={p.img} alt={p.title} />
-                </a>
-              ) : (
-                <img src={p.img} alt={p.title} />
-              )}
+              <a
+                href={`work/${project.slug}`}
+                className="thumb-link"
+                aria-label={`Open ${project.title}`}
+              >
+                <img src={project.image} alt={project.title} />
+              </a>
             </div>
             <div className="card-info flex flex-col gap-4">
               <div className="flex justify-between">
-                <h2 className="h3 w-7/12">{p.title}</h2>
+                <h2 className="h3 w-7/12">{project.title}</h2>
                 <p className="text-light-font/60 w-5/12 text-right small">
-                  {p.year}
+                  {project.year}
                 </p>
               </div>
               <div className="flex justify-between">
                 <p className="text-light-font/60 w-7/12 small">
-                  {p.desc.split("\n").map((line, j, arr) => (
+                  {project.subTitle.split("\n").map((line, j, arr) => (
                     <span key={j}>
                       {line}
                       {j < arr.length - 1 ? <br /> : null}
@@ -2135,7 +2140,7 @@ export default function OurWorkListing() {
                 <div className="w-5/12 flex justify-end">
                   <WordShiftButton
                     text="EXPLORE PROJECT"
-                    href="#"
+                    href={`work/${project.slug}`}
                     styleVars={{ buttonWrapperColor: "#D8D8D8" }}
                   />
                 </div>
@@ -2270,7 +2275,7 @@ const styles = `
   position: relative; padding: 120px 5% 160px; z-index: 10;
   display: flex; flex-direction: column; gap: 80px;
 }
-.project-card { position: relative; cursor: pointer; opacity: 0; transition: opacity 0.9s var(--ease-soft); }
+.project-card { position: relative; opacity: 0; transition: opacity 0.9s var(--ease-soft); }
 .project-card.card-revealed { opacity: 1; }
 // .card-thumb { overflow: hidden; margin-bottom: 14px; border-radius: 4px; position: relative; }
 .card-thumb img { width: 100%; display:block; object-fit:cover; border-radius: 4px; }

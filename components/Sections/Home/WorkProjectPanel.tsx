@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef, useImperativeHandle, useRef } from "react";
+import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
@@ -83,7 +84,10 @@ const WorkProjectPanel = forwardRef<
       className="relative flex flex-col w-full pointer-events-auto"
     >
       {/* Image — directly visible, no clip-path wipe */}
-      <div className="relative w-full aspect-670/460 overflow-hidden rounded-sm">
+      <Link
+        href={item.slug}
+        className="relative w-full aspect-670/460 overflow-hidden rounded-sm"
+      >
         <Image
           src={item.image}
           alt={item.title}
@@ -92,7 +96,7 @@ const WorkProjectPanel = forwardRef<
           sizes="(max-width: 768px) 90vw, 45vw"
           priority
         />
-      </div>
+      </Link>
 
       {/* Content */}
       <div className="mt-6 flex flex-col text-dark-font">
@@ -113,7 +117,10 @@ const WorkProjectPanel = forwardRef<
               {parse(item.subTitle)}
             </p>
             <div className="" ref={linkWrapRef}>
-              <WordShiftButton text="Explore project" href={`work/${item.slug}`} />
+              <WordShiftButton
+                text="Explore project"
+                href={`work/${item.slug}`}
+              />
             </div>
           </div>
         </div>

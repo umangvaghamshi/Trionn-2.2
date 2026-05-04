@@ -5,11 +5,11 @@ import WorkProjectPanel, {
   type WorkProjectPanelHandle,
 } from "@/components/Sections/Home/WorkProjectPanel";
 import { BlurTextReveal } from "@/components/TextAnimation";
-import { projects } from "@/data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import React, { useRef } from "react";
+import { projects } from "@/data";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -128,28 +128,30 @@ export default function Work({
           </div>
 
           {/* ── Project Cards with divider lines ── */}
-          {projects.map((item, index) => (
-            <div
-              key={index}
-              className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-full items-center pointer-events-none"
-            >
-              {/* Vertical divider line — draws top→bottom on scrub */}
+          {projects
+            .filter((item) => item.visibleInHome)
+            .map((item, index) => (
               <div
-                className="js-card-line absolute left-0 top-1/2 -translate-y-1/2 h-screen w-px bg-grey-line/30 origin-top"
-                style={{ transform: "scaleY(0)" }}
-              />
-
-              {/* Card content */}
-              <div className="js-work-card-inner w-full will-change-transform px-4 md:px-20">
-                <WorkProjectPanel
-                  ref={(el) => {
-                    panelRefs.current[index] = el;
-                  }}
-                  item={item}
+                key={index}
+                className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-full items-center pointer-events-none"
+              >
+                {/* Vertical divider line — draws top→bottom on scrub */}
+                <div
+                  className="js-card-line absolute left-0 top-1/2 -translate-y-1/2 h-screen w-px bg-grey-line/30 origin-top"
+                  style={{ transform: "scaleY(0)" }}
                 />
+
+                {/* Card content */}
+                <div className="js-work-card-inner w-full will-change-transform px-4 md:px-20">
+                  <WorkProjectPanel
+                    ref={(el) => {
+                      panelRefs.current[index] = el;
+                    }}
+                    item={item}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
           {/* ── View All Projects card ── */}
           <div className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-full items-center pointer-events-none min-h-screen">
