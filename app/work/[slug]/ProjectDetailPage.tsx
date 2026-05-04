@@ -49,7 +49,14 @@ export default function ProjectDetailPage({ project }: { project: any }) {
         });
       });
 
-      return () => mm.revert();
+      const timer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+
+      return () => {
+        mm.revert();
+        clearTimeout(timer);
+      };
     },
     { scope: containerRef, dependencies: [project.tabs] },
   );
