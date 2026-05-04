@@ -4,8 +4,10 @@ import { useEffect, useRef } from "react";
 import { useTransitionReady } from "@/components/Transition";
 import * as THREE from "three";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
+import { mergePanelGeometries } from "./mergePanelGeometries";
 import gsap from "gsap";
-import { createWeldFx } from "./weldFx";
+import { createPerfMonitor } from "@/lib/perf-monitor";
+import { createWeldFxWebgl } from "./weldFxWebgl";
 
 const ORBIT_TOTAL_PTS = 361;
 const SPARK_LEN = 12;
@@ -13,13 +15,13 @@ const SPARK_SPEED = 280;
 const ORBIT_INTRO_START = 0.3;
 const ORBIT_INTRO_DUR = 3.2;
 const ORBIT_TARGET_OP = 0.28;
-/* Ring line color */
 const ORBIT_LINE_COLOR_HEX = 0x3a4658;
 const LERP_SPEED = 0.045;
 const POS_LERP = 0.055;
 const TARGET_HEIGHT = 4.8;
 const SYM_MOBILE_SCALE = 0.3;
-const SYM_MOBILE_ORBIT_SCALE = 0.3;
+/** Orbit + park (sections 1–2) on small viewports — matches `scene.js` (grid still uses SYM_MOBILE_SCALE). */
+const SYM_MOBILE_ORBIT_SCALE = 0.38;
 const GRID_GAP_PX = 16;
 
 const SVG_FILES = [
@@ -209,9 +211,8 @@ export type ServicesOrbitAudioApi = {
   muteWoosh: () => void;
 };
 
-export function useServicesOrbitScene(
+export function useServicesOrbitSceneV2(
   mainCanvasRef: React.RefObject<HTMLCanvasElement | null>,
-  glowCanvasRef: React.RefObject<HTMLCanvasElement | null>,
   options: ServicesOrbitSceneOptions,
 ): React.MutableRefObject<ServicesOrbitAudioApi> {
   const {
@@ -221,6 +222,17 @@ export function useServicesOrbitScene(
     sec4Ref,
     servicesListRef,
   } = options;
+
+  /**
+   * The WebGL effect intentionally omits getSmoothScroll / getScrollProgress from its dependency
+   * array (see eslint comment). Without this, orbitTick would close over the *first* callbacks —
+   * often before Lenis exists — and keep reading window.scrollY (≈0) forever. That makes phase /
+   * phaseB / phaseC random across builds and breaks parking + marquee grid.
+   */
+  const getSmoothScrollLive = useRef(getSmoothScroll);
+  getSmoothScrollLive.current = getSmoothScroll;
+  const getScrollProgressLive = useRef(getScrollProgress);
+  getScrollProgressLive.current = getScrollProgress;
 
   const orbitAudioRef = useRef<ServicesOrbitAudioApi>({
     primeWoosh: () => {},
@@ -245,10 +257,19 @@ export function useServicesOrbitScene(
       powerPreference: "low-power",
     });
     renderer.setSize(W, H);
-    renderer.setPixelRatio(window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(
+      window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5),
+    );
     renderer.setClearColor(0x0a0a0a, 1);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.1;
+
+    const perfMonitor = createPerfMonitor({
+      renderer,
+      label: "Services Orbit V2",
+      enabled: process.env.NODE_ENV !== "production",
+      position: "bottom-right",
+    });
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a0a);
@@ -256,6 +277,29 @@ export function useServicesOrbitScene(
 
     const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 200);
     camera.position.set(0, 0, isMobile ? 18 : 28);
+
+    const canvasTweens = new Set<gsap.core.Tween>();
+    let canvasGsapPaused = false;
+    function trackCanvasTween(tw: gsap.core.Tween) {
+      canvasTweens.add(tw);
+      const cleanup = () => {
+        canvasTweens.delete(tw);
+      };
+      tw.eventCallback("onComplete", cleanup);
+      tw.eventCallback("onInterrupt", cleanup);
+      if (canvasGsapPaused) tw.pause();
+      return tw;
+    }
+    function pauseCanvasGSAP() {
+      if (canvasGsapPaused) return;
+      canvasGsapPaused = true;
+      canvasTweens.forEach((tw) => tw.pause());
+    }
+    function resumeCanvasGSAP() {
+      if (!canvasGsapPaused) return;
+      canvasGsapPaused = false;
+      canvasTweens.forEach((tw) => tw.resume());
+    }
 
     scene.add(new THREE.AmbientLight(0x2a3040, 1.8));
     const key = new THREE.DirectionalLight(0xffffff, 1.4);
@@ -317,16 +361,18 @@ export function useServicesOrbitScene(
     const MATS = [makeMat(0x3a3d42), makeMat(0x2e3136), makeMat(0x44474c)];
 
     function applyLightingTier() {
+      /* Mobile matches `services-hero-section-merge-late-only 1/js/scene.js`: same shade profile as
+       * mid desktop (not a heavy ambient boost) so icons keep depth and tint instead of reading flat/grey. */
       if (isMobile) {
         scene.children.forEach((c) => {
           if ((c as THREE.AmbientLight).isAmbientLight)
-            (c as THREE.AmbientLight).intensity = 5.0;
+            (c as THREE.AmbientLight).intensity = 3.8;
         });
-        key.intensity = 3.5;
+        key.intensity = 2.8;
         MATS.forEach((m) => {
-          m.emissiveIntensity = 0.6;
-          m.roughness = 0.06;
-          m.envMapIntensity = 4.5;
+          m.emissiveIntensity = 0.35;
+          m.roughness = 0.11;
+          m.envMapIntensity = 3.4;
         });
       } else if (W <= 1440) {
         scene.children.forEach((c) => {
@@ -336,6 +382,7 @@ export function useServicesOrbitScene(
         key.intensity = 2.6;
         MATS.forEach((m) => {
           m.emissiveIntensity = 0.32;
+          m.roughness = 0.12;
           m.envMapIntensity = 3.2;
         });
       } else {
@@ -346,6 +393,7 @@ export function useServicesOrbitScene(
         key.intensity = 2.2;
         MATS.forEach((m) => {
           m.emissiveIntensity = 0.25;
+          m.roughness = 0.12;
           m.envMapIntensity = 2.8;
         });
       }
@@ -644,6 +692,7 @@ export function useServicesOrbitScene(
               if (!panelMap[key]) panelMap[key] = { tris: [] };
               panelMap[key].tris.push(i);
             }
+            const panelGeometries: THREE.BufferGeometry[] = [];
             Object.values(panelMap).forEach((panel) => {
               if (!panel.tris.length) return;
               const verts: number[] = [];
@@ -664,9 +713,23 @@ export function useServicesOrbitScene(
                 "normal",
                 new THREE.BufferAttribute(new Float32Array(norms), 3),
               );
-              node.group.add(new THREE.Mesh(pg, mat));
+              panelGeometries.push(pg);
             });
+            if (panelGeometries.length === 1) {
+              node.group.add(new THREE.Mesh(panelGeometries[0], mat));
+            } else if (panelGeometries.length > 1) {
+              const mergedSolid = mergePanelGeometries(panelGeometries);
+              if (mergedSolid) {
+                panelGeometries.forEach((g) => g.dispose());
+                node.group.add(new THREE.Mesh(mergedSolid, mat));
+              } else {
+                panelGeometries.forEach((g) =>
+                  node.group.add(new THREE.Mesh(g, mat)),
+                );
+              }
+            }
             const edges = new THREE.EdgesGeometry(geo, 8);
+            geo.dispose();
             node.group.add(new THREE.LineSegments(edges, edgeBright));
             const r2 = new THREE.LineSegments(edges, edgeRimMat);
             r2.scale.set(1.004, 1.004, 1.004);
@@ -727,6 +790,8 @@ export function useServicesOrbitScene(
       _mny = (e.clientY / H - 0.5) * 2;
       _mouseScreenX = e.clientX;
       _mouseScreenY = e.clientY;
+      _pointerHasMoved = true;
+      _lastPointerMoveMs = performance.now();
     };
     const onMouseUp = () => {
       isDragging = false;
@@ -755,20 +820,24 @@ export function useServicesOrbitScene(
           n.spinBoost = 8.0;
           gsap.killTweensOf(n.group.position);
           gsap.killTweensOf(n.group.scale);
-          gsap.to(n.group.position, {
-            x: 0,
-            y: 0,
-            z: 0,
-            duration: 0.7,
-            ease: "power3.out",
-          });
-          gsap.to(n.group.scale, {
-            x: 1.5,
-            y: 1.5,
-            z: 1.5,
-            duration: 0.7,
-            ease: "power3.out",
-          });
+          trackCanvasTween(
+            gsap.to(n.group.position, {
+              x: 0,
+              y: 0,
+              z: 0,
+              duration: 0.7,
+              ease: "power3.out",
+            }),
+          );
+          trackCanvasTween(
+            gsap.to(n.group.scale, {
+              x: 1.5,
+              y: 1.5,
+              z: 1.5,
+              duration: 0.7,
+              ease: "power3.out",
+            }),
+          );
           setNodeMaterial(n, MAT_HOVER);
         };
         const leave = () => {
@@ -778,13 +847,15 @@ export function useServicesOrbitScene(
           n.returning = true;
           n.lerpT = 0;
           gsap.killTweensOf(n.group.scale);
-          gsap.to(n.group.scale, {
-            x: 1,
-            y: 1,
-            z: 1,
-            duration: 0.5,
-            ease: "power3.out",
-          });
+          trackCanvasTween(
+            gsap.to(n.group.scale, {
+              x: 1,
+              y: 1,
+              z: 1,
+              duration: 0.5,
+              ease: "power3.out",
+            }),
+          );
           setNodeMaterial(n, MATS[i % MATS.length]);
         };
         li.addEventListener("mouseenter", enter);
@@ -794,13 +865,11 @@ export function useServicesOrbitScene(
     }
     bindServiceList();
 
-    const weldFx = createWeldFx({
-      glowCanvas: glowCanvasRef.current,
+    const weldWebgl = createWeldFxWebgl({
       isSoundEnabled: () => soundEnabledRef.current,
       sparkUrl: "/services-orbit/spark.mp3",
     });
-    weldFx.setGlowCanvas(glowCanvasRef.current);
-    weldFx.init(scene, camera, [orbitLineTop, orbitLineBottom, orbitLineMid]);
+    weldWebgl.init(scene, camera, [orbitLineTop, orbitLineBottom, orbitLineMid]);
 
     /* Canvas pinning is owned by GSAP ScrollTrigger in ServicesOrbitExperience.tsx.
        Do NOT swap position:fixed/absolute here — the two mechanisms fought on
@@ -854,6 +923,7 @@ export function useServicesOrbitScene(
     orbitAudioRef.current = {
       primeWoosh: () => {
         initWoosh();
+        weldWebgl.primeAudio();
         if (
           wooshCtx &&
           wooshReady &&
@@ -894,6 +964,15 @@ export function useServicesOrbitScene(
     let _mouseScreenY = -9999;
 
     let _weldCooldown2d = 0;
+    let _lineHoverActive = false;
+    let _lineBurstLeft = 0;
+    let _lineBurstTimer = 0;
+    let _lineBurstHitWP: THREE.Vector3 | null = null;
+    let _lineBurstNearWpts: THREE.Vector3[] | null = null;
+    let _lineBurstSoundPlayed = false;
+    let _pointerHasMoved = false;
+    let _lastPointerMoveMs = 0;
+    let renderPaused = false;
 
     let lastTime = 0;
     let smoothDt = 0.016;
@@ -981,13 +1060,56 @@ export function useServicesOrbitScene(
       return best;
     }
 
-    let rafId = 0;
+    const onPointerMoveBurst = (e: PointerEvent) => {
+      _mouseScreenX = e.clientX;
+      _mouseScreenY = e.clientY;
+      _pointerHasMoved = true;
+      _lastPointerMoveMs = performance.now();
+    };
+    const onPointerLeaveBurst = () => {
+      _mouseScreenX = -9999;
+      _mouseScreenY = -9999;
+      _pointerHasMoved = false;
+      if (_lineHoverActive) {
+        _lineHoverActive = false;
+        _lineBurstLeft = 0;
+        _lineBurstTimer = 0;
+        _lineBurstHitWP = null;
+        _lineBurstNearWpts = null;
+        _lineBurstSoundPlayed = false;
+        weldWebgl.stopAll();
+      }
+    };
+    document.addEventListener("pointermove", onPointerMoveBurst);
+    document.addEventListener("pointerleave", onPointerLeaveBurst);
+
     let prevPhase = 0;
 
-    function animate() {
-      rafId = requestAnimationFrame(animate);
+    /**
+     * Use gsap.ticker (same clock as Lenis in SmoothScrolling) instead of a raw requestAnimationFrame.
+     * rAF can fire before Lenis updates `scroll` in the same frame, which keeps phase/phaseB/phaseC low and
+     * leaves icons on the orbit instead of parking / moving to the section 3 grid.
+     */
+    function orbitTick(_time: number, deltaTime?: number) {
+      const dt =
+        typeof deltaTime === "number" && deltaTime > 0 ? deltaTime : 1 / 60;
+      const canvasIsVisible = !document.hidden;
+      if (!canvasIsVisible) {
+        pauseCanvasGSAP();
+        if (!renderPaused) {
+          renderPaused = true;
+          weldWebgl.stopAll();
+          if (wooshGain && wooshCtx) {
+            wooshGain.gain.setTargetAtTime(0, wooshCtx.currentTime, 0.15);
+          }
+        }
+        perfMonitor.tick(dt, { sleeping: true, gsap });
+        return;
+      }
+      resumeCanvasGSAP();
+      renderPaused = false;
 
-      const _smoothScroll = getSmoothScroll();
+      const _smoothScroll = getSmoothScrollLive.current();
 
       const t = clock.getElapsedTime();
       const raw = t - lastTime;
@@ -1004,16 +1126,17 @@ export function useServicesOrbitScene(
         _smoothScroll,
         sec4Ref.current,
       );
+      const gp = getScrollProgressLive.current;
       const phase =
         phaseAnchored !== null
           ? phaseAnchored
-          : getScrollProgress
-            ? Math.min(Math.max(getScrollProgress(), 0), 1)
+          : gp
+            ? Math.min(Math.max(gp(), 0), 1)
             : scrollPhaseFromDom();
 
       /* scene.js — same bands on `phase` */
       const phaseB = smoothstep(0.1, 0.22, phase);
-      const phaseC = smoothstep(0.25, 0.40, phase);
+      const phaseC = smoothstep(0.38, 0.50, phase);
       const scrollingUp = phase < prevPhase;
       prevPhase = phase;
 
@@ -1350,9 +1473,15 @@ export function useServicesOrbitScene(
         wooshGain.gain.setTargetAtTime(wooshVol, wooshCtx.currentTime, 0.3);
       }
 
-      weldFx.update(0, 1, 0, 0, smoothDt);
+      weldWebgl.update(smoothDt);
       _weldCooldown2d -= smoothDt;
-      if (visiblePts > 10 && rotT < 0.05 && _weldCooldown2d <= 0) {
+
+      let hoverHitWP: THREE.Vector3 | null = null;
+      let hoverNearWpts: THREE.Vector3[] | null = null;
+      const pointerRecentlyMoved =
+        _pointerHasMoved && performance.now() - _lastPointerMoveMs < 180;
+      const allowHoverScan = _lineHoverActive || pointerRecentlyMoved;
+      if (allowHoverScan && visiblePts > 10 && rotT < 0.05) {
         const SAMPLE = 80;
         const allLinePts = [
           orbitLineScreenPts(orbitLineTop, camera, SAMPLE),
@@ -1362,7 +1491,7 @@ export function useServicesOrbitScene(
         let hitResult: ReturnType<typeof mouseNearScreenPts> = null;
         let hitLineIdx = -1;
         for (let li = 0; li < allLinePts.length; li++) {
-          const h = mouseNearScreenPts(allLinePts[li], 14);
+          const h = mouseNearScreenPts(allLinePts[li], 8);
           if (h) {
             hitResult = h;
             hitLineIdx = li;
@@ -1370,7 +1499,7 @@ export function useServicesOrbitScene(
           }
         }
         if (hitResult) {
-          const hitWP = new THREE.Vector3(
+          hoverHitWP = new THREE.Vector3(
             hitResult.wx,
             hitResult.wy,
             hitResult.wz,
@@ -1399,9 +1528,56 @@ export function useServicesOrbitScene(
                 new THREE.Vector3(bestPt.wx, bestPt.wy, bestPt.wz),
               );
           });
-          if (nearWpts.length > 0) {
-            weldFx.triggerAt(hitWP, nearWpts);
-            _weldCooldown2d = 0.05 + Math.random() * 0.08;
+          hoverNearWpts = nearWpts.length ? nearWpts : null;
+        }
+      }
+
+      const isLineHovering = !!(
+        hoverHitWP &&
+        hoverNearWpts &&
+        hoverNearWpts.length > 0
+      );
+
+      if (isLineHovering) {
+        _lineBurstHitWP = hoverHitWP;
+        _lineBurstNearWpts = hoverNearWpts;
+        if (!_lineHoverActive) {
+          _lineHoverActive = true;
+          _lineBurstLeft = 5 + Math.floor(Math.random() * 2);
+          _lineBurstTimer = 0;
+          _weldCooldown2d = 0;
+          _lineBurstSoundPlayed = false;
+        }
+      } else if (_lineHoverActive) {
+        _lineHoverActive = false;
+        _lineBurstLeft = 0;
+        _lineBurstTimer = 0;
+        _lineBurstHitWP = null;
+        _lineBurstNearWpts = null;
+        _lineBurstSoundPlayed = false;
+        weldWebgl.stopAll();
+      }
+
+      if (
+        _lineHoverActive &&
+        _lineBurstLeft > 0 &&
+        _weldCooldown2d <= 0 &&
+        _lineBurstHitWP &&
+        _lineBurstNearWpts
+      ) {
+        _lineBurstTimer -= smoothDt;
+        if (_lineBurstTimer <= 0) {
+          const playSoundOnce = !_lineBurstSoundPlayed;
+          const burstStarted = weldWebgl.triggerAt(
+            _lineBurstHitWP,
+            _lineBurstNearWpts,
+            playSoundOnce,
+          );
+          if (burstStarted) {
+            if (playSoundOnce) _lineBurstSoundPlayed = true;
+            _lineBurstLeft--;
+            _lineBurstTimer = 0.07;
+            _weldCooldown2d = 0.035;
           }
         }
       }
@@ -1412,6 +1588,7 @@ export function useServicesOrbitScene(
       orbitLineMid.updateMatrixWorld(true);
 
       renderer.render(scene, camera);
+      perfMonitor.tick(dt, { gsap });
     }
 
     function rebuildOrbitGeometry() {
@@ -1445,13 +1622,8 @@ export function useServicesOrbitScene(
         ss.layers.forEach((l) => orbitGroup.add(l));
       });
 
-      weldFx.init(scene, camera, [orbitLineTop, orbitLineBottom, orbitLineMid]);
+      weldWebgl.init(scene, camera, [orbitLineTop, orbitLineBottom, orbitLineMid]);
     }
-
-    const syncGlowCanvasSize = () => {
-      const dpr = window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5);
-      weldFx.resizeGlow(W, H, dpr);
-    };
 
     const onResize = () => {
       W = window.innerWidth;
@@ -1462,27 +1634,30 @@ export function useServicesOrbitScene(
       camera.position.z = isMobile ? 18 : 28;
       applyLightingTier();
       recomputeLayout();
-      renderer.setPixelRatio(window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5));
+      renderer.setPixelRatio(
+        window.innerWidth < 768 ? 1 : Math.min(window.devicePixelRatio, 1.5),
+      );
       renderer.setSize(W, H);
       camera.aspect = W / H;
       camera.updateProjectionMatrix();
-      syncGlowCanvasSize();
       if (breakpointCrossed) {
         rebuildOrbitGeometry();
       }
       bindServiceList();
     };
     window.addEventListener("resize", onResize);
-    syncGlowCanvasSize();
 
-    rafId = requestAnimationFrame(animate);
+    gsap.ticker.add(orbitTick);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      gsap.ticker.remove(orbitTick);
+      perfMonitor.destroy();
       window.removeEventListener("resize", onResize);
       document.removeEventListener("mousedown", onMouseDown);
       document.removeEventListener("mousemove", onMouseMoveDrag);
       document.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("pointermove", onPointerMoveBurst);
+      document.removeEventListener("pointerleave", onPointerLeaveBurst);
       listListeners.forEach(({ el, enter, leave }) => {
         el.removeEventListener("mouseenter", enter);
         el.removeEventListener("mouseleave", leave);
@@ -1490,7 +1665,7 @@ export function useServicesOrbitScene(
       wooshGestureHandlers.forEach(({ ev, fn }) =>
         document.removeEventListener(ev, fn),
       );
-      weldFx.dispose();
+      weldWebgl.dispose();
 
       scene.traverse((obj) => {
         const mesh = obj as THREE.Mesh;

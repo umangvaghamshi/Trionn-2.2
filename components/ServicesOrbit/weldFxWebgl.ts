@@ -1,5 +1,10 @@
+/**
+ * WebGL-only weld / lightning FX (ported from prototype `weld.js`).
+ * Renders bolts + glow tubes in the main Three.js scene — no separate 2D glow canvas.
+ */
 import * as THREE from "three";
 
+const SPARK_SOUND_DEFAULT = "/services-orbit/spark.mp3";
 const BOLT_COUNT = 5;
 const BOLT_SEGS = 9;
 
@@ -8,50 +13,46 @@ const COLORS = [
 ];
 
 const GLOW_LAYERS = [
-  { color: 0x0033cc, maxOpacity: 0.12 },
-  { color: 0x3399ff, maxOpacity: 0.25 },
-  { color: 0x99ddff, maxOpacity: 0.45 },
+  { color: 0x0033cc, maxOpacity: 0.07 },
+  { color: 0x3399ff, maxOpacity: 0.15 },
+  { color: 0x99ddff, maxOpacity: 0.27 },
 ];
 
-export type WeldFxOptions = {
-  /** e.g. `/services-orbit/spark.mp3` — optional; sparks work without audio */
-  sparkUrl?: string;
-  isSoundEnabled: () => boolean;
-  glowCanvas: HTMLCanvasElement | null;
-};
+const TUBE_LAYERS = [
+  { color: 0x000d33, radius: 0.55, maxOpacity: 0.025 },
+  { color: 0x001a66, radius: 0.36, maxOpacity: 0.05 },
+  { color: 0x0033aa, radius: 0.22, maxOpacity: 0.08 },
+  { color: 0x0055ee, radius: 0.12, maxOpacity: 0.13 },
+  { color: 0x44aaff, radius: 0.055, maxOpacity: 0.24 },
+  { color: 0xbbddff, radius: 0.02, maxOpacity: 0.35 },
+];
 
 type GlowLinePair = { line: THREE.Line; pts: Float32Array };
+
+type GlowTube = {
+  group: THREE.Group;
+  segments: THREE.Mesh[];
+  material: THREE.MeshBasicMaterial;
+  layer: (typeof TUBE_LAYERS)[number];
+};
 
 type Bolt = {
   line: THREE.Line;
   pts: Float32Array;
   glowLines: GlowLinePair[];
+  glowTubes: GlowTube[];
   travelLight: THREE.PointLight;
   life: number;
   maxLife: number;
   active: boolean;
 };
 
-function nearestPointOnLine(
-  targetLine: THREE.Line,
-  fromPt: THREE.Vector3,
-): { x: number; y: number; z: number } | null {
-  const pos = targetLine.geometry.attributes.position;
-  if (!pos) return null;
-  let minD = Infinity;
-  let best: { x: number; y: number; z: number } | null = null;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i);
-    const y = pos.getY(i);
-    const z = pos.getZ(i);
-    const d = (x - fromPt.x) ** 2 + (y - fromPt.y) ** 2 + (z - fromPt.z) ** 2;
-    if (d < minD) {
-      minD = d;
-      best = { x, y, z };
-    }
-  }
-  return best;
-}
+const _segStart = new THREE.Vector3();
+const _segEnd = new THREE.Vector3();
+const _segMid = new THREE.Vector3();
+const _segDir = new THREE.Vector3();
+const _segQuat = new THREE.Quaternion();
+const _yAxis = new THREE.Vector3(0, 1, 0);
 
 function makeGlowLine(scene: THREE.Scene, color: number): GlowLinePair {
   const pts = new Float32Array((BOLT_SEGS + 1) * 3);
@@ -64,11 +65,59 @@ function makeGlowLine(scene: THREE.Scene, color: number): GlowLinePair {
     opacity: 0,
     depthTest: false,
     depthWrite: false,
+    blending: THREE.AdditiveBlending,
   });
   const line = new THREE.Line(geo, mat);
   line.renderOrder = 998;
   scene.add(line);
   return { line, pts };
+}
+
+function updateGlowTubeGeometry(tube: GlowTube, pts: Float32Array) {
+  tube.group.visible = true;
+  tube.material.opacity = 0;
+  for (let i = 0; i < BOLT_SEGS; i++) {
+    _segStart.set(pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2]);
+    _segEnd.set(pts[(i + 1) * 3], pts[(i + 1) * 3 + 1], pts[(i + 1) * 3 + 2]);
+    const len = _segStart.distanceTo(_segEnd);
+    const mesh = tube.segments[i];
+    if (len < 0.0001) {
+      mesh.visible = false;
+      continue;
+    }
+    _segMid.copy(_segStart).lerp(_segEnd, 0.5);
+    _segDir.copy(_segEnd).sub(_segStart).normalize();
+    _segQuat.setFromUnitVectors(_yAxis, _segDir);
+    mesh.position.copy(_segMid);
+    mesh.quaternion.copy(_segQuat);
+    mesh.scale.set(1, len, 1);
+    mesh.visible = true;
+  }
+}
+
+function makeGlowTube(scene: THREE.Scene, layer: (typeof TUBE_LAYERS)[number]): GlowTube {
+  const mat = new THREE.MeshBasicMaterial({
+    color: layer.color,
+    transparent: true,
+    opacity: 0,
+    depthTest: false,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const geo = new THREE.CylinderGeometry(layer.radius, layer.radius, 1, 8, 1, true);
+  const group = new THREE.Group();
+  group.renderOrder = 996;
+  group.visible = false;
+  const segments: THREE.Mesh[] = [];
+  for (let i = 0; i < BOLT_SEGS; i++) {
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.renderOrder = 996;
+    mesh.visible = false;
+    group.add(mesh);
+    segments.push(mesh);
+  }
+  scene.add(group);
+  return { group, segments, material: mat, layer };
 }
 
 function makeBolt(scene: THREE.Scene): Bolt {
@@ -82,12 +131,14 @@ function makeBolt(scene: THREE.Scene): Bolt {
     opacity: 0,
     depthTest: false,
     depthWrite: false,
+    blending: THREE.AdditiveBlending,
   });
   const line = new THREE.Line(geo, mat);
   line.renderOrder = 999;
   scene.add(line);
 
   const glowLines = GLOW_LAYERS.map((g) => makeGlowLine(scene, g.color));
+  const glowTubes = TUBE_LAYERS.map((layer) => makeGlowTube(scene, layer));
   const travelLight = new THREE.PointLight(0xaaccff, 0, 14);
   scene.add(travelLight);
 
@@ -95,6 +146,7 @@ function makeBolt(scene: THREE.Scene): Bolt {
     line,
     pts,
     glowLines,
+    glowTubes,
     travelLight,
     life: 0,
     maxLife: 0,
@@ -133,8 +185,7 @@ function spawnBolt(
   bolt.pts[BOLT_SEGS * 3 + 1] = target.y;
   bolt.pts[BOLT_SEGS * 3 + 2] = target.z;
 
-  const posAttr = bolt.line.geometry.attributes
-    .position as THREE.BufferAttribute;
+  const posAttr = bolt.line.geometry.attributes.position as THREE.BufferAttribute;
   posAttr.array.set(bolt.pts);
   posAttr.needsUpdate = true;
   (bolt.line.material as THREE.LineBasicMaterial).color.setHex(
@@ -146,51 +197,52 @@ function spawnBolt(
     ga.array.set(bolt.pts);
     ga.needsUpdate = true;
   });
+  bolt.glowTubes.forEach((tube) => updateGlowTubeGeometry(tube, bolt.pts));
 
   bolt.maxLife = 0.05 + Math.random() * 0.09;
   bolt.life = bolt.maxLife;
   bolt.active = true;
 }
 
-export type WeldFxHandle = {
+export type WeldFxWebglOptions = {
+  sparkUrl?: string;
+  isSoundEnabled: () => boolean;
+};
+
+export type WeldFxWebglHandle = {
   init: (
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
     orbitLines: THREE.Line[],
   ) => void;
-  update: (
-    visiblePts: number,
-    rotT: number,
-    mnx: number,
-    mny: number,
-    smoothDt: number,
-  ) => void;
-  triggerAt: (hitPoint: THREE.Vector3, nearWpts: THREE.Vector3[]) => void;
-  resizeGlow: (width: number, height: number, dpr: number) => void;
-  setGlowCanvas: (el: HTMLCanvasElement | null) => void;
+  update: (smoothDt: number) => void;
+  triggerAt: (
+    hitPoint: THREE.Vector3,
+    nearWpts: THREE.Vector3[],
+    playSound?: boolean,
+  ) => boolean;
+  stopAll: () => void;
+  primeAudio: () => void;
   dispose: () => void;
 };
 
-export function createWeldFx(options: WeldFxOptions): WeldFxHandle {
-  const { sparkUrl = "/services-orbit/spark.mp3", isSoundEnabled } = options;
+export function createWeldFxWebgl(
+  options: WeldFxWebglOptions,
+): WeldFxWebglHandle {
+  const sparkUrl = options.sparkUrl ?? SPARK_SOUND_DEFAULT;
+  const { isSoundEnabled } = options;
 
   let sceneRef: THREE.Scene | null = null;
-  let cameraRef: THREE.PerspectiveCamera | null = null;
-  let orbitLinesRef: THREE.Line[] = [];
   const bolts: Bolt[] = [];
   let weldCooldown = 0;
-  let weldRaycaster: THREE.Raycaster | null = null;
 
   let audioCtx: AudioContext | null = null;
   let sparkBuf: AudioBuffer | null = null;
   let gainNode: GainNode | null = null;
   let sndReady = false;
   let sndCooldown = 0;
-
-  let glowCtx: CanvasRenderingContext2D | null = null;
-  let glowW = 0;
-  let glowH = 0;
-  let glowCanvasEl: HTMLCanvasElement | null = options.glowCanvas;
+  let currentSparkSrc: AudioBufferSourceNode | null = null;
+  let soundKeepAliveUntil = 0;
 
   const primeAudioListeners: Array<() => void> = [];
 
@@ -200,7 +252,7 @@ export function createWeldFx(options: WeldFxOptions): WeldFxHandle {
       (window as unknown as { webkitAudioContext: typeof AudioContext })
         .webkitAudioContext)();
     gainNode = audioCtx.createGain();
-    gainNode.gain.value = 1;
+    gainNode.gain.value = 0.12;
     gainNode.connect(audioCtx.destination);
     fetch(sparkUrl)
       .then((r) => r.arrayBuffer())
@@ -212,93 +264,66 @@ export function createWeldFx(options: WeldFxOptions): WeldFxHandle {
       .catch((e) => console.warn("WeldFX:", e));
   }
 
-  function playSparkSnd() {
-    if (!sndReady || sndCooldown > 0 || !isSoundEnabled() || !audioCtx || !gainNode)
-      return;
-    if (audioCtx.state === "suspended") void audioCtx.resume();
-    if (!sparkBuf) return;
-    try {
-      const src = audioCtx.createBufferSource();
-      src.buffer = sparkBuf;
-      src.playbackRate.value = 0.75 + Math.random() * 0.5;
-      src.connect(gainNode);
-      src.start(0);
-      sndCooldown = 0.08 + Math.random() * 0.07;
-    } catch {
-      /* ignore */
+  function stopSparkSnd(force = false) {
+    if (!force && performance.now() < soundKeepAliveUntil) return;
+    if (currentSparkSrc) {
+      try {
+        currentSparkSrc.stop(0);
+      } catch {
+        /* ignore */
+      }
+      try {
+        currentSparkSrc.disconnect();
+      } catch {
+        /* ignore */
+      }
+      currentSparkSrc = null;
     }
   }
 
-  function initGlowCanvas() {
-    const gc = glowCanvasEl;
-    if (!gc) return;
-    const dpr = Math.min(window.devicePixelRatio, 2);
-    glowW = gc.width = Math.floor(window.innerWidth * dpr);
-    glowH = gc.height = Math.floor(window.innerHeight * dpr);
-    gc.style.width = `${window.innerWidth}px`;
-    gc.style.height = `${window.innerHeight}px`;
-    glowCtx = gc.getContext("2d");
+  function canStartSparkSnd(force = false) {
+    if (!audioCtx) initAudioCtx();
+    if (!isSoundEnabled()) return false;
+    if (!sndReady || !sparkBuf || !gainNode) return false;
+    if (!force && sndCooldown > 0) return false;
+    return true;
   }
 
-  function drawGlow(boltList: Bolt[], camera: THREE.PerspectiveCamera) {
-    if (!glowCtx) return;
-    glowCtx.clearRect(0, 0, glowW, glowH);
-
-    boltList.forEach((b) => {
-      if (!b.active || b.life <= 0) return;
-      const fade = b.life / b.maxLife;
-      const screenPts: { x: number; y: number }[] = [];
-      for (let i = 0; i <= BOLT_SEGS; i++) {
-        const wx = b.pts[i * 3];
-        const wy = b.pts[i * 3 + 1];
-        const wz = b.pts[i * 3 + 2];
-        const v = new THREE.Vector3(wx, wy, wz).project(camera);
-        screenPts.push({
-          x: (v.x * 0.5 + 0.5) * glowW,
-          y: (-v.y * 0.5 + 0.5) * glowH,
-        });
-      }
-      if (screenPts.length < 2) return;
-
-      glowCtx!.save();
-      glowCtx!.filter = "blur(8px)";
-      glowCtx!.strokeStyle = `rgba(40,120,255,${0.18 * fade})`;
-      glowCtx!.lineWidth = 6;
-      glowCtx!.beginPath();
-      glowCtx!.moveTo(screenPts[0].x, screenPts[0].y);
-      screenPts.slice(1).forEach((p) => glowCtx!.lineTo(p.x, p.y));
-      glowCtx!.stroke();
-      glowCtx!.restore();
-
-      glowCtx!.save();
-      glowCtx!.filter = "blur(4px)";
-      glowCtx!.strokeStyle = `rgba(100,180,255,${0.3 * fade})`;
-      glowCtx!.lineWidth = 3;
-      glowCtx!.beginPath();
-      glowCtx!.moveTo(screenPts[0].x, screenPts[0].y);
-      screenPts.slice(1).forEach((p) => glowCtx!.lineTo(p.x, p.y));
-      glowCtx!.stroke();
-      glowCtx!.restore();
-
-      glowCtx!.save();
-      glowCtx!.filter = "blur(1.5px)";
-      glowCtx!.strokeStyle = `rgba(200,230,255,${0.55 * fade})`;
-      glowCtx!.lineWidth = 1.5;
-      glowCtx!.beginPath();
-      glowCtx!.moveTo(screenPts[0].x, screenPts[0].y);
-      screenPts.slice(1).forEach((p) => glowCtx!.lineTo(p.x, p.y));
-      glowCtx!.stroke();
-      glowCtx!.restore();
-    });
+  function playSparkSnd(force = false) {
+    if (!canStartSparkSnd(force)) return false;
+    if (audioCtx!.state === "suspended") {
+      void audioCtx!.resume().catch(() => {});
+      return false;
+    }
+    try {
+      stopSparkSnd(true);
+      const src = audioCtx!.createBufferSource();
+      src.buffer = sparkBuf!;
+      src.playbackRate.value = 0.75 + Math.random() * 0.5;
+      src.connect(gainNode!);
+      src.onended = () => {
+        if (currentSparkSrc === src) currentSparkSrc = null;
+      };
+      currentSparkSrc = src;
+      src.start(0);
+      sndCooldown = 0.25;
+      soundKeepAliveUntil = performance.now() + 360;
+      return true;
+    } catch {
+      currentSparkSrc = null;
+      return false;
+    }
   }
 
-  const onPrime = () => {
+  function primeAudio() {
     initAudioCtx();
-  };
+    if (audioCtx?.state === "suspended") void audioCtx.resume().catch(() => {});
+  }
+
   (["mousedown", "touchstart", "pointerdown", "mousemove"] as const).forEach(
     (ev) => {
       const h = () => {
-        onPrime();
+        initAudioCtx();
         document.removeEventListener(ev, h);
       };
       document.addEventListener(ev, h);
@@ -308,56 +333,44 @@ export function createWeldFx(options: WeldFxOptions): WeldFxHandle {
 
   function init(
     scene: THREE.Scene,
-    camera: THREE.PerspectiveCamera,
-    orbitLines: THREE.Line[],
+    _camera: THREE.PerspectiveCamera,
+    _orbitLines: THREE.Line[],
   ) {
     sceneRef = scene;
-    cameraRef = camera;
-    orbitLinesRef = orbitLines;
     for (let i = 0; i < BOLT_COUNT; i++) bolts.push(makeBolt(scene));
-    weldRaycaster = new THREE.Raycaster();
-    (weldRaycaster.params.Line as { threshold: number }).threshold = 1.2;
-    initGlowCanvas();
   }
 
-  function update(
-    visiblePts: number,
-    rotT: number,
-    mnx: number,
-    mny: number,
-    smoothDt: number,
-  ) {
+  function stopAll() {
+    stopSparkSnd(true);
+    bolts.forEach((b) => {
+      b.active = false;
+      b.life = 0;
+      (b.line.material as THREE.LineBasicMaterial).opacity = 0;
+      b.glowLines.forEach((g) => {
+        (g.line.material as THREE.LineBasicMaterial).opacity = 0;
+      });
+      b.glowTubes.forEach((t) => {
+        t.group.visible = false;
+        t.material.opacity = 0;
+      });
+      b.travelLight.intensity = 0;
+    });
+    weldCooldown = 0;
+  }
+
+  function update(smoothDt: number) {
     sndCooldown -= smoothDt;
     weldCooldown -= smoothDt;
-
-    if (
-      visiblePts > 10 &&
-      rotT < 0.05 &&
-      weldRaycaster &&
-      cameraRef &&
-      sceneRef
-    ) {
-      weldRaycaster.setFromCamera(new THREE.Vector2(mnx, -mny), cameraRef);
-      const hits = weldRaycaster.intersectObjects(orbitLinesRef, false);
-      if (hits.length > 0 && weldCooldown <= 0) {
-        const origin = hits[0].point;
-        const hitLine = hits[0].object as THREE.Line;
-        const otherLines = orbitLinesRef.filter((l) => l !== hitLine);
-        bolts.forEach((b) => {
-          const tgt = otherLines[Math.floor(Math.random() * otherLines.length)];
-          const near = nearestPointOnLine(tgt, origin);
-          if (near) spawnBolt(b, origin, near);
-        });
-        playSparkSnd();
-        weldCooldown = 0.04 + Math.random() * 0.06;
-      }
-    }
 
     bolts.forEach((b) => {
       if (!b.active) {
         (b.line.material as THREE.LineBasicMaterial).opacity = 0;
         b.glowLines.forEach((g) => {
           (g.line.material as THREE.LineBasicMaterial).opacity = 0;
+        });
+        b.glowTubes.forEach((t) => {
+          t.group.visible = false;
+          t.material.opacity = 0;
         });
         b.travelLight.intensity = 0;
         return;
@@ -369,6 +382,10 @@ export function createWeldFx(options: WeldFxOptions): WeldFxHandle {
         b.glowLines.forEach((g) => {
           (g.line.material as THREE.LineBasicMaterial).opacity = 0;
         });
+        b.glowTubes.forEach((t) => {
+          t.group.visible = false;
+          t.material.opacity = 0;
+        });
         b.travelLight.intensity = 0;
         return;
       }
@@ -379,19 +396,32 @@ export function createWeldFx(options: WeldFxOptions): WeldFxHandle {
         (g.line.material as THREE.LineBasicMaterial).opacity =
           GLOW_LAYERS[gi].maxOpacity * fade * flicker;
       });
+      b.glowTubes.forEach((t) => {
+        t.group.visible = true;
+        const pulse = 0.9 + Math.random() * 0.1;
+        t.material.opacity = t.layer.maxOpacity * fade * flicker * pulse;
+      });
       const tIdx = Math.floor((1 - fade) * BOLT_SEGS) * 3;
       b.travelLight.position.set(b.pts[tIdx], b.pts[tIdx + 1], b.pts[tIdx + 2]);
-      b.travelLight.intensity = (8 + Math.random() * 6) * fade;
+      b.travelLight.intensity = (12 + Math.random() * 8) * fade;
     });
 
-    if (cameraRef) drawGlow(bolts, cameraRef);
+    if (!bolts.some((b) => b.active)) stopSparkSnd();
   }
 
-  function triggerAt(hitPoint: THREE.Vector3, nearWpts: THREE.Vector3[]) {
-    if (weldCooldown > 0) return;
-    if (!nearWpts.length) return;
+  function triggerAt(
+    hitPoint: THREE.Vector3,
+    nearWpts: THREE.Vector3[],
+    playSound = true,
+  ) {
+    if (weldCooldown > 0) return false;
+    if (!nearWpts.length) return false;
+
+    const mustStartSoundNow = !!(playSound && isSoundEnabled());
+    if (mustStartSoundNow && !canStartSparkSnd(true)) return false;
+
     bolts.forEach((b) => {
-      const tgt = nearWpts[Math.floor(Math.random() * nearWpts.length)];
+      const tgt = nearWpts[Math.floor(Math.random() * nearWpts.length)]!;
       const outOffset = 0.06 + Math.random() * 0.08;
       const midTarget = {
         x: tgt.x + (Math.random() - 0.5) * 0.04,
@@ -400,30 +430,15 @@ export function createWeldFx(options: WeldFxOptions): WeldFxHandle {
       };
       spawnBolt(b, hitPoint, midTarget);
     });
-    playSparkSnd();
+    const soundPlayed = playSound ? playSparkSnd(true) : false;
     weldCooldown = 0.04 + Math.random() * 0.06;
-  }
 
-  function resizeGlow(width: number, height: number, dpr: number) {
-    const gc = glowCanvasEl;
-    if (!gc) return;
-    glowW = gc.width = Math.floor(width * dpr);
-    glowH = gc.height = Math.floor(height * dpr);
-    gc.style.width = `${width}px`;
-    gc.style.height = `${height}px`;
-    if (!glowCtx) glowCtx = gc.getContext("2d");
+    return playSound ? soundPlayed || !isSoundEnabled() : true;
   }
-
-  function setGlowCanvas(el: HTMLCanvasElement | null) {
-    glowCanvasEl = el;
-    glowCtx = el?.getContext("2d") ?? null;
-    if (el && typeof window !== "undefined") initGlowCanvas();
-  }
-
-  setGlowCanvas(options.glowCanvas);
 
   function dispose() {
     primeAudioListeners.forEach((fn) => fn());
+    stopSparkSnd(true);
     if (audioCtx) {
       void audioCtx.close();
       audioCtx = null;
@@ -439,21 +454,26 @@ export function createWeldFx(options: WeldFxOptions): WeldFxHandle {
         g.line.geometry.dispose();
         (g.line.material as THREE.Material).dispose();
       });
+      b.glowTubes.forEach((t) => {
+        scene.remove(t.group);
+        const first = t.segments[0];
+        if (first) {
+          first.geometry.dispose();
+          (first.material as THREE.Material).dispose();
+        }
+      });
       scene.remove(b.travelLight);
     });
     bolts.length = 0;
     sceneRef = null;
-    cameraRef = null;
-    orbitLinesRef = [];
-    weldRaycaster = null;
   }
 
   return {
     init,
     update,
     triggerAt,
-    resizeGlow,
-    setGlowCanvas,
+    stopAll,
+    primeAudio: primeAudio,
     dispose,
   };
 }
