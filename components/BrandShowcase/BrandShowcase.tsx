@@ -15,43 +15,43 @@ const CARD_TEXT_OVERLAP = 8;
 const DEFAULT_BRANDS: Brand[] = [
   {
     name: "Luxury Presence",
-    image: "/images/orbit-01.jpg",
-    label: "REAL ESTATE PLATFORM",
+    image: "/images/about/Brandshowcase/luxury-presence.webp",
+    label: "",
   },
   {
     name: "Credible",
-    image: "/images/orbit-02.jpg",
-    label: "LOAN COMPARISON",
+    image: "/images/about/Brandshowcase/credible.webp",
+    label: "",
   },
   {
     name: "Yellowtail",
-    image: "/images/orbit-03.jpg",
-    label: "WINE & SPIRITS",
+    image: "/images/about/Brandshowcase/yellowtail.webp",
+    label: "",
   },
   {
     name: "My Worker",
-    image: "/images/orbit-04.jpg",
-    label: "WORKFORCE MANAGEMENT",
+    image: "/images/about/Brandshowcase/my-worker-ai.webp",
+    label: "",
   },
   {
-    name: "Re-events",
-    image: "/images/orbit-05.jpg",
-    label: "EVENT PLATFORM",
+    name: "CrissCross",
+    image: "/images/about/Brandshowcase/criss-cross.webp",
+    label: "",
   },
   {
     name: "Ockto",
-    image: "/images/orbit-09.jpg",
-    label: "DATA SERVICES",
-  },
-  {
-    name: "Improvi",
-    image: "/images/orbit-07.jpg",
-    label: "HEALTH & WELLNESS",
+    image: "/images/about/Brandshowcase/ockto.webp",
+    label: "",
   },
   {
     name: "Technish",
-    image: "/images/orbit-08.jpg",
-    label: "TECH CONSULTING",
+    image: "/images/about/Brandshowcase/technis.webp",
+    label: "",
+  },
+   {
+    name: "Ubiqu",
+    image: "/images/about/Brandshowcase/ubiqu.webp",
+    label: "",
   },
 ];
 
@@ -382,24 +382,6 @@ export default function BrandShowcase({
                       sizes="245px"
                       priority={i < 3}
                     />
-                    <div className="absolute inset-0 bg-black/30" />
-
-                    <div
-                      className="absolute inset-x-0 inset-y-0 p-4 flex flex-col items-center justify-center text-center pointer-events-none"
-                      style={{
-                        zIndex: 11,
-                        opacity: activeIndex === i ? 1 : 0,
-                      }}
-                    >
-                      <h3 className="text-white text-xl font-medium mb-1">
-                        {brand.name.toLowerCase()}
-                      </h3>
-                      {brand.label && (
-                        <span className="text-white/80 text-[10px] tracking-wider uppercase">
-                          {brand.label}
-                        </span>
-                      )}
-                    </div>
                   </div>
                 ))}
               </div>

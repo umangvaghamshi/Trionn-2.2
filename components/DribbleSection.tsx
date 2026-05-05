@@ -341,11 +341,11 @@ export default function DribbleSection() {
 
       const TRAVELLER_STEPS = Math.floor((EDGE_STEPS + 20) * 0.14);
       const travelMatA = new THREE.LineBasicMaterial({
-        color: 0xb0b0b0,
+        color: "#9E9E9E",
         linewidth: 2,
       });
       const travelMatB = new THREE.LineBasicMaterial({
-        color: 0xb0b0b0,
+        color: "#9E9E9E",
         linewidth: 2,
       });
       const travelGeoA = new THREE.BufferGeometry().setFromPoints(topReversed);
@@ -364,14 +364,14 @@ export default function DribbleSection() {
       /* horizontal grid lines */
       const GRID_LINE_PTS = 600;
       const gridLineMatT = new THREE.LineBasicMaterial({
-        color: 0x434343,
+        color: "#9E9E9E",
         transparent: true,
-        opacity: 0.5,
+        opacity: 1,
       });
       const gridLineMatB = new THREE.LineBasicMaterial({
-        color: 0x434343,
+        color: "#9E9E9E",
         transparent: true,
-        opacity: 0.5,
+        opacity: 1,
       });
 
       function buildGridLinePoints(yWorld: number, rtl = false) {

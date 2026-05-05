@@ -161,7 +161,8 @@ export default function ServicesOrbitExperienceV2() {
         pin: sec3Ref.current,
         pinSpacing: true,
         markers: false,
-        scrub: true,
+        scrub: 1,
+        anticipatePin: 1,
       },
       defaults: { ease: "none" },
     });
@@ -324,7 +325,7 @@ export default function ServicesOrbitExperienceV2() {
           <div className="tr__container w-full">
             <BlurTextReveal
               as="span"
-              text="Capabilities shaped to scale with ambition."
+              text="✦ Capabilities shaped to scale with ambition."
               animationType="chars"
               stagger={0.02}
               className="title block text-center"
