@@ -129,7 +129,7 @@ export default function ProjectDetailPage({ project }: { project: any }) {
         </div>
         <LinePlus
           lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto translate-x-0!"}
+          plusClass={"col-span-12 mx-auto"}
           iconColor={"#D8D8D8"}
         />
       </div>

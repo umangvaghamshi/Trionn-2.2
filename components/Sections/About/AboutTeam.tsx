@@ -49,7 +49,7 @@ export default function AboutTeam() {
         </div>
         <LinePlus
           lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto translate-x-0!"}
+          plusClass={"col-span-12 mx-auto"}
           iconColor={"#D8D8D8"}
         />
         <div className="pt-25 flex flex-col items-center text-center gap-6">

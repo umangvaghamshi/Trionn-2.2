@@ -417,7 +417,7 @@ export default function BrandShowcase({
 
         <LinePlus
           lineClass={"opacity-15 bg-grey-line left-1/2! -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto translate-x-0!"}
+          plusClass={"col-span-12 mx-auto"}
           iconColor={"#272727"}
         />
       </div>

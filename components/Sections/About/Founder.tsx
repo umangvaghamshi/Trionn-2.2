@@ -65,7 +65,7 @@ export default function Founder() {
             <LinePlus
               customClass="grid-cols-10!"
               lineClass={"opacity-20 bg-cream-line left-1/2! -translate-x-1/2"}
-              plusClass={"col-span-12 mx-auto translate-x-0!"}
+              plusClass={"col-span-12 mx-auto"}
               iconColor={"#D8D8D8"}
             />
           </div>

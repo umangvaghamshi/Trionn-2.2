@@ -51,7 +51,7 @@ export default function Services() {
             <LinePlus
               customClass={"absolute! top-0 left-0 -translate-y-1/2 w-full"}
               lineClass={"opacity-15 bg-grey-line left-1/2 -translate-x-1/2"}
-              plusClass={"col-span-12 mx-auto translate-x-0"}
+              plusClass={"col-span-12 mx-auto"}
               iconColor={"#272727"}
             />
             <div className="flex w-full">
@@ -122,7 +122,7 @@ export default function Services() {
         <LinePlus
           customClass={"absolute! top-0 left-0 -translate-y-1/2 w-full"}
           lineClass={"opacity-15 bg-grey-line left-1/2 -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto translate-x-0"}
+          plusClass={"col-span-12 mx-auto"}
           iconColor={"#272727"}
         />
         <BlurTextReveal
@@ -135,7 +135,7 @@ export default function Services() {
         <LinePlus
           customClass={"absolute! bottom-0 left-0 translate-y-1/2 w-full"}
           lineClass={"opacity-15 bg-grey-line left-1/2 -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto translate-x-0"}
+          plusClass={"col-span-12 mx-auto"}
           iconColor={"#272727"}
         />
       </div>

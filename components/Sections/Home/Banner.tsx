@@ -160,7 +160,7 @@ export default function Banner() {
                     </span>
                   </div>
                 </div>
-                <div id="s1-sub" >
+                <div id="s1-sub">
                   <BlurTextReveal
                     as="p"
                     text="Websites, digital products, brands, and systems built for clarity, scale, and impact."
@@ -208,7 +208,7 @@ export default function Banner() {
             <LinePlus
               customClass={"mt-25 mb-20"}
               lineClass={"col-start-2 bg-[#2F323B]"}
-              plusClass={"col-start-9"}
+              plusClass={"col-start-9 -translate-x-1/2!"}
               iconColor={"#D8D8D8"}
             />
             <div className="about-subtitle-block grid grid-cols-12 grid-rows-1 gap-x-6">
