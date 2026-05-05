@@ -122,7 +122,6 @@ export default function ProjectDetailPage({ project }: { project: any }) {
                   src={item.image}
                   alt={`${project.title} - ${index}`}
                   className="w-full h-auto object-cover rounded-sm"
-                  loading="lazy"
                 />
               </div>
             ))}
