@@ -4,21 +4,30 @@ import React, { useEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
 import { TransitionLink } from "../Transition";
 
+/* ----------------------- Debounce Utility ----------------------- */
+function debounce<T extends (...args: any[]) => void>(fn: T, ms: number) {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return function (this: any, ...args: Parameters<T>) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+
 type StyleVars = Partial<{
-  buttonWrapperColor: string; // --button_wrapper-color
-  step: string; // --step
-  baseDur: string; // --base-dur
-  durStep: string; // --dur-step
-  insetMin: string; // --inset-min
-  arrowGap: string; // --arrow-gap
-  run: string; // --run
-  outTime: string; // --out-time
-  inTime: string; // --in-time
-  reentryFactor: string; // --reentry-factor
-  ulOutTime: string; // --ul-out-time
-  ulInTime: string; // --ul-in-time
-  padX: string; // --pad-x
-  arrowSize: string; // --arrow-size
+  buttonWrapperColor: string;
+  step: string;
+  baseDur: string;
+  durStep: string;
+  insetMin: string;
+  arrowGap: string;
+  run: string;
+  outTime: string;
+  inTime: string;
+  reentryFactor: string;
+  ulOutTime: string;
+  ulInTime: string;
+  padX: string;
+  arrowSize: string;
 }>;
 
 type Props = {
@@ -37,7 +46,6 @@ export default function WordShiftButton({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const btnRef = useRef<HTMLAnchorElement | null>(null);
 
-  // Build letters (no inline transform so CSS var wins)
   const letters = useMemo(
     () =>
       [...text].map((ch, i) => (
@@ -51,7 +59,7 @@ export default function WordShiftButton({
     [text],
   );
 
-  /* ----------------------- Scoped CSS var helpers ----------------------- */
+  /* ----------------------- Helpers ----------------------- */
   const getVar = (scope: Element, name: string, fallback = "0") => {
     const v = getComputedStyle(scope as HTMLElement)
       .getPropertyValue(name)
@@ -146,7 +154,7 @@ export default function WordShiftButton({
     return anim;
   };
 
-  /* ----------------------- Layout/spacing logic ----------------------- */
+  /* ----------------------- Layout Logic ----------------------- */
   const computeUniformMove = (
     wrapper: HTMLElement,
     direction: "in" | "out",
@@ -181,47 +189,33 @@ export default function WordShiftButton({
     return Math.max(0, targetRightEdge - currentRightEdge);
   };
 
-  const computeTotalWordTime = (
-    total: number,
-    step: number,
-    baseDur: number,
-    durStep: number,
-  ) => {
-    const maxDelay = (total - 1) * step;
-    const maxDur = baseDur + (total - 1) * durStep;
-    return maxDelay + maxDur;
-  };
-
   const applyPerLetterVars = (
     wrapper: HTMLElement,
     direction: "in" | "out",
   ) => {
     const letters = wrapper.querySelectorAll<HTMLElement>(".text");
     const total = letters.length;
-
     const step = parseInt(getVar(wrapper, "--step", "50")) || 50;
     const baseDur = parseInt(getVar(wrapper, "--base-dur", "600")) || 600;
     const durStep = parseInt(getVar(wrapper, "--dur-step", "50")) || 50;
-
     const move = computeUniformMove(wrapper, direction);
 
     letters.forEach((el, i) => {
-      const orderIndex = direction === "in" ? total - i - 1 : i; // mirror order
+      const orderIndex = direction === "in" ? total - i - 1 : i;
       const delay = orderIndex * step;
       const dur = baseDur + orderIndex * durStep;
-
       el.style.setProperty("--group-move", `${move}px`);
       el.style.setProperty("--delay", `${delay}ms`);
       el.style.setProperty("--dur", `${dur}ms`);
     });
 
-    const totalTime = computeTotalWordTime(total, step, baseDur, durStep);
+    const totalTime = (total - 1) * step + (baseDur + (total - 1) * durStep);
     const factor =
       parseFloat(getVar(wrapper, "--reentry-factor", "0.75")) || 0.75;
     return Math.max(120, Math.round(totalTime * factor));
   };
 
-  /* ----------------------- Arrows & Underline (use inner sprite) ----------------------- */
+  /* ----------------------- Animation States ----------------------- */
   const resetArrowStates = (wrapper: HTMLElement) => {
     const ar = wrapper.querySelector(
       ".arrow-right .arrow-sprite",
@@ -361,14 +355,15 @@ export default function WordShiftButton({
       resetUnderlineStates(wrapper);
     });
 
-    const enter = () => {
+    const enterLogic = () => {
       const reentryDelay = applyPerLetterVars(wrapper, "in");
       forceReflow(wrapper);
       wrapper.classList.add("is-hovered");
       hoverInArrows(wrapper, reentryDelay);
       hoverInUnderline(wrapper, reentryDelay);
     };
-    const leave = () => {
+
+    const leaveLogic = () => {
       const reentryDelay = applyPerLetterVars(wrapper, "out");
       forceReflow(wrapper);
       wrapper.classList.remove("is-hovered");
@@ -376,18 +371,22 @@ export default function WordShiftButton({
       hoverOutUnderline(wrapper, reentryDelay);
     };
 
-    btn.addEventListener("mouseenter", enter);
-    btn.addEventListener("mouseleave", leave);
+    // Debounce mouse interaction by 20ms to filter out jitters
+    const debouncedEnter = debounce(enterLogic, 20);
+    const debouncedLeave = debounce(leaveLogic, 20);
+
+    btn.addEventListener("mouseenter", debouncedEnter);
+    btn.addEventListener("mouseleave", debouncedLeave);
 
     const onTouchStart = () => {
-      if (!wrapper.classList.contains("is-hovered")) enter();
+      if (!wrapper.classList.contains("is-hovered")) enterLogic();
     };
     const onDocTouch = (e: TouchEvent) => {
       if (
         !btn.contains(e.target as Node) &&
         wrapper.classList.contains("is-hovered")
       )
-        leave();
+        leaveLogic();
     };
     btn.addEventListener("touchstart", onTouchStart, { passive: true });
     document.addEventListener("touchstart", onDocTouch, { passive: true });
@@ -403,8 +402,8 @@ export default function WordShiftButton({
     window.addEventListener("resize", onResize);
 
     return () => {
-      btn.removeEventListener("mouseenter", enter);
-      btn.removeEventListener("mouseleave", leave);
+      btn.removeEventListener("mouseenter", debouncedEnter);
+      btn.removeEventListener("mouseleave", debouncedLeave);
       btn.removeEventListener("touchstart", onTouchStart);
       document.removeEventListener("touchstart", onDocTouch);
       window.removeEventListener("resize", onResize);
@@ -412,7 +411,6 @@ export default function WordShiftButton({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
-  // Component-scoped CSS vars (live on the wrapper)
   const style: React.CSSProperties = {
     ["--button_wrapper-color" as string]:
       styleVars?.buttonWrapperColor ?? "#434343",
@@ -449,7 +447,6 @@ export default function WordShiftButton({
         )}
         draggable={false}
       >
-        {/* Underline */}
         <span className="underline pointer-events-none absolute inset-x-0 bottom-0 h-[0.063rem]">
           <span
             className="u-right absolute inset-x-0 bottom-0 h-[0.063rem] will-change-transform"
@@ -461,7 +458,6 @@ export default function WordShiftButton({
           />
         </span>
 
-        {/* Word */}
         <span
           className="word relative inline-flex will-change-transform pr-px"
           style={{ color: "var(--button_wrapper-color)" }}
@@ -469,7 +465,6 @@ export default function WordShiftButton({
           {letters}
         </span>
 
-        {/* Arrows (outer centers vertically; inner sprite animates X & opacity) */}
         <span
           className="arrow arrow-right pointer-events-none absolute right-[calc(var(--pad-x)*1.2)] top-1/2 -translate-y-1/2 inline-flex items-center justify-center"
           style={{ width: "var(--arrow-size)", height: "var(--arrow-size)" }}
@@ -491,6 +486,7 @@ export default function WordShiftButton({
             </svg>
           </span>
         </span>
+
         <span
           className="arrow arrow-left pointer-events-none absolute left-[calc(var(--pad-x)*1.2)] top-1/2 -translate-y-1/2 inline-flex items-center justify-center"
           style={{ width: "var(--arrow-size)", height: "var(--arrow-size)" }}
@@ -514,7 +510,6 @@ export default function WordShiftButton({
         </span>
       </TransitionLink>
 
-      {/* Local CSS to mirror your original selectors */}
       <style>{`
         .button_wrapper .word { transform: translateX(0); }
         .button_wrapper .text {

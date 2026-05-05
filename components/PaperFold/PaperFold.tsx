@@ -100,7 +100,7 @@ export default function PaperFold({
           <div className="col-span-10 col-start-2 ">
             <LinePlus
               lineClass={"opacity-15 bg-grey-line left-1/2! -translate-x-1/2"}
-              plusClass={"mx-auto translate-x-0! col-span-12"}
+              plusClass={"mx-auto col-span-12"}
               iconColor={"#272727"}
             />
           </div>

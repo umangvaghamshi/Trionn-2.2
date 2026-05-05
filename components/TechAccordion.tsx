@@ -133,7 +133,7 @@ export default function TechAccordion({
             <LinePlus
               customClass={""}
               lineClass={"opacity-15 bg-grey-line"}
-              plusClass={"col-span-8 col-start-5 -translate-x-1/2"}
+              plusClass={"col-span-8 col-start-5 -translate-x-1/2!"}
               iconColor={"#272727"}
               scrub={false}
             />

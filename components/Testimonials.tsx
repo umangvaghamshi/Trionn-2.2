@@ -130,7 +130,7 @@ export default function Testimonials({
         <LinePlus
           customClass={"my-20"}
           lineClass={"opacity-15 bg-grey-line col-span-10 col-start-2"}
-          plusClass={"col-start-7"}
+          plusClass={"col-start-7 -translate-x-1/2!"}
           iconColor={"#272727"}
         />
         <div className="w-full relative grid grid-cols-12 gap-6 ">
@@ -262,7 +262,7 @@ export default function Testimonials({
         <div className="tr__container z-0">
           <LinePlus
             lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
-            plusClass={"col-span-12 mx-auto translate-x-0!"}
+            plusClass={"col-span-12 mx-auto"}
             iconColor={"#272727"}
           />
         </div>

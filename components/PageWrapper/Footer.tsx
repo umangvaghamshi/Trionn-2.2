@@ -131,13 +131,6 @@ export default function Footer() {
               </div>
             </div>
           </div>
-
-          <div className="tr__container w-full pb-20">
-            <LinePlus
-              plusClass={"col-start-9 translate-x-1/2!"}
-              iconColor={"#D8D8D8"}
-            />
-          </div>
         </div>
 
         {/* Logo: fragment places sound (z-20) above fog, wires (z-[2]) under fog — matches prototype stacking */}

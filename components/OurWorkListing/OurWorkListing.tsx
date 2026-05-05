@@ -1278,7 +1278,7 @@ export default function OurWorkListing() {
       const btn = document.querySelector<HTMLElement>("#contact-btn");
       const br = btn ? btn.getBoundingClientRect() : null;
       const btnX = br ? br.left + br.width / 2 : cx;
-      _btnY = br ? br.top + sy + br.height / 2 : _lastDotY + VH * 0.4;
+      _btnY = br ? br.top + sy : _lastDotY + VH * 0.4;
       const rnd = (min: number, max: number) =>
         min + Math.random() * (max - min);
       const spread = rnd(0.15, 0.28);
@@ -2200,7 +2200,7 @@ export default function OurWorkListing() {
       <div className="tr__container">
         <LinePlus
           lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto translate-x-0!"}
+          plusClass={"col-span-12 mx-auto"}
           iconColor={"#D8D8D8"}
         />
       </div>

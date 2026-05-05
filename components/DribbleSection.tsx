@@ -40,7 +40,7 @@ export default function DribbleSection() {
       });
       renderer.setPixelRatio(getCappedDPR());
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor(0x000000, 0);
+      renderer.setClearColor(0x040508, 0);
 
       const scene = new THREE.Scene();
 
@@ -341,11 +341,11 @@ export default function DribbleSection() {
 
       const TRAVELLER_STEPS = Math.floor((EDGE_STEPS + 20) * 0.14);
       const travelMatA = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: 0xb0b0b0,
         linewidth: 2,
       });
       const travelMatB = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: 0xb0b0b0,
         linewidth: 2,
       });
       const travelGeoA = new THREE.BufferGeometry().setFromPoints(topReversed);
@@ -364,14 +364,14 @@ export default function DribbleSection() {
       /* horizontal grid lines */
       const GRID_LINE_PTS = 600;
       const gridLineMatT = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: 0x434343,
         transparent: true,
-        opacity: 0.75,
+        opacity: 0.5,
       });
       const gridLineMatB = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: 0x434343,
         transparent: true,
-        opacity: 0.75,
+        opacity: 0.5,
       });
 
       function buildGridLinePoints(yWorld: number, rtl = false) {
@@ -705,7 +705,7 @@ export default function DribbleSection() {
     <>
       <div
         ref={sectionRef}
-        className="relative z-10 h-screen bg-[#C3C3C3] py-20 overflow-hidden"
+        className="relative z-10 h-screen bg-[#C3C3C3] py-20 overflow-hidden -top-0.5!"
       >
         <canvas
           ref={canvasRef}
@@ -756,7 +756,7 @@ export default function DribbleSection() {
                 width: "100%",
                 marginTop: i > 0 ? "-0.5px" : undefined,
                 paddingBottom: "0.5px",
-                backgroundColor: "#000",
+                backgroundColor: "#040508",
                 transform: "scaleY(0)",
                 transformOrigin: "bottom",
                 willChange: "transform",

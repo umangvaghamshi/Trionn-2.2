@@ -32,7 +32,7 @@ export default function AboutIntro() {
           <div className="col-span-10 col-start-2 ">
             <LinePlus
               lineClass={"opacity-15 bg-grey-line"}
-              plusClass={"col-start-9"}
+              plusClass={"col-start-9 -translate-x-1/2!"}
               iconColor={"#272727"}
             />
           </div>
