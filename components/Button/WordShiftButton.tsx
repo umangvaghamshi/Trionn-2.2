@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
+import { TransitionLink } from "../Transition";
 
 type StyleVars = Partial<{
   buttonWrapperColor: string; // --button_wrapper-color
@@ -439,7 +440,7 @@ export default function WordShiftButton({
         customClass,
       )}
     >
-      <a
+      <TransitionLink
         ref={btnRef}
         href={href}
         className={clsx(
@@ -511,7 +512,7 @@ export default function WordShiftButton({
             </svg>
           </span>
         </span>
-      </a>
+      </TransitionLink>
 
       {/* Local CSS to mirror your original selectors */}
       <style>{`
