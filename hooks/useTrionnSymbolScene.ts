@@ -708,7 +708,6 @@ export function useTrionnSymbolScene(
       ctx.restore();
     }
 
-    // ── Draw all 2D overlay lines ─────────────────────────────────────────────
     function drawLines(opts?: { skipClear?: boolean }) {
       const lctx = st.lctx;
       if (!lctx || !lineCanvas) return;
@@ -716,11 +715,6 @@ export function useTrionnSymbolScene(
       st.lineTime += 0.016;
 
       const lineNorm = st.lastScroll / viewportH;
-      const targetUndrawAmt = Math.max(
-        0,
-        Math.min(1, (lineNorm - 0.08) / LINE_UNDRAW_SCROLL_RANGE),
-      );
-      st.smoothUndrawAmt += (targetUndrawAmt - st.smoothUndrawAmt) * LINE_UNDRAW_EASE;
       const undrawAmt = st.smoothUndrawAmt;
       if (undrawAmt >= 1.0) return;
 
@@ -1177,6 +1171,13 @@ export function useTrionnSymbolScene(
       group.visible = true;
 
       renderer.render(scene, camera);
+
+      const lineNorm = st.lastScroll / viewportH;
+      const targetUndrawAmt = Math.max(
+        0,
+        Math.min(1, (lineNorm - 0.08) / LINE_UNDRAW_SCROLL_RANGE),
+      );
+      st.smoothUndrawAmt += (targetUndrawAmt - st.smoothUndrawAmt) * LINE_UNDRAW_EASE;
 
       const lc = st.lineCanvas;
       const lctx2 = st.lctx;
