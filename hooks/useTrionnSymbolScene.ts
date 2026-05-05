@@ -235,6 +235,10 @@ export function useTrionnSymbolScene(
     envReady: false,
     clock: null as THREE.Clock | null,
     hoveredMesh: null as THREE.Object3D | null,
+    _canvasCleared: false,
+    _vibrateReset: false,
+    _lastTy: -999,
+    _lastScrollHintOpacity: '1',
   });
 
   const transitionReady = useTransitionReady();
@@ -704,7 +708,6 @@ export function useTrionnSymbolScene(
       ctx.restore();
     }
 
-    // ── Draw all 2D overlay lines ─────────────────────────────────────────────
     function drawLines(opts?: { skipClear?: boolean }) {
       const lctx = st.lctx;
       if (!lctx || !lineCanvas) return;
@@ -712,11 +715,6 @@ export function useTrionnSymbolScene(
       st.lineTime += 0.016;
 
       const lineNorm = st.lastScroll / viewportH;
-      const targetUndrawAmt = Math.max(
-        0,
-        Math.min(1, (lineNorm - 0.08) / LINE_UNDRAW_SCROLL_RANGE),
-      );
-      st.smoothUndrawAmt += (targetUndrawAmt - st.smoothUndrawAmt) * LINE_UNDRAW_EASE;
       const undrawAmt = st.smoothUndrawAmt;
       if (undrawAmt >= 1.0) return;
 
@@ -993,7 +991,10 @@ export function useTrionnSymbolScene(
 
       const s4SlideProgress = Math.max(0, Math.min(1, (norm - 2.0) / 0.8));
       const ty = (1 - s4SlideProgress) * 100;
-      if (s4ElRef.current) s4ElRef.current.style.transform = `translateY(${ty}vh)`;
+      if (s4ElRef.current && st._lastTy !== ty) {
+        s4ElRef.current.style.transform = `translateY(${ty}vh)`;
+        st._lastTy = ty;
+      }
       st.s4ty = ty;
 
       st.scrollProgress += (st.targetScrollProgress - st.scrollProgress) * 0.06;
@@ -1003,7 +1004,11 @@ export function useTrionnSymbolScene(
       if (st.introAmt > 0.001) st.introAmt *= 0.975; else st.introAmt = 0;
 
       if (scrollHintRef.current) {
-        scrollHintRef.current.style.opacity = norm > 0.05 ? '0' : '1';
+        const op = norm > 0.05 ? '0' : '1';
+        if (st._lastScrollHintOpacity !== op) {
+          scrollHintRef.current.style.opacity = op;
+          st._lastScrollHintOpacity = op;
+        }
       }
 
       // Auto-rotate
@@ -1054,6 +1059,7 @@ export function useTrionnSymbolScene(
             el.style.transition = 'none';
             el.style.transform = `translate(${sx}px,${sy}px)`;
           });
+          st._vibrateReset = false;
         }
       }
 
@@ -1071,10 +1077,13 @@ export function useTrionnSymbolScene(
           el.style.transform = `perspective(600px) translate(${tx2}px,${ty2}px) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg)`;
         });
       } else if (!st.holding && st.clickBurst <= 0.01) {
-        vibrateEls.forEach((el) => {
-          el.style.transition = 'transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)';
-          el.style.transform = 'perspective(600px) translate(0px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
-        });
+        if (!st._vibrateReset) {
+          vibrateEls.forEach((el) => {
+            el.style.transition = 'transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)';
+            el.style.transform = 'perspective(600px) translate(0px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
+          });
+          st._vibrateReset = true;
+        }
       }
 
       // Hold logic
@@ -1156,24 +1165,45 @@ export function useTrionnSymbolScene(
       // Env map update — throttled to every 6 frames, only when something is moving
       group.visible = false;
       if (!st.envReady) { cubeCamera.update(renderer, scene); st.envReady = true; }
-      else if ((frameCount++ % 6) === 0 && (st.introAmt > 0.01 || st.clickBurst > 0.01 || st.scrollProgress > 0.01 || st.dragging || st.holding)) {
+      else if ((frameCount++ % 6) === 0 && (st.clickBurst > 0.01 || st.dragging || st.holding)) {
         cubeCamera.update(renderer, scene);
       }
       group.visible = true;
 
       renderer.render(scene, camera);
 
+      const lineNorm = st.lastScroll / viewportH;
+      const targetUndrawAmt = Math.max(
+        0,
+        Math.min(1, (lineNorm - 0.08) / LINE_UNDRAW_SCROLL_RANGE),
+      );
+      st.smoothUndrawAmt += (targetUndrawAmt - st.smoothUndrawAmt) * LINE_UNDRAW_EASE;
+
       const lc = st.lineCanvas;
       const lctx2 = st.lctx;
       if (lc && lctx2) {
-        lctx2.clearRect(0, 0, lc.width, lc.height);
-        drawBoltGlow2D();
-        drawLines({ skipClear: true });
-        overlayTexture.needsUpdate = true;
-        renderer.autoClear = false;
-        renderer.clearDepth();
-        renderer.render(overlayScene, overlayCamera);
-        renderer.autoClear = true;
+        const boltsActive = st.bolts.some(b => b.active);
+        const linesActive = st.smoothUndrawAmt < 0.995;
+
+        if (boltsActive || linesActive) {
+          lctx2.clearRect(0, 0, lc.width, lc.height);
+          drawBoltGlow2D();
+          drawLines({ skipClear: true });
+          overlayTexture.needsUpdate = true;
+          renderer.autoClear = false;
+          renderer.clearDepth();
+          renderer.render(overlayScene, overlayCamera);
+          renderer.autoClear = true;
+          st._canvasCleared = false;
+        } else if (!st._canvasCleared) {
+          lctx2.clearRect(0, 0, lc.width, lc.height);
+          overlayTexture.needsUpdate = true;
+          renderer.autoClear = false;
+          renderer.clearDepth();
+          renderer.render(overlayScene, overlayCamera);
+          renderer.autoClear = true;
+          st._canvasCleared = true;
+        }
       }
 
       stepBolts(0.016);
