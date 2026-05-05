@@ -5,7 +5,13 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import Marquee from "@/components/Marquee";
@@ -160,9 +166,8 @@ export default function ServicesOrbitExperienceV2() {
       defaults: { ease: "none" },
     });
 
-    const nextSection = document.getElementById(
-      "services-orbit-scope-v2",
-    )?.nextElementSibling as HTMLElement | null;
+    const nextSection = document.getElementById("services-orbit-scope-v2")
+      ?.nextElementSibling as HTMLElement | null;
     if (nextSection) {
       gsap.set(nextSection, { marginTop: "-100vh" });
     }
@@ -274,13 +279,13 @@ export default function ServicesOrbitExperienceV2() {
         id="sec2-v2"
       >
         <div className="foc-inner tr__container grid grid-cols-12 gap-6 text-light-font">
-          <div className="col-span-6 col-start-5 gap-20 flex flex-col">
+          <div className="col-span-12 gap-20 flex flex-col items-center text-center">
             <BlurTextReveal
               as="h2"
-              text="Focused disciplines where strategy, design, and technology work as one."
+              html="Focused disciplines <br/>where strategy, design, and <br/>technology work as one."
               animationType="chars"
               stagger={0.01}
-              className="max-w-200 foc-title"
+              className="foc-title"
             />
             <div className="flex gap-10 foc-cta">
               <WordShiftButton
