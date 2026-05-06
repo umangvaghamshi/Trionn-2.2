@@ -311,7 +311,10 @@ export default function PageLoader() {
         (function sf(now: number) {
           const fr = Math.min((now - sfs) / BORDER_FADE_DUR, 1);
           borderSvg.style.opacity = String(1 - fr);
-          if (fr < 1) requestAnimationFrame(sf); else cb();
+          if (fr < 1) requestAnimationFrame(sf); else {
+            [sp1Ref.current, sp2Ref.current, sp3Ref.current].forEach((p) => { if (p) p.style.opacity = "1"; });
+            cb();
+          }
         })(performance.now());
       }
     })(performance.now());
