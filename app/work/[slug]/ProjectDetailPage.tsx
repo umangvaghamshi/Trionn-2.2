@@ -1,5 +1,5 @@
 "use client";
-
+import parser from "html-react-parser";
 import React, { useRef } from "react";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
@@ -64,7 +64,7 @@ export default function ProjectDetailPage({ project }: { project: any }) {
   return (
     <section
       ref={containerRef}
-      className="relative w-full bg-[#040508] z-3 overflow-hidden text-light-font"
+      className="relative w-full bg-[#171717] z-3 overflow-hidden text-light-font"
     >
       <div className="tr__container flex flex-col justify-between">
         <div className="grid grid-cols-12 gap-6">
@@ -84,8 +84,12 @@ export default function ProjectDetailPage({ project }: { project: any }) {
                 />
                 <p className="text-light-font/60 small">{project.year}</p>
               </div>
-              <p className="small max-w-70 text-light-font/60">
-                {project.subTitle}
+              <p className="small text-light-font/60">
+                {parser(
+                  Array.isArray(project.subTitle)
+                    ? project.subTitle.join("")
+                    : project.subTitle,
+                )}
               </p>
               <ul className="mt-10 list-disc pl-4">
                 {project.category.map((cat: string, i: number) => (
@@ -127,11 +131,11 @@ export default function ProjectDetailPage({ project }: { project: any }) {
             ))}
           </div>
         </div>
-        <LinePlus
+        {/* <LinePlus
           lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
           plusClass={"col-span-12 mx-auto"}
           iconColor={"#D8D8D8"}
-        />
+        /> */}
       </div>
     </section>
   );
