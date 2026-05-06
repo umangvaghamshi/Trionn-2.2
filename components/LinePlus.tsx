@@ -23,6 +23,9 @@ interface LinePlusProps {
    */
   scrollOffset?: string;
   scrub?: boolean | number;
+  markers?: boolean;
+  /** Fixed duration (seconds) for the line draw animation. When set, the line animates in one shot on scroll enter instead of scrubbing. */
+  duration?: number;
 }
 
 export default function LinePlus({
@@ -32,6 +35,8 @@ export default function LinePlus({
   iconColor,
   scrollOffset = "",
   scrub = true,
+  markers = false,
+  duration,
 }: LinePlusProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const drawLine = useRef<HTMLDivElement>(null);
@@ -46,13 +51,14 @@ export default function LinePlus({
     gsap.to(drawLine.current, {
       width: "100%",
       ease: "none",
+      ...(duration ? { duration } : {}),
       scrollTrigger: {
         trigger: drawLine.current,
         start: `top bottom${off}`,
         end: `top center${off}`,
-        scrub,
+        scrub: duration ? false : scrub,
         invalidateOnRefresh: true,
-        markers: false,
+        markers,
         onLeave: () => {
           lineDrawn.current = true;
         },
@@ -62,18 +68,20 @@ export default function LinePlus({
       },
     });
 
-    gsap.to(PlusIcon.current, {
-      rotation: 360,
-      duration: 1,
-      ease: "none",
-      scrollTrigger: {
-        trigger: PlusIcon.current,
-        start: `top bottom${off}`,
-        end: `bottom top${off}`,
-        scrub: true,
-        invalidateOnRefresh: true,
-      },
-    });
+    if (scrub !== false) {
+      gsap.to(PlusIcon.current, {
+        rotation: 360,
+        duration: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: PlusIcon.current,
+          start: `top bottom${off}`,
+          end: `bottom top${off}`,
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+    }
 
     const container = containerRef.current;
     if (!container || !PlusIcon.current) return;
