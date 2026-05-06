@@ -65,6 +65,7 @@ export default function StripeReveal({
   stripesClassName = "",
   markers = false,
 }: StripeRevealProps) {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
 
@@ -76,10 +77,11 @@ export default function StripeReveal({
 
   useGSAP(
     () => {
+      const section = sectionRef.current;
       const container = containerRef.current;
       const stripes = stripesRef.current;
 
-      if (!container || stripes.length === 0) return;
+      if (!section || !container || stripes.length === 0) return;
 
       const origin = stripeOrigin === "bottom" ? "bottom" : "top";
       gsap.set(stripes, { scaleY: 0, transformOrigin: origin });
@@ -89,11 +91,11 @@ export default function StripeReveal({
         : null;
 
       const st = ScrollTrigger.create({
-        trigger: container,
+        trigger: section,
         start: "top top",
-        endTrigger: endTriggerEl ?? container,
+        endTrigger: endTriggerEl ?? section,
         end: endTriggerEl ? scrollEnd : "bottom top",
-        pin: true,
+        pin: container,
         pinSpacing: false,
         markers,
       });
@@ -160,10 +162,10 @@ export default function StripeReveal({
   );
 
   return (
-    <section className={`relative overflow-visible min-h-dvh ${className}`}>
+    <section ref={sectionRef} className={`relative overflow-visible min-h-screen h-screen ${className}`}>
       <div
         ref={containerRef}
-        className={`w-full min-h-screen z-20 mix-blend-difference h-screen ${pinnedClassName}`}
+        className={`w-full min-h-screen h-screen z-20 mix-blend-difference ${pinnedClassName}`}
       >
         {/* ── 1. Pinned content ──────────────────────────── */}
         {pinnedContent}
