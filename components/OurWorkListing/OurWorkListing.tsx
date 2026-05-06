@@ -1,6 +1,6 @@
 "use client";
 import parser from "html-react-parser";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useSiteSound } from "@/components/SiteSoundContext";
 import { BlurTextReveal } from "@/components/TextAnimation";
@@ -234,6 +234,8 @@ export default function OurWorkListing() {
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
   }, [soundEnabled]);
+
+  const [animationCompleted, setAnimationCompleted] = useState(false);
 
   const ready = useTransitionReady();
 
@@ -968,6 +970,7 @@ export default function OurWorkListing() {
       if (p >= DONE_ON) {
         (window as any)._thumbAnimDone = true;
         animDone = false;
+        setAnimationCompleted(true);
       } else if (p <= DONE_OFF) {
         (window as any)._thumbAnimDone = false;
       }
@@ -2202,13 +2205,15 @@ export default function OurWorkListing() {
           <p>Based globally. Available for select work worldwide.</p>
         </div> */}
       </div>
-      <div className="tr__container">
-        <LinePlus
-          lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto"}
-          iconColor={"#D8D8D8"}
-        />
-      </div>
+      {animationCompleted && (
+        <div className="tr__container">
+          <LinePlus
+            lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
+            plusClass={"col-span-12 mx-auto"}
+            iconColor={"#D8D8D8"}
+          />
+        </div>
+      )}
     </div>
   );
 }
