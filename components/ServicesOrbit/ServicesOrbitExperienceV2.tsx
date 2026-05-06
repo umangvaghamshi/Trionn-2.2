@@ -16,6 +16,8 @@ import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import Marquee from "@/components/Marquee";
 import { useServicesOrbitSceneV2 } from "./useServicesOrbitSceneV2";
+import parse from "html-react-parser";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -157,12 +159,12 @@ export default function ServicesOrbitExperienceV2() {
       scrollTrigger: {
         trigger: sec3Ref.current,
         start: "top top",
-        end: "+=100%",
+        end: "+=150%",
         pin: sec3Ref.current,
         pinSpacing: true,
         markers: false,
-        scrub: 1,
-        anticipatePin: 1,
+        scrub: true,
+        anticipatePin: 0.5,
       },
       defaults: { ease: "none" },
     });
@@ -283,7 +285,7 @@ export default function ServicesOrbitExperienceV2() {
           <div className="col-span-12 gap-20 flex flex-col items-center text-center">
             <BlurTextReveal
               as="h2"
-              html="Focused disciplines <br/>where strategy, design, and <br/>technology work as one."
+              text={parse("Focused disciplines <br/>where strategy, design, and <br/>technology work as one.") as string}
               animationType="chars"
               stagger={0.01}
               className="foc-title"
