@@ -310,7 +310,6 @@ export default function PageLoader() {
         const sfs = performance.now();
         (function sf(now: number) {
           const fr = Math.min((now - sfs) / BORDER_FADE_DUR, 1);
-          [sp1Ref.current, sp2Ref.current, sp3Ref.current].forEach((p) => { if (p) p.style.opacity = String(1 - fr); });
           borderSvg.style.opacity = String(1 - fr);
           if (fr < 1) requestAnimationFrame(sf); else cb();
         })(performance.now());
@@ -333,10 +332,10 @@ export default function PageLoader() {
     box.style.position = "fixed"; box.style.inset = "auto";
     box.style.left = fromL + "px"; box.style.top = fromT + "px";
     box.style.width = fromW + "px"; box.style.height = fromH + "px";
-    box.style.transform = "none"; box.style.zIndex = "9250";
+    box.style.transform = "none"; box.style.zIndex = "250";
 
     corners.forEach((c) => {
-      c.style.cssText += ";position:fixed;left:auto;top:auto;right:auto;bottom:auto;transform:translate(-50%,-50%);z-index:9300;";
+      c.style.cssText += ";position:fixed;left:auto;top:auto;right:auto;bottom:auto;transform:translate(-50%,-50%);z-index:300;";
     });
 
     const start = performance.now();
