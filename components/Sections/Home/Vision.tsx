@@ -29,7 +29,7 @@ export default function Vision() {
       pinnedContent={
         <div
           id="s3-text"
-          className="w-screen min-h-screen flex flex-col justify-between bg-transparent text-left overflow-hidden items-center py-37.5 text-light-font"
+          className="w-full min-h-screen flex flex-col justify-between bg-transparent text-left overflow-hidden items-center py-37.5 text-light-font"
         >
           <div className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6">
             <BlurTextReveal
@@ -70,7 +70,7 @@ export default function Vision() {
       scrollEndTrigger="#keyfacts-section"
       scrollEnd="top center"
       staggerAmount={0.5}
-      holdStart={0.1}
+      holdStart={0.65}
     />
   );
 }

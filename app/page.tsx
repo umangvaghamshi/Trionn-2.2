@@ -29,6 +29,8 @@ const Page = () => {
         />
         <Banner />
         <Vision />
+        {/* Scroll gap to hold the vision section before key facts and stripes appear */}
+        <div className="w-full h-[40vh] md:h-screen pointer-events-none bg-transparent" />
       </div>
       <KeyFactsNew />
       <WorkServicesSequence />
