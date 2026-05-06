@@ -1706,13 +1706,6 @@ export default function TeamSection() {
           background: var(--ts-color-bg);
         }
         .ts-crt {
-          background: repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(0, 0, 0, 0.06) 2px,
-            rgba(0, 0, 0, 0.06) 4px
-          );
           opacity: 0;
           transition: opacity 0.4s ease;
         }
