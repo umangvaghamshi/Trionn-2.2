@@ -136,6 +136,7 @@ export default function TechAccordion({
               plusClass={"col-span-8 col-start-5 -translate-x-1/2!"}
               iconColor={"#272727"}
               scrub={false}
+              duration={1}
             />
           </div>
         );
