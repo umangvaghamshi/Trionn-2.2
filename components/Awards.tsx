@@ -15,63 +15,69 @@ const STRIPE_COUNT = 5;
 
 const cards = [
   {
+    title: "AWWWARDS",
+    awards: [
+      {
+        title: "Honorable Mention - 3x",
+        images: [
+          {
+            image: "/images/awards/awards-1.webp",
+          },
+          {
+            image: "/images/awards/awards-2.webp",
+          },
+          {
+            image: "/images/awards/awards-3.webp",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "CSS Design Awards",
+    awards: [
+      {
+        title: "Website of the day - 1x",
+        images: [
+          {
+            image: "/images/awards/css-1.webp",
+          },
+        ],
+      },
+      {
+        title: "Special Kudos - 2x",
+        images: [
+          {
+            image: "/images/awards/kudos-1.webp",
+          },
+          {
+            image: "/images/awards/kudos-2.webp",
+          },
+        ],
+      },
+      {
+        title: "UI, UX , INN awards - 2x",
+        images: [
+          {
+            image: "/images/awards/ui-1.webp",
+          },
+          {
+            image: "/images/awards/ux-1.webp",
+          },
+        ],
+      },
+    ],
+  },
+  {
     title: "GSAP",
     awards: [
       {
-        title: "Website of the day  — (2X)",
-        image: "/images/awards.webp",
-      },
-      {
-        title: "Website of the day  — (2X)",
-        image: "/images/rushi.webp",
-      },
-    ],
-  },
-  {
-    title: "CSSDA",
-    awards: [
-      {
-        title: "2X - Website of the day",
-        image: "/images/rushi.webp",
-      },
-    ],
-  },
-  {
-    title: "Orpetron",
-    awards: [
-      {
-        title: "Website of the day  — (2X)",
-        image: "/images/rushi.webp",
-      },
-      {
-        title: "Website of the day  — (2X)",
-        image: "/images/awards.webp",
-      },
-    ],
-  },
-  {
-    title: "Awwwards",
-    awards: [
-      {
-        title: "2X - Honnerable Mention",
-        image: "/images/rushi.webp",
-      },
-      {
-        title: "Website of the day  — (2X)",
-        image: "/images/awards.webp",
-      },
-    ],
-  },
-  {
-    title: "The FWA",
-    awards: [
-      {
-        title: "2X - Honnerable Mention",
-        image: "/images/rushi.webp",
-      },
-      {
-        title: "Website of the day  — (2X)",
-        image: "/images/awards.webp",
+        title: "Site of the Day - 1x",
+        images: [
+          {
+            image: "/images/awards/gsap.webp",
+          },
+        ],
       },
     ],
   },
@@ -79,21 +85,33 @@ const cards = [
     title: "A Design Awards",
     awards: [
       {
-        title: "Silver Medal",
-        image: "/images/rushi.webp",
-      },
-      {
-        title: "Website of the day  — (2X)",
-        image: "/images/awards.webp",
+        title: "Silver Award - 1x",
+        images: [
+          {
+            image: "/images/awards/silver.webp",
+          },
+        ],
       },
     ],
   },
   {
-    title: "Landing.Love",
+    title: "Orpetron",
     awards: [
       {
-        title: "Website of the day  — (2X)",
-        image: "/images/awards.webp",
+        title: "Site of the day -1x",
+        images: [
+          {
+            image: "/images/awards/orpetron-1.webp",
+          },
+        ],
+      },
+      {
+        title: "Web design appreciation -1x",
+        images: [
+          {
+            image: "/images/awards/orpetron-2.webp",
+          },
+        ],
       },
     ],
   },
@@ -101,17 +119,15 @@ const cards = [
     title: "CSS Winner",
     awards: [
       {
-        title: "2X - Website of the day",
-        image: "/images/awards.webp",
-      },
-    ],
-  },
-  {
-    title: "CSSnectar",
-    awards: [
-      {
-        title: "Website of the day  — (2X)",
-        image: "/images/awards.webp",
+        title: "Site of the day - 2X",
+        images: [
+          {
+            image: "/images/awards/css-winner-1.webp",
+          },
+          {
+            image: "/images/awards/css-winner-2.webp",
+          },
+        ],
       },
     ],
   },
@@ -119,8 +135,12 @@ const cards = [
     title: "Codrops",
     awards: [
       {
-        title: "Website of the day  — (2X)",
-        image: "/images/awards.webp",
+        title: "Featured - 1x",
+        images: [
+          {
+            image: "/images/awards/codrops-1.webp",
+          },
+        ],
       },
     ],
   },
@@ -288,11 +308,10 @@ export default function Awards() {
 
       cardsRef.current.forEach((card) => {
         const imgs = card.querySelectorAll(".awards-image-wrapper img");
+        if (imgs.length <= 1) return;
         // Show only First Image
-        if (imgs.length > 1) {
-          gsap.set(imgs, { opacity: 0 });
-          gsap.set(imgs[0], { opacity: 1 });
-        }
+        gsap.set(imgs, { opacity: 0 });
+        gsap.set(imgs[0], { opacity: 1 });
 
         const tl = gsap.timeline({ repeat: -1 });
         const duration = 1.2; // How long the fade takes
@@ -493,14 +512,20 @@ export default function Awards() {
                   <div className="awards-image-wrapper w-full max-w-40 overflow-hidden relative">
                     {item.awards.map((award, index) => {
                       return (
-                        <Image
-                          className="inset-0 absolute rounded-sm"
-                          src={award.image}
-                          key={index}
-                          alt={award.title}
-                          height={460}
-                          width={320}
-                        ></Image>
+                        <div key={index}>
+                          {award.images.map((img, index) => {
+                            return (
+                              <Image
+                                className="inset-0 absolute rounded-sm"
+                                src={img.image}
+                                key={index}
+                                alt={award.title}
+                                height={460}
+                                width={320}
+                              />
+                            );
+                          })}
+                        </div>
                       );
                     })}
                   </div>

@@ -306,7 +306,7 @@ function TeamCard({ odoSync }: { odoSync: number }) {
         <div className="team-video overflow-hidden py-10">
           <video
             ref={videoRef}
-            src="/video/rushi.mp4"
+            src="/video/team/rushi.mp4"
             muted
             playsInline
             preload="metadata"
