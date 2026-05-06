@@ -48,7 +48,7 @@ const DEFAULT_BRANDS: Brand[] = [
     image: "/images/about/Brandshowcase/technis.webp",
     label: "",
   },
-   {
+  {
     name: "Ubiqu",
     image: "/images/about/Brandshowcase/ubiqu.webp",
     label: "",
@@ -300,7 +300,7 @@ export default function BrandShowcase({
     >
       <div className="tr__container text-dark-font relative">
         <div className="flex flex-col py-37.5 items-center justify-between text-center min-h-screen">
-          <div className="mb-10">
+          <div className="mb-40">
             <BlurTextReveal
               as="span"
               text={sectionLabel}
@@ -386,7 +386,36 @@ export default function BrandShowcase({
                 ))}
               </div>
             </div>
-
+            <div className="flex flex-row justify-center -mx-8 text-dark-font/50 lg:mb-6">
+              <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
+                <p className="small">Cassie Posh Events</p>
+                <p className="small">Casting Networks</p>
+                <p className="small">Fozeus Finance</p>
+                <p className="small">Press Play</p>
+                <p className="small">RevNet</p>
+              </div>
+              <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
+                <p className="small">ShiraTech Knowtion</p>
+                <p className="small">Blade Trade AI</p>
+                <p className="small">Mizuno CGI</p>
+                <p className="small">CrissCross</p>
+                <p className="small">Flow Row</p>
+              </div>
+              <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
+                <p className="small">Sumerian Partners</p>
+                <p className="small">Sustainable Dad</p>
+                <p className="small">Soundboard </p>
+                <p className="small">Julia Daviy</p>
+                <p className="small">Cirgo Bike</p>
+              </div>
+              <div className="px-8 flex flex-col items-start whitespace-nowrap gap-2">
+                <p className="small">Essence Realty</p>
+                <p className="small">Spotlight News</p>
+                <p className="small">Larry Lake</p>
+                <p className="small">Joonko</p>
+                <p className="small opacity-50">Many more...</p>
+              </div>
+            </div>
             <BlurTextReveal
               as="span"
               html={footerTagline}
