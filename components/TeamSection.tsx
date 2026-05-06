@@ -18,7 +18,7 @@ import { useGSAP } from "@gsap/react";
  *   import TeamSection from "@/components/TeamSection";
  *   export default function Page() { return <TeamSection />; }
  *
- * Place /public/images/<file>.webp + <file>.mp4 for each PEOPLE entry.
+ * Place /public/images/team/<file>.webp + <file>.mp4 for each PEOPLE entry.
  */
 
 type Person = { name: string; file: string; role: string };
@@ -231,14 +231,14 @@ export default function TeamSection() {
         "position:relative;width:100%;height:100%;border-radius:8px;overflow:hidden;background:#0c0c10;";
 
       const img = document.createElement("img");
-      img.src = `/images/${p.file}.webp`;
+      img.src = `/images/team/${p.file}.webp`;
       img.alt = p.name;
       img.draggable = false;
       img.style.cssText =
         "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;z-index:2;opacity:1;transition:opacity .32s ease;";
 
       const vid = document.createElement("video");
-      vid.src = `/images/${p.file}.mp4`;
+      vid.src = `/video/team/${p.file}.mp4`;
       vid.muted = true;
       vid.playsInline = true;
       vid.preload = "auto";
@@ -915,15 +915,15 @@ export default function TeamSection() {
       frameName.textContent = "";
       frameRole.textContent = "";
 
-      frameImg.src = `/images/${p.file}.webp`;
+      frameImg.src = `/images/team/${p.file}.webp`;
       frameImg.style.opacity = "0";
       frameVid.style.opacity = "0";
       const _img = new Image();
       _img.onload = () => {
         frameImg.style.opacity = "0.22";
       };
-      _img.src = `/images/${p.file}.webp`;
-      frameVid.src = `/images/${p.file}.mp4`;
+      _img.src = `/images/team/${p.file}.webp`;
+      frameVid.src = `/video/team/${p.file}.mp4`;
       frameVid.load();
 
       // Flicker
@@ -1689,7 +1689,7 @@ export default function TeamSection() {
           and a couple of state-driven class toggles used by the JS. */}
       <style jsx global>{`
         :root {
-          --ts-font-family: "Barlow", sans-serif;
+          // --ts-font-family: "Barlow", sans-serif;
           --ts-color-bg: #040508;
           --ts-color-hint: rgba(255, 255, 255, 0.75);
           --ts-color-name: #c8c8c8;
@@ -1700,7 +1700,7 @@ export default function TeamSection() {
         .ts-root,
         .ts-root * {
           box-sizing: border-box;
-          font-family: var(--ts-font-family);
+          // font-family: var(--ts-font-family);
         }
         .ts-scene {
           background: var(--ts-color-bg);
