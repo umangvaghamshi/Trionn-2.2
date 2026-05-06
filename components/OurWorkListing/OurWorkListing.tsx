@@ -1,5 +1,5 @@
 "use client";
-
+import parser from "html-react-parser";
 import { useEffect, useRef } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useSiteSound } from "@/components/SiteSoundContext";
@@ -2130,12 +2130,17 @@ export default function OurWorkListing() {
               </div>
               <div className="flex justify-between">
                 <p className="text-light-font/60 w-7/12 small">
-                  {project.subTitle.split("\n").map((line, j, arr) => (
+                  {parser(
+                    Array.isArray(project.subTitle)
+                      ? project.subTitle.join("")
+                      : project.subTitle,
+                  )}
+                  {/* {project.subTitle.split("\n").map((line, j, arr) => (
                     <span key={j}>
                       {line}
                       {j < arr.length - 1 ? <br /> : null}
                     </span>
-                  ))}
+                  ))} */}
                 </p>
                 <div className="w-5/12 flex justify-end">
                   <WordShiftButton
