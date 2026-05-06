@@ -81,7 +81,7 @@ const WorkProjectPanel = forwardRef<
   return (
     <div
       ref={rootRef}
-      className="relative flex flex-col w-full pointer-events-auto"
+      className="relative flex flex-col w-full pointer-events-auto py-10 lg:max-h-screen"
     >
       {/* Image — directly visible, no clip-path wipe */}
       <Link
