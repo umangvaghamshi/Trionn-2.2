@@ -1334,6 +1334,12 @@ export function useTrionnSymbolScene(
         else p.mesh.material.dispose();
       });
       audio.stopAllSounds();
+      // Close AudioContexts so all nodes die instantly — prevents fade-out
+      // timeouts from leaking sound into the next page
+      void audio.audioCtxRef.current?.close().catch(() => {});
+      audio.audioCtxRef.current = null;
+      void audio.hoverAudioCtxRef.current?.close().catch(() => {});
+      audio.hoverAudioCtxRef.current = null;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transitionReady]);

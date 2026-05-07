@@ -9,188 +9,6 @@ import LinePlus from "@/components/LinePlus";
 import { TransitionLink, useTransitionReady } from "@/components/Transition";
 
 import { projects } from "@/data";
-// type Project = {
-//   pos: "left" | "right" | "center";
-//   size: "small" | "medium" | "large" | "xlarge";
-//   title: string;
-//   desc: string;
-//   year: string;
-//   img: string;
-//   link?: boolean;
-// };
-
-// const PROJECTS: Project[] = [
-//   {
-//     pos: "left",
-//     size: "large",
-//     title: "Velora Studio",
-//     desc: "Architecture design\nfor a modern brand.",
-//     year: "2025",
-//     img: "/assets/orbit-01.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "right",
-//     size: "medium",
-//     title: "Northform™",
-//     desc: "Brand identity system\nand visual language.",
-//     year: "2025",
-//     img: "/assets/orbit-02.jpg",
-//   },
-//   {
-//     pos: "center",
-//     size: "xlarge",
-//     title: "Neue Montreal",
-//     desc: "Typography system\nfor digital products.",
-//     year: "2024",
-//     img: "/assets/orbit-03.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "left",
-//     size: "small",
-//     title: "One.Dot",
-//     desc: "Tailored website design\nfor refined brands.",
-//     year: "2025",
-//     img: "/assets/orbit-04.jpg",
-//   },
-//   {
-//     pos: "right",
-//     size: "large",
-//     title: "Axora Ceramics",
-//     desc: "Brand identity and\neditorial design.",
-//     year: "2025",
-//     img: "/assets/orbit-05.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "left",
-//     size: "medium",
-//     title: "Grinex Projects",
-//     desc: "Sustainable material\nbrand system.",
-//     year: "2025",
-//     img: "/assets/orbit-07.jpg",
-//   },
-//   {
-//     pos: "center",
-//     size: "xlarge",
-//     title: "Royal Festival",
-//     desc: "Visual identity for\nan event series.",
-//     year: "2024",
-//     img: "/assets/orbit-08.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "right",
-//     size: "small",
-//     title: "Formline Studio",
-//     desc: "Interface design for\nselected work.",
-//     year: "2025",
-//     img: "/assets/orbit-09.jpg",
-//   },
-//   {
-//     pos: "left",
-//     size: "large",
-//     title: "Molson Coors",
-//     desc: "Office building\narchitecture design.",
-//     year: "2024",
-//     img: "/assets/orbit-01.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "right",
-//     size: "medium",
-//     title: "Dark Identity",
-//     desc: "Branding and digital\nsystems at scale.",
-//     year: "2025",
-//     img: "/assets/orbit-02.jpg",
-//   },
-//   {
-//     pos: "center",
-//     size: "xlarge",
-//     title: "Typeform Lab",
-//     desc: "Font design and\ntype specimen work.",
-//     year: "2024",
-//     img: "/assets/orbit-03.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "left",
-//     size: "small",
-//     title: "Refined Co.",
-//     desc: "Minimal website for\na luxury consultancy.",
-//     year: "2025",
-//     img: "/assets/orbit-04.jpg",
-//   },
-//   {
-//     pos: "right",
-//     size: "large",
-//     title: "Bloom Studio",
-//     desc: "Ceramic brand identity\nand packaging design.",
-//     year: "2024",
-//     img: "/assets/orbit-05.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "left",
-//     size: "medium",
-//     title: "Zero Point",
-//     desc: "Sustainable brand\nfor architecture firm.",
-//     year: "2025",
-//     img: "/assets/orbit-07.jpg",
-//   },
-//   {
-//     pos: "center",
-//     size: "xlarge",
-//     title: "Festival Noir",
-//     desc: "Event identity and\nmotion design work.",
-//     year: "2024",
-//     img: "/assets/orbit-08.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "right",
-//     size: "large",
-//     title: "Selected Works",
-//     desc: "Portfolio curation and\nUI/UX direction.",
-//     year: "2025",
-//     img: "/assets/orbit-09.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "left",
-//     size: "medium",
-//     title: "Archi Collective",
-//     desc: "Architecture studio\nbranding system.",
-//     year: "2024",
-//     img: "/assets/orbit-01.jpg",
-//   },
-//   {
-//     pos: "right",
-//     size: "small",
-//     title: "Identity Works",
-//     desc: "Complete brand identity\nand digital presence.",
-//     year: "2025",
-//     img: "/assets/orbit-02.jpg",
-//   },
-//   {
-//     pos: "center",
-//     size: "xlarge",
-//     title: "Letterform",
-//     desc: "Custom typeface for\na global publication.",
-//     year: "2024",
-//     img: "/assets/orbit-03.jpg",
-//     link: true,
-//   },
-//   {
-//     pos: "right",
-//     size: "medium",
-//     title: "Dot Collective",
-//     desc: "Brand system for a\ncreative collective.",
-//     year: "2025",
-//     img: "/assets/orbit-04.jpg",
-//   },
-// ];
 
 const ORBIT_IMGS = [
   "/images/projects/loftloom/loftloom.webp",
@@ -229,11 +47,13 @@ const FT_THUMBS = [
 export default function OurWorkListing() {
   const { soundEnabled } = useSiteSound();
   const soundEnabledRef = useRef(soundEnabled);
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
   // Keep ref in sync with global sound state
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
   }, [soundEnabled]);
+
 
   const [animationCompleted, setAnimationCompleted] = useState(false);
 
@@ -1069,13 +889,17 @@ export default function OurWorkListing() {
         actx = new (
           window.AudioContext || (window as any).webkitAudioContext
         )();
+        audioCtxRef.current = actx;
         fetch(SPARK_AUDIO_SRC)
           .then((r) => {
             if (!r.ok) throw new Error("fetch failed");
             return r.arrayBuffer();
           })
           .then((ab) => actx!.decodeAudioData(ab))
-          .then((b) => { sbuf = b; sready = true; })
+          .then((b) => {
+            sbuf = b;
+            sready = true;
+          })
           .catch((err) => console.warn("spark audio buffer load failed:", err));
       } catch (e) {
         console.warn("AudioContext failed:", e);
@@ -1092,11 +916,23 @@ export default function OurWorkListing() {
         if (gain && fadeTime > 0) {
           gain.gain.cancelScheduledValues(actx.currentTime);
           gain.gain.setValueAtTime(gain.gain.value, actx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.0001, actx.currentTime + fadeTime);
+          gain.gain.linearRampToValueAtTime(
+            0.0001,
+            actx.currentTime + fadeTime,
+          );
         }
-        setTimeout(() => { try { src.stop(); } catch (_) {} }, Math.max(20, fadeTime * 1000 + 20));
+        setTimeout(
+          () => {
+            try {
+              src.stop();
+            } catch (_) {}
+          },
+          Math.max(20, fadeTime * 1000 + 20),
+        );
       } catch (_) {
-        try { src.stop(); } catch (_) {}
+        try {
+          src.stop();
+        } catch (_) {}
       }
     }
     // called once per line-hover burst — tracked so stopSparkSnd can fade it on hover-exit
@@ -1118,12 +954,18 @@ export default function OurWorkListing() {
           _sparkGain = gain;
           s.start(0);
           s.onended = () => {
-            if (_sparkSrc === s) { _sparkSrc = null; _sparkGain = null; }
+            if (_sparkSrc === s) {
+              _sparkSrc = null;
+              _sparkGain = null;
+            }
           };
         } catch (e) {}
       };
       if (actx && actx.state === "suspended")
-        actx.resume().then(play).catch(() => {});
+        actx
+          .resume()
+          .then(play)
+          .catch(() => {});
       else play();
     }
     // dot-touch sound: fades out exactly when the dot bolts die (~180 ms max)
@@ -1149,17 +991,31 @@ export default function OurWorkListing() {
             try {
               gain.gain.cancelScheduledValues(actx!.currentTime);
               gain.gain.setValueAtTime(gain.gain.value, actx!.currentTime);
-              gain.gain.linearRampToValueAtTime(0.0001, actx!.currentTime + DOT_SOUND_FADE_S);
-              setTimeout(() => { try { s.stop(); } catch (_) {} }, DOT_SOUND_FADE_S * 1000 + 20);
+              gain.gain.linearRampToValueAtTime(
+                0.0001,
+                actx!.currentTime + DOT_SOUND_FADE_S,
+              );
+              setTimeout(
+                () => {
+                  try {
+                    s.stop();
+                  } catch (_) {}
+                },
+                DOT_SOUND_FADE_S * 1000 + 20,
+              );
             } catch (_) {}
           }, DOT_SOUND_DURATION_MS);
         } catch (e) {}
       };
       if (actx && actx.state === "suspended")
-        actx.resume().then(play).catch(() => {});
+        actx
+          .resume()
+          .then(play)
+          .catch(() => {});
       else play();
     }
     const onFirstInteraction = () => {
+      if (!soundEnabledRef.current) return;
       initAudio();
       if (actx && actx.state === "suspended") actx.resume().catch(() => {});
       [
@@ -1538,10 +1394,10 @@ export default function OurWorkListing() {
         const flicker = 0.7 + Math.random() * 0.3;
         const f = fade * flicker;
         const dotBoltLayers = [
-          { blur: "8px",  color: `rgba(40,120,255,${0.18 * f})`,  lw: 6   },
-          { blur: "4px",  color: `rgba(100,180,255,${0.30 * f})`, lw: 3   },
-          { blur: "1.5px",color: `rgba(200,230,255,${0.55 * f})`, lw: 1.5 },
-          { blur: "0px",  color: `rgba(210,235,255,${0.90 * f})`, lw: 0.8 },
+          { blur: "8px", color: `rgba(40,120,255,${0.18 * f})`, lw: 6 },
+          { blur: "4px", color: `rgba(100,180,255,${0.3 * f})`, lw: 3 },
+          { blur: "1.5px", color: `rgba(200,230,255,${0.55 * f})`, lw: 1.5 },
+          { blur: "0px", color: `rgba(210,235,255,${0.9 * f})`, lw: 0.8 },
         ];
         dotBoltLayers.forEach(({ blur, color, lw }) => {
           lctx!.save();
@@ -1651,10 +1507,10 @@ export default function OurWorkListing() {
         const f = fade * flicker;
         // exact home hero 2D glow values + one sharp core to replace the WebGL line
         const boltLayers = [
-          { blur: "8px",  color: `rgba(40,120,255,${0.18 * f})`,  lw: 6   },
-          { blur: "4px",  color: `rgba(100,180,255,${0.30 * f})`, lw: 3   },
-          { blur: "1.5px",color: `rgba(200,230,255,${0.55 * f})`, lw: 1.5 },
-          { blur: "0px",  color: `rgba(210,235,255,${0.90 * f})`, lw: 0.8 },
+          { blur: "8px", color: `rgba(40,120,255,${0.18 * f})`, lw: 6 },
+          { blur: "4px", color: `rgba(100,180,255,${0.3 * f})`, lw: 3 },
+          { blur: "1.5px", color: `rgba(200,230,255,${0.55 * f})`, lw: 1.5 },
+          { blur: "0px", color: `rgba(210,235,255,${0.9 * f})`, lw: 0.8 },
         ];
         boltLayers.forEach(({ blur, color, lw }) => {
           lctx!.save();
@@ -1673,9 +1529,9 @@ export default function OurWorkListing() {
         if (b.branch) {
           const bp = b.branch.map((p: any) => ({ x: p.x, y: p.y - sx }));
           const branchLayers = [
-            { blur: "4px",  color: `rgba(100,180,255,${0.22 * f})`, lw: 3   },
-            { blur: "1.5px",color: `rgba(200,230,255,${0.40 * f})`, lw: 1.5 },
-            { blur: "0px",  color: `rgba(210,235,255,${0.75 * f})`, lw: 0.8 },
+            { blur: "4px", color: `rgba(100,180,255,${0.22 * f})`, lw: 3 },
+            { blur: "1.5px", color: `rgba(200,230,255,${0.4 * f})`, lw: 1.5 },
+            { blur: "0px", color: `rgba(210,235,255,${0.75 * f})`, lw: 0.8 },
           ];
           branchLayers.forEach(({ blur, color, lw }) => {
             lctx!.save();
@@ -1739,16 +1595,23 @@ export default function OurWorkListing() {
           _wasAway = false;
         }
         if (_wc <= 0 && _burstLeft > 0) {
-          const otherLines = [0, 1, 2].filter((i) => i !== hitL).map((i) => all[i]);
+          const otherLines = [0, 1, 2]
+            .filter((i) => i !== hitL)
+            .map((i) => all[i]);
           bolts.forEach((b) => {
-            const tgtLine = otherLines[Math.floor(Math.random() * otherLines.length)];
-            let best: any = null, bd = Infinity;
+            const tgtLine =
+              otherLines[Math.floor(Math.random() * otherLines.length)];
+            let best: any = null,
+              bd = Infinity;
             for (let i = 0; i < tgtLine.length; i++) {
               if (tgtLine[i].t > drawProg) break;
               const dx2 = tgtLine[i].x - hitP.x,
                 dy2 = tgtLine[i].y - hitP.y,
                 d = dx2 * dx2 + dy2 * dy2;
-              if (d < bd) { bd = d; best = tgtLine[i]; }
+              if (d < bd) {
+                bd = d;
+                best = tgtLine[i];
+              }
             }
             if (best) spawnBoltOn(b, hitP.x, hitP.y, best.x, best.y);
           });

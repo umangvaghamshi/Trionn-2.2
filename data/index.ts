@@ -1,5 +1,4 @@
 import {
-  workDataItem,
   TestimonialsDataItem,
   HowWorkType,
   WeNotType,
@@ -69,45 +68,6 @@ export const partnersLogo = [
   { logo: "/images/partner3.svg", widthClass: "w-[6.5rem]" },
   { logo: "/images/partner4.svg", widthClass: "w-[6.75rem]" },
   { logo: "/images/partner5.svg", widthClass: "w-[5.625rem]" },
-];
-
-export const workData: workDataItem[] = [
-  {
-    id: 1,
-    title: "Luxury Presence",
-    subtitle: "Redefining digital presence for high-end real estate.",
-    image: "/images/work-luxury-presence.webp",
-    category: ["Website Design", "Branding"],
-    year: "2025",
-    link: {
-      text: "Explore Project",
-      href: "#",
-    },
-  },
-  {
-    id: 2,
-    title: "Kuros",
-    subtitle: "Building a bold visual system for a modern brand.",
-    image: "/images/work-kuros.webp",
-    category: ["UI/UX", "Web Development"],
-    year: "2025",
-    link: {
-      text: "Explore Project",
-      href: "#",
-    },
-  },
-  {
-    id: 3,
-    title: "William Jonshan",
-    subtitle: "Product-focused branding for a design-led company.",
-    image: "/images/work-willam-jonshan.webp",
-    category: ["Product Design", "Motion"],
-    year: "2025",
-    link: {
-      text: "Explore Project",
-      href: "#",
-    },
-  },
 ];
 
 export const TestimonialsData: TestimonialsDataItem[] = [
