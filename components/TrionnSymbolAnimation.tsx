@@ -28,6 +28,7 @@ export function TrionnSymbolAnimation({
   const vibrateElsRef = useRef<(HTMLElement | null)[]>([]);
   const heroActiveRef = useRef(true);
   const siteSoundRef = useRef(false);
+  const disableHoldRef = useRef(false);
   const [showMarquee, setShowMarquee] = useState(true);
 
   const { soundEnabled } = useSiteSound();
@@ -42,12 +43,25 @@ export function TrionnSymbolAnimation({
     );
   }, [vibrateElementIds]);
 
+  // ── Disable hold-to-blast when Vision section is visible ─────────────────
+  useEffect(() => {
+    const el = document.getElementById("s3-text");
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { disableHoldRef.current = entry.isIntersecting; },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // ── Scene + audio via hook ────────────────────────────────────────────────
   const { audio, stateRef } = useTrionnSymbolScene(
     canvasWrapRef,
     s4ElRef,
     scrollHintRef,
     vibrateElsRef,
+    disableHoldRef,
   );
 
   useEffect(() => {

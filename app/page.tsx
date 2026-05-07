@@ -23,8 +23,6 @@ const Page = () => {
             "s1-stats",
             "s1-body",
             "s1-cta",
-            "s2-text",
-            "s3-text",
           ]}
         />
         <Banner />
