@@ -102,7 +102,7 @@ export default function DribbleSection() {
 
       /* video texture */
       const videoEl = Object.assign(document.createElement("video"), {
-        src: "/images/orbit-video.mp4",
+        src: "/video/orbit-video.mp4",
         loop: true,
         muted: true,
         playsInline: true,
@@ -119,15 +119,15 @@ export default function DribbleSection() {
 
       /* textures: 6 placed + 9 ribbon (slot 5 = video) */
       const SRCS: (string | null)[] = [
-        "/images/orbit-01.jpg",
-        "/images/orbit-02.jpg",
-        "/images/orbit-03.jpg",
-        "/images/orbit-04.jpg",
-        "/images/orbit-05.jpg",
+        "/images/orbit/orbit-01.webp",
+        "/images/orbit/orbit-02.webp",
+        "/images/orbit/orbit-03.webp",
+        "/images/orbit/orbit-04.webp",
+        "/images/orbit/orbit-05.webp",
         null,
-        "/images/orbit-07.jpg",
-        "/images/orbit-08.jpg",
-        "/images/orbit-09.jpg",
+        "/images/orbit/orbit-07.webp",
+        "/images/orbit/orbit-08.webp",
+        "/images/orbit/orbit-09.webp",
       ];
       const loader = new THREE.TextureLoader();
       const mkTex = (src: string | null) =>

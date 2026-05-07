@@ -1668,7 +1668,9 @@ export default function TeamSection() {
     }
     let sceneInView = false;
     const linesVisibilityIo = new IntersectionObserver(
-      ([entry]) => { sceneInView = entry.isIntersecting; },
+      ([entry]) => {
+        sceneInView = entry.isIntersecting;
+      },
       { threshold: 0 },
     );
     linesVisibilityIo.observe(scene);
@@ -1723,7 +1725,7 @@ export default function TeamSection() {
         markers: false,
         scrub: true,
         anticipatePin: 1,
-        pinSpacing:true,
+        pinSpacing: true,
       },
       defaults: { ease: "none" },
     });
@@ -2221,7 +2223,7 @@ export default function TeamSection() {
             </div>
           </div>
           {/* Button */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10000 text-light-font">
+          <div className="absolute bottom-10 tr__container w-full flex justify-end z-10000 text-light-font">
             <WordShiftButton
               text="Join the team?"
               href="#"

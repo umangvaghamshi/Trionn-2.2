@@ -110,7 +110,7 @@ export default function AboutHero() {
             />
           </span>
         </div>
-        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[50%] w-full z-5 translate-y-full">
+        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[50%] w-full z-5 translate-y-full pointer-events-none">
           <BlurTextReveal
             as="span"
             text={`We design and build digital experiences that scale, perform, and endure.`}
