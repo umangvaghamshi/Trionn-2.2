@@ -1,10 +1,10 @@
-'use client';
-import parser from 'html-react-parser';
-import { useRef, useState } from 'react';
-import { FaqItemType } from '@/data/dataType';
-import gsap from 'gsap';
-import LinePlus from '@/components/LinePlus';
-import { BlurTextReveal } from '@/components/TextAnimation';
+"use client";
+import parser from "html-react-parser";
+import { useRef, useState } from "react";
+import { FaqItemType } from "@/data/dataType";
+import gsap from "gsap";
+import LinePlus from "@/components/LinePlus";
+import { BlurTextReveal } from "@/components/TextAnimation";
 
 interface AccordionProps {
   items: FaqItemType[];
@@ -26,7 +26,7 @@ export default function Accordion({ items, customClass }: AccordionProps) {
           height: 0,
           opacity: 0,
           duration: 0.5,
-          ease: 'power3.inOut',
+          ease: "power3.inOut",
         });
       }
     }
@@ -37,11 +37,11 @@ export default function Accordion({ items, customClass }: AccordionProps) {
         height: 0,
         opacity: 0,
         duration: 0.5,
-        ease: 'power3.inOut',
+        ease: "power3.inOut",
       });
       setOpenIndex(null);
     } else {
-      gsap.set(current, { height: 'auto' });
+      gsap.set(current, { height: "auto" });
       const height = current!.scrollHeight;
 
       gsap.fromTo(
@@ -51,11 +51,11 @@ export default function Accordion({ items, customClass }: AccordionProps) {
           height,
           opacity: 1,
           duration: 0.6,
-          ease: 'power3.inOut',
+          ease: "power3.inOut",
           onComplete: () => {
-            gsap.set(current, { height: 'auto' });
+            gsap.set(current, { height: "auto" });
           },
-        }
+        },
       );
 
       setOpenIndex(index);
@@ -63,31 +63,44 @@ export default function Accordion({ items, customClass }: AccordionProps) {
   };
 
   return (
-    <div className={`accordion ${customClass ?? ''}`}>
+    <div className={`accordion ${customClass ?? ""}`}>
       {items.map((item, index) => {
         const isOpen = openIndex === index;
 
         return (
-          <div key={index}>
-            <div className="accordion__item group">
+          <div key={index} className="group">
+            <div className="accordion__item py-8">
               {/* TITLE */}
               <div
-                className="accordion__title py-10 grid grid-cols-12 gap-x-6 w-full relative cursor-pointer items-center"
+                className="accordion__title pr-20 w-full relative cursor-pointer items-center"
                 onClick={() => toggleItem(index)}
               >
-                <span className="h3 col-span-1">{index + 1}.</span>
-
                 <BlurTextReveal
-                  as="h3"
+                  as="p"
                   html={item.title}
-                  animationType="chars"
+                  animationType="words"
                   stagger={0.05}
-                  className="col-span-8 col-start-5 pr-20"
                 />
 
                 {/* + / - */}
-                <span className="absolute right-0 top-1/2 -translate-y-1/2 text-2xl font-light">
-                  {isOpen ? '−' : '+'}
+                <span
+                  className={`icon absolute top-1/2 right-0 h-3 w-3 -translate-y-1/2 delay-200 ${
+                    isOpen ? "rotate-180" : ""
+                  }`}
+                >
+                  <svg
+                    width="9"
+                    height="10"
+                    viewBox="0 0 9 10"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-3 h-3"
+                  >
+                    <path
+                      d="M0 5.47422L2.1 5.47422L4.9 8.33022L3.752 8.33022L6.552 5.47422H8.652L4.816 9.32422L3.836 9.32422L0 5.47422ZM3.542 0.000218391H5.11V8.61022L3.542 8.61022L3.542 0.000218391Z"
+                      fill="#434343"
+                    />
+                  </svg>
                 </span>
               </div>
 
@@ -96,22 +109,25 @@ export default function Accordion({ items, customClass }: AccordionProps) {
                 ref={(el) => {
                   contentRefs.current[index] = el;
                 }}
-                className="accordion__content grid grid-cols-12 gap-x-6 w-full overflow-hidden"
+                className="accordion__content w-full overflow-hidden"
                 style={{
-                  height: index === 0 ? 'auto' : 0,
+                  height: index === 0 ? "auto" : 0,
                   opacity: index === 0 ? 1 : 0,
                 }}
               >
-                <div className="col-span-8 col-start-5 pb-8 pr-20 ">
-                  {parser(Array.isArray(item.content) ? item.content.join('') : item.content)}
+                <div className="pt-2 small max-w-132">
+                  {parser(
+                    Array.isArray(item.content)
+                      ? item.content.join("")
+                      : item.content,
+                  )}
                 </div>
               </div>
             </div>
             <LinePlus
-              customClass={''}
-              lineClass={'opacity-15 bg-grey-line'}
-              plusClass={'col-span-8 col-start-5 -translate-x-1/2'}
-              iconColor={'#272727'}
+              customClass={"group-last:hidden"}
+              lineClass={"opacity-15 bg-grey-line"}
+              plusClass={"hidden"}
             />
           </div>
         );
