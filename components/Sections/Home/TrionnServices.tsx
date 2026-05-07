@@ -394,7 +394,7 @@ export default function TrionnServices({
 
     const container = document.createElement("div");
     /* `mix-blend-difference` on moving single-glyph layers composites each letter against a
-       different part of the video/stone → uneven color/weight. Use normal blend + headline color. */
+       different part of the images/stone → uneven color/weight. Use normal blend + headline color. */
     container.style.cssText =
       "position:fixed;inset:0;pointer-events:none;z-index:999;overflow:visible;isolation:isolate;mix-blend-mode:difference;";
     document.body.appendChild(container);
@@ -765,7 +765,7 @@ export default function TrionnServices({
           s.loaded++;
           if (s.loaded === TOTAL) drawFrame(0);
         };
-        img.src = `stone/frame_${String(i + 1).padStart(4, "0")}.webp`;
+        img.src = `/images/stone/frame_${String(i + 1).padStart(4, "0")}.webp`;
         s.imgs[i] = img;
       }
       if (end < TOTAL) ric(() => loadChunk(end));
