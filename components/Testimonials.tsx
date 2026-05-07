@@ -143,7 +143,7 @@ export default function Testimonials({
                   onClick={() => goToTestimonial(index)}
                   aria-current={activeIndex === index ? "true" : undefined}
                   aria-label={`Show testimonial from ${item.companyName}`}
-                  className={`h4 uppercase flex gap-4 items-center text-left transition-all duration-500 ease-in-out text-dark-font bg-transparent border-0 p-0 cursor-pointer ${
+                  className={`title flex gap-4 items-center text-left transition-all duration-500 ease-in-out text-dark-font bg-transparent border-0 p-0 cursor-pointer ${
                     activeIndex === index
                       ? "opacity-100"
                       : "opacity-30 hover:opacity-60"
@@ -218,7 +218,7 @@ export default function Testimonials({
                   className="testimonial-slide h-auto! text-dark-font"
                 >
                   <div className="testimonial-item gap-x-6 h-full">
-                    <h4 className="uppercase hidden">{item.companyName}</h4>
+                    <span className="hidden title">{item.companyName}</span>
                     <div className="flex flex-col justify-between">
                       <h3 className="mb-20">{item.quoteMessage}</h3>
                       <div className="client-info flex justify-between items-end">

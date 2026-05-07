@@ -31,7 +31,7 @@ function IstClock() {
   }, []);
 
   return (
-    <span className="h4 text-light-font/50 inline-block ml-auto">
+    <span className="title text-light-font/50 inline-block ml-auto">
       IST → {time}
     </span>
   );
@@ -59,11 +59,11 @@ export default function Footer() {
               <div className="flex flex-col justify-between gap-6 col-span-8">
                 <div>
                   <BlurTextReveal
-                    as="h4"
+                    as="span"
                     html={`Let&apos;s build work that inspires.`}
                     animationType="chars"
                     stagger={0.05}
-                    className="uppercase mb-4 text-light-font"
+                    className="title mb-4 text-light-font block"
                   />
                   <h2 className="h1 max-w-200 text-light-font">
                     Ready to build something bold?
@@ -85,7 +85,7 @@ export default function Footer() {
             </div>
             <div className="grid w-full grid-cols-12 gap-10 lg:gap-x-12 lg:gap-y-0">
               <div className="flex flex-col justify-end gap-6 col-span-8">
-                <span className="h4 block text-light-font/50">
+                <span className="title block text-light-font/50">
                   ©TRIONN® {new Date().getFullYear()}
                 </span>
               </div>
@@ -93,9 +93,9 @@ export default function Footer() {
               <div className="flex flex-col w-full justify-between col-span-4">
                 <div className="flex columns-2 flex-wrap justify-between gap-10">
                   <div className="flex flex-col">
-                    <h4 className="mb-6 text-light-font/50 uppercase">
+                    <span className="mb-6 text-light-font/50 title block">
                       Business enquiry
-                    </h4>
+                    </span>
                     {enquiry.map((item, index) => (
                       <p className="flex gap-2 mb-2 last:mb-0" key={index}>
                         <span className="shrink-0 uppercase text-light-font/50">
@@ -111,9 +111,9 @@ export default function Footer() {
                     ))}
                   </div>
                   <div className="flex flex-col max-w-45">
-                    <h4 className="mb-6 text-light-font/50 uppercase">
+                    <span className="mb-6 text-light-font/50 title block">
                       Social
-                    </h4>
+                    </span>
                     <div className="flex columns-2 flex-wrap justify-between gap-x-4 gap-y-2">
                       {social.map((item, index) => (
                         <p key={index}>

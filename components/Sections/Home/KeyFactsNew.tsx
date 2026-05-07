@@ -214,7 +214,7 @@ function FeaturedCard({ odoSync }: { odoSync: number }) {
         className="absolute inset-0 w-full h-full object-cover"
       />
       <div className="relative z-2 h-full p-10 flex flex-col justify-between">
-        <h4 className="uppercase text-light-font">Featured & Awards</h4>
+        <span className="text-light-font title block">Featured & Awards</span>
         <div>
           <div className="relative w-3/12 h-8 flex items-end justify-end mb-6 awards-logo-list">
             {awardsImages.map((src, i) => (
@@ -253,7 +253,7 @@ function ProjectCard({ odoSync }: { odoSync: number }) {
       data-kf-card
       className="project-card relative max-w-99 w-full h-122 rounded-lg bg-cream p-10 flex flex-col justify-between overflow-hidden cursor-pointer hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
     >
-      <h4 className="uppercase text-dark-font">projects completed</h4>
+      <span className="title block text-dark-font">projects completed</span>
       <div className="flex flex-col items-center justify-center flex-1 relative">
         <div className="w-50 h-50 rounded-full bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         <div className="relative z-2 flex items-center">
@@ -302,7 +302,7 @@ function TeamCard({ odoSync }: { odoSync: number }) {
       className="team-card max-w-99 w-full h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02] cursor-pointer transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <div className="relative z-3 h-full p-10 flex flex-col justify-between">
-        <h4 className="uppercase text-right">our team members</h4>
+        <span className="title block text-right">our team members</span>
         <div className="team-video overflow-hidden py-10">
           <video
             ref={videoRef}
