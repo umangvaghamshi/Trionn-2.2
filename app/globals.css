@@ -299,7 +299,7 @@ canvas {
 }
 
 .text-field {
-  @apply bg-[#131415] w-full rounded-sm border p-4 text-dark-font border-none;
+  @apply bg-[#131415] w-full rounded-sm border p-4 text-dark-font border-none autofill:bg-[#D2D2D2];
 }
 .text-field:focus,
 .text-field:not(:placeholder-shown) {
@@ -307,4 +307,11 @@ canvas {
 }
 select.text-field {
   @apply pt-4 pr-10 pb-4 pl-4 text-dark-font whitespace-nowrap overflow-hidden text-ellipsis;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #d2d2d2 inset !important;
+  -webkit-text-fill-color: #434343 !important; /* Changes the text color */
 }

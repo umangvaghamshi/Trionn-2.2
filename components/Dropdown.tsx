@@ -39,7 +39,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={` relative flex w-full cursor-pointer items-center border p-4 pr-10 text-dark-font transition-all duration-300 ease-in-out bg-[#131415] focus:bg-[#D2D2D2] focus:outline-none border-none ${
+        className={` relative flex w-full cursor-pointer items-center border p-4 pr-10 text-dark-font transition-all duration-300 ease-in-out bg-[#131415] focus:bg-[#D2D2D2] autofill:bg-[#D2D2D2] focus:outline-none border-none ${
           isOpen ? "rounded-t-sm" : "rounded-sm"
         }
         ${isOpen || isSelected ? "bg-[#D2D2D2]" : "bg-[#131415]"}
