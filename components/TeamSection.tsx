@@ -7,6 +7,7 @@ import { useSiteSound } from "@/components/SiteSoundContext";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useTransitionReady } from "@/components/Transition";
 import { useGSAP } from "@gsap/react";
+import { WordShiftButton } from "./Button";
 
 /**
  * TeamSection — App Router compatible client component.
@@ -40,11 +41,16 @@ const PEOPLE: Person[] = [
   { name: "NILESH GUJARATI", file: "nilesh", role: "Designer" },
 ];
 
+const DEFAULT_STRIPE_COUNT = 5;
+const DEFAULT_STRIPE_COLOR = "#F7F7F7";
+
 export default function TeamSection() {
   useLenis(); // subscribe to the global Lenis instance provided by SmoothScrolling
   const { soundEnabled } = useSiteSound();
   const transitionReady = useTransitionReady();
   const soundEnabledRef = useRef(soundEnabled);
+  const stripesRef = useRef<HTMLDivElement[]>([]);
+  const outerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
     if (
@@ -57,6 +63,7 @@ export default function TeamSection() {
   }, [soundEnabled]);
 
   // Refs for every DOM node touched by the original logic
+  const sectionRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const vignetteRef = useRef<HTMLDivElement>(null);
   const crtRef = useRef<HTMLDivElement>(null);
@@ -1102,6 +1109,8 @@ export default function TeamSection() {
       dragOffY = 0;
     let dragCX = 0,
       dragCY = 0;
+    let dragSoDx = 0;
+    let dragSoDy = 0;
 
     const cardListeners: Array<() => void> = [];
 
@@ -1158,10 +1167,12 @@ export default function TeamSection() {
       const card = cardEls[i];
       const r = card.getBoundingClientRect();
       const so = getSceneOffset();
-      s.x = r.left + r.width / 2 - so.dx;
-      s.y = r.top + r.height / 2 - so.dy;
-      dragOffX = cx - so.dx - s.x;
-      dragOffY = cy - so.dy - s.y;
+      dragSoDx = so.dx;
+      dragSoDy = so.dy;
+      s.x = r.left + r.width / 2 - dragSoDx;
+      s.y = r.top + r.height / 2 - dragSoDy;
+      dragOffX = cx - dragSoDx - s.x;
+      dragOffY = cy - dragSoDy - s.y;
       s.floating = false;
       s.flyingBack = false;
       s.dragging = true;
@@ -1182,9 +1193,8 @@ export default function TeamSection() {
       dragCY = cy;
       const s = state[dragIdx];
       const card = cardEls[dragIdx];
-      const so = getSceneOffset();
-      s.x = cx - so.dx - dragOffX;
-      s.y = cy - so.dy - dragOffY;
+      s.x = cx - dragSoDx - dragOffX;
+      s.y = cy - dragSoDy - dragOffY;
       card.style.transform = `translate(${s.x - s.baseW / 2}px,${s.y - s.baseH / 2}px)`;
       centerFrame.classList.toggle("over", isOverCenter(cx, cy));
     }
@@ -1490,7 +1500,7 @@ export default function TeamSection() {
     PEOPLE.forEach(() => {
       const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       s.style.cssText =
-        "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;";
+        "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;";
       s.style.zIndex = "2";
       scene.appendChild(s);
       lineSvgs.push(s);
@@ -1582,9 +1592,20 @@ export default function TeamSection() {
 
     let lastFire = 0;
     function updateLines(ts: number) {
+      const sceneRect = scene.getBoundingClientRect();
       const cr = centerFrame.getBoundingClientRect();
-      const cx = cr.left + cr.width / 2;
-      const cy = cr.top + cr.height / 2;
+      // Convert center frame position to scene-relative coordinates
+      const cx = cr.left + cr.width / 2 - sceneRect.left;
+      const cy = cr.top + cr.height / 2 - sceneRect.top;
+
+      if (!sceneInView) {
+        lines.forEach((l) => l.setAttribute("opacity", "0"));
+        sparks.forEach((sp) => {
+          sp.active = false;
+          sp.el.setAttribute("opacity", "0");
+        });
+        return;
+      }
 
       state.forEach((_s, i) => {
         const card = cardEls[i];
@@ -1597,8 +1618,9 @@ export default function TeamSection() {
           return;
         }
         const r = card.getBoundingClientRect();
-        const ex = r.left + r.width / 2;
-        const ey = r.top + r.height / 2;
+        // Convert card position to scene-relative coordinates
+        const ex = r.left + r.width / 2 - sceneRect.left;
+        const ey = r.top + r.height / 2 - sceneRect.top;
         lines[i].setAttribute("opacity", "1");
         lines[i].setAttribute("x1", String(ex));
         lines[i].setAttribute("y1", String(ey));
@@ -1633,8 +1655,8 @@ export default function TeamSection() {
         const pts = arcSegment(
           cx,
           cy,
-          sr.left + sr.width / 2,
-          sr.top + sr.height / 2,
+          sr.left + sr.width / 2 - sceneRect.left,
+          sr.top + sr.height / 2 - sceneRect.top,
           sp.t,
           sp.jitter!,
         );
@@ -1644,12 +1666,14 @@ export default function TeamSection() {
         sp.el.setAttribute("opacity", String((fade * 0.95).toFixed(2)));
       });
     }
-    const linesId = manager.register(updateLines);
-    const linesIo = new IntersectionObserver(
-      ([entry]) => manager.setActive(linesId, entry.isIntersecting),
-      { rootMargin: "64px 0px" },
+    let sceneInView = false;
+    const linesVisibilityIo = new IntersectionObserver(
+      ([entry]) => { sceneInView = entry.isIntersecting; },
+      { threshold: 0 },
     );
-    linesIo.observe(scene);
+    linesVisibilityIo.observe(scene);
+
+    const linesId = manager.register(updateLines);
 
     /* ── PRE-LOAD SPEECH VOICES ── */
     if (window.speechSynthesis) {
@@ -1665,7 +1689,7 @@ export default function TeamSection() {
       arcLoopCleanup();
       manager.unregister(proxId);
       manager.unregister(linesId);
-      linesIo.disconnect();
+      linesVisibilityIo.disconnect();
       window.removeEventListener("resize", onResize);
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("touchmove", onTouchMove);
@@ -1682,8 +1706,66 @@ export default function TeamSection() {
     };
   }, [transitionReady]);
 
+  useGSAP(() => {
+    if (!sectionRef.current || !outerRef.current) {
+      return;
+    }
+
+    const stripes = stripesRef.current;
+    gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top top",
+        pin: true,
+        end: "+=150%",
+        markers: false,
+        scrub: true,
+        anticipatePin: 1,
+        pinSpacing:true,
+      },
+      defaults: { ease: "none" },
+    });
+
+    // ---- Pull next sibling flush — no gap after pin spacer ----
+    const nextSection = document.querySelector(
+      ".we-not-section",
+    ) as HTMLElement | null;
+
+    if (nextSection) {
+      gsap.set(nextSection, {
+        marginTop: "-80vh",
+        ease: "none",
+      });
+    }
+
+    tl.to({}, { duration: 1 });
+
+    tl.addLabel("stripes_start");
+
+    const staggerAmount = 0.6;
+    const perStripe = 1 - staggerAmount;
+    const totalStripeDuration = 1.2;
+
+    for (let i = 0; i < DEFAULT_STRIPE_COUNT; i++) {
+      const staggerIdx = DEFAULT_STRIPE_COUNT - 1 - i;
+      const stripeOffset =
+        (staggerAmount * staggerIdx) / (DEFAULT_STRIPE_COUNT - 1 || 1);
+      const start = stripeOffset * totalStripeDuration;
+      const end = start + perStripe * totalStripeDuration;
+
+      tl.fromTo(
+        stripes[i]!,
+        { scaleY: 0 },
+        { scaleY: 1, duration: end - start, ease: "none" },
+        `stripes_start+=${start}`,
+      );
+    }
+  }, []);
+
   return (
-    <>
+    <div ref={outerRef}>
       {/* Inline styles for things Tailwind utility classes can't express:
           dynamic CSS variables, ::before/::after pseudo elements, keyframes,
           and a couple of state-driven class toggles used by the JS. */}
@@ -1943,7 +2025,27 @@ export default function TeamSection() {
         }
       `}</style>
 
-      <div className="ts-root">
+      <div ref={sectionRef} className="relative ts-root min-h-screen">
+        {/* Stripe reveal overlay */}
+        <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-[10001]">
+          {Array.from({ length: DEFAULT_STRIPE_COUNT }).map((_, index) => (
+            <div
+              key={index}
+              ref={(el) => {
+                stripesRef.current[index] = el!;
+              }}
+              className="flex-1 w-full"
+              style={{
+                backgroundColor: DEFAULT_STRIPE_COLOR,
+                willChange: "transform",
+                transformOrigin: "bottom",
+                marginTop: index > 0 ? "-0.5px" : undefined,
+                paddingBottom: "0.5px",
+                // opacity:0.5
+              }}
+            />
+          ))}
+        </div>
         {/* Scene */}
         <div
           ref={sceneRef}
@@ -2118,8 +2220,16 @@ export default function TeamSection() {
               />
             </div>
           </div>
+          {/* Button */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10000 text-light-font">
+            <WordShiftButton
+              text="Join the team?"
+              href="#"
+              styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+            />
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
