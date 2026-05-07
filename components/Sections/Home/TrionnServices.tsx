@@ -297,6 +297,7 @@ export default function TrionnServices({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+
   const textOverlayRef = useRef<HTMLDivElement>(null);
   const textLightRef = useRef<HTMLDivElement>(null);
   const textDarkRef = useRef<HTMLDivElement>(null);

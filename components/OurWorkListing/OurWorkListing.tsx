@@ -47,11 +47,13 @@ const FT_THUMBS = [
 export default function OurWorkListing() {
   const { soundEnabled } = useSiteSound();
   const soundEnabledRef = useRef(soundEnabled);
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
   // Keep ref in sync with global sound state
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
   }, [soundEnabled]);
+
 
   const [animationCompleted, setAnimationCompleted] = useState(false);
 
@@ -887,6 +889,7 @@ export default function OurWorkListing() {
         actx = new (
           window.AudioContext || (window as any).webkitAudioContext
         )();
+        audioCtxRef.current = actx;
         fetch(SPARK_AUDIO_SRC)
           .then((r) => {
             if (!r.ok) throw new Error("fetch failed");
@@ -1012,6 +1015,7 @@ export default function OurWorkListing() {
       else play();
     }
     const onFirstInteraction = () => {
+      if (!soundEnabledRef.current) return;
       initAudio();
       if (actx && actx.state === "suspended") actx.resume().catch(() => {});
       [

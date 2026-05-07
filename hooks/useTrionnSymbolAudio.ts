@@ -17,6 +17,9 @@ export function useTrionnSymbolAudio() {
           .webkitAudioContext
       )();
     }
+    if (audioCtxRef.current.state === "suspended") {
+      void audioCtxRef.current.resume().catch(() => {});
+    }
     return audioCtxRef.current;
   }, []);
 
@@ -211,41 +214,54 @@ export function useTrionnSymbolAudio() {
   const stopWooshSound = useCallback(() => {
     const ctx = audioCtxRef.current;
     if (!wooshGainRef.current || !wooshNodeRef.current || !ctx) return;
+    // Reset immediately so autoStartWoosh can restart if sound is re-enabled before fade completes
+    wooshAutoStartedRef.current = false;
     wooshGainRef.current.gain.cancelScheduledValues(ctx.currentTime);
     wooshGainRef.current.gain.setValueAtTime(
       wooshGainRef.current.gain.value,
       ctx.currentTime
     );
     wooshGainRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
+    // Capture the specific nodes being faded — if autoStartWoosh creates new nodes
+    // before this timeout fires, we must not stop the new ones
+    const nodeToStop = wooshNodeRef.current;
+    const gainToNull = wooshGainRef.current;
+    wooshNodeRef.current = null;
+    wooshGainRef.current = null;
     setTimeout(() => {
-      if (wooshNodeRef.current) {
-        try {
-          wooshNodeRef.current.stop();
-        } catch (_) {}
-        wooshNodeRef.current = null;
-      }
-      wooshGainRef.current = null;
-      // Reset so woosh can restart when the user scrolls back to this section
-      wooshAutoStartedRef.current = false;
+      try { nodeToStop.stop(); } catch (_) {}
+      void gainToNull;
     }, 1600);
   }, []);
 
   const autoStartWoosh = useCallback(() => {
+    if (!soundEnabledRef.current) return;
     if (wooshAutoStartedRef.current) return;
     wooshAutoStartedRef.current = true;
     const doStart = (buf: AudioBuffer) => {
+      if (!soundEnabledRef.current) return;
       const ctx2 = getCtx();
-      const gain = ctx2.createGain();
-      gain.gain.setValueAtTime(0, ctx2.currentTime);
-      gain.gain.linearRampToValueAtTime(0.07, ctx2.currentTime + 2.0);
-      const src = ctx2.createBufferSource();
-      src.buffer = buf;
-      src.loop = true;
-      src.connect(gain);
-      gain.connect(ctx2.destination);
-      src.start();
-      wooshNodeRef.current = src;
-      wooshGainRef.current = gain;
+      // Wait for the AudioContext to resume before scheduling nodes —
+      // a freshly created context is suspended until resume() completes
+      const start = () => {
+        if (!soundEnabledRef.current) return;
+        const gain = ctx2.createGain();
+        gain.gain.setValueAtTime(0, ctx2.currentTime);
+        gain.gain.linearRampToValueAtTime(0.07, ctx2.currentTime + 2.0);
+        const src = ctx2.createBufferSource();
+        src.buffer = buf;
+        src.loop = true;
+        src.connect(gain);
+        gain.connect(ctx2.destination);
+        src.start();
+        wooshNodeRef.current = src;
+        wooshGainRef.current = gain;
+      };
+      if (ctx2.state === "suspended") {
+        ctx2.resume().then(start).catch(() => {});
+      } else {
+        start();
+      }
     };
     if (wooshBufferRef.current) {
       doStart(wooshBufferRef.current);
@@ -441,6 +457,7 @@ export function useTrionnSymbolAudio() {
     sparkCooldownRef,
     wooshGainRef,
     audioCtxRef,
+    hoverAudioCtxRef,
     wooshNodeRef,
     wooshAutoStartedRef,
   };
