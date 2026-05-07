@@ -71,3 +71,8 @@ export type ProjectsType = {
   liveURL?: string;
   content: ProjectContent[];
 };
+
+export interface DropdownOption {
+  value: string;
+  label: string;
+}

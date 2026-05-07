@@ -5,6 +5,7 @@ import {
   WeNotType,
   TechFaqItemType,
   ProjectsType,
+  FaqItemType,
 } from "./dataType";
 
 export const headerSection = {
@@ -26,7 +27,7 @@ export const menu = [
   },
   {
     title: "Contact",
-    url: "#",
+    url: "/contact",
   },
 ];
 
@@ -1441,5 +1442,43 @@ export const projects: ProjectsType[] = [
         layout: "single",
       },
     ],
+  },
+];
+
+export const contactFAQ: FaqItemType[] = [
+  {
+    title: "What kind of work do you take on?",
+    content:
+      "We partner on branding, websites, and digital systems where clarity, craft, and execution matter.",
+  },
+  {
+    title: "Who do you usually work with?",
+    content:
+      "We work with startups and established brands that value thoughtful design and long-term impact.",
+  },
+  {
+    title: "How do projects typically begin?",
+    content:
+      "With a conversation. We start by understanding goals, context, and constraints before defining the path forward.",
+  },
+  {
+    title: "Do you collaborate with agencies on long-term engagements?",
+    content:
+      "Yes. We partner with agencies on ongoing engagements, supporting design, development, or execution where needed. OR USE THIS: Yes. We support agencies on long-term, white-label engagements as an extended team.",
+  },
+  {
+    title: "Can we sign an NDA before starting?",
+    content:
+      "Yes. We're comfortable signing NDAs and treat all discussions and materials as confidential.",
+  },
+  {
+    title: "How are projects priced and paid for?",
+    content:
+      "Projects are scoped based on complexity and delivered through milestone-based payments, starting with a deposit.",
+  },
+  {
+    title: "Are you currently taking on new work?",
+    content:
+      "Selectively. We take on a limited number of projects to maintain focus and quality.",
   },
 ];

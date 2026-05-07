@@ -275,7 +275,7 @@ canvas {
   @apply translate-x-0;
 }
 
-.accordion__title .icon::before,
+/* .accordion__title .icon::before,
 .accordion__title .icon::after {
   content: "";
   @apply bg-black absolute top-1/2 left-1/2 -translate-1/2 rounded-sm transition-all duration-500;
@@ -292,8 +292,19 @@ canvas {
 }
 .accordion__title .icon.open::before {
   @apply h-0 w-0;
-}
+} */
 
 .tab-content ul {
   @apply list-disc pl-4;
+}
+
+.text-field {
+  @apply bg-[#131415] w-full rounded-sm border p-4 text-dark-font border-none;
+}
+.text-field:focus,
+.text-field:not(:placeholder-shown) {
+  @apply bg-[#D2D2D2] outline-none;
+}
+select.text-field {
+  @apply pt-4 pr-10 pb-4 pl-4 text-dark-font whitespace-nowrap overflow-hidden text-ellipsis;
 }

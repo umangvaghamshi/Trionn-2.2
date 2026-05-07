@@ -88,10 +88,24 @@ export default function TechAccordion({
 
                 {/* + / - */}
                 <span
-                  className={`icon absolute top-1/2 right-0 h-6 w-6 -translate-y-1/2 transition-transform duration-500 ${
-                    isOpen ? "open" : ""
+                  className={`icon absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 delay-200 ${
+                    isOpen ? "rotate-180" : ""
                   }`}
-                ></span>
+                >
+                  <svg
+                    width="9"
+                    height="10"
+                    viewBox="0 0 9 10"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4"
+                  >
+                    <path
+                      d="M0 5.47422L2.1 5.47422L4.9 8.33022L3.752 8.33022L6.552 5.47422H8.652L4.816 9.32422L3.836 9.32422L0 5.47422ZM3.542 0.000218391H5.11V8.61022L3.542 8.61022L3.542 0.000218391Z"
+                      fill="#434343"
+                    />
+                  </svg>
+                </span>
                 {/* <span className="absolute right-0 top-1/2 -translate-y-1/2 text-2xl font-light">
                   {isOpen ? "−" : "+"}
                 </span> */}
