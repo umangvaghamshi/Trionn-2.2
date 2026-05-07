@@ -1719,7 +1719,7 @@ export default function TeamSection() {
         trigger: sectionRef.current,
         start: "top top",
         pin: true,
-        end: "+=200%",
+        end: "+=150%",
         markers: false,
         scrub: true,
         anticipatePin: 1,
@@ -2041,6 +2041,7 @@ export default function TeamSection() {
                 transformOrigin: "bottom",
                 marginTop: index > 0 ? "-0.5px" : undefined,
                 paddingBottom: "0.5px",
+                // opacity:0.5
               }}
             />
           ))}
