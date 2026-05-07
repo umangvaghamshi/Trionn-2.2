@@ -1109,6 +1109,8 @@ export default function TeamSection() {
       dragOffY = 0;
     let dragCX = 0,
       dragCY = 0;
+    let dragSoDx = 0;
+    let dragSoDy = 0;
 
     const cardListeners: Array<() => void> = [];
 
@@ -1165,10 +1167,12 @@ export default function TeamSection() {
       const card = cardEls[i];
       const r = card.getBoundingClientRect();
       const so = getSceneOffset();
-      s.x = r.left + r.width / 2 - so.dx;
-      s.y = r.top + r.height / 2 - so.dy;
-      dragOffX = cx - so.dx - s.x;
-      dragOffY = cy - so.dy - s.y;
+      dragSoDx = so.dx;
+      dragSoDy = so.dy;
+      s.x = r.left + r.width / 2 - dragSoDx;
+      s.y = r.top + r.height / 2 - dragSoDy;
+      dragOffX = cx - dragSoDx - s.x;
+      dragOffY = cy - dragSoDy - s.y;
       s.floating = false;
       s.flyingBack = false;
       s.dragging = true;
@@ -1189,9 +1193,8 @@ export default function TeamSection() {
       dragCY = cy;
       const s = state[dragIdx];
       const card = cardEls[dragIdx];
-      const so = getSceneOffset();
-      s.x = cx - so.dx - dragOffX;
-      s.y = cy - so.dy - dragOffY;
+      s.x = cx - dragSoDx - dragOffX;
+      s.y = cy - dragSoDy - dragOffY;
       card.style.transform = `translate(${s.x - s.baseW / 2}px,${s.y - s.baseH / 2}px)`;
       centerFrame.classList.toggle("over", isOverCenter(cx, cy));
     }
@@ -2201,16 +2204,14 @@ export default function TeamSection() {
                 }}
               />
             </div>
-            {/* Button */}
-            <div className="tr__container relative w-full text-light-font flex flex-col">
-              <div className="pb-37.5 flex flex-col items-center">
-                <WordShiftButton
-                  text="Join the team?"
-                  href="#"
-                  styleVars={{ buttonWrapperColor: "#D8D8D8" }}
-                />
-              </div>
-            </div>
+          </div>
+          {/* Button */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10000 text-light-font">
+            <WordShiftButton
+              text="Join the team?"
+              href="#"
+              styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+            />
           </div>
         </div>
       </div>
