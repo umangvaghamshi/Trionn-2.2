@@ -1500,7 +1500,7 @@ export default function TeamSection() {
     PEOPLE.forEach(() => {
       const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       s.style.cssText =
-        "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;";
+        "position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;";
       s.style.zIndex = "2";
       scene.appendChild(s);
       lineSvgs.push(s);
@@ -1592,9 +1592,20 @@ export default function TeamSection() {
 
     let lastFire = 0;
     function updateLines(ts: number) {
+      const sceneRect = scene.getBoundingClientRect();
       const cr = centerFrame.getBoundingClientRect();
-      const cx = cr.left + cr.width / 2;
-      const cy = cr.top + cr.height / 2;
+      // Convert center frame position to scene-relative coordinates
+      const cx = cr.left + cr.width / 2 - sceneRect.left;
+      const cy = cr.top + cr.height / 2 - sceneRect.top;
+
+      if (!sceneInView) {
+        lines.forEach((l) => l.setAttribute("opacity", "0"));
+        sparks.forEach((sp) => {
+          sp.active = false;
+          sp.el.setAttribute("opacity", "0");
+        });
+        return;
+      }
 
       state.forEach((_s, i) => {
         const card = cardEls[i];
@@ -1607,8 +1618,9 @@ export default function TeamSection() {
           return;
         }
         const r = card.getBoundingClientRect();
-        const ex = r.left + r.width / 2;
-        const ey = r.top + r.height / 2;
+        // Convert card position to scene-relative coordinates
+        const ex = r.left + r.width / 2 - sceneRect.left;
+        const ey = r.top + r.height / 2 - sceneRect.top;
         lines[i].setAttribute("opacity", "1");
         lines[i].setAttribute("x1", String(ex));
         lines[i].setAttribute("y1", String(ey));
@@ -1643,8 +1655,8 @@ export default function TeamSection() {
         const pts = arcSegment(
           cx,
           cy,
-          sr.left + sr.width / 2,
-          sr.top + sr.height / 2,
+          sr.left + sr.width / 2 - sceneRect.left,
+          sr.top + sr.height / 2 - sceneRect.top,
           sp.t,
           sp.jitter!,
         );
@@ -1654,12 +1666,14 @@ export default function TeamSection() {
         sp.el.setAttribute("opacity", String((fade * 0.95).toFixed(2)));
       });
     }
-    const linesId = manager.register(updateLines);
-    const linesIo = new IntersectionObserver(
-      ([entry]) => manager.setActive(linesId, entry.isIntersecting),
-      { rootMargin: "64px 0px" },
+    let sceneInView = false;
+    const linesVisibilityIo = new IntersectionObserver(
+      ([entry]) => { sceneInView = entry.isIntersecting; },
+      { threshold: 0 },
     );
-    linesIo.observe(scene);
+    linesVisibilityIo.observe(scene);
+
+    const linesId = manager.register(updateLines);
 
     /* ── PRE-LOAD SPEECH VOICES ── */
     if (window.speechSynthesis) {
@@ -1675,7 +1689,7 @@ export default function TeamSection() {
       arcLoopCleanup();
       manager.unregister(proxId);
       manager.unregister(linesId);
-      linesIo.disconnect();
+      linesVisibilityIo.disconnect();
       window.removeEventListener("resize", onResize);
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("touchmove", onTouchMove);
