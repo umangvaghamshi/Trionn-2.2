@@ -158,7 +158,8 @@ export function useTrionnSymbolScene(
   canvasWrapRef: React.RefObject<HTMLDivElement | null>,
   s4ElRef: React.RefObject<HTMLDivElement | null>,
   scrollHintRef: React.RefObject<HTMLDivElement | null>,
-  vibrateElsRef: React.RefObject<(HTMLElement | null)[]>
+  vibrateElsRef: React.RefObject<(HTMLElement | null)[]>,
+  disableHoldRef?: React.RefObject<boolean>
 ) {
   const audio = useTrionnSymbolAudio();
   const lenis = useLenis();
@@ -1102,7 +1103,8 @@ export function useTrionnSymbolScene(
         st.clickBurst = Math.max(0, st.clickBurst - 0.025);
       }
 
-      const explodeAmt = Math.max(st.scrollProgress, st.hoverAmt, st.clickBurst, st.introAmt);
+      const burstContrib = st.scrollProgress < 0.15 ? st.clickBurst : 0;
+      const explodeAmt = Math.max(st.scrollProgress, st.hoverAmt, burstContrib, st.introAmt);
 
       // Particle positions
       particles.forEach((p) => {
@@ -1269,7 +1271,7 @@ export function useTrionnSymbolScene(
       // Boundary Check: Only allow interaction if clicked within Hero AND NOT in KeyFacts or UI elements.
       if (!isInHero || isInKeyFacts || isSoundToggle || isLink || isButton) return;
 
-      if (st.scrollProgress < 0.15) {
+      if (st.scrollProgress < 0.15 && !disableHoldRef?.current) {
         st.holding = true; st.holdTime = 0; st.vibrateAmt = 1.0;
         st.vibratePhase = 0; st.clickBurst = 0; st.joinPlayed = false;
         audio.startVibrateSound();
