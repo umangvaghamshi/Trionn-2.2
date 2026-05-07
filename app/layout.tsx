@@ -1,13 +1,41 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import PagesWrapper from "@/components/PagesWrapper";
 import SmoothScrolling from "@/components/SmoothScrolling";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
 import "./globals.css";
 
+export const viewport: Viewport = {
+  themeColor: "#040508",
+};
+
 export const metadata: Metadata = {
-  title: "TRIONN | Crafting Award-Winning Digital Journeys.",
+  title: "TRIONN | AI-Powered Creative Design & Development Studio in India",
   description:
-    "Trionn® - Redefining Digital Creativity: Your Partner for UI/UX, Mobile App, Web App, Branding, Creative Website Design, and Custom Development in Rajkot, Gujarat, India.",
+    "TRIONN is an independent AI-powered digital studio crafting meaningful brand experiences through strategy, design, and technology. Based in Rajkot, Gujarat, India, we create premium websites, immersive digital products, and interactive experiences for ambitious brands worldwide.",
+  metadataBase: new URL("https://trionn.com"),
+  robots: {
+    index: false,
+    follow: false,
+    "max-image-preview": "large",
+  },
+  authors: [{ name: "TRIONN" }],
+  openGraph: {
+    type: "website",
+    siteName: "TRIONN",
+    locale: "en_US",
+    images: [
+      {
+        url: "https://trionn.com/images/og-trionn.jpg",
+        width: 1200,
+        height: 630,
+        type: "image/jpeg",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["https://trionn.com/images/og-trionn.jpg"],
+  },
 };
 
 export default function RootLayout({
