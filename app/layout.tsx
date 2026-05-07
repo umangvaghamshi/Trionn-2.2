@@ -13,11 +13,11 @@ export const metadata: Metadata = {
   description:
     "TRIONN is an independent AI-powered digital studio crafting meaningful brand experiences through strategy, design, and technology. Based in Rajkot, Gujarat, India, we create premium websites, immersive digital products, and interactive experiences for ambitious brands worldwide.",
   metadataBase: new URL("https://trionn.com"),
-  robots: {
-    index: false,
-    follow: false,
-    "max-image-preview": "large",
-  },
+  // robots: {
+  //   index: true,
+  //   follow: true,
+  //   "max-image-preview": "large",
+  // },
   authors: [{ name: "TRIONN" }],
   openGraph: {
     type: "website",
