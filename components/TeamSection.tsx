@@ -7,6 +7,7 @@ import { useSiteSound } from "@/components/SiteSoundContext";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useTransitionReady } from "@/components/Transition";
 import { useGSAP } from "@gsap/react";
+import { WordShiftButton } from "./Button";
 
 /**
  * TeamSection — App Router compatible client component.
@@ -40,11 +41,16 @@ const PEOPLE: Person[] = [
   { name: "NILESH GUJARATI", file: "nilesh", role: "Designer" },
 ];
 
+const DEFAULT_STRIPE_COUNT = 5;
+const DEFAULT_STRIPE_COLOR = "#F7F7F7";
+
 export default function TeamSection() {
   useLenis(); // subscribe to the global Lenis instance provided by SmoothScrolling
   const { soundEnabled } = useSiteSound();
   const transitionReady = useTransitionReady();
   const soundEnabledRef = useRef(soundEnabled);
+  const stripesRef = useRef<HTMLDivElement[]>([]);
+  const outerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     soundEnabledRef.current = soundEnabled;
     if (
@@ -57,6 +63,7 @@ export default function TeamSection() {
   }, [soundEnabled]);
 
   // Refs for every DOM node touched by the original logic
+  const sectionRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const vignetteRef = useRef<HTMLDivElement>(null);
   const crtRef = useRef<HTMLDivElement>(null);
@@ -1682,8 +1689,66 @@ export default function TeamSection() {
     };
   }, [transitionReady]);
 
+  useGSAP(() => {
+    if (!sectionRef.current || !outerRef.current) {
+      return;
+    }
+
+    const stripes = stripesRef.current;
+    gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top top",
+        pin: true,
+        end: "+=200%",
+        markers: false,
+        scrub: true,
+        anticipatePin: 1,
+        pinSpacing:true,
+      },
+      defaults: { ease: "none" },
+    });
+
+    // ---- Pull next sibling flush — no gap after pin spacer ----
+    const nextSection = document.querySelector(
+      ".we-not-section",
+    ) as HTMLElement | null;
+
+    if (nextSection) {
+      gsap.set(nextSection, {
+        marginTop: "-80vh",
+        ease: "none",
+      });
+    }
+
+    tl.to({}, { duration: 1 });
+
+    tl.addLabel("stripes_start");
+
+    const staggerAmount = 0.6;
+    const perStripe = 1 - staggerAmount;
+    const totalStripeDuration = 1.2;
+
+    for (let i = 0; i < DEFAULT_STRIPE_COUNT; i++) {
+      const staggerIdx = DEFAULT_STRIPE_COUNT - 1 - i;
+      const stripeOffset =
+        (staggerAmount * staggerIdx) / (DEFAULT_STRIPE_COUNT - 1 || 1);
+      const start = stripeOffset * totalStripeDuration;
+      const end = start + perStripe * totalStripeDuration;
+
+      tl.fromTo(
+        stripes[i]!,
+        { scaleY: 0 },
+        { scaleY: 1, duration: end - start, ease: "none" },
+        `stripes_start+=${start}`,
+      );
+    }
+  }, []);
+
   return (
-    <>
+    <div ref={outerRef}>
       {/* Inline styles for things Tailwind utility classes can't express:
           dynamic CSS variables, ::before/::after pseudo elements, keyframes,
           and a couple of state-driven class toggles used by the JS. */}
@@ -1943,7 +2008,26 @@ export default function TeamSection() {
         }
       `}</style>
 
-      <div className="ts-root">
+      <div ref={sectionRef} className="relative ts-root min-h-screen">
+        {/* Stripe reveal overlay */}
+        <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-[10001]">
+          {Array.from({ length: DEFAULT_STRIPE_COUNT }).map((_, index) => (
+            <div
+              key={index}
+              ref={(el) => {
+                stripesRef.current[index] = el!;
+              }}
+              className="flex-1 w-full"
+              style={{
+                backgroundColor: DEFAULT_STRIPE_COLOR,
+                willChange: "transform",
+                transformOrigin: "bottom",
+                marginTop: index > 0 ? "-0.5px" : undefined,
+                paddingBottom: "0.5px",
+              }}
+            />
+          ))}
+        </div>
         {/* Scene */}
         <div
           ref={sceneRef}
@@ -2117,9 +2201,19 @@ export default function TeamSection() {
                 }}
               />
             </div>
+            {/* Button */}
+            <div className="tr__container relative w-full text-light-font flex flex-col">
+              <div className="pb-37.5 flex flex-col items-center">
+                <WordShiftButton
+                  text="Join the team?"
+                  href="#"
+                  styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

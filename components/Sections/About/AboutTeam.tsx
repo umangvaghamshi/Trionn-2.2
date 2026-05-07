@@ -66,15 +66,6 @@ export default function AboutTeam() {
         </div>
       </div>
       <TeamSection />
-      <div className="tr__container relative w-full text-light-font flex flex-col">
-        <div className="pb-37.5 flex flex-col items-center">
-          <WordShiftButton
-            text="Join the team?"
-            href="#"
-            styleVars={{ buttonWrapperColor: "#D8D8D8" }}
-          />
-        </div>
-      </div>
     </section>
   );
 }
