@@ -1033,8 +1033,11 @@ export default function OurWorkListing() {
       PH = 0;
     let _t = 0;
     let bolts: any[] = [];
-    let _wc = 0,
-      _sc = 0;
+    let _wc = 0;
+    let _burstLeft = 0;
+    let _hoverActive = false;
+    let _wasAway = true;
+    let _soundPlayed = false;
     let lineA: any[] = [],
       lineB: any[] = [],
       lineC: any[] = [];
@@ -1053,85 +1056,107 @@ export default function OurWorkListing() {
       wC: any[] = [];
     let actx: AudioContext | null = null;
     let sbuf: AudioBuffer | null = null;
-    let pgGain: GainNode | null = null;
     let sready = false;
     let _audioIniting = false;
-    let _htmlAudioPool: HTMLAudioElement[] | null = null;
-    let _htmlAudioIndex = 0;
-    const SPARK_AUDIO_SRC = "/assets/spark.mp3";
-    function initHtmlAudio() {
-      if (_htmlAudioPool) return;
-      _htmlAudioPool = [];
-      for (let i = 0; i < 5; i++) {
-        const a = new Audio(SPARK_AUDIO_SRC);
-        a.preload = "auto";
-        a.volume = 0.9;
-        _htmlAudioPool.push(a);
-      }
-    }
+    let _sparkSrc: AudioBufferSourceNode | null = null;
+    let _sparkGain: GainNode | null = null;
+    const SPARK_AUDIO_SRC = "/assets/hero-spark.mp3";
+    const SPARK_VOLUME = 0.22;
     function initAudio() {
-      initHtmlAudio();
       if (actx || _audioIniting) return;
       _audioIniting = true;
       try {
         actx = new (
           window.AudioContext || (window as any).webkitAudioContext
         )();
-        pgGain = actx.createGain();
-        pgGain.gain.value = 0.9;
-        pgGain.connect(actx.destination);
         fetch(SPARK_AUDIO_SRC)
           .then((r) => {
             if (!r.ok) throw new Error("fetch failed");
             return r.arrayBuffer();
           })
           .then((ab) => actx!.decodeAudioData(ab))
-          .then((b) => {
-            sbuf = b;
-            sready = true;
-          })
-          .catch((err) =>
-            console.warn(
-              "spark audio buffer load failed, using HTMLAudio fallback:",
-              err,
-            ),
-          );
+          .then((b) => { sbuf = b; sready = true; })
+          .catch((err) => console.warn("spark audio buffer load failed:", err));
       } catch (e) {
-        console.warn("AudioContext failed, using HTMLAudio fallback:", e);
+        console.warn("AudioContext failed:", e);
       }
     }
-    function playHtmlSpark() {
+    // fadeTime=0 → instant stop (cleanup); fadeTime>0 → smooth fade (burst end / hover exit)
+    function stopSparkSnd(fadeTime = 0.035) {
+      const src = _sparkSrc;
+      const gain = _sparkGain;
+      _sparkSrc = null;
+      _sparkGain = null;
+      if (!src || !actx) return;
       try {
-        initHtmlAudio();
-        const a = _htmlAudioPool![_htmlAudioIndex++ % _htmlAudioPool!.length];
-        a.pause();
-        a.currentTime = 0;
-        a.volume = 0.9;
-        a.playbackRate = 0.7 + Math.random() * 0.6;
-        const pr = a.play();
-        if (pr && (pr as any).catch) (pr as any).catch(() => {});
-        _sc = 0.05;
-      } catch (e) {}
+        if (gain && fadeTime > 0) {
+          gain.gain.cancelScheduledValues(actx.currentTime);
+          gain.gain.setValueAtTime(gain.gain.value, actx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.0001, actx.currentTime + fadeTime);
+        }
+        setTimeout(() => { try { src.stop(); } catch (_) {} }, Math.max(20, fadeTime * 1000 + 20));
+      } catch (_) {
+        try { src.stop(); } catch (_) {}
+      }
     }
+    // called once per line-hover burst — tracked so stopSparkSnd can fade it on hover-exit
     function spark() {
-      if (soundEnabledRef.current === false || _sc > 0) return;
+      if (!soundEnabledRef.current) return;
       initAudio();
       const play = () => {
-        if (sready && actx && sbuf) {
-          try {
-            const s = actx.createBufferSource();
-            s.buffer = sbuf;
-            s.playbackRate.value = 0.7 + Math.random() * 0.6;
-            s.connect(pgGain!);
-            s.start(0);
-            _sc = 0.05;
-            return;
-          } catch (e) {}
-        }
-        playHtmlSpark();
+        if (!sready || !actx || !sbuf) return;
+        try {
+          stopSparkSnd(0.015);
+          const gain = actx.createGain();
+          gain.gain.setValueAtTime(SPARK_VOLUME, actx.currentTime);
+          const s = actx.createBufferSource();
+          s.buffer = sbuf;
+          s.playbackRate.value = 1.0;
+          s.connect(gain);
+          gain.connect(actx.destination);
+          _sparkSrc = s;
+          _sparkGain = gain;
+          s.start(0);
+          s.onended = () => {
+            if (_sparkSrc === s) { _sparkSrc = null; _sparkGain = null; }
+          };
+        } catch (e) {}
       };
       if (actx && actx.state === "suspended")
-        actx.resume().then(play).catch(playHtmlSpark);
+        actx.resume().then(play).catch(() => {});
+      else play();
+    }
+    // dot-touch sound: fades out exactly when the dot bolts die (~180 ms max)
+    // untracked by _sparkSrc so hover-burst stopSparkSnd never cuts it
+    const DOT_SOUND_DURATION_MS = 180; // matches max dot bolt life
+    const DOT_SOUND_FADE_S = 0.04;
+    function sparkDot() {
+      if (!soundEnabledRef.current) return;
+      initAudio();
+      const play = () => {
+        if (!sready || !actx || !sbuf) return;
+        try {
+          const gain = actx.createGain();
+          gain.gain.setValueAtTime(SPARK_VOLUME, actx.currentTime);
+          const s = actx.createBufferSource();
+          s.buffer = sbuf;
+          s.playbackRate.value = 1.0;
+          s.connect(gain);
+          gain.connect(actx.destination);
+          s.start(0);
+          // fade out precisely when the dot spark visually ends
+          setTimeout(() => {
+            try {
+              gain.gain.cancelScheduledValues(actx!.currentTime);
+              gain.gain.setValueAtTime(gain.gain.value, actx!.currentTime);
+              gain.gain.linearRampToValueAtTime(0.0001, actx!.currentTime + DOT_SOUND_FADE_S);
+              setTimeout(() => { try { s.stop(); } catch (_) {} }, DOT_SOUND_FADE_S * 1000 + 20);
+            } catch (_) {}
+          }, DOT_SOUND_DURATION_MS);
+        } catch (e) {}
+      };
+      if (actx && actx.state === "suspended")
+        actx.resume().then(play).catch(() => {});
       else play();
     }
     const onFirstInteraction = () => {
@@ -1491,8 +1516,8 @@ export default function OurWorkListing() {
           p.y - sx,
           Math.max(0.1, r),
         );
-        g.addColorStop(0, `rgba(255,255,255,${a})`);
-        g.addColorStop(0.5, `rgba(53,135,242,${a * 0.5})`);
+        g.addColorStop(0, `rgba(200,230,255,${a})`);
+        g.addColorStop(0.5, `rgba(40,120,255,${a * 0.5})`);
         g.addColorStop(1, "rgba(0,0,0,0)");
         lctx!.fillStyle = g;
         lctx!.beginPath();
@@ -1510,46 +1535,28 @@ export default function OurWorkListing() {
         }
         const sp = b.pts.map((p: any) => ({ x: p.x, y: p.y - sx }));
         const fade = b.life / b.max;
-        const dx0 = sp[sp.length - 1].x - sp[0].x,
-          dy0 = sp[sp.length - 1].y - sp[0].y;
-        const blen = Math.sqrt(dx0 * dx0 + dy0 * dy0) || 1;
-        const s = Math.min(1, blen / 80);
-        lctx!.save();
-        lctx!.filter = `blur(${(2 + s * 2).toFixed(1)}px)`;
-        lctx!.strokeStyle = `rgba(80,125,181,${fade})`;
-        lctx!.lineWidth = 1.5 + s * 1.5;
-        lctx!.lineCap = "round";
-        lctx!.lineJoin = "round";
-        lctx!.beginPath();
-        sp.forEach((p: any, i: number) =>
-          i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
-        );
-        lctx!.stroke();
-        lctx!.restore();
-        lctx!.save();
-        lctx!.filter = `blur(${(0.8 + s * 0.5).toFixed(1)}px)`;
-        lctx!.strokeStyle = `rgba(53,135,242,${0.75 * fade})`;
-        lctx!.lineWidth = 0.8 + s * 0.8;
-        lctx!.lineCap = "round";
-        lctx!.lineJoin = "round";
-        lctx!.beginPath();
-        sp.forEach((p: any, i: number) =>
-          i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
-        );
-        lctx!.stroke();
-        lctx!.restore();
-        lctx!.save();
-        lctx!.filter = "blur(0px)";
-        lctx!.strokeStyle = `rgba(255,255,255,${fade})`;
-        lctx!.lineWidth = 0.7;
-        lctx!.lineCap = "round";
-        lctx!.lineJoin = "round";
-        lctx!.beginPath();
-        sp.forEach((p: any, i: number) =>
-          i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
-        );
-        lctx!.stroke();
-        lctx!.restore();
+        const flicker = 0.7 + Math.random() * 0.3;
+        const f = fade * flicker;
+        const dotBoltLayers = [
+          { blur: "8px",  color: `rgba(40,120,255,${0.18 * f})`,  lw: 6   },
+          { blur: "4px",  color: `rgba(100,180,255,${0.30 * f})`, lw: 3   },
+          { blur: "1.5px",color: `rgba(200,230,255,${0.55 * f})`, lw: 1.5 },
+          { blur: "0px",  color: `rgba(210,235,255,${0.90 * f})`, lw: 0.8 },
+        ];
+        dotBoltLayers.forEach(({ blur, color, lw }) => {
+          lctx!.save();
+          lctx!.filter = `blur(${blur})`;
+          lctx!.strokeStyle = color;
+          lctx!.lineWidth = lw;
+          lctx!.lineCap = "round";
+          lctx!.lineJoin = "round";
+          lctx!.beginPath();
+          sp.forEach((p: any, i: number) =>
+            i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
+          );
+          lctx!.stroke();
+          lctx!.restore();
+        });
       });
     }
     function updateCards() {
@@ -1559,16 +1566,13 @@ export default function OurWorkListing() {
         if (!cd._touched && target === 1) {
           cd._touched = true;
           spawnWeldSparks(cd.dotX, cd.dotY);
-          spark();
+          sparkDot();
         }
         if (target === 0) cd._touched = false;
         cd.opacity += (target - cd.opacity) * 0.09;
         cd.el.style.opacity = Math.min(1, Math.max(0, cd.opacity)).toFixed(3);
       });
     }
-    const BCOLS = [
-      0xffffff, 0x88ddff, 0x44aaff, 0x0066ff, 0x00ccff, 0xaaddff, 0x0044cc,
-    ];
     function spawnBoltOn(
       b: any,
       ox: number,
@@ -1588,10 +1592,10 @@ export default function OurWorkListing() {
       for (let i = 1; i <= BOLT_SEGS; i++) {
         const t = i / BOLT_SEGS;
         const jMag =
-          Math.min(dist * 0.3, 13) *
+          Math.min(dist * 0.18, 10) *
           (0.5 + Math.random() * 0.8) *
           Math.sin(t * Math.PI);
-        const oMag = Math.min(dist * 0.12, 6) * Math.sin(t * Math.PI) * od;
+        const oMag = Math.min(dist * 0.08, 5) * Math.sin(t * Math.PI) * od;
         const nx = ox + dx * t + (Math.random() - 0.5) * jMag * 1.4 + px * oMag;
         const ny =
           oy +
@@ -1624,15 +1628,13 @@ export default function OurWorkListing() {
       } else {
         b.branch = null;
       }
-      b.max = 0.04 + Math.random() * 0.06;
+      b.max = 0.07 + Math.random() * 0.08;
       b.life = b.max;
       b.on = true;
-      b.col = BCOLS[Math.floor(Math.random() * BCOLS.length)];
     }
     function drawBolts(dt: number, sx: number) {
-      if (!lctx) return;
-      _sc = Math.max(0, _sc - dt);
       _wc = Math.max(0, _wc - dt);
+      if (!lctx) return;
       bolts.forEach((b) => {
         if (!b.on) return;
         b.life -= dt;
@@ -1645,72 +1647,50 @@ export default function OurWorkListing() {
           maxY = Math.max(...sp.map((p: any) => p.y));
         if (maxY < -20 || minY > VH + 20) return;
         const fade = b.life / b.max;
-        const dx0 = sp[sp.length - 1].x - sp[0].x,
-          dy0 = sp[sp.length - 1].y - sp[0].y;
-        const blen = Math.sqrt(dx0 * dx0 + dy0 * dy0) || 1;
-        const s = Math.min(1, blen / 120);
-        lctx!.save();
-        lctx!.filter = `blur(${(3 + s * 3).toFixed(1)}px)`;
-        lctx!.strokeStyle = `rgba(80,125,181,${1 * fade})`;
-        lctx!.lineWidth = 2 + s * 2;
-        lctx!.lineCap = "round";
-        lctx!.lineJoin = "round";
-        lctx!.beginPath();
-        sp.forEach((p: any, i: number) =>
-          i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
-        );
-        lctx!.stroke();
-        lctx!.restore();
-        lctx!.save();
-        lctx!.filter = `blur(${(1 + s * 1).toFixed(1)}px)`;
-        lctx!.strokeStyle = `rgba(53,135,242,${0.7 * fade})`;
-        lctx!.lineWidth = 1 + s * 1.2;
-        lctx!.lineCap = "round";
-        lctx!.lineJoin = "round";
-        lctx!.beginPath();
-        sp.forEach((p: any, i: number) =>
-          i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
-        );
-        lctx!.stroke();
-        lctx!.restore();
-        lctx!.save();
-        lctx!.filter = "blur(0px)";
-        lctx!.strokeStyle = `rgba(255,255,255,${1.0 * fade})`;
-        lctx!.lineWidth = 0.9;
-        lctx!.lineCap = "round";
-        lctx!.lineJoin = "round";
-        lctx!.beginPath();
-        sp.forEach((p: any, i: number) =>
-          i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
-        );
-        lctx!.stroke();
-        lctx!.restore();
+        const flicker = 0.7 + Math.random() * 0.3;
+        const f = fade * flicker;
+        // exact home hero 2D glow values + one sharp core to replace the WebGL line
+        const boltLayers = [
+          { blur: "8px",  color: `rgba(40,120,255,${0.18 * f})`,  lw: 6   },
+          { blur: "4px",  color: `rgba(100,180,255,${0.30 * f})`, lw: 3   },
+          { blur: "1.5px",color: `rgba(200,230,255,${0.55 * f})`, lw: 1.5 },
+          { blur: "0px",  color: `rgba(210,235,255,${0.90 * f})`, lw: 0.8 },
+        ];
+        boltLayers.forEach(({ blur, color, lw }) => {
+          lctx!.save();
+          lctx!.filter = `blur(${blur})`;
+          lctx!.strokeStyle = color;
+          lctx!.lineWidth = lw;
+          lctx!.lineCap = "round";
+          lctx!.lineJoin = "round";
+          lctx!.beginPath();
+          sp.forEach((p: any, i: number) =>
+            i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
+          );
+          lctx!.stroke();
+          lctx!.restore();
+        });
         if (b.branch) {
           const bp = b.branch.map((p: any) => ({ x: p.x, y: p.y - sx }));
-          lctx!.save();
-          lctx!.filter = `blur(${(1.5 + s).toFixed(1)}px)`;
-          lctx!.strokeStyle = `rgba(80,125,181,${0.7 * fade})`;
-          lctx!.lineWidth = 1 + s * 0.8;
-          lctx!.lineCap = "round";
-          lctx!.lineJoin = "round";
-          lctx!.beginPath();
-          bp.forEach((p: any, i: number) =>
-            i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
-          );
-          lctx!.stroke();
-          lctx!.restore();
-          lctx!.save();
-          lctx!.filter = "blur(0px)";
-          lctx!.strokeStyle = `rgba(255,255,255,${0.7 * fade})`;
-          lctx!.lineWidth = 0.5;
-          lctx!.lineCap = "round";
-          lctx!.lineJoin = "round";
-          lctx!.beginPath();
-          bp.forEach((p: any, i: number) =>
-            i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
-          );
-          lctx!.stroke();
-          lctx!.restore();
+          const branchLayers = [
+            { blur: "4px",  color: `rgba(100,180,255,${0.22 * f})`, lw: 3   },
+            { blur: "1.5px",color: `rgba(200,230,255,${0.40 * f})`, lw: 1.5 },
+            { blur: "0px",  color: `rgba(210,235,255,${0.75 * f})`, lw: 0.8 },
+          ];
+          branchLayers.forEach(({ blur, color, lw }) => {
+            lctx!.save();
+            lctx!.filter = `blur(${blur})`;
+            lctx!.strokeStyle = color;
+            lctx!.lineWidth = lw;
+            lctx!.lineCap = "round";
+            lctx!.lineJoin = "round";
+            lctx!.beginPath();
+            bp.forEach((p: any, i: number) =>
+              i === 0 ? lctx!.moveTo(p.x, p.y) : lctx!.lineTo(p.x, p.y),
+            );
+            lctx!.stroke();
+            lctx!.restore();
+          });
         }
       });
     }
@@ -1738,7 +1718,7 @@ export default function OurWorkListing() {
       return best;
     }
     function checkWeld(sx: number) {
-      if (_wc > 0 || drawProg < 0.01) return;
+      if (drawProg < 0.01) return;
       const all = [wA, wB, wC];
       let hitL = -1,
         hitP: any = null;
@@ -1750,27 +1730,45 @@ export default function OurWorkListing() {
           break;
         }
       }
-      if (!hitP) return;
-      const otherLines = [0, 1, 2].filter((i) => i !== hitL).map((i) => all[i]);
-      bolts.forEach((b) => {
-        const tgtLine =
-          otherLines[Math.floor(Math.random() * otherLines.length)];
-        let best: any = null,
-          bd = Infinity;
-        for (let i = 0; i < tgtLine.length; i++) {
-          if (tgtLine[i].t > drawProg) break;
-          const dx2 = tgtLine[i].x - hitP.x,
-            dy2 = tgtLine[i].y - hitP.y,
-            d = dx2 * dx2 + dy2 * dy2;
-          if (d < bd) {
-            bd = d;
-            best = tgtLine[i];
-          }
+      if (hitP) {
+        // entering hover after being away — start a fresh burst
+        if (!_hoverActive && _wasAway) {
+          _hoverActive = true;
+          _burstLeft = 5 + Math.floor(Math.random() * 2);
+          _soundPlayed = false;
+          _wasAway = false;
         }
-        if (best) spawnBoltOn(b, hitP.x, hitP.y, best.x, best.y);
-      });
-      spark();
-      _wc = 0.1 + Math.random() * 0.2;
+        if (_wc <= 0 && _burstLeft > 0) {
+          const otherLines = [0, 1, 2].filter((i) => i !== hitL).map((i) => all[i]);
+          bolts.forEach((b) => {
+            const tgtLine = otherLines[Math.floor(Math.random() * otherLines.length)];
+            let best: any = null, bd = Infinity;
+            for (let i = 0; i < tgtLine.length; i++) {
+              if (tgtLine[i].t > drawProg) break;
+              const dx2 = tgtLine[i].x - hitP.x,
+                dy2 = tgtLine[i].y - hitP.y,
+                d = dx2 * dx2 + dy2 * dy2;
+              if (d < bd) { bd = d; best = tgtLine[i]; }
+            }
+            if (best) spawnBoltOn(b, hitP.x, hitP.y, best.x, best.y);
+          });
+          // play sound only on the first spark of each burst
+          if (!_soundPlayed) {
+            spark();
+            _soundPlayed = true;
+          }
+          _burstLeft--;
+          if (_burstLeft <= 0) stopSparkSnd(0.05);
+          _wc = 0.04 + Math.random() * 0.06;
+        }
+      } else {
+        // cursor left the lines — reset so next hover triggers a fresh burst
+        if (_hoverActive) stopSparkSnd(0.05);
+        _hoverActive = false;
+        _burstLeft = 0;
+        _soundPlayed = false;
+        _wasAway = true;
+      }
     }
     const onMouseMove = (e: MouseEvent) => {
       _mx = e.clientX;
@@ -1951,6 +1949,7 @@ export default function OurWorkListing() {
       delete (window as any)._orbitReady;
       delete (window as any)._initPageLines;
       delete (window as any).PageLines;
+      stopSparkSnd(0);
       if (actx) {
         try {
           actx.close();
