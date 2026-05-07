@@ -18,7 +18,6 @@ import Marquee from "@/components/Marquee";
 import { useServicesOrbitSceneV2 } from "./useServicesOrbitSceneV2";
 import parse from "html-react-parser";
 
-
 gsap.registerPlugin(ScrollTrigger);
 
 const BG = "#0a0a0a";
@@ -281,14 +280,18 @@ export default function ServicesOrbitExperienceV2() {
         className="sec-focused relative z-1 flex min-h-screen w-screen items-center bg-transparent contain-[layout_style] transform-[translateZ(0)]"
         id="sec2-v2"
       >
-        <div className="foc-inner tr__container grid grid-cols-12 gap-6 text-light-font">
+        <div className="foc-inner tr__container grid grid-cols-12 gap-6 text-light-font w-full">
           <div className="col-span-12 gap-20 flex flex-col items-center text-center">
             <BlurTextReveal
               as="h2"
-              text={parse("Focused disciplines <br/>where strategy, design, and <br/>technology work as one.") as string}
+              text={
+                parse(
+                  "Focused disciplines <br/>where strategy, design, and <br/>technology work as one.",
+                ) as string
+              }
               animationType="chars"
               stagger={0.01}
-              className="foc-title"
+              className="foc-title w-full"
             />
             <div className="flex gap-10 foc-cta">
               <WordShiftButton

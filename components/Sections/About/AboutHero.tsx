@@ -110,6 +110,15 @@ export default function AboutHero() {
             />
           </span>
         </div>
+        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[50%] w-full z-5 translate-y-full">
+          <BlurTextReveal
+            as="span"
+            text={`We design and build digital experiences that scale, perform, and endure.`}
+            animationType="chars"
+            stagger={0.02}
+            className="block title col-span-10 col-start-2  max-w-60"
+          />
+        </div>
 
         {/* Lion — natural document flow, scales proportionally */}
         <div
@@ -125,15 +134,6 @@ export default function AboutHero() {
                   isLoaded ? "opacity-100" : "opacity-0"
                 }`}
               >
-                <div className="tr__container grid grid-cols-12 gap-x mb-25">
-                  <BlurTextReveal
-                    as="span"
-                    text={`We design and build digital experiences that scale, perform, and endure.`}
-                    animationType="chars"
-                    stagger={0.02}
-                    className="block title col-span-10 col-start-2  max-w-60"
-                  />
-                </div>
                 <Marquee gap={0} speed={0.8}>
                   <div className="uppercase mrquee-text flex items-center">
                     <span className="marquee-text-item">Inspire</span>
