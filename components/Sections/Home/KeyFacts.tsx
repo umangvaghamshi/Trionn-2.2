@@ -303,14 +303,14 @@ function TeamCard({ odoSync }: { odoSync: number }) {
     >
       <div className="relative z-3 h-full p-10 flex flex-col justify-between">
         <span className="title block text-right">our team members</span>
-        <div className="team-video overflow-hidden py-10">
+        <div className="team-video overflow-hidden py-10 rounded-lg">
           <video
             ref={videoRef}
             src="/video/team/rushi.mp4"
             muted
             playsInline
             preload="metadata"
-            className="w-full h-full object-cover object-top rounded-lg"
+            className="w-full h-full object-cover object-top rounded-lg scale-101"
           />
         </div>
         <div className="flex items-end justify-between">
