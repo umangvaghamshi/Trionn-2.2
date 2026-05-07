@@ -918,6 +918,13 @@ export function useServicesOrbitSceneV2(
       if (wooshGain && wooshCtx) {
         wooshGain.gain.setTargetAtTime(0, wooshCtx.currentTime, 0.2);
       }
+      // Stop and release the source so startWoosh can create a fresh one next time
+      const src = wooshSrc;
+      wooshSrc = null;
+      wooshPlaying = false;
+      setTimeout(() => {
+        try { src?.stop(); } catch (_) {}
+      }, 400);
     }
 
     orbitAudioRef.current = {
@@ -935,6 +942,13 @@ export function useServicesOrbitSceneV2(
       },
       muteWoosh,
     };
+
+    // Scene just initialized — if sound is already on, start the woosh now
+    // (the soundEnabled useEffect in ServicesOrbitExperienceV2 fires before this
+    // scene effect, so primeWoosh hit the stub; we catch up here)
+    if (soundEnabledRef.current) {
+      orbitAudioRef.current.primeWoosh();
+    }
 
     const wooshGestureHandlers: Array<{ ev: string; fn: () => void }> = [];
     (["mousedown", "touchstart", "pointerdown"] as const).forEach((ev) => {
@@ -1689,6 +1703,15 @@ export function useServicesOrbitSceneV2(
 
       cubeRT.dispose();
       renderer.dispose();
+
+      // Close woosh AudioContext so fade-out timeouts don't leak into the next page
+      if (wooshCtx) {
+        void wooshCtx.close().catch(() => {});
+        wooshCtx = null;
+        wooshSrc = null;
+        wooshGain = null;
+        wooshPlaying = false;
+      }
 
       orbitAudioRef.current = {
         primeWoosh: () => {},

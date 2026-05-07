@@ -70,10 +70,10 @@ export function TrionnSymbolAnimation({
       audio.stopAllSounds();
       return;
     }
-    if (!heroActiveRef.current) return;
     audio.setSoundEnabled(true);
     audio.autoStartWoosh();
   }, [soundEnabled, audio]);
+
 
   // ── Perf monitor ──────────────────────────────────────────────────────────
   // useEffect(() => {

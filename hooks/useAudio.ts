@@ -14,6 +14,9 @@ export function useAudio() {
           .webkitAudioContext
       )();
     }
+    if (audioCtxRef.current.state === "suspended") {
+      void audioCtxRef.current.resume().catch(() => {});
+    }
     return audioCtxRef.current;
   }, []);
 
@@ -264,6 +267,9 @@ export function useAudio() {
     )
       return;
     try {
+      if (hoverCtxRef.current.state === "suspended") {
+        void hoverCtxRef.current.resume().catch(() => {});
+      }
       const src = hoverCtxRef.current.createBufferSource();
       const gain = hoverCtxRef.current.createGain();
       src.buffer = hoverBufferRef.current;

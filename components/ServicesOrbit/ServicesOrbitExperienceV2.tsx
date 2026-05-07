@@ -59,12 +59,12 @@ export default function ServicesOrbitExperienceV2() {
   const sec3Ref = useRef<HTMLElement>(null);
   const sec4Ref = useRef<HTMLElement>(null);
   const servicesListRef = useRef<HTMLUListElement>(null);
-  const soundEnabledRef = useRef(false);
+  const { soundEnabled } = useSiteSound();
+  const soundEnabledRef = useRef(soundEnabled);
 
   const stripesRef = useRef<HTMLDivElement[]>([]);
 
   const [activeService, setActiveService] = useState<number | null>(null);
-  const { soundEnabled } = useSiteSound();
 
   const getSmoothScroll = useCallback(() => {
     if (typeof window === "undefined") return 0;
@@ -134,6 +134,7 @@ export default function ServicesOrbitExperienceV2() {
     if (soundEnabled) orbitAudioRef.current?.primeWoosh();
     else orbitAudioRef.current?.muteWoosh();
   }, [soundEnabled]);
+
 
   useGSAP(() => {
     if (!canvasWrapRef.current) return;
