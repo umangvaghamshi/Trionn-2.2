@@ -86,8 +86,6 @@
   position: absolute;
   inset: 0;
   background: var(--pl-panel-gray);
-  border: 1.5px solid rgba(0, 0, 0, 0.06);
-  border-radius: 2px;
   z-index: 0;
   opacity: 0;
   will-change: transform, opacity, left, top, width, height;

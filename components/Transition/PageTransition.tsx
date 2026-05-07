@@ -189,7 +189,6 @@ export default function PageTransition() {
   useEffect(() => {
     if (phase !== "sweep-in" || !isLoaderComplete) return;
     document.documentElement.dataset.trionnReady = "false";
-    setContentVisible(false);
 
     const center = centerRef.current;
     const corners = [cornerTLRef.current!, cornerTRRef.current!, cornerBLRef.current!, cornerBRRef.current!];
@@ -205,6 +204,7 @@ export default function PageTransition() {
     sweepIn(() => {});
 
     flyPlusIn(() => {
+      setContentVisible(false);
       setPhase("label-show");
       setTimeout(() => { notifyBeltsClosed(); }, HOLD);
     });
