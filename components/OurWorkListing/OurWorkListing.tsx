@@ -54,7 +54,6 @@ export default function OurWorkListing() {
     soundEnabledRef.current = soundEnabled;
   }, [soundEnabled]);
 
-
   const [animationCompleted, setAnimationCompleted] = useState(false);
 
   const ready = useTransitionReady();
@@ -1969,7 +1968,7 @@ export default function OurWorkListing() {
         className="fixed top-0 left-0 pointer-events-none z-2 will-change-contents"
       />
 
-      <main id="projects-grid">
+      <main id="projects-grid" className="relative py-10 lg:py-20 z-10 flex flex-col gap-10 lg:gap-20">
         {projects.map((project, i) => (
           <article
             key={i}
@@ -1993,21 +1992,15 @@ export default function OurWorkListing() {
                   {project.year}
                 </p>
               </div>
-              <div className="flex justify-between">
-                <p className="text-light-font/60 w-7/12 small">
+              <div className="flex flex-col sm:flex-row justify-between gap-4">
+                <p className="text-light-font/60 w-full sm:w-7/12 small max-w-75">
                   {parser(
                     Array.isArray(project.subTitle)
                       ? project.subTitle.join("")
                       : project.subTitle,
                   )}
-                  {/* {project.subTitle.split("\n").map((line, j, arr) => (
-                    <span key={j}>
-                      {line}
-                      {j < arr.length - 1 ? <br /> : null}
-                    </span>
-                  ))} */}
                 </p>
-                <div className="w-5/12 flex justify-end">
+                <div className="w-full sm:w-5/12 flex justify-end">
                   <WordShiftButton
                     text="EXPLORE PROJECT"
                     href={`work/${project.slug}`}
@@ -2015,29 +2008,12 @@ export default function OurWorkListing() {
                   />
                 </div>
               </div>
-              {/* <div className="card-left-meta">
-                <h2>{p.title}</h2>
-                <p>
-                  {p.desc.split("\n").map((line, j, arr) => (
-                    <span key={j}>
-                      {line}
-                      {j < arr.length - 1 ? <br /> : null}
-                    </span>
-                  ))}
-                </p>
-              </div>
-              <div className="card-right-meta">
-                <span className="yr">{p.year}</span>
-                <a href="#" className="cta">
-                  EXPLORE PROJECT <span>→</span>
-                </a>
-              </div> */}
             </div>
           </article>
         ))}
       </main>
 
-      <div id="contact-section" className="py-37.5">
+      <div id="contact-section" className="py-20 lg:py-37.5">
         <div className="tr__container flex flex-col gap-10 items-center">
           <div id="contact-btn">
             <WordShiftButton
@@ -2047,25 +2023,13 @@ export default function OurWorkListing() {
             />
           </div>
           <h3 className="text-center text-light-font">
-            Every project begins with a conversation — let&apos;s start yours.{" "}
-            <br />
-            We work with studios, founders, and brands who care about craft.{" "}
-            <br />
+            Every project begins with a conversation — let&apos;s start yours.
+            <br className="hidden sm:block" />
+            We work with studios, founders, and brands who care about craft.
+            <br className="hidden sm:block" />
             Based globally. Available for select work worldwide.
           </h3>
         </div>
-        {/* <a href="#" id="contact-btn">
-          Contact Us
-        </a> */}
-        {/* <div id="contact-subtext">
-          <p>
-            Every project begins with a conversation — let&apos;s start yours.
-          </p>
-          <p>
-            We work with studios, founders, and brands who care about craft.
-          </p>
-          <p>Based globally. Available for select work worldwide.</p>
-        </div> */}
       </div>
       {animationCompleted && (
         <div className="tr__container">
@@ -2143,10 +2107,10 @@ const styles = `
 //   text-align: center; margin: 0; position: relative; z-index: 100;
 // }
 // #line-canvas { position: fixed; top:0; left:0; pointer-events: none; will-change: contents; z-index: 2; }
-#projects-grid {
-  position: relative; padding: 120px 5% 160px; z-index: 10;
-  display: flex; flex-direction: column; gap: 80px;
-}
+// #projects-grid {
+//   position: relative; padding: 120px 5% 160px; z-index: 10;
+//   display: flex; flex-direction: column; gap: 80px;
+// }
 .project-card { position: relative; opacity: 0; transition: opacity 0.9s var(--ease-soft); }
 .project-card.card-revealed { opacity: 1; }
 // .card-thumb { overflow: hidden; margin-bottom: 14px; border-radius: 4px; position: relative; }
@@ -2165,7 +2129,7 @@ const styles = `
 // }
 // .cta:hover { color:var(--white); border-color:rgba(255,255,255,0.65); }
 @media(max-width:768px){
-  #projects-grid { padding:200px 20px 80px; gap:50px; }
+  // #projects-grid { padding:200px 20px 80px; gap:50px; }
   .project-card { width:90%!important; margin-left:auto!important; margin-right:auto!important; }
   #logo-circle { width:250px; height:250px; }
   #logo-svg-wrap { width:250px; height:250px; }

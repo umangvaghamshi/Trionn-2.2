@@ -416,7 +416,7 @@ export const projects: ProjectsType[] = [
     size: "large",
     title: "Loftloom",
     subTitle:
-      "Seamless real estate platform for <br class='hidden sm:block'/>effortless property discovery.",
+      "Seamless real estate platform for effortless property discovery.",
     year: "2025",
     image: "/images/projects/loftloom/loftloom.webp",
     category: [
@@ -490,7 +490,7 @@ export const projects: ProjectsType[] = [
     size: "medium",
     title: "Pulse Studio",
     subTitle:
-      "A motion-led studio website showcasing <br class='hidden sm:block'/>artists, projects, and culture.",
+      "A motion-led studio website showcasing artists, projects, and culture.",
     year: "2025",
     image: "/images/projects/pulse-studio/pulse-studio.webp",
     category: [
@@ -576,7 +576,7 @@ export const projects: ProjectsType[] = [
     size: "xlarge",
     title: "One.Dot",
     subTitle:
-      "A studio website showcasing work, <br class='hidden sm:block'/>services, and client journeys.",
+      "A studio website showcasing work, services, and client journeys.",
     year: "2025",
     image: "/images/projects/onedot/onedot.webp",
     category: [
@@ -651,7 +651,7 @@ export const projects: ProjectsType[] = [
     size: "small",
     title: "GridFree AI",
     subTitle:
-      "Building a bold visual system <br class='hidden sm:block'/>for a modern brand.",
+      "Building a bold visual system for a modern brand.",
     year: "2025",
     image: "/images/projects/gridfree-ai/gridfree-ai.webp",
     category: [
@@ -695,7 +695,7 @@ export const projects: ProjectsType[] = [
     size: "large",
     title: "Novaglam",
     subTitle:
-      "The fashion e-commerce platform for <br class='hidden sm:block'/>browsing curated collections.",
+      "The fashion e-commerce platform for browsing curated collections.",
     year: "2025",
     image: "/images/projects/novaglam/novaglam.webp",
     category: [
@@ -773,7 +773,7 @@ export const projects: ProjectsType[] = [
     size: "medium",
     title: "First Ground Coffee",
     subTitle:
-      "An ecommerce platform for discovering <br class='hidden sm:block'/>and buying premium coffee.",
+      "An ecommerce platform for discovering and buying premium coffee.",
     year: "2025",
     image: "/images/projects/first-ground/first-ground.webp",
     category: [
@@ -847,7 +847,7 @@ export const projects: ProjectsType[] = [
     size: "xlarge",
     title: "Techno",
     subTitle:
-      "Building a bold visual system <br class='hidden sm:block'/>for a modern brand.",
+      "Building a bold visual system for a modern brand.",
     year: "2025",
     image: "/images/projects/techno/techno.webp",
     category: [
@@ -883,7 +883,7 @@ export const projects: ProjectsType[] = [
     size: "small",
     title: "Reelix",
     subTitle:
-      "Filmmaking studio showcasing <br class='hidden sm:block'/>projects, services and storytelling.",
+      "Filmmaking studio showcasing projects, services and storytelling.",
     year: "2025",
     image: "/images/projects/reelix/reelix.webp",
     category: [
@@ -958,7 +958,7 @@ export const projects: ProjectsType[] = [
     size: "large",
     title: "Clara Healthcare",
     subTitle:
-      "Building a bold visual system <br class='hidden sm:block'/>for a modern brand.",
+      "Building a bold visual system for a modern brand.",
     year: "2025",
     image: "/images/projects/clara-healthcare/clara-healthcare.webp",
     category: [
@@ -1010,7 +1010,7 @@ export const projects: ProjectsType[] = [
     size: "medium",
     title: "Z1Flux Solar",
     subTitle:
-      "Solar technology and manufacturing <br class='hidden sm:block'/>showcase website.",
+      "Solar technology and manufacturing showcase website.",
     year: "2025",
     image: "/images/projects/z1-flux-solar/z1-flux-solar.webp",
     category: [
@@ -1097,7 +1097,7 @@ export const projects: ProjectsType[] = [
     size: "xlarge",
     title: "Improvi AI",
     subTitle:
-      "AI-powered productivity platform for <br class='hidden sm:block'/>faster, smarter workflows",
+      "AI-powered productivity platform for faster, smarter workflows",
     year: "2025",
     image: "/images/projects/improvi/improvi.webp",
     category: [
@@ -1187,7 +1187,7 @@ export const projects: ProjectsType[] = [
     size: "small",
     title: "MyWorker AI",
     subTitle:
-      "AI platform simplifying hiring, management, <br class='hidden sm:block'/>and workforce scaling.",
+      "AI platform simplifying hiring, management, and workforce scaling.",
     year: "2025",
     image: "/images/projects/myworker/myworker.webp",
     category: [
@@ -1281,7 +1281,7 @@ export const projects: ProjectsType[] = [
     size: "large",
     title: "Reyden",
     subTitle:
-      "Engineering industrial solutions focused <br class='hidden sm:block'/>on precision and performance.",
+      "Engineering industrial solutions focused on precision and performance.",
     year: "2025",
     image: "/images/projects/reyden/reyden.webp",
     category: [
@@ -1355,7 +1355,7 @@ export const projects: ProjectsType[] = [
     size: "medium",
     title: "DFZ Watch",
     subTitle:
-      "A clean platform to discover, customize, <br class='hidden sm:block'/>and buy luxury watches.",
+      "A clean platform to discover, customize, and buy luxury watches.",
     year: "2025",
     image: "/images/projects/dfz/dfz.webp",
     category: [
