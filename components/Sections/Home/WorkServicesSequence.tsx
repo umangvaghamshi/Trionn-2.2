@@ -176,9 +176,14 @@ export default function WorkServicesSequence() {
         renderTransforms();
       });
 
+      let resizeRafId = 0;
       const onResize = () => {
-        progressObj.p = st.progress;
-        renderTransforms();
+        cancelAnimationFrame(resizeRafId);
+        resizeRafId = requestAnimationFrame(() => {
+          ScrollTrigger.refresh();
+          progressObj.p = st.progress;
+          renderTransforms();
+        });
       };
       window.addEventListener("resize", onResize);
 
@@ -200,6 +205,7 @@ export default function WorkServicesSequence() {
       return () => {
         window.removeEventListener("resize", onResize);
         window.removeEventListener("load", onLoad);
+        cancelAnimationFrame(resizeRafId);
         clearTimeout(timeoutId);
         st.kill();
       };
