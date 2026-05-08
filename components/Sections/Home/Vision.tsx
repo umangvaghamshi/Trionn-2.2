@@ -70,7 +70,7 @@ export default function Vision() {
       scrollEndTrigger="#keyfacts-section"
       scrollEnd="top center"
       staggerAmount={0.5}
-      holdStart={0.65}
+      holdStart={0.5}
     />
   );
 }
