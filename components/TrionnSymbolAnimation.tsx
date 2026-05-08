@@ -129,6 +129,7 @@ export function TrionnSymbolAnimation({
       start: "top top",
       end: "bottom bottom",
       pin: canvasWrapRef.current,
+      pinType: "fixed",
       pinSpacing: false,
       markers: false,
       onLeave: () => {
