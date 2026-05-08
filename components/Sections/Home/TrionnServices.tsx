@@ -1143,7 +1143,7 @@ export default function TrionnServices({
                   className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
                 />
               </div>
-              {/* <div
+              <div
                 ref={textDarkRef}
                 className="absolute inset-0 flex items-center justify-center"
               >
@@ -1154,7 +1154,7 @@ export default function TrionnServices({
                   stagger={0.05}
                   className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
                 />
-              </div> */}
+              </div>
             </div>
             <div className="flex w-full justify-end sm:w-1/2 lg:w-1/3">
               <WordShiftButton
