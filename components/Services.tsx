@@ -60,14 +60,15 @@ export default function Services() {
         },
       });
 
+      // Hold on first card before any overlay begins
+      tl.to({}, { duration: 0.5, ease: "none" });
+
       cards.forEach((card, i) => {
-        if (i === 0) {
-          tl.to({}, { duration: 0.5 });
-          return;
-        }
+        if (i === 0) return;
 
         const lines = card.querySelectorAll(".service-info-list .line");
         const plusIcon = card.querySelectorAll(".services-item .plus-icon");
+        const prevContentBlock = cards[i - 1].querySelector(".content-block");
 
         gsap.set(lines, {
           scaleX: 0,
@@ -76,6 +77,7 @@ export default function Services() {
 
         const startPosition = "<0.2";
 
+        // Slide previous card's contentBlock up as this card comes in
         tl.to(card, { yPercent: 0, ease: "none", duration: 1 })
           .to(
             plusIcon,
@@ -83,6 +85,15 @@ export default function Services() {
               rotation: "+=360",
               duration: 1,
               ease: "none",
+            },
+            "<",
+          )
+          .to(
+            prevContentBlock,
+            {
+              yPercent: -100,
+              ease: "none",
+              duration: 1,
             },
             "<",
           )
