@@ -23,7 +23,7 @@ export function Tabs({
 }: TabsProps) {
   return (
     <div className={`${className}`}>
-      <div className="flex gap-8 mb-8">
+      <div className="flex gap-8 pb-4 lg:mb-8">
         {tabs.map((tab) => (
           <button
             key={tab.id}

@@ -8,6 +8,7 @@ import { Tabs } from "@/components/Tabs";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { TransitionLink } from "@/components/Transition";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -69,12 +70,21 @@ export default function ProjectDetailPage({ project }: { project: any }) {
       <div className="tr__container flex flex-col justify-between">
         <div className="grid grid-cols-12 gap-6">
           <div
-            className="col-span-4 pt-37.5 pb-25 flex flex-col justify-between gap-10 min-h-screen max-h-screen left-block"
+            className="col-span-12 lg:col-span-5 xl:col-span-4 pt-37.5 lg:pt-37.5 pb-10 lg:pb-25 flex flex-col justify-between gap-8 lg:gap-10 lg:min-h-screen max-h-screen left-block relative"
             ref={leftColRef}
           >
-            <div className="title-block flex flex-col">
+            <div className="title-block flex flex-col relative">
+              <div className="absolute top-0 -translate-y-full flex justify-start">
+                <TransitionLink
+                  className={`link menu block text-light-font pb-1 mb-4`}
+                  href="/work"
+                  transitionLabel="Back"
+                >
+                  Back
+                </TransitionLink>
+              </div>
               <LinePlus lineClass={"bg-cream-line/20"} plusClass={"hidden"} />
-              <div className="flex flex-col sm:flex-row justify-between mt-10 mb-4">
+              <div className="flex flex-col sm:flex-row justify-between mt-6 lg:mt-10 mb-4">
                 <BlurTextReveal
                   as="h1"
                   html={project.title}
@@ -84,14 +94,14 @@ export default function ProjectDetailPage({ project }: { project: any }) {
                 />
                 <p className="text-light-font/60 small">{project.year}</p>
               </div>
-              <p className="small text-light-font/60">
+              <p className="small text-light-font/60 lg:max-w-75">
                 {parser(
                   Array.isArray(project.subTitle)
                     ? project.subTitle.join("")
                     : project.subTitle,
                 )}
               </p>
-              <ul className="mt-10 list-disc pl-4">
+              <ul className="mt-6 lg:mt-10 list-disc pl-4">
                 {project.category.map((cat: string, i: number) => (
                   <li key={i}>{cat}</li>
                 ))}
@@ -102,7 +112,7 @@ export default function ProjectDetailPage({ project }: { project: any }) {
                 tabs={project.tabs}
                 activeTabId={activeTab}
                 onTabChange={setActiveTab}
-                className="max-w-135"
+                className="lg:max-w-135"
               />
             )}
             <WordShiftButton
@@ -112,14 +122,16 @@ export default function ProjectDetailPage({ project }: { project: any }) {
             />
           </div>
           <div
-            className="col-span-12 lg:col-span-8 pt-37.5 pb-25 grid grid-cols-2 gap-6 right-block"
+            className="col-span-12 lg:col-span-7 xl:col-span-8 pt-0 lg:pt-37.5 pb-20 lg:pb-25 grid grid-cols-2 gap-6 right-block"
             ref={rightColRef}
           >
             {project.content.map((item: any, index: number) => (
               <div
                 key={index}
                 className={`${
-                  item.layout === "single" ? "col-span-2" : "col-span-1"
+                  item.layout === "single"
+                    ? "col-span-2"
+                    : "col-span-2 sm:col-span-1"
                 }`}
               >
                 <img
