@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { useLenis } from "lenis/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTrionnSymbolAudio } from "./useTrionnSymbolAudio";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useTransitionReady } from "@/components/Transition";
@@ -1301,16 +1302,21 @@ export function useTrionnSymbolScene(
       document.addEventListener(ev, firstInteraction, { once: true });
     });
 
+    let resizeRafId = 0;
     const onResize = () => {
-      viewportW = window.innerWidth;
-      viewportH = window.innerHeight;
-      camera.aspect = viewportW / viewportH;
-      applyCameraFrame();
-      renderer.setPixelRatio(getRenderPixelRatio());
-      renderer.setSize(viewportW, viewportH);
-      lineCanvas.width = viewportW; lineCanvas.height = viewportH;
-      overlayTexture.needsUpdate = true;
-      applySymbolScale();
+      cancelAnimationFrame(resizeRafId);
+      resizeRafId = requestAnimationFrame(() => {
+        viewportW = window.innerWidth;
+        viewportH = window.innerHeight;
+        camera.aspect = viewportW / viewportH;
+        applyCameraFrame();
+        renderer.setPixelRatio(getRenderPixelRatio());
+        renderer.setSize(viewportW, viewportH);
+        lineCanvas.width = viewportW; lineCanvas.height = viewportH;
+        overlayTexture.needsUpdate = true;
+        applySymbolScale();
+        ScrollTrigger.refresh();
+      });
     };
     window.addEventListener('resize', onResize);
 
@@ -1321,6 +1327,7 @@ export function useTrionnSymbolScene(
       window.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mouseup', onMouseUp);
       window.removeEventListener('resize', onResize);
+      cancelAnimationFrame(resizeRafId);
       renderer.dispose();
       if (wrap.contains(renderer.domElement)) wrap.removeChild(renderer.domElement);
       overlayMesh.geometry.dispose();

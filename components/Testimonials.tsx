@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 // Swiper
@@ -21,6 +21,10 @@ import type { SwiperOptions } from "swiper/types";
 import { SERVICES_HOLD_VH } from "@/components/Sections/Home/servicesScrollConstants";
 import { TestimonialsData } from "@/data";
 import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ArrowLeft = () => (
   <svg
@@ -82,6 +86,19 @@ export default function Testimonials({
     setModalVideoURL(null);
     window.dispatchEvent(new Event("trionn-modal:close"));
   };
+
+  useEffect(() => {
+    let rafId = 0;
+    const onResize = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => ScrollTrigger.refresh());
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   useGSAP(() => {
     const swiper = swiperRef.current;

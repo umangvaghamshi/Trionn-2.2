@@ -3,7 +3,7 @@ import { BlurTextReveal, FadeOnScroll } from "@/components/TextAnimation";
 import LinePlus from "@/components/LinePlus";
 import { WordShiftButton } from "@/components/Button";
 import BlurTextRotate from "@/components/TextAnimation/BlurTextRotate";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,6 +15,19 @@ export default function Banner() {
   const statsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const transitionReady = useTransitionReady();
+
+  useEffect(() => {
+    let rafId = 0;
+    const onResize = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => ScrollTrigger.refresh());
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   useGSAP(() => {
     if (!statsRef.current) return;
