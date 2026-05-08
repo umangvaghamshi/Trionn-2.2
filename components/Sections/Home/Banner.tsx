@@ -96,7 +96,7 @@ export default function Banner() {
             >
               <WordShiftButton
                 text="get in touch"
-                href="#"
+                href="/contact"
                 styleVars={{ buttonWrapperColor: "#D8D8D8" }}
               />
             </div>
@@ -229,7 +229,7 @@ export default function Banner() {
                 </p>
                 <WordShiftButton
                   text="more about us"
-                  href="#"
+                  href="/about"
                   styleVars={{ buttonWrapperColor: "#D8D8D8" }}
                 />
               </div>

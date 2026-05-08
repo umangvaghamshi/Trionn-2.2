@@ -738,8 +738,9 @@ export default function DribbleSection() {
             </p>
             <WordShiftButton
               text="View on Dribbble"
-              href="#"
+              href="https://dribbble.com/trionndesign"
               customClass="relative z-5"
+              target="_blank"
             />
           </div>
         </div>
