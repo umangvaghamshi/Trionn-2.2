@@ -1,12 +1,11 @@
 "use client";
-import parser from "html-react-parser";
-import { useRef, useState } from "react";
+import LinePlus from "@/components/LinePlus";
 import { TechFaqItemType } from "@/data/dataType";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import parser from "html-react-parser";
+import { useRef, useState } from "react";
 gsap.registerPlugin(ScrollTrigger);
-import LinePlus from "@/components/LinePlus";
-import { BlurTextReveal } from "@/components/TextAnimation";
 
 interface TechAccordionProps {
   items: TechFaqItemType[];
@@ -20,6 +19,10 @@ export default function TechAccordion({
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  const refreshST = () => {
+    window.dispatchEvent(new CustomEvent("accordion-settled"));
+  };
+
   const toggleItem = (index: number) => {
     const current = contentRefs.current[index];
 
@@ -32,7 +35,7 @@ export default function TechAccordion({
           opacity: 0,
           duration: 0.5,
           ease: "power3.inOut",
-          onComplete: () => ScrollTrigger.refresh(),
+          onComplete: refreshST,
         });
       }
     }
@@ -44,7 +47,7 @@ export default function TechAccordion({
         opacity: 0,
         duration: 0.5,
         ease: "power3.inOut",
-        onComplete: () => ScrollTrigger.refresh(),
+        onComplete: refreshST,
       });
       setOpenIndex(null);
     } else {
@@ -61,7 +64,7 @@ export default function TechAccordion({
           ease: "power3.inOut",
           onComplete: () => {
             gsap.set(current, { height: "auto" });
-            ScrollTrigger.refresh();
+            refreshST();
           },
         },
       );
