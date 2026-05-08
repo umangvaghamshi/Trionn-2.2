@@ -5,7 +5,7 @@ import { BlurTextReveal } from "@/components/TextAnimation";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { partnersLogo } from "@/data";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -22,6 +22,19 @@ export default function KeyFacts() {
     if (odoFiredRef.current) return;
     odoFiredRef.current = true;
     setOdoTick((n) => n + 1);
+  }, []);
+
+  useEffect(() => {
+    let rafId = 0;
+    const onResize = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => ScrollTrigger.refresh());
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useGSAP(

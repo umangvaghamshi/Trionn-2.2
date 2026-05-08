@@ -89,6 +89,27 @@ export function Odometer({
     });
   });
 
+  /* 🔁 Re-snap digit positions when digitHeight changes after a resize */
+  useEffect(() => {
+    if (!digitHeight) return;
+    const alreadyPlayed =
+      (syncPlayCount !== undefined && hasSyncRolled.current) ||
+      (syncPlayCount === undefined && hasAnimatedOnView.current);
+    if (!alreadyPlayed) return;
+
+    // Snap instantly to the correct position for the new height
+    let digitIndex = 0;
+    tokens.forEach((token, i) => {
+      if (token.type !== "digit") return;
+      const col = digitRefs.current[i];
+      if (!col) return;
+      gsap.killTweensOf(col);
+      gsap.set(col, { y: -token.value * digitHeight });
+      digitIndex++;
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [digitHeight]);
+
   /* 🎯 Control logic */
   useEffect(() => {
     if (!digitHeight) return;

@@ -212,13 +212,19 @@ export default function DribbleSection() {
         pos.needsUpdate = true;
       }
 
+      let resizeRafId = 0;
       const handleResize = () => {
-        cam.fov = getCamFov();
-        cam.aspect = window.innerWidth / window.innerHeight;
-        cam.position.set(0, 0, getCamZ());
-        cam.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        buildPlacedCards();
+        cancelAnimationFrame(resizeRafId);
+        resizeRafId = requestAnimationFrame(() => {
+          cam.fov = getCamFov();
+          cam.aspect = window.innerWidth / window.innerHeight;
+          cam.position.set(0, 0, getCamZ());
+          cam.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          buildPlacedCards();
+          gridLinesBuilt = false; // force grid line geometry rebuild for new viewport
+          ScrollTrigger.refresh();
+        });
       };
       window.addEventListener("resize", handleResize);
 
@@ -684,6 +690,7 @@ export default function DribbleSection() {
       /* cleanup */
       return () => {
         window.removeEventListener("resize", handleResize);
+        cancelAnimationFrame(resizeRafId);
         gsap.ticker.remove(renderFrame);
         io.disconnect();
         st.kill();
