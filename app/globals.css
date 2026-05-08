@@ -65,11 +65,11 @@
 }
 
 :root {
-  --size: 200;
+  --size: 380;
 }
 @media (min-width: 440px) {
   :root {
-    --size: 400;
+    --size: 420;
   }
 }
 @media (min-width: 640px) {
@@ -319,4 +319,37 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 1000px #d2d2d2 inset !important;
   -webkit-text-fill-color: #434343 !important; /* Changes the text color */
+}
+
+h4,
+.h4 {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-lg leading-5 -tracking-[0.02em];
+}
+
+@media (max-width: 1023px) {
+  p,
+  .p {
+    font-family: "NeueHaasDisplay-Roman";
+    @apply text-2xl;
+  }
+
+  .small {
+    font-family: "NeueHaasDisplay-Roman";
+    @apply text-xl;
+  }
+
+  .title {
+    font-family: "FamiljenGroteskVariable-Regular";
+    @apply text-xl leading-5.5;
+  }
+
+  .menu {
+    font-family: "FamiljenGroteskVariable-Regular";
+    @apply text-2xl leading-6.5;
+  }
+
+  .button-text {
+    @apply text-base;
+  }
 }

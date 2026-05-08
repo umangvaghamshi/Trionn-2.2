@@ -58,11 +58,11 @@ export default function Forms() {
   ];
 
   return (
-    <section className="pb-37.5 pt-25 relative min-h-screen bg-[#040508] text-light-font">
+    <section className="pb-20 lg:pb-37.5 pt-20 lg:pt-25 relative bg-[#040508] text-light-font">
       <div className="tr__container">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="left-block col-span-4 col-start-2 flex flex-col items-center gap-6 text-center">
-            <div className="video-block mt-10 mx-auto max-w-134">
+        <div className="grid grid-cols-12 gap-10 lg:gap-20">
+          <div className="left-block col-span-12 lg:col-span-4 lg:col-start-2 flex flex-col items-center gap-6 text-center">
+            <div className="video-block lg:mt-10 mx-auto max-w-134">
               <video
                 src="/video/logo-box.mp4"
                 autoPlay
@@ -80,8 +80,8 @@ export default function Forms() {
               stagger={0.08}
             />
           </div>
-          <div className="right-block col-span-5 col-start-7 flex flex-col gap-20">
-            <p className="small max-w-50">
+          <div className="right-block col-span-12 lg:col-span-5 lg:col-start-7 flex flex-col gap-8 lg:gap-20">
+            <p className="small max-w-60 lg:max-w-50">
               A short conversation is often the best place to begin.
             </p>
             <form className="flex flex-col gap-4 lg:gap-6">
@@ -127,7 +127,7 @@ export default function Forms() {
                 </p>
               </div>
 
-              <div className="lg:mt-16">
+              <div className="mt-6 lg:mt-16">
                 <WordShiftButton
                   type="submit"
                   text="Start the conversation"
@@ -139,13 +139,13 @@ export default function Forms() {
           </div>
         </div>
         <LinePlus
-          customClass="my-30"
+          customClass="my-16 lg:my-30"
           lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
           plusClass={"col-span-12 mx-auto"}
           iconColor={"#D8D8D8"}
         />
         <div className="grid grid-cols-12 gap-6 ">
-          <div className="col-span-4 col-start-2 flex flex-col justify-center items-start">
+          <div className="col-span-12 md:col-span-4 lg:col-start-2 flex flex-col justify-center items-start">
             <BlurTextReveal
               as="h2"
               html="Join Trionn"
@@ -153,15 +153,15 @@ export default function Forms() {
               stagger={0.08}
             />
           </div>
-          <div className="col-span-3 col-start-7 flex flex-col justify-center items-start">
-            <p className="small max-w-75">
+          <div className="col-span-12 sm:col-span-6 md:col-span-3 md:col-start-7 flex flex-col justify-center items-start">
+            <p className="small sm:max-w-75">
               We work with people who care deeply about craft, clarity, and
               thoughtful execution. <br />
               <br />
               Send a short note and your work.
             </p>
           </div>
-          <div className="col-span-2 flex flex-col justify-center items-start">
+          <div className="col-span-12 sm:col-span-6 md:col-span-2 flex flex-col justify-center items-start">
             <Link href="mailto:hello@trionn.com" className="h3 mb-2 link">
               hello@trionn.com
             </Link>

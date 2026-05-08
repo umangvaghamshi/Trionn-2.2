@@ -69,7 +69,7 @@ export default function Accordion({ items, customClass }: AccordionProps) {
 
         return (
           <div key={index} className="group">
-            <div className="accordion__item py-8">
+            <div className="accordion__item py-5 md:py-8">
               {/* TITLE */}
               <div
                 className="accordion__title pr-20 w-full relative cursor-pointer items-center"
