@@ -3,7 +3,11 @@ import { BlurTextReveal } from "@/components/TextAnimation";
 import { HowWorkData } from "@/data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
 import { useRef } from "react";
+import { useScrollTriggerRefresh } from "@/hooks/useScrollTriggerRefresh";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const DEFAULT_STRIPE_COUNT = 6;
 const DEFAULT_STRIPE_COLOR = "#040508";
@@ -23,6 +27,7 @@ export default function HowWork({
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const stripesRef = useRef<HTMLDivElement[]>([]);
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
 
   const cards = HowWorkData;
 
@@ -43,6 +48,7 @@ export default function HowWork({
           scrub: true,
           markers: false,
           pinSpacing: true,
+          invalidateOnRefresh: true,
         },
         defaults: {
           ease: "none",
@@ -156,9 +162,14 @@ export default function HowWork({
           );
         }
       }
+
+      tlRef.current = tl;
     },
+
     { scope: sectionRef },
   );
+
+  useScrollTriggerRefresh(tlRef);
 
   return (
     <section
