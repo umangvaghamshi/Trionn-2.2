@@ -65,21 +65,26 @@
 }
 
 :root {
-  --size: 600;
+  --size: 200;
 }
 @media (min-width: 440px) {
   :root {
-    --size: 700;
+    --size: 400;
+  }
+}
+@media (min-width: 640px) {
+  :root {
+    --size: 500;
   }
 }
 @media (min-width: 768px) {
   :root {
-    --size: 1000;
+    --size: 800;
   }
 }
 @media (min-width: 1024px) {
   :root {
-    --size: 945;
+    --size: 900;
   }
 }
 /* @media (min-width: 1280px) {

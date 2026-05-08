@@ -54,8 +54,8 @@ export default function Footer() {
 
         <div className="relative z-20 flex w-full min-h-0 flex-1 flex-col">
           <div className="tr__container flex w-full flex-col pt-24 pb-20 md:pt-37.5">
-            <div className="grid w-full grid-cols-12 gap-10 lg:gap-x-12 lg:gap-y-0 mb-20">
-              <div className="flex flex-col justify-between gap-6 col-span-8">
+            <div className="grid w-full grid-cols-12 gap-10 md:gap-x-12 lg:gap-y-0 mb-20">
+              <div className="flex flex-col justify-between gap-6 col-span-12 md:col-span-6 lg:col-span-8">
                 <div>
                   <BlurTextReveal
                     as="span"
@@ -70,8 +70,8 @@ export default function Footer() {
                 </div>
               </div>
 
-              <div className="flex flex-col w-full justify-between col-span-4">
-                <div className="mb-8 w-full lg:flex lg:items-end ml-auto text-right">
+              <div className="flex flex-col w-full justify-between col-span-12 md:col-span-6 lg:col-span-4">
+                <div className="mb-8 w-full hidden md:flex md:items-end ml-auto text-right">
                   <IstClock />
                 </div>
                 <WordShiftButton
@@ -83,14 +83,14 @@ export default function Footer() {
               </div>
             </div>
             <div className="grid w-full grid-cols-12 gap-10 lg:gap-x-12 lg:gap-y-0">
-              <div className="flex flex-col justify-end gap-6 col-span-8">
+              <div className="flex flex-col justify-end gap-6 col-span-12 md:col-span-6 lg:col-span-8 order-2 md:order-1">
                 <span className="title block text-light-font/50">
                   ©TRIONN® {new Date().getFullYear()}
                 </span>
               </div>
 
-              <div className="flex flex-col w-full justify-between col-span-4">
-                <div className="flex columns-2 flex-wrap justify-between gap-10">
+              <div className="flex flex-col w-full justify-between col-span-12 md:col-span-6 lg:col-span-4 order-1 md:order-2">
+                <div className="flex columns-1 sm:columns-2 flex-wrap justify-between gap-10">
                   <div className="flex flex-col">
                     <span className="mb-6 text-light-font/50 title block">
                       Business enquiry
@@ -109,13 +109,16 @@ export default function Footer() {
                       </p>
                     ))}
                   </div>
-                  <div className="flex flex-col max-w-45">
+                  <div className="flex flex-col w-full sm:max-w-45">
                     <span className="mb-6 text-light-font/50 title block">
                       Social
                     </span>
                     <div className="flex columns-2 flex-wrap justify-between gap-x-4 gap-y-2">
                       {social.map((item, index) => (
-                        <p key={index}>
+                        <p
+                          key={index}
+                          className="w-full max-w-[calc(50%-1rem)]"
+                        >
                           <Link
                             className="link relative z-3 block text-light-font"
                             href={item.url}
