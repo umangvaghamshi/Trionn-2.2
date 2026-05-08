@@ -438,7 +438,7 @@ export default function WordShiftButton({
       ref={wrapperRef}
       style={style}
       className={clsx(
-        "button_wrapper relative w-37.5 xl:w-50 uppercase transition-opacity duration-300 hover:opacity-95",
+        "button_wrapper relative w-50 uppercase transition-opacity duration-300 hover:opacity-95",
         customClass,
       )}
     >

@@ -128,7 +128,7 @@ export default function Testimonials({
 
   return (
     <section
-      className="relative z-20 isolate bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden min-h-screen"
+      className="relative z-20 isolate bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden"
       style={
         disableScrollEffect
           ? undefined
@@ -146,24 +146,26 @@ export default function Testimonials({
             text="Client stories"
             animationType="chars"
             stagger={0.05}
-            className="text-dark-font col-span-5 col-start-2"
+            className="text-dark-font col-span-12 sm:col-span-6 lg:col-span-5 lg:col-start-2"
           />
-          <div className="col-span-5 flex flex-col justify-end">
-            <p className="small text-dark-font max-w-45">
+          <div className="col-span-12 sm:col-span-6 lg:col-span-5 flex flex-col justify-end">
+            <p className="small text-dark-font sm:max-w-45">
               Great work is built through partnership. Here&apos;s what our
               clients say.
             </p>
           </div>
         </div>
         <LinePlus
-          customClass={"my-20"}
-          lineClass={"opacity-15 bg-grey-line col-span-10 col-start-2"}
-          plusClass={"col-start-7 -translate-x-1/2!"}
+          customClass={"my-8 lg:my-20"}
+          lineClass={"opacity-15 bg-grey-line lg:col-span-10 lg:col-start-2"}
+          plusClass={
+            "col-span-12 sm:col-span-1 sm:col-start-7 sm:-translate-x-1/2! mx-auto sm:mx-0"
+          }
           iconColor={"#272727"}
         />
         <div className="w-full relative grid grid-cols-12 gap-6 ">
-          <div className="flex flex-col justify-between col-span-5 col-start-2">
-            <div className="testimonial-company-list flex flex-col gap-4">
+          <div className="flex flex-col justify-between col-span-12 lg:col-span-5 lg:col-start-2 order-2 lg:order-1">
+            <div className="testimonial-company-list flex-col gap-4 hidden lg:flex">
               {TestimonialsData.map((item, index) => (
                 <button
                   type="button"
@@ -220,7 +222,7 @@ export default function Testimonials({
               </div>
             </div>
           </div>
-          <div className="col-span-5 ">
+          <div className="col-span-12 lg:col-span-5 order-1 lg:order-2 mb-6 lg:mb-0">
             <Swiper
               {...swiperOptions}
               modules={[Navigation, Pagination, Autoplay, EffectFade]}
@@ -238,7 +240,7 @@ export default function Testimonials({
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;
               }}
-              className={`swiper-row mx-0! max-w-203 ${customClass ? customClass : ""}`}
+              className={`swiper-row mx-0! lg:max-w-203 ${customClass ? customClass : ""}`}
             >
               {TestimonialsData.map((item, index) => (
                 <SwiperSlide
@@ -246,9 +248,11 @@ export default function Testimonials({
                   className="testimonial-slide h-auto! text-dark-font"
                 >
                   <div className="testimonial-item gap-x-6 h-full">
-                    <span className="hidden title">{item.companyName}</span>
+                    <span className="block lg:hidden title mb-4">
+                      {item.companyName}
+                    </span>
                     <div className="flex flex-col justify-between">
-                      <h3 className="mb-20">{item.quoteMessage}</h3>
+                      <h3 className="mb-6 lg:mb-20">{item.quoteMessage}</h3>
                       <div className="client-info flex justify-between items-end">
                         <div className="left-block flex items-end">
                           <div className="w-20 h-20 overflow-hidden rounded-lg relative transition-all duration-300 ease-in-out mr-6">
@@ -283,38 +287,39 @@ export default function Testimonials({
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="mt-25">
-              <WordShiftButton text="become a client" href="/contact" />
+            <div className="mt-8 lg:mt-25">
+              <WordShiftButton text="become a client" href="#" />
             </div>
           </div>
         </div>
       </div>
-      {modalVideoURL && createPortal(
-        <div
-          className="fixed inset-0 z-9999 flex items-center justify-center bg-black/80"
-          onClick={closeModal}
-        >
+      {modalVideoURL &&
+        createPortal(
           <div
-            className="relative w-full max-w-4xl mx-4 aspect-video"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-9999 flex items-center justify-center bg-black/80"
+            onClick={closeModal}
           >
-            <button
-              type="button"
-              onClick={closeModal}
-              className="absolute -top-10 right-0 text-white text-sm uppercase tracking-widest bg-transparent border-0 cursor-pointer"
+            <div
+              className="relative w-full max-w-4xl mx-4 aspect-video"
+              onClick={(e) => e.stopPropagation()}
             >
-              Close ✕
-            </button>
-            <iframe
-              src={modalVideoURL}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>,
-        document.body
-      )}
+              <button
+                type="button"
+                onClick={closeModal}
+                className="absolute -top-10 right-0 text-white text-sm uppercase tracking-widest bg-transparent border-0 cursor-pointer"
+              >
+                Close ✕
+              </button>
+              <iframe
+                src={modalVideoURL}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>,
+          document.body,
+        )}
       {showBottomLine && (
         <div className="tr__container z-0">
           <LinePlus
