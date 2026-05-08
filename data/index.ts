@@ -78,7 +78,7 @@ export const TestimonialsData: TestimonialsDataItem[] = [
     clientImage: "/images/malte.jpg",
     clientName: "Malte Smith",
     clientDeg: "Founder and CEO",
-    videoURL: "",
+    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
   },
   {
     companyName: "credible",
@@ -87,7 +87,7 @@ export const TestimonialsData: TestimonialsDataItem[] = [
     clientImage: "/images/stephen.jpg",
     clientName: "Stephen Dash",
     clientDeg: "Founder and CEO",
-    videoURL: "",
+    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
   },
   {
     companyName: "Indian Army",
@@ -96,7 +96,7 @@ export const TestimonialsData: TestimonialsDataItem[] = [
     clientImage: "/images/malte.jpg",
     clientName: "Malte Smith",
     clientDeg: "Founder and CEO",
-    videoURL: "",
+    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ?autoplay=1",
   },
   {
     companyName: "Linkedin",
@@ -105,7 +105,7 @@ export const TestimonialsData: TestimonialsDataItem[] = [
     clientImage: "/images/stephen.jpg",
     clientName: "Stephen Dash",
     clientDeg: "Founder and CEO",
-    videoURL: "",
+    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
   },
   {
     companyName: "Bulklet Army",
@@ -114,7 +114,7 @@ export const TestimonialsData: TestimonialsDataItem[] = [
     clientImage: "/images/malte.jpg",
     clientName: "Malte Smith",
     clientDeg: "Founder and CEO",
-    videoURL: "",
+    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
   },
   {
     companyName: "Technis INC",
@@ -123,7 +123,7 @@ export const TestimonialsData: TestimonialsDataItem[] = [
     clientImage: "/images/stephen.jpg",
     clientName: "Stephen Dash",
     clientDeg: "Founder and CEO",
-    videoURL: "",
+    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
   },
 ];
 

@@ -115,6 +115,10 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     // Stop scroll when belts close (transition in progress)
     window.addEventListener('trionn-transition:belts-closed', stopScroll);
 
+    // Stop/start scroll when a modal opens/closes
+    window.addEventListener('trionn-modal:open', stopScroll);
+    window.addEventListener('trionn-modal:close', enableScroll);
+
     // Fallback: if no transition system, enable on window load
     if (document.readyState === 'complete') {
       // Check if the transition system has already completed
@@ -128,6 +132,8 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
       window.removeEventListener('trionn-transition:complete', enableScroll);
       window.removeEventListener('trionn-transition:start', stopScroll);
       window.removeEventListener('trionn-transition:belts-closed', stopScroll);
+      window.removeEventListener('trionn-modal:open', stopScroll);
+      window.removeEventListener('trionn-modal:close', enableScroll);
     };
   }, []);
 
