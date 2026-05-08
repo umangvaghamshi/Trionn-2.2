@@ -74,56 +74,45 @@ export const TestimonialsData: TestimonialsDataItem[] = [
   {
     companyName: "Luxury presence",
     quoteMessage:
-      "I've worked with Trionn on several projects and  he's one of the best UI/UX designers and front-end developers I know. He's meticulous in his attention to detail and has a true passion for  creating beautiful user interfaces.",
-    clientImage: "/images/malte.jpg",
+      "I've worked with Sunny and his team on several projects and he's one of the best UI/UX designers and front-end developers I know. He's meticulous in his attention to detail and has a true passion for creating beautiful user interfaces.",
+    clientImage: "/images/malte.webp",
     clientName: "Malte Smith",
-    clientDeg: "Founder and CEO",
-    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
+    clientDeg: "Founder & CEO · USA",
+    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ?autoplay=1",
   },
   {
     companyName: "credible",
     quoteMessage:
-      "The Trionn team is extremely reliable, professional & talented. It has been a great pleasure collaborating with them over many months.",
-    clientImage: "/images/stephen.jpg",
+      "The Trionn team is extremely reliable, professional and talented. It has been a great pleasure collaborating with them over many",
+    clientImage: "/images/stephen.webp",
     clientName: "Stephen Dash",
-    clientDeg: "Founder and CEO",
-    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
+    clientDeg: "Founder & CEO · USA",
   },
   {
-    companyName: "Indian Army",
+    companyName: "Fast resume",
     quoteMessage:
-      "Our team is a small group of curious individuals dedicated to creating  work that we're proud of, collaborating with brands and people who share  our values. ",
-    clientImage: "/images/malte.jpg",
-    clientName: "Malte Smith",
-    clientDeg: "Founder and CEO",
-    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ?autoplay=1",
+      "Sunny and his award winning team are second to none when it comes to responsive web design. Their ability to take an idea and make it a work of art has always been a great experience. When you find companies like his you make sure to keep them close.",
+    clientImage: "/images/doug.webp",
+    clientName: "Doug Petrie",
+    clientDeg: "Founder & CEO · USA",
+    videoURL: "https://www.youtube.com/embed/eKB_kigzDwA?autoplay=1",
   },
   {
-    companyName: "Linkedin",
+    companyName: "Technis",
     quoteMessage:
-      "The Trionn team is extremely reliable, professional & talented. It has been a great pleasure collaborating with them over many months.",
-    clientImage: "/images/stephen.jpg",
-    clientName: "Stephen Dash",
-    clientDeg: "Founder and CEO",
-    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
+      "Sunny and his team is a very professional, with whom I am used to working on different projects. listening, versatile, very smart, I recommend without hesitation.",
+    clientImage: "/images/jean.webp",
+    clientName: "Jean-Baptiste Biolay",
+    clientDeg: "General Manager · UAE",
   },
   {
-    companyName: "Bulklet Army",
+    companyName: "Ventigence",
     quoteMessage:
-      "Our team is a small group of curious individuals dedicated to creating  work that we're proud of, collaborating with brands and people who share  our values. ",
-    clientImage: "/images/malte.jpg",
-    clientName: "Malte Smith",
-    clientDeg: "Founder and CEO",
-    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
-  },
-  {
-    companyName: "Technis INC",
-    quoteMessage:
-      "The Trionn team is extremely reliable, professional & talented. It has been a great pleasure collaborating with them over many months.",
-    clientImage: "/images/stephen.jpg",
-    clientName: "Stephen Dash",
-    clientDeg: "Founder and CEO",
-    videoURL: "https://www.youtube.com/embed/rOAsYNtPAmQ",
+      "Trionn team did an amazing development work for my company. They were fast, flexible and very professional. If your organization needs website design, I guess you know who I would recommend to be the 1st on your list.",
+    clientImage: "/images/zoltan.webp",
+    clientName: "Zoltan Csonka",
+    clientDeg: "Founder & CEO · UAE",
+    videoURL: "https://www.youtube.com/embed/9F4WsbJ1mrc?autoplay=1",
   },
 ];
 
@@ -650,8 +639,7 @@ export const projects: ProjectsType[] = [
     pos: "left",
     size: "small",
     title: "GridFree AI",
-    subTitle:
-      "Building a bold visual system for a modern brand.",
+    subTitle: "Building a bold visual system for a modern brand.",
     year: "2025",
     image: "/images/projects/gridfree-ai/gridfree-ai.webp",
     category: [
@@ -846,8 +834,7 @@ export const projects: ProjectsType[] = [
     pos: "center",
     size: "xlarge",
     title: "Techno",
-    subTitle:
-      "Building a bold visual system for a modern brand.",
+    subTitle: "Building a bold visual system for a modern brand.",
     year: "2025",
     image: "/images/projects/techno/techno.webp",
     category: [
@@ -957,8 +944,7 @@ export const projects: ProjectsType[] = [
     pos: "left",
     size: "large",
     title: "Clara Healthcare",
-    subTitle:
-      "Building a bold visual system for a modern brand.",
+    subTitle: "Building a bold visual system for a modern brand.",
     year: "2025",
     image: "/images/projects/clara-healthcare/clara-healthcare.webp",
     category: [
@@ -1009,8 +995,7 @@ export const projects: ProjectsType[] = [
     pos: "right",
     size: "medium",
     title: "Z1Flux Solar",
-    subTitle:
-      "Solar technology and manufacturing showcase website.",
+    subTitle: "Solar technology and manufacturing showcase website.",
     year: "2025",
     image: "/images/projects/z1-flux-solar/z1-flux-solar.webp",
     category: [
@@ -1096,8 +1081,7 @@ export const projects: ProjectsType[] = [
     pos: "center",
     size: "xlarge",
     title: "Improvi AI",
-    subTitle:
-      "AI-powered productivity platform for faster, smarter workflows",
+    subTitle: "AI-powered productivity platform for faster, smarter workflows",
     year: "2025",
     image: "/images/projects/improvi/improvi.webp",
     category: [
