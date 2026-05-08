@@ -388,30 +388,30 @@ export default function BrandShowcase({
             </div>
             <div className="flex flex-row justify-center -mx-8 text-dark-font/50 lg:mb-6">
               <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
-                <p className="small">Cassie Posh Events</p>
-                <p className="small">Casting Networks</p>
-                <p className="small">Fozeus Finance</p>
-                <p className="small">Press Play</p>
+                <p className="small">Fiare Oy</p>
+                <p className="small">Nettiauto</p>
+                <p className="small">Budo Law</p>
+                <p className="small">DAC Recruiting</p>
+                <p className="small">Globalstar Interactive</p>
+              </div>
+              <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
                 <p className="small">RevNet</p>
-              </div>
-              <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
-                <p className="small">ShiraTech Knowtion</p>
-                <p className="small">Blade Trade AI</p>
-                <p className="small">Mizuno CGI</p>
-                <p className="small">CrissCross</p>
+                <p className="small">ROI High</p>
                 <p className="small">Flow Row</p>
+                <p className="small">Vendep Oy</p>
+                <p className="small">Billionaire Suit</p>
               </div>
               <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
-                <p className="small">Sumerian Partners</p>
-                <p className="small">Sustainable Dad</p>
-                <p className="small">Soundboard </p>
-                <p className="small">Julia Daviy</p>
+                <p className="small">Berkley</p>
+                <p className="small">Re.Events</p>
                 <p className="small">Cirgo Bike</p>
+                <p className="small">Julia Daviy</p>
+                <p className="small">FieldBridge LLC</p>
               </div>
               <div className="px-8 flex flex-col items-start whitespace-nowrap gap-2">
-                <p className="small">Essence Realty</p>
-                <p className="small">Spotlight News</p>
-                <p className="small">Larry Lake</p>
+                <p className="small">Vendep Oy</p>
+                <p className="small">SoundBoard AI</p>
+                <p className="small">Mizuno CGI</p>
                 <p className="small">Joonko</p>
                 <p className="small opacity-50">Many more...</p>
               </div>

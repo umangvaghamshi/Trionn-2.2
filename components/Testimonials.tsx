@@ -176,7 +176,7 @@ export default function Testimonials({
                   className={`title flex gap-4 items-center text-left transition-all duration-500 ease-in-out text-dark-font bg-transparent border-0 p-0 cursor-pointer ${
                     activeIndex === index
                       ? "opacity-100"
-                      : "opacity-30 hover:opacity-60"
+                      : "opacity-30 hover:opacity-100"
                   }`}
                 >
                   {item.companyName}
