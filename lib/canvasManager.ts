@@ -13,6 +13,8 @@
  *   canvasManager.unregister(id);
  */
 
+import gsap from "gsap";
+
 type LoopFn = (timestamp: number) => void;
 
 interface Registration {
@@ -23,7 +25,7 @@ interface Registration {
 class CanvasManager {
   private entries = new Map<number, Registration>();
   private nextId = 1;
-  private rafId = 0;
+  private isRunning = false;
   private tabHidden = false;
 
   constructor() {
@@ -54,12 +56,14 @@ class CanvasManager {
   }
 
   private ensureRunning() {
-    if (this.rafId) return;
-    this.rafId = requestAnimationFrame(this.tick);
+    if (this.isRunning) return;
+    this.isRunning = true;
+    gsap.ticker.add(this.tick);
   }
 
-  private tick = (ts: number) => {
-    this.rafId = 0;
+  private tick = (time: number) => {
+    // gsap passes time in seconds, we multiply by 1000 for standard RAF timestamp
+    const ts = time * 1000;
 
     if (this.tabHidden) return;
 
@@ -70,8 +74,9 @@ class CanvasManager {
       entry.fn(ts);
     }
 
-    if (hasActive) {
-      this.rafId = requestAnimationFrame(this.tick);
+    if (!hasActive) {
+      gsap.ticker.remove(this.tick);
+      this.isRunning = false;
     }
   };
 }
