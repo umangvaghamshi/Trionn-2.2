@@ -1,13 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import LinePlus from "@/components/LinePlus";
+import { WordShiftButton } from "@/components/Button";
 import { FooterAtmosphereProvider } from "@/components/Footer/FooterAtmosphere";
 import FooterFog from "@/components/Footer/FooterFog";
 import TrionnFooterLogo from "@/components/Footer/TrionnFooterLogo";
 import { BlurTextReveal } from "@/components/TextAnimation";
-import { WordShiftButton } from "@/components/Button";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { enquiry, social } from "@/data";
 
@@ -77,7 +76,7 @@ export default function Footer() {
                 </div>
                 <WordShiftButton
                   text="start a collaboration"
-                  href="#"
+                  href="/contact"
                   customClass="min-w-63"
                   styleVars={{ buttonWrapperColor: "#D8D8D8" }}
                 />

@@ -391,7 +391,7 @@ export default function Awards() {
           />
           <WordShiftButton
             text="win an award?"
-            href="#"
+            href="/contact"
             styleVars={{ buttonWrapperColor: "#D8D8D8" }}
           />
         </div>

@@ -2042,7 +2042,7 @@ export default function OurWorkListing() {
           <div id="contact-btn">
             <WordShiftButton
               text="Contact Us"
-              href="#"
+              href="/contact"
               styleVars={{ buttonWrapperColor: "#D8D8D8" }}
             />
           </div>

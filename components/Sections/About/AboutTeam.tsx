@@ -1,11 +1,10 @@
 "use client";
 
-import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
+import TeamSection from "@/components/TeamSection";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import TeamSection from "@/components/TeamSection";
 
 gsap.registerPlugin(ScrollTrigger);
 

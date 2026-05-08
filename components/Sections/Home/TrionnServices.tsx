@@ -1159,7 +1159,7 @@ export default function TrionnServices({
             <div className="flex w-full justify-end sm:w-1/2 lg:w-1/3">
               <WordShiftButton
                 text={"view services"}
-                href={"#"}
+                href={"/services"}
                 customClass="relative z-20"
                 styleVars={{ buttonWrapperColor: "#D8D8D8" }}
               />

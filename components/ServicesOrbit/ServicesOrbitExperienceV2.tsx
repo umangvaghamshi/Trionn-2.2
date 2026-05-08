@@ -297,12 +297,12 @@ export default function ServicesOrbitExperienceV2() {
             <div className="flex gap-10 foc-cta">
               <WordShiftButton
                 text="View our projects"
-                href="#"
+                href="/work"
                 styleVars={{ buttonWrapperColor: "#D8D8D8" }}
               />
               <WordShiftButton
                 text="let's connect"
-                href="#"
+                href="/contact"
                 styleVars={{ buttonWrapperColor: "#D8D8D8" }}
               />
             </div>

@@ -253,7 +253,7 @@ export default function Testimonials({
               ))}
             </Swiper>
             <div className="mt-25">
-              <WordShiftButton text="become a client" href="#" />
+              <WordShiftButton text="become a client" href="/contact" />
             </div>
           </div>
         </div>
