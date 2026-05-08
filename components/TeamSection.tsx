@@ -2226,7 +2226,7 @@ export default function TeamSection() {
           <div className="absolute bottom-10 tr__container w-full flex justify-end z-10000 text-light-font">
             <WordShiftButton
               text="Join the team?"
-              href="#"
+              href="/contact"
               styleVars={{ buttonWrapperColor: "#D8D8D8" }}
             />
           </div>

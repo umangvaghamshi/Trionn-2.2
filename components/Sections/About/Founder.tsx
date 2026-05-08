@@ -1,10 +1,9 @@
 "use client";
-import Image from "next/image";
-import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
 import { BlurTextReveal, FadeOnScroll } from "@/components/TextAnimation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 

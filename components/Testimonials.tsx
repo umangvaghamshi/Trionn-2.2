@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 // Swiper
 import { WordShiftButton } from "@/components/Button";
@@ -71,6 +71,17 @@ export default function Testimonials({
   const reviewPrevRef = useRef<HTMLDivElement>(null);
   const reviewNextRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [modalVideoURL, setModalVideoURL] = useState<string | null>(null);
+
+  const openModal = (url: string) => {
+    setModalVideoURL(url);
+    window.dispatchEvent(new Event("trionn-modal:open"));
+  };
+
+  const closeModal = () => {
+    setModalVideoURL(null);
+    window.dispatchEvent(new Event("trionn-modal:close"));
+  };
 
   useGSAP(() => {
     const swiper = swiperRef.current;
@@ -238,14 +249,17 @@ export default function Testimonials({
                           </div>
                         </div>
 
-                        <div className="right-block transition-all duration-300 ease-in-out">
-                          <Link
-                            href="/"
-                            className="flex items-center button-text uppercase text-dark-font"
-                          >
-                            ▷ Listen to him!
-                          </Link>
-                        </div>
+                        {item.videoURL && (
+                          <div className="right-block transition-all duration-300 ease-in-out">
+                            <button
+                              type="button"
+                              onClick={() => openModal(item.videoURL!)}
+                              className="flex items-center button-text uppercase text-dark-font bg-transparent border-0 p-0 cursor-pointer"
+                            >
+                              ▷ Listen to him!
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -253,11 +267,37 @@ export default function Testimonials({
               ))}
             </Swiper>
             <div className="mt-25">
-              <WordShiftButton text="become a client" href="#" />
+              <WordShiftButton text="become a client" href="/contact" />
             </div>
           </div>
         </div>
       </div>
+      {modalVideoURL && createPortal(
+        <div
+          className="fixed inset-0 z-9999 flex items-center justify-center bg-black/80"
+          onClick={closeModal}
+        >
+          <div
+            className="relative w-full max-w-4xl mx-4 aspect-video"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeModal}
+              className="absolute -top-10 right-0 text-white text-sm uppercase tracking-widest bg-transparent border-0 cursor-pointer"
+            >
+              Close ✕
+            </button>
+            <iframe
+              src={modalVideoURL}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>,
+        document.body
+      )}
       {showBottomLine && (
         <div className="tr__container z-0">
           <LinePlus

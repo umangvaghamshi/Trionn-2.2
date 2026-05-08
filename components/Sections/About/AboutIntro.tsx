@@ -85,7 +85,7 @@ export default function AboutIntro() {
                 digital products, platforms, and systems that scale with purpose
                 — and endure.
               </p>
-              <WordShiftButton text="let's connect" href="#" />
+              <WordShiftButton text="let's connect" href="/contact" />
             </div>
           </div>
         </div>
