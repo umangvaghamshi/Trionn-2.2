@@ -135,7 +135,6 @@ export default function ServicesOrbitExperienceV2() {
     else orbitAudioRef.current?.muteWoosh();
   }, [soundEnabled]);
 
-
   useGSAP(() => {
     if (!canvasWrapRef.current) return;
     const st = ScrollTrigger.create({
@@ -248,7 +247,7 @@ export default function ServicesOrbitExperienceV2() {
             >
               {(
                 [
-                  "A.I. Development",
+                  "AI & Intelligent Automation",
                   "Web Development",
                   "Product Design",
                   "Website & Mobile Design",
