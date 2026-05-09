@@ -17,7 +17,11 @@ export default function Header({
         className="site-header fixed w-full z-99 flex justify-between items-center py-6 transition-all duration-300 ease-in-out mix-blend-difference"
       >
         <div className="tr__container w-full flex items-center justify-between">
-          <TransitionLink className="logo relative" href={`/`} transitionLabel="Home">
+          <TransitionLink
+            className="logo relative"
+            href={`/`}
+            transitionLabel="Home"
+          >
             <Image
               src={data.logo}
               className="w-24 h-auto"
@@ -27,7 +31,7 @@ export default function Header({
               priority={true}
             />
           </TransitionLink>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <HeaderSoundToggle />
             <NavLinks></NavLinks>
           </div>

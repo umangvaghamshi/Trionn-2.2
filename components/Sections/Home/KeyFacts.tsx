@@ -105,11 +105,11 @@ export default function KeyFacts() {
   return (
     <section
       id="keyfacts-section"
-      className="pt-24 pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-screen"
+      className="pt-20 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-screen"
       ref={containerRef}
     >
       <div className="tr__container">
-        <div className="title-block flex flex-col items-center mb-20 gap-6 text-center">
+        <div className="title-block flex flex-col items-center mb-10 lg:mb-20 gap-6 text-center">
           <BlurTextReveal
             as="h2"
             text={`Key facts`}
@@ -126,7 +126,7 @@ export default function KeyFacts() {
           <ProjectCard odoSync={odoTick} />
           <TeamCard odoSync={odoTick} />
         </div>
-        <div className="partners-block mt-29 flex flex-col gap-6">
+        <div className="partners-block mt-14 lg:mt-29 flex flex-col gap-6">
           <BlurTextReveal
             as="span"
             text={`Our business partners`}
@@ -134,10 +134,10 @@ export default function KeyFacts() {
             stagger={0.05}
             className="text-black small uppercase text-center block"
           />
-          <div className="partners-list flex justify-center -mx-10">
+          <div className="partners-list flex justify-center -mx-4 lg:-mx-10">
             {partnersLogo.map((item, index) => (
               <div
-                className="px-10 border-r border-grey-light/15 flex justify-center items-center last:border-0"
+                className="px-4 lg:px-10 border-r border-grey-light/15 flex justify-center items-center last:border-0"
                 key={index}
               >
                 <Image
@@ -226,7 +226,7 @@ function FeaturedCard({ odoSync }: { odoSync: number }) {
         preload="metadata"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="relative z-2 h-full p-10 flex flex-col justify-between">
+      <div className="relative z-2 h-full p-6 lg:p-10 flex flex-col justify-between">
         <span className="text-light-font title block">Featured & Awards</span>
         <div>
           <div className="relative w-3/12 h-8 flex items-end justify-end mb-6 awards-logo-list">
@@ -264,7 +264,7 @@ function ProjectCard({ odoSync }: { odoSync: number }) {
   return (
     <div
       data-kf-card
-      className="project-card relative max-w-99 w-full h-122 rounded-lg bg-cream p-10 flex flex-col justify-between overflow-hidden cursor-pointer hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
+      className="project-card relative max-w-99 w-full h-122 rounded-lg bg-cream p-6 lg:p-10 flex flex-col justify-between overflow-hidden cursor-pointer hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
     >
       <span className="title block text-dark-font">projects completed</span>
       <div className="flex flex-col items-center justify-center flex-1 relative">
@@ -314,7 +314,7 @@ function TeamCard({ odoSync }: { odoSync: number }) {
       onMouseLeave={handleLeave}
       className="team-card max-w-99 w-full h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02] cursor-pointer transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
-      <div className="relative z-3 h-full p-10 flex flex-col justify-between">
+      <div className="relative z-3 h-full p-6 lg:p-10 flex flex-col justify-between">
         <span className="title block text-right">our team members</span>
         <div className="team-video overflow-hidden py-10 rounded-lg">
           <video

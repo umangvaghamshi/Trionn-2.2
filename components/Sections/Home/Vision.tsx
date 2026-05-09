@@ -29,15 +29,15 @@ export default function Vision() {
       pinnedContent={
         <div
           id="s3-text"
-          className="w-full min-h-screen flex flex-col justify-between bg-transparent text-left overflow-hidden items-center py-37.5 text-light-font"
+          className="w-full min-h-screen flex flex-col justify-between bg-transparent text-left overflow-hidden items-center py-20 lg:py-37.5 text-light-font"
         >
-          <div className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6">
+          <div className="tr__container w-full grid grid-cols-12 gap-x-6">
             <BlurTextReveal
               as="span"
               html={`Focused vision. <br/>Measured execution.`}
               animationType="chars"
               stagger={0.05}
-              className="title z-3 col-start-2 col-span-11"
+              className="title z-3 lg:col-start-2 col-span-12 lg:col-span-11"
             />
           </div>
 
@@ -54,7 +54,7 @@ export default function Vision() {
             </Marquee>
           </div>
 
-          <div className="tr__container w-full grid grid-cols-12 grid-rows-1 gap-x-6 pb-10">
+          <div className="tr__container w-full grid grid-cols-12 gap-x-6 pb-10">
             <BlurTextReveal
               as="span"
               text={`✦ From idea to outcome.`}

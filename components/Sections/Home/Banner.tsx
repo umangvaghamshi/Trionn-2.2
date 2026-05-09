@@ -61,12 +61,12 @@ export default function Banner() {
       className="text-light-font relative mix-blend-difference"
       id="sticky-wrap"
     >
-      <section className="main-banner relative min-h-screen pt-37 pb-20 flex w-full ">
+      <section className="main-banner relative min-h-screen pt-25 lg:pt-37 pb-20 flex w-full ">
         <div className="tr__container relative flex flex-col justify-between w-full gap-10">
-          <div className="banner-top-block flex flex-col w-full">
-            <div className="grid grid-cols-12 gap-6 mb-10">
+          <div className="banner-top-block flex flex-col w-full items-center lg:items-start">
+            <div className="grid grid-cols-12 gap-6 mb-10 w-full">
               <div
-                className="banner-title-block w-full flex flex-col items-start col-span-8"
+                className="banner-title-block w-full flex flex-col items-center lg:items-start col-span-12 lg:col-span-8"
                 id="s1-headline"
               >
                 <BlurTextReveal
@@ -89,18 +89,6 @@ export default function Banner() {
                   className="z-2"
                 />
               </div>
-              {/* <span
-                className="title text-right z-2 col-span-4 flex justify-end items-end"
-                id="s1-stats"
-              >
-                <BlurTextReveal
-                  as="span"
-                  html={`13+ years <br />shaping digital <br />direction`}
-                  animationType="chars"
-                  stagger={0.05}
-                  className="title block"
-                />
-              </span> */}
             </div>
             <div
               id="s1-cta"
@@ -114,14 +102,14 @@ export default function Banner() {
               />
             </div>
           </div>
-          <div className="banner-text-block grid grid-cols-12 grid-rows-1 gap-x-6 w-full">
+          <div className="banner-text-block grid grid-cols-12 gap-6 w-full">
             {/* <p className="max-w-72 z-2 col-span-4" id="s1-body">
               Websites, Digital products, brands, and systems built for clarity,
               scale, and impact.
             </p> */}
             <div
               ref={statsRef}
-              className="col-span-4 flex text-center items-end justify-center col-start-5"
+              className="col-span-12 lg:col-span-4 flex text-center items-end justify-center lg:col-start-5 order-2 lg:order-1"
               id="s1-stats"
             >
               <BlurTextReveal
@@ -132,12 +120,9 @@ export default function Banner() {
                 className="title block"
                 start="top bottom"
               />
-              {/* <span className="block text-sm mb-2 text-light-font/50 leading-4 -tracking-[0.02em] uppercase text-center">
-                Hold to blast
-                </span> */}
             </div>
-            <div className="col-span-4 flex justify-end col-start-9">
-              <div className="flex flex-col max-w-65 gap-6 w-full">
+            <div className="col-span-12 lg:col-span-4 flex justify-center lg:justify-end lg:col-start-9 order-1 lg:order-2">
+              <div className="flex flex-col max-w-80 lg:max-w-65 gap-6 w-full">
                 <div
                   className="flex border border-[#2F323B] overflow-hidden rounded-sm min-h-18 text-light-font title"
                   id="s1-body"
@@ -180,7 +165,7 @@ export default function Banner() {
                     animationType="words"
                     stagger={0.05}
                     start="top 90%"
-                    className="text-justify"
+                    className="text-center lg:text-justify"
                   />
                 </div>
               </div>
@@ -194,14 +179,14 @@ export default function Banner() {
           <div className="w-px h-10 bg-linear-to-b from-[rgba(255,80,30,0.6)] to-transparent animate-arrowPulse mx-auto" />
         </div> */}
       </section>
-      <section className="home-about  relative z-3 pt-50 pb-20">
+      <section className="home-about  relative z-3 pt-20 lg:pt-37.5 pb-20 min-h-screen flex flex-col justify-center">
         <div className="tr__container relative w-full">
           <div
             className="about-top-block flex flex-col justify-between"
             id="s2-text"
           >
-            <div className="about-title-block grid grid-cols-12 grid-rows-1 gap-x-6">
-              <div className="col-span-1 ">
+            <div className="about-title-block grid grid-cols-12 gap-6">
+              <div className="col-span-12 lg:col-span-1">
                 <BlurTextReveal
                   as="span"
                   text={`about`}
@@ -210,22 +195,24 @@ export default function Banner() {
                   className="title mt-4 block"
                 />
               </div>
-              <div className="col-span-11 ">
+              <div className="col-span-12 lg:col-span-11">
                 <FadeOnScroll
                   as={"h2"}
-                  html="<span class='w-1/12 inline-block'></span><span class='pl-3 inline!'><span>Trionn<sup class='inline-block text-[2.75rem] leading-none'>®</sup> is an independent digital studio crafting meaningful brand experiences through strategy, design, and technology.<span></span>"
+                  html="<span class='w-1/12 inline-block'></span><span class='pl-3 inline!'><span>Trionn<sup class='inline-block md:text-[2.75rem] leading-none'>®</sup> is an independent digital studio crafting meaningful brand experiences through strategy, design, and technology.<span></span>"
                   className=""
                 />
               </div>
             </div>
             <LinePlus
-              customClass={"mt-25 mb-20"}
-              lineClass={"col-start-2 bg-[#2F323B]"}
-              plusClass={"col-start-9 -translate-x-1/2!"}
+              customClass={"mt-10 lg:mt-25 mb-10 lg:mb-20"}
+              lineClass={"lg:col-start-2 bg-[#2F323B]"}
+              plusClass={
+                "col-span-12 sm:col-span-1 sm:col-start-7 lg:col-start-9 sm:-translate-x-1/2! mx-auto sm:mx-0"
+              }
               iconColor={"#D8D8D8"}
             />
-            <div className="about-subtitle-block grid grid-cols-12 grid-rows-1 gap-x-6">
-              <div className="col-span-3 col-start-2 max-w-57 ">
+            <div className="about-subtitle-block grid grid-cols-12 gap-6">
+              <div className="col-span-12 sm:col-span-6 lg:col-span-3 lg:col-start-2 max-w-75 lg:max-w-57 ">
                 <BlurTextReveal
                   as="span"
                   text={`We design for longevity — clarity first, craft always, built to scale.`}
@@ -234,8 +221,8 @@ export default function Banner() {
                   className="title block"
                 />
               </div>
-              <div className="col-span-3 col-start-9 flex flex-col ">
-                <p className="mb-20 max-w-100 ">
+              <div className="col-span-12 sm:col-span-6 lg:col-span-3 lg:col-start-9 flex flex-col ">
+                <p className="mb-10 lg:mb-20 lg:max-w-100 ">
                   Our mission is to make technology feel human by designing
                   digital products that are intuitive, purposeful, and
                   meaningful to people.

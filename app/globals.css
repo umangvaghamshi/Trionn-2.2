@@ -65,7 +65,7 @@
 }
 
 :root {
-  --size: 300;
+  --size: 320;
 }
 @media (min-width: 440px) {
   :root {
@@ -217,7 +217,7 @@ p,
 }
 
 .mrquee-text .marquee-text-item {
-  @apply relative -top-3;
+  @apply relative sm:-top-1.5 md:-top-2.25 xl:-top-3;
 }
 
 .tr__container {
@@ -236,6 +236,10 @@ canvas {
   @apply absolute bottom-0 left-0 h-[0.063rem] w-full bg-white transition-transform duration-500 ease-in-out;
 }
 
+sup {
+  @apply -top-2 md:-top-6;
+}
+
 /* Top line */
 .link::before {
   transform: scaleX(0);
@@ -250,7 +254,7 @@ canvas {
 }
 
 .custom-arrow {
-  @apply relative w-20 h-20 border border-solid border-grey-line/15 flex items-end rounded-lg cursor-pointer transition-all duration-300 ease-in-out hover:border-grey-line overflow-hidden;
+  @apply relative w-20 h-20 min-w-20 min-h-20 border border-solid border-grey-line/15 flex items-end rounded-lg cursor-pointer transition-all duration-300 ease-in-out hover:border-grey-line overflow-hidden;
 }
 
 .custom-arrow .arrow-icon {
@@ -332,6 +336,17 @@ h4,
   @apply text-lg leading-5 -tracking-[0.02em];
 }
 
+@media (max-width: 640px) {
+  .mrquee-text {
+    @apply leading-none;
+  }
+  .custom-arrow {
+    @apply w-14 h-14 min-w-14 min-h-14;
+  }
+  .custom-arrow .arrow-icon {
+    @apply p-2;
+  }
+}
 /* @media (max-width: 1023px) {
   body {
     @apply text-xl;
