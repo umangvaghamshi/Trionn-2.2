@@ -40,6 +40,8 @@ export default function WorkServicesSequence() {
 
       const getMaxX = () =>
         Math.max(0, track.scrollWidth - workLayer.clientWidth);
+      const getMaxY = () =>
+        Math.max(0, track.scrollHeight - workLayer.clientHeight);
 
       const progressObj = { p: 0 };
 
@@ -69,26 +71,49 @@ export default function WorkServicesSequence() {
         progressRef.current = p;
 
         const maxX = getMaxX();
+        const maxY = getMaxY();
         const hx = mapWorkHorizontalProgress(p);
         const ox = mapOverlapProgress(p);
 
-        // Horizontal track scrub
-        const currentTrackX = hx * maxX;
-        gsap.set(track, { x: -currentTrackX, force3D: true });
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const isMobile = vw < 768; // matches tailwind md breakpoint
 
-        // Services stays behind
-        gsap.set(services, { xPercent: 0, force3D: true });
+        let currentTrackX = 0;
+        let currentTrackY = 0;
 
-        // Work layer slides left during overlap
-        gsap.set(workLayer, {
-          x: -window.innerWidth * ox,
-          force3D: true,
-        });
+        if (isMobile) {
+          // Vertical track scrub
+          currentTrackY = hx * maxY;
+          gsap.set(track, { x: 0, y: -currentTrackY, force3D: true });
+
+          // Services stays behind
+          gsap.set(services, { xPercent: 0, yPercent: 0, force3D: true });
+
+          // Work layer slides up during overlap
+          gsap.set(workLayer, {
+            x: 0,
+            y: -vh * ox,
+            force3D: true,
+          });
+        } else {
+          // Horizontal track scrub
+          currentTrackX = hx * maxX;
+          gsap.set(track, { x: -currentTrackX, y: 0, force3D: true });
+
+          // Services stays behind
+          gsap.set(services, { xPercent: 0, yPercent: 0, force3D: true });
+
+          // Work layer slides left during overlap
+          gsap.set(workLayer, {
+            x: -vw * ox,
+            y: 0,
+            force3D: true,
+          });
+        }
 
         // Card entrance: simply rise from below to Y=0 and stay there
         const cardEls = bridge.querySelectorAll<HTMLElement>(".js-work-card");
-        const vw = window.innerWidth;
-        const isMobile = vw < 768; // matches tailwind md breakpoint
         const introW = isMobile ? vw : 0.5 * vw;
         const cardW = isMobile ? 0.85 * vw : 0.5 * vw;
 
@@ -97,11 +122,20 @@ export default function WorkServicesSequence() {
           const lines = card.querySelectorAll<HTMLElement>(".js-card-line");
           if (!inner) return;
 
-          // Card center on screen
-          const cardLeftInTrack = introW + index * cardW;
-          const cardCenterInTrack = cardLeftInTrack + cardW / 2;
-          const screenX = cardCenterInTrack - currentTrackX;
-          const norm = screenX / vw;
+          let norm: number;
+          if (isMobile) {
+            // Use actual DOM positions since vertical height can vary
+            const cardTop = card.offsetTop;
+            const cardCenterInTrack = cardTop + card.offsetHeight / 2;
+            const screenY = cardCenterInTrack - currentTrackY;
+            norm = screenY / vh;
+          } else {
+            // Card center on screen
+            const cardLeftInTrack = introW + index * cardW;
+            const cardCenterInTrack = cardLeftInTrack + cardW / 2;
+            const screenX = cardCenterInTrack - currentTrackX;
+            norm = screenX / vw;
+          }
 
           // Simple entry: card rises from below (+550) to Y=0 and stays
           // Card 3 only ever reaches norm = 0.75 at max scroll, so it MUST finish rising before then.
@@ -138,26 +172,32 @@ export default function WorkServicesSequence() {
             workHandleRef.current?.playPanel(index);
           }
 
-          // Divider line draws top→bottom when card enters viewport
-          if (lines.length && norm < 1.1 && !lineFired.has(index)) {
+          // Divider line draws when card enters viewport
+          if (norm < 1.0 && !lineFired.has(index)) {
             lineFired.add(index);
-            gsap.to(lines, {
-              scaleY: 1,
-              duration: 1.2,
-              ease: "power2.out",
-              delay: index * 0.1,
-            });
+            const hLines = card.querySelectorAll<HTMLElement>(".js-card-line-horizontal");
+
+            if (lines.length) {
+              gsap.to(lines, {
+                scaleY: 1,
+                duration: 1.2,
+                ease: "power2.out",
+                delay: index * 0.1,
+              });
+            }
+            if (hLines.length) {
+              gsap.to(hLines, {
+                scaleX: 1,
+                duration: 1.2,
+                ease: "power2.out",
+                delay: index * 0.1,
+              });
+            }
           }
         });
       };
 
       initCards();
-
-      const progressTo = gsap.quickTo(progressObj, "p", {
-        duration: 0.5,
-        ease: "power3.out",
-        onUpdate: renderTransforms,
-      });
 
       const st = ScrollTrigger.create({
         trigger: bridge,
@@ -167,7 +207,8 @@ export default function WorkServicesSequence() {
         pinSpacing: true,
         anticipatePin: 1,
         onUpdate: (self) => {
-          progressTo(self.progress);
+          progressObj.p = self.progress;
+          renderTransforms();
         },
       });
 
