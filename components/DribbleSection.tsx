@@ -738,7 +738,7 @@ export default function DribbleSection() {
               daily design practice.
             </p>
           </div>
-          <div className="w-full flex flex-col md:flex-row items-center md:items-end justify-end md:justify-between">
+          <div className="w-full flex flex-col md:flex-row items-center md:items-end justify-end md:justify-between gap-4">
             <p className="max-w-80 w-full block relative z-5 small text-center md:text-left">
               Concepts, explorations, and interface experiments—shared openly as
               part of our creative process.

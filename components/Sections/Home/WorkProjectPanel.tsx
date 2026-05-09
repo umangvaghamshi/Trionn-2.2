@@ -102,7 +102,7 @@ const WorkProjectPanel = forwardRef<
       <div className="mt-6 flex flex-col text-dark-font">
         <div className="content-top relative flex flex-col justify-between gap-4">
           {/* Left: Title & Subtitle */}
-          <div className="flex flex-col sm:flex-row justify-between">
+          <div className="flex flex-row justify-between gap-2">
             <h3 ref={titleRef} className="m-0">
               {item.title}
             </h3>
@@ -112,7 +112,7 @@ const WorkProjectPanel = forwardRef<
           </div>
 
           {/* Right: Year & Link */}
-          <div className="flex flex-col sm:flex-row justify-between">
+          <div className="flex flex-col sm:flex-row justify-between gap-4">
             <p ref={subTitleRef} className="small">
               {parse(item.subTitle)}
             </p>
