@@ -32,6 +32,8 @@ type Stage = {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   resize: () => void;
+  w: number;
+  h: number;
 };
 
 function createSharedStage(): Stage {
@@ -49,17 +51,54 @@ function createSharedStage(): Stage {
   renderer.info.autoReset = true;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 20000);
-  function resize() {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+  const stage: Stage = {
+    canvas,
+    renderer,
+    scene,
+    camera,
+    w: typeof window !== 'undefined' ? window.innerWidth : 1024,
+    h: typeof window !== 'undefined' ? window.innerHeight : 768,
+    resize: () => {}
+  };
+  stage.resize = function resize() {
+    stage.w = window.innerWidth;
+    stage.h = window.innerHeight;
     const fov = THREE.MathUtils.degToRad(camera.fov);
-    camera.aspect = w / h;
-    camera.position.set(0, 0, (h * 0.5) / Math.tan(fov * 0.5));
+    camera.aspect = stage.w / stage.h;
+    camera.position.set(0, 0, (stage.h * 0.5) / Math.tan(fov * 0.5));
     camera.updateProjectionMatrix();
-    renderer.setSize(w, h, false);
+    renderer.setSize(stage.w, stage.h, false);
+  };
+  stage.resize();
+  return stage;
+}
+
+// Detect touch-capable devices (mobile / tablet)
+const IS_TOUCH = typeof window !== 'undefined' &&
+  ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+/**
+ * Get the absolute document-top position of an element by walking up the
+ * offset chain. Unlike getBoundingClientRect this is scroll-independent and
+ * therefore immune to compositor timing.
+ */
+function getAbsoluteTop(el: HTMLElement): number {
+  let top = 0;
+  let cur: HTMLElement | null = el;
+  while (cur) {
+    top += cur.offsetTop;
+    cur = cur.offsetParent as HTMLElement | null;
   }
-  resize();
-  return { canvas, renderer, scene, camera, resize };
+  return top;
+}
+function getAbsoluteLeft(el: HTMLElement): number {
+  let left = 0;
+  let cur: HTMLElement | null = el;
+  while (cur) {
+    left += cur.offsetLeft;
+    cur = cur.offsetParent as HTMLElement | null;
+  }
+  return left;
 }
 
 class CardWave {
@@ -86,6 +125,9 @@ class CardWave {
   visible = false;
   lastW = 0;
   lastH = 0;
+  // Pre-computed absolute document positions (scroll-independent)
+  absTop = 0;
+  absLeft = 0;
   _onEnter: () => void;
   _onLeave: () => void;
   markActive: () => void;
@@ -112,6 +154,9 @@ class CardWave {
     if (w < 2 || h < 2) return;
     this.lastW = w;
     this.lastH = h;
+    // Cache absolute document positions (immune to scroll / compositor timing)
+    this.absTop = getAbsoluteTop(this.thumb);
+    this.absLeft = getAbsoluteLeft(this.thumb);
     if (this.mesh) {
       this.stage.scene.remove(this.mesh);
       const oldTex = (this.mesh.material as THREE.ShaderMaterial)?.uniforms?.map?.value as THREE.Texture | undefined;
@@ -164,15 +209,25 @@ class CardWave {
   }
   updatePosition() {
     if (!this.mesh || !this.thumb) return false;
+    // With Lenis syncTouch: true, mobile scrolling is perfectly synced to JS.
+    // We can use getBoundingClientRect() safely on all devices without 1-frame lag,
+    // which accurately tracks elements pushed down by GSAP ScrollTrigger pins.
     const r = this.thumb.getBoundingClientRect();
-    this.mesh.position.x = r.left + r.width * 0.5 - window.innerWidth * 0.5;
-    this.mesh.position.y = window.innerHeight * 0.5 - (r.top + r.height * 0.5);
-    this.mesh.visible = r.bottom > -160 && r.top < window.innerHeight + 160;
+    this.mesh.position.x = r.left + r.width * 0.5 - this.stage.w * 0.5;
+    this.mesh.position.y = this.stage.h * 0.5 - (r.top + r.height * 0.5);
+    this.mesh.visible = r.bottom > -160 && r.top < this.stage.h + 160;
+
     const cardOpacity = parseFloat(
       this.cardEl.style.opacity || getComputedStyle(this.cardEl).opacity || '0'
     );
     (this.mesh.material as THREE.ShaderMaterial).uniforms.alpha.value = clamp01(cardOpacity);
     return this.mesh.visible;
+  }
+  /** Recalculate cached absolute positions (call after layout changes) */
+  recachePosition() {
+    if (!this.thumb) return;
+    this.absTop = getAbsoluteTop(this.thumb);
+    this.absLeft = getAbsoluteLeft(this.thumb);
   }
   applyWave(wAmt: number, t: number) {
     if (!this.mesh || !this.restX || !this.restY) return;
@@ -306,6 +361,7 @@ export function initFlagwave(root: HTMLElement | Document = document): FlagwaveH
   let pageHidden = document.hidden;
   let resizeRaf: number | null = null;
   let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+  let flagLastWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
 
   function markActive() {
     if (pageHidden) return;
@@ -359,6 +415,9 @@ export function initFlagwave(root: HTMLElement | Document = document): FlagwaveH
   cardEls.forEach(el => io.observe(el));
 
   const onResize = () => {
+    if (window.innerWidth === flagLastWidth) return;
+    flagLastWidth = window.innerWidth;
+    
     if (resizeTimer) clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       if (resizeRaf) cancelAnimationFrame(resizeRaf);
@@ -366,6 +425,7 @@ export function initFlagwave(root: HTMLElement | Document = document): FlagwaveH
         resizeRaf = null;
         stage.resize();
         cards.forEach(card => {
+          card.recachePosition();
           const r = card.thumb && card.thumb.getBoundingClientRect();
           if (!r) return;
           if (Math.abs(r.width - card.lastW) > 2 || Math.abs(r.height - card.lastH) > 2) card.build();

@@ -1692,6 +1692,7 @@ export default function OurWorkListing() {
       build();
     }
     let plResizeHandler: any = null;
+    let plLastWidth = 0;
     function plInit() {
       lc = document.querySelector<HTMLCanvasElement>("#line-canvas");
       if (!lc) return;
@@ -1708,8 +1709,14 @@ export default function OurWorkListing() {
         c.style.opacity = "0";
         c.style.transition = "none";
       });
+      plLastWidth = window.innerWidth;
       plResize();
-      plResizeHandler = debounce(plResize, 200);
+      plResizeHandler = debounce(() => {
+        if (window.innerWidth !== plLastWidth) {
+          plLastWidth = window.innerWidth;
+          plResize();
+        }
+      }, 200);
       window.addEventListener("resize", plResizeHandler);
       plRafId = requestAnimationFrame((ts) => {
         plLast = ts;
@@ -1756,10 +1763,14 @@ export default function OurWorkListing() {
       bootScrollTrigger();
     }
 
+    let introLastWidth = window.innerWidth;
     const onResize = () => {
-      updateDotPos();
-      if ((window as any)._thumbAnimDone !== true) placeThumbs();
-      st?.refresh();
+      if (window.innerWidth !== introLastWidth) {
+        introLastWidth = window.innerWidth;
+        updateDotPos();
+        if ((window as any)._thumbAnimDone !== true) placeThumbs();
+        st?.refresh();
+      }
     };
     window.addEventListener("resize", onResize);
 
@@ -1829,7 +1840,7 @@ export default function OurWorkListing() {
       <div id="page-header" className="relative">
         <div
           id="page-header-pin"
-          className="h-screen w-full flex flex-col items-center justify-center text-center gap-0"
+          className="h-[100svh] w-full flex flex-col items-center justify-center text-center gap-0"
         >
           <div className="absolute inset-0 overflow-hidden z-5 pointer-events-none">
             {FT_THUMBS.map((src, i) => (
@@ -2149,7 +2160,7 @@ const styles = `
 // #contact-subtext { display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; margin:100px 0 0 0; }
 // #contact-subtext p { font-size:2rem; font-weight:400; letter-spacing:0.04em; color:rgba(255,255,255,0.42); line-height:1.6; }
 .is-hidden { display:none!important; }
-#shared-card-wave-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 11; }
+#shared-card-wave-canvas { position: fixed; inset: 0; width: 100vw; height: 100svh; pointer-events: none; z-index: 11; }
 .card-thumb .thumb-link { display:block; width:100%; height:100%; color:inherit; text-decoration:none; }
 .card-thumb .thumb-link img { display:block; width:100%; }
 `;
