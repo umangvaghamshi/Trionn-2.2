@@ -255,7 +255,7 @@ export default function Testimonials({
                       <h3 className="mb-6 lg:mb-20">{item.quoteMessage}</h3>
                       <div className="client-info flex justify-between items-end">
                         <div className="left-block flex items-end">
-                          <div className="w-20 h-20 overflow-hidden rounded-lg relative transition-all duration-300 ease-in-out mr-6">
+                          <div className="w-14 h-14 lg:w-20 lg:h-20 overflow-hidden rounded-lg relative transition-all duration-300 ease-in-out mr-4 lg:mr-6">
                             <Image
                               src={item.clientImage}
                               alt={item.companyName}
@@ -265,7 +265,7 @@ export default function Testimonials({
                             />
                           </div>
                           <div className="flex flex-col">
-                            <p className="mb-1">{item.clientName}</p>
+                            <p className="lg:mb-1">{item.clientName}</p>
                             <p className="opacity-60 small">{item.clientDeg}</p>
                           </div>
                         </div>
