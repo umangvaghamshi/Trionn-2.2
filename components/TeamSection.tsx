@@ -265,14 +265,38 @@ export default function TeamSection() {
         vh = window.innerHeight;
 
       if (_mob) {
-        const cw = 68;
+        // Card size: 4 per row with 10px gaps, max 68px
+        const gap = 10;
+        const cw = Math.min(68, Math.floor((vw - 5 * gap) / 4));
         const ch = Math.round(cw * RATIO);
-        const gap = 14;
         const rowH = ch + gap;
-        const topPad = 50;
-        const boxGap = 40;
+        const topPad = 24;
+        const boxGap = 20;
+        // Frame: ~55% of viewport width, centered
+        const frameW = Math.min(170, Math.floor(vw * 0.55));
+        const frameH = Math.round(frameW * RATIO);
         const boxTop = topPad + 2 * rowH + boxGap;
-        const boxBottom = boxTop + 318 + boxGap;
+        const boxBottom = boxTop + frameH + boxGap;
+
+        // Explicitly position center frame via inline style (beats CSS specificity)
+        centerFrame.style.position = "absolute";
+        centerFrame.style.top = boxTop + "px";
+        centerFrame.style.left = "50%";
+        centerFrame.style.transform = "translateX(-50%)";
+        centerFrame.style.right = "auto";
+        centerFrame.style.bottom = "auto";
+
+        // Update frame sizes dynamically
+        frameOuterRef.current!.style.width = (frameW + 8) + "px";
+        frameOuterRef.current!.style.height = (frameH + 8) + "px";
+        frameOuterRef.current!.style.top = "-4px";
+        frameOuterRef.current!.style.left = "-4px";
+        arcCanvasRef.current!.style.width = (frameW + 8) + "px";
+        arcCanvasRef.current!.style.height = (frameH + 8) + "px";
+        arcCanvasRef.current!.style.top = "-4px";
+        arcCanvasRef.current!.style.left = "-4px";
+        centerFrameInnerRef.current!.style.width = frameW + "px";
+        centerFrameInnerRef.current!.style.height = frameH + "px";
 
         const rowsAbove = [
           [3, 4, 5, 6],
@@ -1345,8 +1369,10 @@ export default function TeamSection() {
     (function () {
       const canvas = arcCanvasRef.current!;
       const ctx = canvas.getContext("2d")!;
-      const W = _mob ? 268 : _tab ? 280 : _lap ? 300 : 352,
-        H = _mob ? 326 : _tab ? 338 : _lap ? 363 : 426,
+      const _mobFrameW = Math.min(170, Math.floor(window.innerWidth * 0.55));
+      const _mobFrameH = Math.round(_mobFrameW * RATIO);
+      const W = _mob ? _mobFrameW + 8 : _tab ? 280 : _lap ? 300 : 352,
+        H = _mob ? _mobFrameH + 8 : _tab ? 338 : _lap ? 363 : 426,
         R = 8;
       canvas.width = W;
       canvas.height = H;
@@ -1957,25 +1983,28 @@ export default function TeamSection() {
             overflow-x: hidden;
           }
           .ts-center-frame {
-            top: 286px;
+            top: 240px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) !important;
           }
           .ts-frame-outer {
-            width: 268px;
-            height: 326px;
+            width: min(178px, calc(55vw + 8px));
+            height: auto;
+            aspect-ratio: 178 / 217;
             top: -4px;
             left: -4px;
           }
           .ts-arc-canvas {
-            width: 268px;
-            height: 326px;
+            width: min(178px, calc(55vw + 8px));
+            height: auto;
+            aspect-ratio: 178 / 217;
             top: -4px;
             left: -4px;
           }
           .ts-center-frame-inner {
-            width: 260px;
-            height: 318px;
+            width: min(170px, 55vw);
+            height: auto;
+            aspect-ratio: 170 / 209;
           }
           .ts-frame-name {
             font-size: 11px;
@@ -2064,7 +2093,8 @@ export default function TeamSection() {
 
           <div
             ref={centerFrameRef}
-            className="ts-center-frame absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none"
+            className="ts-center-frame absolute z-9999 pointer-events-none"
+            style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
           >
             <div
               ref={frameOuterRef}
