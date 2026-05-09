@@ -217,6 +217,7 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     duration: 1.2, // Slightly reduced for snappier scroll (was 1.5)
     wheelMultiplier: 0.8,
     touchMultiplier: 2,
+    syncTouch: true, // Forces JS-driven scroll on mobile to perfectly sync with WebGL
     infinite: false,
     stopped: !isLoaderComplete, // Start stopped if loader is active
   };
