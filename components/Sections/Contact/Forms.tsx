@@ -60,9 +60,16 @@ export default function Forms() {
   return (
     <section className="pb-20 lg:pb-37.5 pt-20 lg:pt-25 relative bg-[#040508] text-light-font">
       <div className="tr__container">
-        <div className="grid grid-cols-12 gap-10 lg:gap-20">
-          <div className="left-block col-span-12 lg:col-span-4 lg:col-start-2 flex flex-col items-center gap-6 text-center">
-            <div className="video-block lg:mt-10 mx-auto max-w-134">
+        <div className="grid grid-cols-12 gap-10 lg:gap-6">
+          <div className="col-span-12 lg:col-span-5 lg:col-start-7 flex flex-col mb-8 lg:mb-20">
+            <p className="small max-w-60 lg:max-w-50">
+              A short conversation is often the best place to begin.
+            </p>
+          </div>
+        </div>
+        <div className="grid grid-cols-12 gap-10 lg:gap-6">
+          <div className="left-block col-span-12 lg:col-span-4 lg:col-start-2 flex flex-col items-center gap-6 text-center order-2 lg:order-1">
+            <div className="video-block mx-auto max-w-134">
               <video
                 src="/video/logo-box.mp4"
                 autoPlay
@@ -78,12 +85,10 @@ export default function Forms() {
               html="TRIONN DESIGN <br/>216 - 4Plus Complex, Astron Chowk <br/>Rajkot, Gujarat, India"
               animationType="words"
               stagger={0.08}
+              className="title"
             />
           </div>
-          <div className="right-block col-span-12 lg:col-span-5 lg:col-start-7 flex flex-col gap-8 lg:gap-20">
-            <p className="small max-w-60 lg:max-w-50">
-              A short conversation is often the best place to begin.
-            </p>
+          <div className="right-block col-span-12 lg:col-span-5 lg:col-start-7 flex flex-col order-1 lg:order-2">
             <form className="flex flex-col gap-4 lg:gap-6">
               <InputGroup
                 id="fname"

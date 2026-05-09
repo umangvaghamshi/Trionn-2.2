@@ -65,26 +65,26 @@
 }
 
 :root {
-  --size: 380;
+  --size: 300;
 }
 @media (min-width: 440px) {
   :root {
-    --size: 400;
+    --size: 360;
   }
 }
 @media (min-width: 640px) {
   :root {
-    --size: 500;
+    --size: 480;
   }
 }
 @media (min-width: 768px) {
   :root {
-    --size: 800;
+    --size: 750;
   }
 }
 @media (min-width: 1024px) {
   :root {
-    --size: 900;
+    --size: 850;
   }
 }
 @media (min-width: 1280px) {
@@ -92,7 +92,12 @@
     --size: 1000;
   }
 }
-@media (min-width: 1440px) {
+@media (min-width: 1441px) {
+  :root {
+    --size: 1180;
+  }
+}
+@media (min-width: 1536px) {
   :root {
     --size: 1280;
   }
@@ -141,8 +146,8 @@ h1,
 .h1 {
   font-family: "FamiljenGroteskVariable-Regular";
   @apply text-[6.25rem] leading-22.5 -tracking-[0.06em];
-  font-size: clamp(2.25rem, 6.614vw, 6.25rem);
-  line-height: clamp(2rem, 5.952vw, 5.625rem);
+  font-size: clamp(3.5rem, 6.614vw, 6.25rem);
+  line-height: clamp(3.25rem, 5.952vw, 5.625rem);
   letter-spacing: clamp(-0.06em, -0.055vw, -0.06em);
 }
 
@@ -150,15 +155,15 @@ h2,
 .h2 {
   font-family: "FamiljenGroteskVariable-Regular";
   @apply text-[5.938rem] leading-22.5 -tracking-[0.06em];
-  font-size: clamp(2rem, 6.283vw, 5.938rem);
-  line-height: clamp(1.825rem, 5.952vw, 5.625rem);
+  font-size: clamp(3rem, 6.283vw, 5.938rem);
+  line-height: clamp(2.75rem, 5.952vw, 5.625rem);
   letter-spacing: clamp(-0.06em, -0.056vw, -0.06em);
 }
 
 h3,
 .h3 {
   font-family: "FamiljenGroteskVariable-Regular";
-  @apply text-4xl leading-10.5 -tracking-[0.04em];
+  @apply text-2xl xl:text-4xl leading-none xl:leading-none -tracking-[0.04em];
 }
 
 h4,
@@ -327,7 +332,7 @@ h4,
   @apply text-lg leading-5 -tracking-[0.02em];
 }
 
-@media (max-width: 1023px) {
+/* @media (max-width: 1023px) {
   body {
     @apply text-xl;
   }
@@ -355,4 +360,4 @@ h4,
   .button-text {
     @apply text-base;
   }
-}
+} */

@@ -76,7 +76,7 @@ export default function Accordion({ items, customClass }: AccordionProps) {
                 onClick={() => toggleItem(index)}
               >
                 <BlurTextReveal
-                  as="p"
+                  as="h3"
                   html={item.title}
                   animationType="words"
                   stagger={0.05}
@@ -114,7 +114,7 @@ export default function Accordion({ items, customClass }: AccordionProps) {
                   opacity: index === 0 ? 1 : 0,
                 }}
               >
-                <div className="pt-2 small max-w-132">
+                <div className="pt-4 max-w-132">
                   {parser(
                     Array.isArray(item.content)
                       ? item.content.join("")

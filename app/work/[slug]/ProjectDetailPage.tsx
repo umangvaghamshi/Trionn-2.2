@@ -84,13 +84,13 @@ export default function ProjectDetailPage({ project }: { project: any }) {
                 </TransitionLink>
               </div>
               <LinePlus lineClass={"bg-cream-line/20"} plusClass={"hidden"} />
-              <div className="flex flex-col sm:flex-row justify-between mt-6 lg:mt-10 mb-4">
+              <div className="flex flex-col sm:flex-row justify-between mt-6 lg:mt-10 mb-4 gap-2">
                 <BlurTextReveal
                   as="h1"
                   html={project.title}
                   animationType="chars"
                   stagger={0.08}
-                  className="h3"
+                  className="text-4xl! leading-none! -tracking-[0.04em]!"
                 />
                 <p className="text-light-font/60 small">{project.year}</p>
               </div>
