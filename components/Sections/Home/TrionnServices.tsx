@@ -519,8 +519,8 @@ export default function TrionnServices({
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const isMobile = vw < 768;
-    const W = Math.round(vw * (isMobile ? 0.42 : 0.28));
-    const H = Math.round(vh * (isMobile ? 0.28 : 0.32));
+    const W = Math.round(vw * (isMobile ? 0.85 : 0.28));
+    const H = Math.round(vh * (isMobile ? 0.25 : 0.32));
 
     const cEls = cardRefs.current;
     const allEls = Object.values(cEls).filter(Boolean) as HTMLDivElement[];
@@ -533,107 +533,119 @@ export default function TrionnServices({
     gsap.set(allEls, { opacity: 0, x: 0, y: 0 });
 
     const tl = gsap.timeline({ paused: true });
-    const pairDur = 0.45;
-    const pairStep = 0.2;
-    const STEPS = 12;
+    
+    if (isMobile) {
+      const cardDur = 0.3;
+      const cardStep = 0.12;
+      const STEPS = 12;
 
-    const pairs: [string, string][] = [
-      ["card-L0", "card-R0"],
-      ["card-L1", "card-R1"],
-      ["card-L2", "card-R2"],
-    ];
+      const allKeys = [
+        "card-L0", "card-R0", "card-L1", "card-R1", "card-L2", "card-R2"
+      ];
 
-    s.svgFired = new Set<string>();
-    s.pairCenterTimes = pairs.map(([lk, rk], i) => ({
-      lk,
-      rk,
-      centerTime: i * pairStep + pairDur * 0.3,
-    }));
-
-    pairs.forEach(([lk, rk], i) => {
-      const startT = i * pairStep;
-      const lEl = cEls[lk];
-      const rEl = cEls[rk];
-      if (!lEl || !rEl) return;
-
-      const lData = LEFT_CARDS.find((c) => c.id === lk);
-      const rData = RIGHT_CARDS.find((c) => c.id === rk);
-
-      const lFrames: any[] = [];
-      const rFrames: any[] = [];
-
-      for (let step = 0; step <= STEPS; step++) {
-        const frac = step / STEPS;
-
-        const lStartX = -W * 0.7;
-        const lEndX = -W * 0.7;
-        const lStartY = vh;
-        const lEndY = -H;
-        const lPeakX = vw * 0.1;
-
-        const lY = lStartY + frac * (lEndY - lStartY);
-        const arc = frac <= 0.5 ? Math.sin(frac * Math.PI) : 1;
-        const lX = lStartX + arc * (lPeakX - lStartX);
-
-        const rStartX = vw - W * 0.3;
-        const rStartY = -H;
-        const rEndY = vh;
-        const rPeakX = vw * 0.9 - W;
-
-        const rY = rStartY + frac * (rEndY - rStartY);
-        const rX = rStartX + arc * (rPeakX - rStartX);
-
-        const op =
-          frac < 0.15
-            ? frac / 0.15
-            : frac > 0.85
-              ? 1 - (frac - 0.85) / 0.15
-              : 1;
-
-        lFrames.push({
-          x: lX,
-          y: lY,
-          opacity: op,
-        });
-        rFrames.push({
-          x: rX,
-          y: rY,
-          opacity: op,
-        });
-      }
-
-      const lPosFrames = lFrames.map((f) => ({
-        x: f.x,
-        y: f.y,
-        opacity: f.opacity,
-      }));
-      const rPosFrames = rFrames.map((f) => ({
-        x: f.x,
-        y: f.y,
-        opacity: f.opacity,
+      s.svgFired = new Set<string>();
+      s.pairCenterTimes = allKeys.map((k, i) => ({
+        lk: k,
+        rk: "",
+        centerTime: i * cardStep + cardDur * 0.3,
       }));
 
-      tl.to(
-        lEl,
-        { keyframes: lPosFrames, duration: pairDur, ease: "none" },
-        startT,
-      );
-      tl.to(
-        rEl,
-        { keyframes: rPosFrames, duration: pairDur, ease: "none" },
-        startT,
-      );
+      allKeys.forEach((k, i) => {
+        const startT = i * cardStep;
+        const el = cEls[k];
+        if (!el) return;
 
-      /* ── DrawSVG: init paths — animation fires independently in updateCards ── */
-      const svgPathsL = Array.from(
-        lEl.querySelectorAll<SVGPathElement>(".svg-path"),
-      );
-      const svgPathsR = Array.from(
-        rEl.querySelectorAll<SVGPathElement>(".svg-path"),
-      );
-      if (svgPathsL.length) gsap.set(svgPathsL, { drawSVG: "0%" });
-      if (svgPathsR.length) gsap.set(svgPathsR, { drawSVG: "0%" });
-    });
+        const frames: any[] = [];
+        for (let step = 0; step <= STEPS; step++) {
+          const frac = step / STEPS;
+          const startY = vh;
+          const endY = -H;
+          const centerX = (vw - W) / 2;
+
+          const y = startY + frac * (endY - startY);
+          const op =
+            frac < 0.15
+              ? frac / 0.15
+              : frac > 0.85
+                ? 1 - (frac - 0.85) / 0.15
+                : 1;
+
+          frames.push({ x: centerX, y, opacity: op });
+        }
+
+        tl.to(el, { keyframes: frames, duration: cardDur, ease: "none" }, startT);
+
+        const paths = Array.from(el.querySelectorAll<SVGPathElement>(".svg-path"));
+        if (paths.length) gsap.set(paths, { drawSVG: "0%" });
+      });
+    } else {
+      const pairDur = 0.45;
+      const pairStep = 0.2;
+      const STEPS = 12;
+
+      const pairs: [string, string][] = [
+        ["card-L0", "card-R0"],
+        ["card-L1", "card-R1"],
+        ["card-L2", "card-R2"],
+      ];
+
+      s.svgFired = new Set<string>();
+      s.pairCenterTimes = pairs.map(([lk, rk], i) => ({
+        lk,
+        rk,
+        centerTime: i * pairStep + pairDur * 0.3,
+      }));
+
+      pairs.forEach(([lk, rk], i) => {
+        const startT = i * pairStep;
+        const lEl = cEls[lk];
+        const rEl = cEls[rk];
+        if (!lEl || !rEl) return;
+
+        const lFrames: any[] = [];
+        const rFrames: any[] = [];
+
+        for (let step = 0; step <= STEPS; step++) {
+          const frac = step / STEPS;
+
+          const lStartX = -W * 0.7;
+          const lEndX = -W * 0.7;
+          const lStartY = vh;
+          const lEndY = -H;
+          const lPeakX = vw * 0.1;
+
+          const lY = lStartY + frac * (lEndY - lStartY);
+          const arc = frac <= 0.5 ? Math.sin(frac * Math.PI) : 1;
+          const lX = lStartX + arc * (lPeakX - lStartX);
+
+          const rStartX = vw - W * 0.3;
+          const rStartY = -H;
+          const rEndY = vh;
+          const rPeakX = vw * 0.9 - W;
+
+          const rY = rStartY + frac * (rEndY - rStartY);
+          const rX = rStartX + arc * (rPeakX - rStartX);
+
+          const op =
+            frac < 0.15
+              ? frac / 0.15
+              : frac > 0.85
+                ? 1 - (frac - 0.85) / 0.15
+                : 1;
+
+          lFrames.push({ x: lX, y: lY, opacity: op });
+          rFrames.push({ x: rX, y: rY, opacity: op });
+        }
+
+        tl.to(lEl, { keyframes: lFrames, duration: pairDur, ease: "none" }, startT);
+        tl.to(rEl, { keyframes: rFrames, duration: pairDur, ease: "none" }, startT);
+
+        const svgPathsL = Array.from(lEl.querySelectorAll<SVGPathElement>(".svg-path"));
+        const svgPathsR = Array.from(rEl.querySelectorAll<SVGPathElement>(".svg-path"));
+        if (svgPathsL.length) gsap.set(svgPathsL, { drawSVG: "0%" });
+        if (svgPathsR.length) gsap.set(svgPathsR, { drawSVG: "0%" });
+      });
+    }
 
     s.cardsTL = tl;
   }, []);
