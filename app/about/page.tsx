@@ -81,7 +81,7 @@ const Page = () => {
       <Awards />
       <BrandShowcase />
       <Testimonials/>
-      <div className="min-h-screen bg-[#0C0C0C]"></div>
+      <div className="min-h-dvh bg-[#0C0C0C]"></div>
     </>
   );
 };
