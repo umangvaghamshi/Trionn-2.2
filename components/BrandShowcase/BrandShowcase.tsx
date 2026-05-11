@@ -299,7 +299,7 @@ export default function BrandShowcase({
       style={{ backgroundColor }}
     >
       <div className="tr__container text-dark-font relative">
-        <div className="flex flex-col py-37.5 items-center justify-between text-center min-h-screen">
+        <div className="flex flex-col py-37.5 items-center justify-between text-center min-h-dvh">
           <div className="mb-40">
             <BlurTextReveal
               as="span"

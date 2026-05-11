@@ -206,7 +206,7 @@ export default function Awards() {
           },
           {
             width: "100vw",
-            height: "100vh",
+            height: "100dvh",
             borderRadius: 0,
             duration: 0.15,
           },
@@ -269,7 +269,7 @@ export default function Awards() {
       ) as HTMLElement | null;
 
       if (brandShowcase) {
-        gsap.set(brandShowcase, { marginTop: "-100vh", ease: "none" });
+        gsap.set(brandShowcase, { marginTop: "-100dvh", ease: "none" });
       }
 
       // ---- Stripe reveal after all cards are done ----
@@ -351,7 +351,7 @@ export default function Awards() {
   return (
     <section
       ref={awardsSectionRef}
-      className="relative h-screen w-full  bg-[#F7F7F7] overflow-hidden "
+      className="relative h-dvh w-full  bg-[#F7F7F7] overflow-hidden "
     >
       {/* 1. Background Video (Masked) */}
       {/* We apply the clip-path via GSAP, but set initial state here to avoid FOUC */}
@@ -361,7 +361,7 @@ export default function Awards() {
       >
         <div ref={maskRef} className="overflow-hidden w-full h-full">
           <video
-            className="h-screen w-full object-cover"
+            className="h-dvh w-full object-cover"
             autoPlay
             muted
             loop
@@ -377,7 +377,7 @@ export default function Awards() {
       </div>
 
       {/* 2. Marquee Component (Centered) */}
-      <div className="z-10 flex flex-col justify-center min-h-screen pt-37.5 pb-25 mix-blend-difference">
+      <div className="z-10 flex flex-col justify-center min-h-dvh pt-37.5 pb-25 mix-blend-difference">
         <div
           className="tr__container w-full absolute top-37.5 left-0 flex justify-between items-end"
           ref={titleContainerRef}

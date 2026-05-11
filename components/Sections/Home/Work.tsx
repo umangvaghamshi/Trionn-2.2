@@ -140,11 +140,11 @@ export default function Work({
       <div className="absolute inset-0 flex items-start md:items-center overflow-hidden z-10">
         <div
           ref={trackRef}
-          className="flex flex-col md:flex-row h-auto md:h-[min(80vh,860px)] flex-nowrap items-center will-change-transform"
+          className="flex flex-col md:flex-row h-auto md:h-[min(80vh,860px)] flex-nowrap items-center will-change-transform w-full"
         >
           {/* ── Intro Text Block (Responsive width) ── */}
-          <div className="pointer-events-auto flex w-screen md:w-[50vw] shrink-0 h-[50vh] md:h-full flex-col justify-center items-center px-6 md:px-10">
-            <div className="title-block flex flex-col items-center text-center gap-6 md:gap-12">
+          <div className="pointer-events-auto flex w-full md:w-[50vw] shrink-0 md:h-full flex-col justify-center items-center px-6 md:px-10">
+            <div className="title-block flex flex-col items-center text-center gap-10 md:gap-12 pt-20">
               <BlurTextReveal
                 as="h2"
                 html={`Selected work <br />&amp; explorations`}
@@ -164,11 +164,11 @@ export default function Work({
             .map((item, index) => (
               <div
                 key={index}
-                className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-auto py-16 md:py-0 md:h-full items-center pointer-events-none"
+                className="js-work-card relative flex w-[calc(100%-3rem)] md:w-[50vw] shrink-0 min-w-0 h-auto py-0 md:h-full items-center pointer-events-none"
               >
                 {/* Vertical divider line — draws top→bottom on scrub */}
                 <div
-                  className="js-card-line hidden md:block absolute left-0 top-1/2 -translate-y-1/2 h-screen w-px bg-grey-line/30 origin-top"
+                  className="js-card-line hidden md:block absolute left-0 top-1/2 -translate-y-1/2 h-dvh w-px bg-grey-line/30 origin-top"
                   style={{ transform: "scaleY(0)" }}
                 />
 
@@ -181,7 +181,7 @@ export default function Work({
                 {/* <LinePlus lineClass={"bg-cream-line/30 md:hidden"} plusClass={"hidden"} /> */}
 
                 {/* Card content */}
-                <div className="js-work-card-inner w-full will-change-transform px-4 md:px-20">
+                <div className="js-work-card-inner w-full will-change-transform px-0 md:px-20">
                   <WorkProjectPanel
                     ref={(el) => {
                       panelRefs.current[index] = el;
@@ -193,16 +193,16 @@ export default function Work({
             ))}
 
           {/* ── View All Projects card ── */}
-          <div className="js-work-card relative flex w-[85vw] md:w-[50vw] shrink-0 min-w-0 h-[50vh] md:h-full items-center pointer-events-none md:min-h-screen">
+          <div className="js-work-card relative flex w-[calc(100%-3rem)] md:w-[50vw] shrink-0 min-w-0 h-[50vh] md:h-full items-center pointer-events-none md:min-h-dvh py-16">
             <div
-              className="js-card-line hidden md:block absolute left-0 top-1/2 -translate-y-1/2 h-screen w-px bg-grey-line/30 origin-top"
+              className="js-card-line hidden md:block absolute left-0 top-1/2 -translate-y-1/2 h-dvh w-px bg-grey-line/30 origin-top"
               style={{ transform: "scaleY(0)" }}
             />
-            <div
+            {/* <div
               className="js-card-line-horizontal block md:hidden absolute left-0 bottom-0 w-full h-px bg-grey-line/30 origin-left"
               style={{ transform: "scaleX(0)" }}
-            />
-            <div className="js-work-card-inner w-full will-change-transform px-4 md:px-10 lg:px-16 xl:px-20">
+            /> */}
+            <div className="js-work-card-inner w-full will-change-transform px-0 md:px-10 lg:px-16 xl:px-20">
               <div className="relative flex flex-col items-center justify-center w-full pointer-events-auto">
                 <div className="group flex flex-col items-center justify-center gap-10 text-center cursor-pointer w-full h-full">
                   <h3 className=" text-dark-font transition-transform duration-700 max-w-116">

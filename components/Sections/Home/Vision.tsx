@@ -29,7 +29,7 @@ export default function Vision() {
       pinnedContent={
         <div
           id="s3-text"
-          className="w-full min-h-screen flex flex-col justify-between bg-transparent text-left overflow-hidden items-center py-20 lg:py-37.5 text-light-font"
+          className="w-full min-h-dvh flex flex-col justify-between bg-transparent text-left overflow-hidden items-center py-20 lg:py-37.5 text-light-font"
         >
           <div className="tr__container w-full grid grid-cols-12 gap-x-6">
             <BlurTextReveal

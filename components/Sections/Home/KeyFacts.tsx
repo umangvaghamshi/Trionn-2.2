@@ -10,6 +10,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { partnersLogo } from "@/data";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LinePlus from "@/components/LinePlus";
+import Marquee from "@/components/Marquee";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -105,7 +106,7 @@ export default function KeyFacts() {
   return (
     <section
       id="keyfacts-section"
-      className="pt-20 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-screen"
+      className="pt-20 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh"
       ref={containerRef}
     >
       <div className="tr__container">
@@ -117,8 +118,9 @@ export default function KeyFacts() {
             stagger={0.05}
             className="text-dark-font block"
           />
-          <p className="text-dark-font max-w-40 small">
-            A snapshot of our experience and impact.
+          <p className="text-dark-font small">
+            A snapshot of our <br />
+            experience and impact.
           </p>
         </div>
         <div className="key-card-list flex gap-6 justify-center flex-wrap lg:flex-nowrap transform-3d">
@@ -134,10 +136,10 @@ export default function KeyFacts() {
             stagger={0.05}
             className="text-black small uppercase text-center block"
           />
-          <div className="partners-list flex justify-center -mx-4 lg:-mx-10">
+          <div className="partners-list hidden lg:flex justify-center -mx-4 lg:-mx-10">
             {partnersLogo.map((item, index) => (
               <div
-                className="px-4 lg:px-10 border-r border-grey-light/15 flex justify-center items-center last:border-0"
+                className="px-6 lg:px-10 border-r border-grey-light/15 flex justify-center items-center last:border-0"
                 key={index}
               >
                 <Image
@@ -150,10 +152,30 @@ export default function KeyFacts() {
               </div>
             ))}
           </div>
+          <Marquee gap={0} className="-mx-10 block w-auto! lg:hidden">
+            <div className="flex flex-wrap">
+              {partnersLogo.map((item, index) => {
+                return (
+                  <div
+                    className="px-10 border-r border-grey-light/15 flex justify-center items-center"
+                    key={index}
+                  >
+                    <Image
+                      src={item.logo}
+                      width={108}
+                      height={50}
+                      className={`h-auto ${item.widthClass}`}
+                      alt={`Partners logo ${index}`}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </Marquee>
         </div>
       </div>
       {/* Bottom decoration line (Moved from Work section) */}
-      <div className="js-kf-line-wrap tr__container absolute bottom-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4 hidden md:block">
+      <div className="js-kf-line-wrap tr__container absolute bottom-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4">
         <LinePlus
           key={odoTick}
           lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}

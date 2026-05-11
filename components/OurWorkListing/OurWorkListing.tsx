@@ -1979,7 +1979,10 @@ export default function OurWorkListing() {
         className="fixed top-0 left-0 pointer-events-none z-2 will-change-contents"
       />
 
-      <main id="projects-grid" className="relative py-10 lg:py-20 z-10 flex flex-col gap-10 lg:gap-20">
+      <main
+        id="projects-grid"
+        className="relative py-10 lg:py-20 z-10 flex flex-col gap-10 lg:gap-20"
+      >
         {projects.map((project, i) => (
           <article
             key={i}
@@ -2093,7 +2096,7 @@ const styles = `
 }
 // #page-header { position: relative; }
 // #page-header-pin {
-//   height: 100vh; width: 100%;
+//   height: 100dvh; width: 100%;
 //   display: flex; flex-direction: column; align-items: center; justify-content: center;
 //   text-align: center; gap: 0;
 // }

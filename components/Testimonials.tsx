@@ -139,7 +139,7 @@ export default function Testimonials({
             }
       }
     >
-      <div className="tr__container min-h-screen py-37.5">
+      <div className="tr__container min-h-dvh py-37.5">
         <div className="grid grid-cols-12 gap-6">
           <BlurTextReveal
             as="h2"
@@ -149,14 +149,14 @@ export default function Testimonials({
             className="text-dark-font col-span-12 sm:col-span-6 lg:col-span-5 lg:col-start-2"
           />
           <div className="col-span-12 sm:col-span-6 lg:col-span-5 flex flex-col justify-end">
-            <p className="small text-dark-font sm:max-w-45">
+            <p className="small text-dark-font max-w-60 lg:max-w-45">
               Great work is built through partnership. Here&apos;s what our
               clients say.
             </p>
           </div>
         </div>
         <LinePlus
-          customClass={"my-8 lg:my-20"}
+          customClass={"my-16 lg:my-20"}
           lineClass={"opacity-15 bg-grey-line lg:col-span-10 lg:col-start-2"}
           plusClass={
             "col-span-12 sm:col-span-1 sm:col-start-7 sm:-translate-x-1/2! mx-auto sm:mx-0"
@@ -222,7 +222,7 @@ export default function Testimonials({
               </div>
             </div>
           </div>
-          <div className="col-span-12 lg:col-span-5 order-1 lg:order-2 mb-6 lg:mb-0">
+          <div className="col-span-12 lg:col-span-5 order-1 lg:order-2 mb-10 lg:mb-0">
             <Swiper
               {...swiperOptions}
               modules={[Navigation, Pagination, Autoplay, EffectFade]}
@@ -248,11 +248,11 @@ export default function Testimonials({
                   className="testimonial-slide h-auto! text-dark-font"
                 >
                   <div className="testimonial-item gap-x-6 h-full">
-                    <span className="block lg:hidden title mb-4">
+                    <span className="block lg:hidden title mb-6">
                       {item.companyName}
                     </span>
                     <div className="flex flex-col justify-between">
-                      <h3 className="mb-6 lg:mb-20">{item.quoteMessage}</h3>
+                      <h3 className="mb-10 lg:mb-20">{item.quoteMessage}</h3>
                       <div className="client-info flex justify-between items-end">
                         <div className="left-block flex items-end">
                           <div className="w-14 h-14 lg:w-20 lg:h-20 overflow-hidden rounded-lg relative transition-all duration-300 ease-in-out mr-4 lg:mr-6">
@@ -287,7 +287,7 @@ export default function Testimonials({
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="mt-8 lg:mt-25">
+            <div className="mt-10 lg:mt-25">
               <WordShiftButton text="become a client" href="#" />
             </div>
           </div>

@@ -48,8 +48,10 @@ export function TrionnSymbolAnimation({
     const el = document.getElementById("s3-text");
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { disableHoldRef.current = entry.isIntersecting; },
-      { threshold: 0.1 }
+      ([entry]) => {
+        disableHoldRef.current = entry.isIntersecting;
+      },
+      { threshold: 0.1 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -73,7 +75,6 @@ export function TrionnSymbolAnimation({
     audio.setSoundEnabled(true);
     audio.autoStartWoosh();
   }, [soundEnabled, audio]);
-
 
   // ── Perf monitor ──────────────────────────────────────────────────────────
   // useEffect(() => {
@@ -110,7 +111,7 @@ export function TrionnSymbolAnimation({
   //     }
   //     rafId = requestAnimationFrame(tick);
   //   }
- 
+
   //   rafId = requestAnimationFrame(waitForRenderer);
   //   return () => {
   //     document.removeEventListener("visibilitychange", syncClockAfterBackground);
@@ -170,7 +171,7 @@ export function TrionnSymbolAnimation({
       {/* 3D canvas wrap — position:absolute so GSAP ScrollTrigger pin can manage sticky */}
       <div
         ref={canvasWrapRef}
-        className="absolute inset-0 w-full h-screen z-0 pointer-events-none"
+        className="absolute inset-0 w-full h-dvh z-0 pointer-events-none"
       />
 
       {/* Cursor Follow Marquee */}
