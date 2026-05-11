@@ -149,7 +149,7 @@ export default function Testimonials({
             className="text-dark-font col-span-12 sm:col-span-6 lg:col-span-5 lg:col-start-2"
           />
           <div className="col-span-12 sm:col-span-6 lg:col-span-5 flex flex-col justify-end">
-            <p className="small text-dark-font max-w-60 lg:max-w-45">
+            <p className="small text-dark-font max-w-55 lg:max-w-45">
               Great work is built through partnership. Here&apos;s what our
               clients say.
             </p>

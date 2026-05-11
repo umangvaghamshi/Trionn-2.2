@@ -109,7 +109,11 @@ export default function KeyFacts() {
         });
 
         cards.forEach((_, i) => {
-          tl.call(() => triggerOdometer(i), undefined, i * staggerEach + staggerEach * 1.5);
+          tl.call(
+            () => triggerOdometer(i),
+            undefined,
+            i * staggerEach + staggerEach * 1.5,
+          );
         });
       });
 
@@ -254,7 +258,13 @@ export default function KeyFacts() {
 
 function FeaturedCard({ odoSync }: { odoSync: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const awardsImages = ["/images/FAW.svg", "/images/awwwards.svg"];
+  const awardsImages = [
+    "/images/awwwards.svg",
+    "/images/ccda.svg",
+    "/images/csswinner.svg",
+    "/images/adesignaward.svg",
+    "/images/gsap.svg",
+  ];
 
   useGSAP(
     () => {
@@ -313,10 +323,10 @@ function FeaturedCard({ odoSync }: { odoSync: number }) {
         preload="metadata"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="relative z-2 h-full p-6 lg:p-10 flex flex-col justify-between">
+      <div className="relative z-2 h-full p-8 lg:p-10 flex flex-col justify-between">
         <span className="text-light-font title block">Featured & Awards</span>
         <div>
-          <div className="relative w-3/12 h-8 flex items-end justify-end mb-6 awards-logo-list">
+          <div className="relative w-3/12 h-8 flex items-end justify-end mb-4 awards-logo-list">
             {awardsImages.map((src, i) => (
               <Image
                 key={i}
@@ -351,7 +361,7 @@ function ProjectCard({ odoSync }: { odoSync: number }) {
   return (
     <div
       data-kf-card
-      className="project-card relative shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-cream p-6 lg:p-10 flex flex-col justify-between overflow-hidden cursor-pointer hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
+      className="project-card relative shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-cream p-8 lg:p-10 flex flex-col justify-between overflow-hidden cursor-pointer hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
     >
       <span className="title block text-dark-font">projects completed</span>
       <div className="flex flex-col items-center justify-center flex-1 relative">
@@ -401,9 +411,9 @@ function TeamCard({ odoSync }: { odoSync: number }) {
       onMouseLeave={handleLeave}
       className="team-card shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02] cursor-pointer transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
-      <div className="relative z-3 h-full p-6 lg:p-10 flex flex-col justify-between">
+      <div className="relative z-3 h-full p-8 lg:p-10 flex flex-col justify-between">
         <span className="title block text-right">our team members</span>
-        <div className="team-video overflow-hidden max-lg:py-2 lg:py-10 max-lg:flex-1 rounded-lg">
+        <div className="team-video overflow-hidden max-lg:py-4 lg:py-10 max-lg:flex-1 rounded-lg">
           <video
             ref={videoRef}
             src="/video/team/rushi.mp4"
