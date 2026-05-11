@@ -10,7 +10,7 @@ const CROSS_ICON = (
     viewBox="0 0 40 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className="mx-[4.582vw] w-[2.291vw] h-[2.291vw]"
+    className="mx-10 lg:mx-16 w-6 lg:w-8 h-6 lg:h-8 mt-2"
   >
     <line
       x1="20.2256"
@@ -29,7 +29,7 @@ export default function Vision() {
       pinnedContent={
         <div
           id="s3-text"
-          className="w-full min-h-dvh flex flex-col justify-between bg-transparent text-left overflow-hidden items-center py-20 lg:py-37.5 text-light-font"
+          className="w-full min-h-dvh flex flex-col justify-between bg-transparent text-left overflow-hidden items-center py-50 lg:py-37.5 text-light-font"
         >
           <div className="tr__container w-full grid grid-cols-12 gap-x-6">
             <BlurTextReveal

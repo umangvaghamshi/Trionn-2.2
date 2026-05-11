@@ -143,7 +143,7 @@ export default function Work({
           className="flex flex-col md:flex-row h-auto md:h-[min(80vh,860px)] flex-nowrap items-center will-change-transform w-full"
         >
           {/* ── Intro Text Block (Responsive width) ── */}
-          <div className="pointer-events-auto flex w-full md:w-[50vw] shrink-0 md:h-full flex-col justify-center items-center px-6 md:px-10">
+          <div className="pointer-events-auto flex w-full md:w-[50vw] shrink-0 h-[75vh] md:h-full flex-col justify-center items-center px-6 md:px-10">
             <div className="title-block flex flex-col items-center text-center gap-10 md:gap-12 pt-20">
               <BlurTextReveal
                 as="h2"
@@ -193,7 +193,7 @@ export default function Work({
             ))}
 
           {/* ── View All Projects card ── */}
-          <div className="js-work-card relative flex w-[calc(100%-3rem)] md:w-[50vw] shrink-0 min-w-0 h-[50vh] md:h-full items-center pointer-events-none md:min-h-dvh py-16">
+          <div className="js-work-card relative flex w-[calc(100%-3rem)] md:w-[50vw] shrink-0 min-w-0 h-[75vh] md:h-full items-center pointer-events-none md:min-h-dvh py-16">
             <div
               className="js-card-line hidden md:block absolute left-0 top-1/2 -translate-y-1/2 h-dvh w-px bg-grey-line/30 origin-top"
               style={{ transform: "scaleY(0)" }}

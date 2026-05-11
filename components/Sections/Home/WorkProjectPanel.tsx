@@ -112,8 +112,8 @@ const WorkProjectPanel = forwardRef<
           </div>
 
           {/* Right: Year & Link */}
-          <div className="flex flex-col sm:flex-row justify-between gap-4">
-            <p ref={subTitleRef} className="small">
+          <div className="flex flex-col sm:flex-row justify-between gap-6 lg:gap-4">
+            <p ref={subTitleRef} className="small max-w-75">
               {parse(item.subTitle)}
             </p>
             <div className="" ref={linkWrapRef}>
