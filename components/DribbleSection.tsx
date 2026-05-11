@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -20,6 +20,7 @@ export default function DribbleSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const centerRef = useRef<HTMLDivElement>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
+  const [refreshComponent, setRefreshComponent] = useState(false);
 
   /* Hold a live ref to the Lenis instance so renderFrame reads scroll in the same tick */
   const lenisRef = useRef<{ scroll: number } | null>(null);
@@ -118,16 +119,16 @@ export default function DribbleSection() {
       });
 
       /* textures: 6 placed + 9 ribbon (slot 5 = video) */
-      const SRCS: (string | null)[] = [
-        "/images/orbit/orbit-01.webp",
-        "/images/orbit/orbit-02.webp",
-        "/images/orbit/orbit-03.webp",
-        "/images/orbit/orbit-04.webp",
-        "/images/orbit/orbit-05.webp",
-        null,
-        "/images/orbit/orbit-07.webp",
-        "/images/orbit/orbit-08.webp",
-        "/images/orbit/orbit-09.webp",
+      const SRCS = [
+        "images/orbit/orbit-09.jpg",
+        "images/orbit/orbit-08.jpg",
+        "images/orbit/orbit-07.jpg",
+        "images/orbit/orbit-06.jpg",
+        "images/orbit/orbit-05.jpg",
+        "images/orbit/orbit-04.jpg",
+        "images/orbit/orbit-03.jpg",
+        "images/orbit/orbit-02.jpg",
+        "images/orbit/orbit-01.jpg",
       ];
       const loader = new THREE.TextureLoader();
       const mkTex = (src: string | null) =>
@@ -139,7 +140,14 @@ export default function DribbleSection() {
             })
           : videoTex;
       const ribbonTextures = SRCS.map(mkTex);
-      const placeTextures = SRCS.slice(0, 6).map(mkTex);
+      const placeTextures = [
+        mkTex("images/orbit/orbit-01.jpg"),
+        mkTex("images/orbit/orbit-02.jpg"),
+        mkTex("images/orbit/orbit-08.jpg"),
+        mkTex("images/orbit/orbit-05.jpg"),
+        mkTex("images/orbit/orbit-06.jpg"),
+        mkTex("images/orbit/orbit-03.jpg"),
+      ];
       const NP = 6;
 
       /* placed cards — rebuilt on resize */
@@ -501,21 +509,18 @@ export default function DribbleSection() {
         anticipatePin: 1,
       });
 
-      /* Ensure the pin-spacer has a low z-index so the footer can cover it */
-      ScrollTrigger.refresh();
-      const pinSpacer = section.parentElement;
-      if (pinSpacer && pinSpacer.classList.contains("pin-spacer")) {
-        pinSpacer.style.zIndex = "1";
-        pinSpacer.style.position = "relative";
-      }
+      /* When WorkServicesSequence stripes finish, its layout shift changes our scroll
+         position — refresh so st.start stays accurate for the render loop. */
+      const onServicesUnpinned = () => {
+        st.refresh();
+      };
+      window.addEventListener("trionn-services:unpinned", onServicesUnpinned);
 
       /* render loop — driven by gsap.ticker (same tick as Lenis) so scroll is never stale */
       let lastTs = 0;
       let smoothHeadA = 0,
         smoothHeadB = 0;
-      let sectionVisible = false;
       const renderFrame = (time: number) => {
-        if (!sectionVisible) return;
         const ts = time * 1000;
         const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 1 / 60;
         lastTs = ts;
@@ -550,6 +555,11 @@ export default function DribbleSection() {
             );
             gsap.set(stripes[i]!, { scaleY: stripeProgress });
           }
+
+          // const footerEl = document.querySelector<HTMLElement>(".site-footer");
+          // if (footerEl) {
+          //   gsap.set(footerEl, { marginTop: "-100vh", ease: "none" });
+          // }
         }
 
         const rProg = Math.min(1, prog / (400 / 600));
@@ -678,21 +688,15 @@ export default function DribbleSection() {
       /* Same as app.js: gsap.ticker.add drives the render in the same tick as Lenis */
       gsap.ticker.add(renderFrame);
 
-      /* IntersectionObserver — skip rendering when section is off-screen */
-      const io = new IntersectionObserver(
-        ([entry]) => {
-          sectionVisible = entry.isIntersecting;
-        },
-        { root: null, threshold: 0, rootMargin: "64px 0px" },
-      );
-      io.observe(section);
-
       /* cleanup */
       return () => {
+        window.removeEventListener(
+          "trionn-services:unpinned",
+          onServicesUnpinned,
+        );
         window.removeEventListener("resize", handleResize);
         cancelAnimationFrame(resizeRafId);
         gsap.ticker.remove(renderFrame);
-        io.disconnect();
         st.kill();
         videoEl.pause();
         videoEl.remove();
@@ -707,6 +711,16 @@ export default function DribbleSection() {
     },
     { scope: sectionRef },
   );
+
+  useEffect(() => {
+    const onUnpinned = () => {
+      setRefreshComponent(true);
+    };
+    window.addEventListener("trionn-services:unpinned", onUnpinned);
+    return () => {
+      window.removeEventListener("trionn-services:unpinned", onUnpinned);
+    };
+  }, []);
 
   return (
     <>
@@ -725,13 +739,16 @@ export default function DribbleSection() {
             ref={centerRef}
             className="text-center pointer-events-none select-none"
           >
-            <BlurTextReveal
-              as="h2"
-              text="Design in motion"
-              animationType="chars"
-              stagger={0.05}
-              className="text-dark-font mb-6 relative"
-            />
+            {refreshComponent && (
+              <BlurTextReveal
+                as="h2"
+                text="Design in motion"
+                animationType="chars"
+                stagger={0.05}
+                className="text-dark-font mb-6 relative"
+              />
+            )}
+
             <p className="relative small">
               Exploring ideas through
               <br />
