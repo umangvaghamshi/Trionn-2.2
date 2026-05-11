@@ -265,20 +265,19 @@ export default function TeamSection() {
         vh = window.innerHeight;
 
       if (_mob) {
-        // Card size: 4 per row with 10px gaps, max 68px
-        const gap = 10;
-        const cw = Math.min(68, Math.floor((vw - 5 * gap) / 4));
+        const cw = 68;
         const ch = Math.round(cw * RATIO);
+        const gap = 14;   // matches main.js
         const rowH = ch + gap;
-        const topPad = 24;
-        const boxGap = 20;
-        // Frame: ~55% of viewport width, centered
-        const frameW = Math.min(170, Math.floor(vw * 0.55));
-        const frameH = Math.round(frameW * RATIO);
-        const boxTop = topPad + 2 * rowH + boxGap;
-        const boxBottom = boxTop + frameH + boxGap;
+        const boxGap = 40; // matches main.js gap between cards and center frame
 
-        // Explicitly position center frame via inline style (beats CSS specificity)
+        // Center frame is 20% smaller: inner 208×254, outer 214×261
+        const frameInnerH = 254;
+        // Center frame vertically in viewport
+        const boxTop = Math.round(vh / 2 - frameInnerH / 2);
+        const boxBottom = boxTop + frameInnerH;
+
+        // Position center frame via inline style (beats CSS specificity)
         centerFrame.style.position = "absolute";
         centerFrame.style.top = boxTop + "px";
         centerFrame.style.left = "50%";
@@ -286,18 +285,27 @@ export default function TeamSection() {
         centerFrame.style.right = "auto";
         centerFrame.style.bottom = "auto";
 
-        // Update frame sizes dynamically
-        frameOuterRef.current!.style.width = frameW + 8 + "px";
-        frameOuterRef.current!.style.height = frameH + 8 + "px";
+        // Caption inside the frame at bottom
+        frameCaptionRef.current!.style.top = "auto";
+        frameCaptionRef.current!.style.bottom = "14px";
+        frameCaptionRef.current!.style.left = "50%";
+        frameCaptionRef.current!.style.transform = "translateX(-50%)";
+        frameCaptionRef.current!.style.width = "100%";
+        frameCaptionRef.current!.style.position = "absolute";
+
+        // Frame element sizes — 20% smaller than style.css (outer: 214×261, inner: 208×254)
+        frameOuterRef.current!.style.width = "214px";
+        frameOuterRef.current!.style.height = "261px";
         frameOuterRef.current!.style.top = "-4px";
         frameOuterRef.current!.style.left = "-4px";
-        arcCanvasRef.current!.style.width = frameW + 8 + "px";
-        arcCanvasRef.current!.style.height = frameH + 8 + "px";
+        arcCanvasRef.current!.style.width = "214px";
+        arcCanvasRef.current!.style.height = "261px";
         arcCanvasRef.current!.style.top = "-4px";
         arcCanvasRef.current!.style.left = "-4px";
-        centerFrameInnerRef.current!.style.width = frameW + "px";
-        centerFrameInnerRef.current!.style.height = frameH + "px";
+        centerFrameInnerRef.current!.style.width = "208px";
+        centerFrameInnerRef.current!.style.height = "254px";
 
+        // rows above: [row2: 4 cards][row1: 3 cards] — matches main.js CARD_POS_MOB
         const rowsAbove = [
           [3, 4, 5, 6],
           [0, 1, 2],
@@ -308,56 +316,42 @@ export default function TeamSection() {
           const startX = (vw - totalW) / 2 + cw / 2;
           row.forEach((idx, ci) => {
             const s = state[idx];
-            s.baseW = cw;
-            s.baseH = ch;
-            s.w = cw;
-            s.h = ch;
+            s.baseW = cw; s.baseH = ch; s.w = cw; s.h = ch;
             s.ox = startX + ci * (cw + gap);
             s.oy = rowCenterY;
             s.rx = 5 + Math.random() * 5;
             s.ry = 5 + Math.random() * 5;
-            s.x = s.ox;
-            s.y = s.oy;
+            s.x = s.ox; s.y = s.oy;
             const el = cardEls[idx];
-            if (el) {
-              el.style.width = cw + "px";
-              el.style.height = ch + "px";
-            }
+            if (el) { el.style.width = cw + "px"; el.style.height = ch + "px"; }
           });
         });
 
+        // rows below: [row1: 4 cards][row2: 3 cards]
         const rowsBelow = [
           [7, 8, 9, 10],
           [11, 12, 13],
         ];
         rowsBelow.forEach((row, ri) => {
-          const rowCenterY = boxBottom + ch / 2 + ri * rowH;
+          const rowCenterY = boxBottom + boxGap + ch / 2 + ri * rowH;
           const totalW = row.length * cw + (row.length - 1) * gap;
           const startX = (vw - totalW) / 2 + cw / 2;
           row.forEach((idx, ci) => {
             const s = state[idx];
-            s.baseW = cw;
-            s.baseH = ch;
-            s.w = cw;
-            s.h = ch;
+            s.baseW = cw; s.baseH = ch; s.w = cw; s.h = ch;
             s.ox = startX + ci * (cw + gap);
             s.oy = rowCenterY;
             s.rx = 5 + Math.random() * 5;
             s.ry = 5 + Math.random() * 5;
-            s.x = s.ox;
-            s.y = s.oy;
+            s.x = s.ox; s.y = s.oy;
             const el = cardEls[idx];
-            if (el) {
-              el.style.width = cw + "px";
-              el.style.height = ch + "px";
-            }
+            if (el) { el.style.width = cw + "px"; el.style.height = ch + "px"; }
           });
         });
 
-        const sceneH = boxBottom + 2 * rowH + 50;
-        _mobSceneH = sceneH;
-        scene.style.minHeight = sceneH + "px";
-        scene.style.height = sceneH + "px";
+        _mobSceneH = vh;
+        scene.style.minHeight = vh + "px";
+        scene.style.height = vh + "px";
         return;
       }
 
@@ -526,7 +520,7 @@ export default function TeamSection() {
       const vw = window.innerWidth,
         vh = window.innerHeight;
       const cx = vw / 2,
-        cy = _mob ? 445 : vh / 2;
+        cy = vh / 2;
 
       cardEls.forEach((el, i) => {
         const s = state[i];
@@ -585,9 +579,9 @@ export default function TeamSection() {
         vh = window.innerHeight;
       const gap = 40 + (cardW || 0) / 2;
       const gapV = (_mob ? 40 : 120) + (cardH || 0) / 2;
-      const _fw = _mob ? 268 : _tab ? 280 : _lap ? 300 : 352,
-        _fh = _mob ? 326 : _tab ? 338 : _lap ? 363 : 426;
-      const cy = _mob ? 445 : vh / 2;
+      const _fw = _mob ? 214 : _tab ? 280 : _lap ? 300 : 352,
+        _fh = _mob ? 261 : _tab ? 338 : _lap ? 363 : 426;
+      const cy = vh / 2;
       return {
         l: vw / 2 - _fw / 2 - gap,
         r: vw / 2 + _fw / 2 + gap,
@@ -828,8 +822,8 @@ export default function TeamSection() {
         const destY = flyTarget.y;
 
         const cp = getCenterPos();
-        const fw = _mob ? 268 : _tab ? 280 : _lap ? 300 : 352;
-        const fh = _mob ? 326 : _tab ? 338 : _lap ? 363 : 426;
+        const fw = _mob ? 214 : _tab ? 280 : _lap ? 300 : 352;
+        const fh = _mob ? 261 : _tab ? 338 : _lap ? 363 : 426;
         const frameBounds = {
           l: cp.x - fw / 2,
           r: cp.x + fw / 2,
@@ -1977,34 +1971,29 @@ export default function TeamSection() {
         }
         @media (max-width: 600px) {
           .ts-scene {
-            height: auto;
-            min-height: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
+            height: 100dvh !important;
+            min-height: 100dvh !important;
+            overflow: hidden !important;
           }
           .ts-center-frame {
-            top: 240px;
             left: 50%;
-            transform: translateX(-50%) !important;
+            transform: translateX(-50%);
           }
           .ts-frame-outer {
-            width: min(178px, calc(55vw + 8px));
-            height: auto;
-            aspect-ratio: 178 / 217;
+            width: 214px;
+            height: 261px;
             top: -4px;
             left: -4px;
           }
           .ts-arc-canvas {
-            width: min(178px, calc(55vw + 8px));
-            height: auto;
-            aspect-ratio: 178 / 217;
+            width: 214px;
+            height: 261px;
             top: -4px;
             left: -4px;
           }
           .ts-center-frame-inner {
-            width: min(170px, 55vw);
-            height: auto;
-            aspect-ratio: 170 / 209;
+            width: 208px;
+            height: 254px;
           }
           .ts-frame-name {
             font-size: 11px;
@@ -2024,12 +2013,13 @@ export default function TeamSection() {
             padding: 0 16px;
           }
           .ts-frame-caption {
-            top: auto;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
+            top: auto !important;
+            bottom: 14px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 100% !important;
             z-index: 25;
+            position: absolute !important;
           }
           .ts-frame-name-row {
             margin-bottom: 2px;
@@ -2080,7 +2070,7 @@ export default function TeamSection() {
         {/* Scene */}
         <div
           ref={sceneRef}
-          className="ts-scene relative w-screen min-h-dvh overflow-hidden"
+          className="ts-scene relative w-screen min-h-dvh h-dvh overflow-hidden"
         >
           <div
             ref={crtRef}
@@ -2229,13 +2219,13 @@ export default function TeamSection() {
 
             <div
               ref={frameCaptionRef}
-              className="ts-frame-caption absolute left-1/2 -translate-x-1/2 text-center opacity-0 pointer-events-none whitespace-nowrap flex flex-col items-center"
-              style={{ top: "calc(100% + 32px)" }}
+              className="ts-frame-caption absolute text-center opacity-0 pointer-events-none flex flex-col items-center"
+              style={{ top: "calc(100% + 32px)", left: "50%", transform: "translateX(-50%)", width: "320px" }}
             >
               <div className="ts-frame-name-row block mb-2">
                 <div
                   ref={frameNameRef}
-                  className="ts-frame-name uppercase whitespace-nowrap"
+                  className="ts-frame-name uppercase"
                   style={{
                     fontSize: "14px",
                     fontWeight: 300,
