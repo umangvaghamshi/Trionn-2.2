@@ -119,6 +119,15 @@ export default function StripeReveal({
       /* Drive stripe scaleY every GSAP ticker tick — stays in sync with
          Lenis-smoothed scroll (same pattern as DribbleSection). */
       let sectionVisible = false;
+      let resolvedHoldStart = holdStart;
+
+      const mm = gsap.matchMedia();
+      mm.add("(max-width: 1023px)", () => {
+        resolvedHoldStart = 0;
+      });
+      mm.add("(min-width: 1024px)", () => {
+        resolvedHoldStart = holdStart;
+      });
 
       const tick = () => {
         if (!sectionVisible) return;
@@ -126,7 +135,7 @@ export default function StripeReveal({
         const progress = st.progress;
         const holdT = Math.max(
           0,
-          Math.min(1, (progress - holdStart) / (1 - holdStart)),
+          Math.min(1, (progress - resolvedHoldStart) / (1 - resolvedHoldStart)),
         );
 
         for (let i = 0; i < count; i++) {
@@ -158,6 +167,7 @@ export default function StripeReveal({
         gsap.ticker.remove(tick);
         io.disconnect();
         st.kill();
+        mm.revert();
       };
     },
     {

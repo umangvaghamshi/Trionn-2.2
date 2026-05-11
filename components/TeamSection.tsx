@@ -99,7 +99,7 @@ export default function TeamSection() {
     const RATIO = 705 / 573;
     const _mob = window.innerWidth <= 600;
     const _tab = window.innerWidth > 600 && window.innerWidth <= 1024;
-    const _lap = window.innerWidth > 1024 && window.innerWidth <= 1440;
+    const _lap = window.innerWidth > 1024 && window.innerWidth <= 1500;
     const FRAME_W = _mob ? 260 : _tab ? 310 : _lap ? 345 : 400;
     const FRAME_H = Math.round(FRAME_W * RATIO);
     const CARD_SIZES = _mob
