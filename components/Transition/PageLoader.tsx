@@ -555,7 +555,7 @@ export default function PageLoader() {
         box.style.left = "0";
         box.style.top = "0";
         box.style.width = "100vw";
-        box.style.height = "100vh";
+        box.style.height = "100dvh";
         cb();
       }
     })(performance.now());

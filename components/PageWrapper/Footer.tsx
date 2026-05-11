@@ -46,15 +46,15 @@ export default function Footer() {
   return (
     <FooterAtmosphereProvider>
       <footer
-        className="site-footer relative z-2 flex min-h-screen flex-col overflow-hidden bg-[#040508] text-light-font isolate"
-        style={{ marginTop: "-100vh" }}
+        className="site-footer relative z-2 flex min-h-dvh flex-col overflow-hidden bg-[#040508] text-light-font isolate"
+        style={{ marginTop: "-100dvh" }}
       >
         {/* z-[5]: fog draws over wire SVG (z-[2]) like trionn-logo-footer; text stays z-20 */}
         <FooterFog />
 
         <div className="relative z-20 flex w-full min-h-0 flex-1">
-          <div className="tr__container flex w-full flex-col pt-20 lg:pt-25 pb-20 md:pt-37.5">
-            <div className="grid w-full grid-cols-12 gap-10 md:gap-x-12 lg:gap-y-0 mb-20">
+          <div className="tr__container flex w-full flex-col pt-25 pb-6 md:pb-20 md:pt-37.5">
+            <div className="grid w-full grid-cols-12 gap-10 md:gap-x-12 lg:gap-y-0 lg:mb-20">
               <div className="flex flex-col justify-between gap-6 col-span-12 md:col-span-6 lg:col-span-7 xl:col-span-8">
                 <div>
                   <BlurTextReveal

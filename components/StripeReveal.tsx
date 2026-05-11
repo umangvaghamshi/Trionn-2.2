@@ -175,17 +175,20 @@ export default function StripeReveal({
   );
 
   return (
-    <section ref={sectionRef} className={`relative overflow-visible min-h-screen h-screen ${className}`}>
+    <section
+      ref={sectionRef}
+      className={`relative overflow-visible min-h-dvh h-dvh ${className}`}
+    >
       <div
         ref={containerRef}
-        className={`w-full min-h-screen h-screen z-20 mix-blend-difference ${pinnedClassName}`}
+        className={`w-full min-h-dvh h-dvh z-20 mix-blend-difference ${pinnedClassName}`}
       >
         {/* ── 1. Pinned content ──────────────────────────── */}
         {pinnedContent}
 
         {/* ── 2. Stripes overlay ─────────────────────────── */}
         <div
-          className={`stripes-container absolute inset-0 pointer-events-none flex flex-col w-full h-screen z-30 ${stripesClassName}`}
+          className={`stripes-container absolute inset-0 pointer-events-none flex flex-col w-full h-dvh z-30 ${stripesClassName}`}
         >
           {Array.from({ length: stripeCount }).map((_, index) => (
             <div

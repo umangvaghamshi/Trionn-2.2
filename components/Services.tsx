@@ -124,15 +124,15 @@ export default function Services() {
     <>
       <section
         ref={sectionRef}
-        className="relative text-dark-font bg-white min-h-screen z-31"
+        className="relative text-dark-font bg-white min-h-dvh z-31"
       >
         <div
-          className="services-list min-h-screen relative flex flex-col group"
+          className="services-list min-h-dvh relative flex flex-col group"
           ref={serviceListRef}
         >
           {ServicesListData.map((service, index) => (
             <div
-              className="services-item min-h-screen flex w-full absolute z-2 bg-white"
+              className="services-item min-h-dvh flex w-full absolute z-2 bg-white"
               ref={(self) => {
                 if (self) cardsRef.current[index] = self;
               }}

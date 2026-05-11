@@ -77,7 +77,7 @@ export default function Orbit({
   return (
     <section
       ref={containerRef}
-      className={`relative w-full h-screen cursor-default ${className}`}
+      className={`relative w-full h-dvh cursor-default ${className}`}
       style={{ backgroundColor, fontFamily }}
     >
       <div className="tr__container">
@@ -90,7 +90,7 @@ export default function Orbit({
       </div>
       <div
         ref={containerRef}
-        className={`relative w-full h-screen overflow-hidden cursor-default flex flex-col ${className}`}
+        className={`relative w-full h-dvh overflow-hidden cursor-default flex flex-col ${className}`}
         style={{ backgroundColor, fontFamily }}
       >
         {/* Trail Canvas — Motion Blur Layer */}

@@ -171,7 +171,7 @@ export default function ServicesOrbitExperienceV2() {
     const nextSection = document.getElementById("services-orbit-scope-v2")
       ?.nextElementSibling as HTMLElement | null;
     if (nextSection) {
-      gsap.set(nextSection, { marginTop: "-100vh" });
+      gsap.set(nextSection, { marginTop: "-100dvh" });
     }
 
     const stripeCount = stripes.length;
@@ -206,12 +206,12 @@ export default function ServicesOrbitExperienceV2() {
   return (
     <div
       id="services-orbit-scope-v2"
-      className="services-orbit-scope relative min-h-screen font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[#e8e8e8] overflow-x-hidden"
+      className="services-orbit-scope relative min-h-dvh font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[#e8e8e8] overflow-x-hidden"
       style={{ background: BG, color: FG }}
     >
       <div
         ref={canvasWrapRef}
-        className="absolute top-0 left-0 w-full h-screen z-0 isolate transform-[translateZ(0)] backface-hidden max-[768px]:contain-[layout_style] max-[768px]:transform-[translateZ(0)]"
+        className="absolute top-0 left-0 w-full h-dvh z-0 isolate transform-[translateZ(0)] backface-hidden max-[768px]:contain-[layout_style] max-[768px]:transform-[translateZ(0)]"
       >
         <canvas
           ref={mainCanvasRef}
@@ -220,7 +220,7 @@ export default function ServicesOrbitExperienceV2() {
         />
       </div>
 
-      <section className="sec-expertise relative z-1 flex min-h-screen w-screen flex-col justify-center bg-transparent px-6 pt-12 pb-14 sm:px-10 sm:pt-12 sm:pb-14 contain-[layout_style] transform-[translateZ(0)] backface-hidden text-light-font">
+      <section className="sec-expertise relative z-1 flex min-h-dvh w-screen flex-col justify-center bg-transparent px-6 pt-12 pb-14 sm:px-10 sm:pt-12 sm:pb-14 contain-[layout_style] transform-[translateZ(0)] backface-hidden text-light-font">
         <div className="exp-left flex flex-col gap-4 justify-center items-center">
           <div className="exp-top-label">
             <BlurTextReveal
@@ -277,7 +277,7 @@ export default function ServicesOrbitExperienceV2() {
 
       <section
         ref={sec2Ref}
-        className="sec-focused relative z-1 flex min-h-screen w-screen items-center bg-transparent contain-[layout_style] transform-[translateZ(0)]"
+        className="sec-focused relative z-1 flex min-h-dvh w-screen items-center bg-transparent contain-[layout_style] transform-[translateZ(0)]"
         id="sec2-v2"
       >
         <div className="foc-inner tr__container grid grid-cols-12 gap-6 text-light-font w-full">
@@ -311,7 +311,7 @@ export default function ServicesOrbitExperienceV2() {
 
       <section
         ref={sec3Ref}
-        className="sec-disciplines relative z-1 flex min-h-screen w-screen items-center justify-center bg-transparent contain-[layout_style]"
+        className="sec-disciplines relative z-1 flex min-h-dvh w-screen items-center justify-center bg-transparent contain-[layout_style]"
         id="sec3-v2"
       >
         <div className="disc-inner flex w-full flex-col items-center justify-center gap-20">
