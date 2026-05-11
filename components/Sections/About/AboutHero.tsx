@@ -36,7 +36,7 @@ const CROSS_ICON = (
  * overlay labels, and a full-width marquee banner at the bottom.
  *
  * Uses natural document flow so the lion scales proportionally (just like
- * the HTML prototype), rather than being forced into a 100vh container.
+ * the HTML prototype), rather than being forced into a 100dvh container.
  */
 export default function AboutHero() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -85,7 +85,7 @@ export default function AboutHero() {
   }, []);
 
   return (
-    <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center min-h-screen">
+    <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center min-h-dvh">
       {/* Top: heading */}
       <div className="relative z-20 pt-32 md:pt-40 px-6 md:px-10 w-full mix-blend-difference title-block pointer-events-none">
         <h1

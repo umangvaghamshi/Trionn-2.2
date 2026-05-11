@@ -243,14 +243,14 @@ function ServiceCard({ data }: { data: CardData }) {
   const paths = CARD_SVG_PATHS[data.svgIndex];
 
   return (
-    <div className="w-full h-full relative">
-      <div className="card-inner pointer-events-auto bg-[#000]/20 border-0 rounded-sm p-10 h-full flex flex-col justify-between overflow-hidden relative backdrop-blur-md min-h-79">
+    <div className="w-full relative">
+      <div className="card-inner pointer-events-auto bg-[#000]/20 border-0 rounded-sm p-10 h-full flex flex-col justify-between overflow-hidden relative backdrop-blur-md min-h-fit md:min-h-79">
         <div className="card-top relative z-10 flex justify-between items-start gap-6">
           <h3 className="text-white m-0 max-w-50">{data.title}</h3>
           <svg
             viewBox="0 0 60 60"
             xmlns="http://www.w3.org/2000/svg"
-            className="card-svg-icon shrink-0 w-25 h-25"
+            className="card-svg-icon shrink-0 w-16 lg:w-25 h-16 lg:h-25"
           >
             {paths.map((d, i) => (
               <path
@@ -265,7 +265,7 @@ function ServiceCard({ data }: { data: CardData }) {
             ))}
           </svg>
         </div>
-        <p className="text-light-font relative z-10 m-0 small max-w-75">
+        <p className="text-light-font relative z-10 m-0 small max-w-75 mt-10">
           {data.description}
         </p>
       </div>
@@ -533,14 +533,19 @@ export default function TrionnServices({
     gsap.set(allEls, { opacity: 0, x: 0, y: 0 });
 
     const tl = gsap.timeline({ paused: true });
-    
+
     if (isMobile) {
       const cardDur = 0.3;
       const cardStep = 0.12;
       const STEPS = 12;
 
       const allKeys = [
-        "card-L0", "card-R0", "card-L1", "card-R1", "card-L2", "card-R2"
+        "card-L0",
+        "card-R0",
+        "card-L1",
+        "card-R1",
+        "card-L2",
+        "card-R2",
       ];
 
       s.svgFired = new Set<string>();
@@ -573,9 +578,15 @@ export default function TrionnServices({
           frames.push({ x: centerX, y, opacity: op });
         }
 
-        tl.to(el, { keyframes: frames, duration: cardDur, ease: "none" }, startT);
+        tl.to(
+          el,
+          { keyframes: frames, duration: cardDur, ease: "none" },
+          startT,
+        );
 
-        const paths = Array.from(el.querySelectorAll<SVGPathElement>(".svg-path"));
+        const paths = Array.from(
+          el.querySelectorAll<SVGPathElement>(".svg-path"),
+        );
         if (paths.length) gsap.set(paths, { drawSVG: "0%" });
       });
     } else {
@@ -637,11 +648,23 @@ export default function TrionnServices({
           rFrames.push({ x: rX, y: rY, opacity: op });
         }
 
-        tl.to(lEl, { keyframes: lFrames, duration: pairDur, ease: "none" }, startT);
-        tl.to(rEl, { keyframes: rFrames, duration: pairDur, ease: "none" }, startT);
+        tl.to(
+          lEl,
+          { keyframes: lFrames, duration: pairDur, ease: "none" },
+          startT,
+        );
+        tl.to(
+          rEl,
+          { keyframes: rFrames, duration: pairDur, ease: "none" },
+          startT,
+        );
 
-        const svgPathsL = Array.from(lEl.querySelectorAll<SVGPathElement>(".svg-path"));
-        const svgPathsR = Array.from(rEl.querySelectorAll<SVGPathElement>(".svg-path"));
+        const svgPathsL = Array.from(
+          lEl.querySelectorAll<SVGPathElement>(".svg-path"),
+        );
+        const svgPathsR = Array.from(
+          rEl.querySelectorAll<SVGPathElement>(".svg-path"),
+        );
         if (svgPathsL.length) gsap.set(svgPathsL, { drawSVG: "0%" });
         if (svgPathsR.length) gsap.set(svgPathsR, { drawSVG: "0%" });
       });
@@ -1035,7 +1058,7 @@ export default function TrionnServices({
       className={`relative isolate bg-[#000] ${embedded ? "h-full min-h-0 w-full" : ""}`}
       style={{
         zIndex: 1,
-        marginTop: embedded ? 0 : `-100vh`,
+        marginTop: embedded ? 0 : `-100dvh`,
       }}
     >
       <SoundListener soundEnabledRef={soundEnabledRef} />
@@ -1092,7 +1115,7 @@ export default function TrionnServices({
             <div
               key={card.id}
               ref={setCardRef(card.id)}
-              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-1.5"
+              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-6"
             >
               <ServiceCard data={card} />
             </div>
@@ -1101,7 +1124,7 @@ export default function TrionnServices({
             <div
               key={card.id}
               ref={setCardRef(card.id)}
-              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-1.5"
+              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-6"
             >
               <ServiceCard data={card} />
             </div>
@@ -1109,7 +1132,7 @@ export default function TrionnServices({
         </div>
         <div
           ref={typographyRef}
-          className="tr__container relative flex h-full flex-col items-center justify-between py-20 z-30"
+          className="tr__container relative flex h-full flex-col items-center justify-between pt-25 pb-20 lg:py-20 z-30"
         >
           <div data-services-copy className="relative z-20 block">
             <BlurTextReveal
@@ -1137,15 +1160,15 @@ export default function TrionnServices({
               ))}
             </div>
           </div>
-          <div className="relative z-20 flex w-full justify-between">
+          <div className="relative z-20 flex flex-col gap-10 md:flex-row w-full justify-center lg:justify-between">
             <div className="hidden w-1/3 lg:block"></div>
             <div
               data-services-copy
-              className="w-full text-center sm:w-1/2 lg:w-1/3 relative min-h-12"
+              className="w-full lg:text-center md:w-1/2 lg:w-1/3 relative min-h-10"
             >
               <div
                 ref={textLightRef}
-                className="absolute inset-0 flex items-center justify-center"
+                className="absolute inset-0 flex items-center justify-center md:justify-start lg:justify-center"
               >
                 <BlurTextReveal
                   as="span"
@@ -1157,18 +1180,18 @@ export default function TrionnServices({
               </div>
               <div
                 ref={textDarkRef}
-                className="absolute inset-0 flex items-center justify-center"
+                className="absolute inset-0 flex items-center justify-center md:justify-start lg:justify-center"
               >
                 <BlurTextReveal
                   as="span"
-                  html={`✦ Different disciplines. One standard of craft.`}
+                  html={`✦ Design with intent. Built to work.`}
                   animationType="chars"
                   stagger={0.05}
                   className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
                 />
               </div>
             </div>
-            <div className="flex w-full justify-end sm:w-1/2 lg:w-1/3">
+            <div className="flex w-full justify-center md:justify-end md:w-1/2 lg:w-1/3">
               <WordShiftButton
                 text={"view services"}
                 href={"/services"}

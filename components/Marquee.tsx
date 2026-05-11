@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { InertiaPlugin } from 'gsap/InertiaPlugin';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Draggable } from 'gsap/all';
-import { ReactElement, useRef } from 'react';
-import { getCanvasManager } from '@/lib/canvasManager';
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { InertiaPlugin } from "gsap/InertiaPlugin";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Draggable } from "gsap/all";
+import { ReactElement, useRef } from "react";
+import { getCanvasManager } from "@/lib/canvasManager";
 
 gsap.registerPlugin(ScrollTrigger, Draggable, InertiaPlugin);
 
 interface MarqueeProps {
   children: ReactElement;
   speed?: number;
-  direction?: 'left' | 'right';
+  direction?: "left" | "right";
   gap?: number;
   className?: string;
   draggable?: boolean;
@@ -25,9 +25,9 @@ interface MarqueeProps {
 export default function Marquee({
   children,
   speed = 0.5,
-  direction = 'left',
+  direction = "left",
   gap = 40,
-  className = '',
+  className = "",
   draggable = false,
   pauseOnHover = false,
   defaultPaused = false,
@@ -37,7 +37,7 @@ export default function Marquee({
   const trackRef = useRef<HTMLDivElement>(null);
 
   const x = useRef(0);
-  const dir = useRef(direction === 'left' ? -1 : 1);
+  const dir = useRef(direction === "left" ? -1 : 1);
   const itemWidth = useRef(0);
 
   const raf = useRef<number | null>(null); // stores canvas manager loop ID
@@ -108,7 +108,8 @@ export default function Marquee({
 
           // LERP (Linear Interpolation) for smooth start/stop
           // 0.05 is the "friction" - lower = slower stop, higher = faster stop
-          velocityFactor.current += (targetFactor - velocityFactor.current) * stopSpeed;
+          velocityFactor.current +=
+            (targetFactor - velocityFactor.current) * stopSpeed;
 
           // Optimization: stop calculation if completely stopped
           if (Math.abs(velocityFactor.current) > 0.001) {
@@ -133,7 +134,7 @@ export default function Marquee({
       // 4. Draggable Logic
       if (draggable) {
         Draggable.create(track, {
-          type: 'x',
+          type: "x",
           inertia: true,
           dragResistance: 0.12, //  higher = slower drag
           throwResistance: 2500, // higher = slower throw
@@ -169,8 +170,8 @@ export default function Marquee({
 
       // We attach these if either feature is enabled
       if (pauseOnHover || defaultPaused) {
-        container.addEventListener('mouseenter', handleMouseEnter);
-        container.addEventListener('mouseleave', handleMouseLeave);
+        container.addEventListener("mouseenter", handleMouseEnter);
+        container.addEventListener("mouseleave", handleMouseLeave);
       }
 
       return () => {
@@ -179,22 +180,32 @@ export default function Marquee({
           raf.current = null;
         }
         marqueeIo.disconnect();
-        container.removeEventListener('mouseenter', handleMouseEnter);
-        container.removeEventListener('mouseleave', handleMouseLeave);
+        container.removeEventListener("mouseenter", handleMouseEnter);
+        container.removeEventListener("mouseleave", handleMouseLeave);
       };
     },
     {
       scope: containerRef,
-      dependencies: [direction, speed, gap, draggable, pauseOnHover, defaultPaused],
-    }
+      dependencies: [
+        direction,
+        speed,
+        gap,
+        draggable,
+        pauseOnHover,
+        defaultPaused,
+      ],
+    },
   );
 
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden w-full ${draggable ? 'cursor-grab active:cursor-grabbing' : ''} ${className}`}
+      className={`relative overflow-hidden w-full marquee-wrapper ${draggable ? "cursor-grab active:cursor-grabbing" : ""} ${className}`}
     >
-      <div ref={trackRef} className="flex whitespace-nowrap will-change-transform">
+      <div
+        ref={trackRef}
+        className="flex whitespace-nowrap will-change-transform"
+      >
         <div className="shrink-0">{children}</div>
       </div>
     </div>

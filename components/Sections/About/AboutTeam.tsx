@@ -12,7 +12,7 @@ export default function AboutTeam() {
   return (
     <section className="bg-[#040508]">
       <div className="tr__container relative w-full text-light-font flex flex-col">
-        <div className="min-h-screen flex flex-col justify-center py-37.5">
+        <div className="min-h-dvh flex flex-col justify-center py-37.5">
           <div className="grid grid-cols-12 gap-x-6 ">
             <BlurTextReveal
               as="h2"

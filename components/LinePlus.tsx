@@ -18,7 +18,7 @@ interface LinePlusProps {
   iconColor?: string;
   /**
    * Shift ScrollTrigger start/end when this component lives inside a
-   * CSS-transformed ancestor. Accepts any GSAP offset string, e.g. "100vh"
+   * CSS-transformed ancestor. Accepts any GSAP offset string, e.g. "100dvh"
    * or "800px". Positive = trigger fires later (element visually shifted up).
    */
   scrollOffset?: string;
@@ -157,7 +157,7 @@ export default function LinePlus({
         viewBox="0 0 13 13"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={`w-3.25 h-3.25 ${plusClass ? plusClass : ""}`}
+        className={`w-4 lg:w-3.25 h-4 lg:h-3.25 ${plusClass ? plusClass : ""}`}
         ref={PlusIcon}
       >
         <line

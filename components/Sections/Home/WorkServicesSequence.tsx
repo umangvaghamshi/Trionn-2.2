@@ -175,7 +175,9 @@ export default function WorkServicesSequence() {
           // Divider line draws when card enters viewport
           if (norm < 1.0 && !lineFired.has(index)) {
             lineFired.add(index);
-            const hLines = card.querySelectorAll<HTMLElement>(".js-card-line-horizontal");
+            const hLines = card.querySelectorAll<HTMLElement>(
+              ".js-card-line-horizontal",
+            );
 
             if (lines.length) {
               gsap.to(lines, {
@@ -258,7 +260,7 @@ export default function WorkServicesSequence() {
     <div
       ref={bridgeRef}
       id="work-section"
-      className="relative h-screen w-full overflow-hidden bg-white"
+      className="relative h-dvh w-full overflow-hidden bg-white"
     >
       <div
         ref={servicesLayerRef}
