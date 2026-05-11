@@ -490,6 +490,15 @@ export default function DribbleSection() {
 
       buildPlacedCards();
 
+      /* Position center text at top on mobile, centered on desktop */
+      const mm = gsap.matchMedia();
+      mm.add("(max-width: 767px)", () => {
+        gsap.set(centerEl, { position: "relative", top: "auto", left: "auto", transform: "none" });
+      });
+      mm.add("(min-width: 768px)", () => {
+        gsap.set(centerEl, { position: "absolute", top: "50%", left: "50%", xPercent: -50, yPercent: -50 });
+      });
+
       const N = SRCS.length;
       const slotArc = CARD_W;
       const totArcN = (N - 1) * slotArc + CARD_W;
@@ -599,7 +608,7 @@ export default function DribbleSection() {
           Math.min(1, (prog - GRID_START) / (1 - GRID_START)),
         );
         const tFade = Math.max(0, 1 - gProg * 4);
-        centerEl.style.opacity = String(tFade);
+        centerEl.style.opacity = isMobile() ? "1" : String(tFade);
 
         /* grid lines */
         if (gProg > 0 && !gridLinesBuilt) {
@@ -690,6 +699,7 @@ export default function DribbleSection() {
 
       /* cleanup */
       return () => {
+        mm.revert();
         window.removeEventListener(
           "trionn-services:unpinned",
           onServicesUnpinned,
@@ -733,11 +743,10 @@ export default function DribbleSection() {
           className="absolute inset-0 w-full h-full pointer-events-none z-1"
         />
         <div className="tr__container w-full h-full flex items-center flex-col justify-between text-dark-font">
-          <div></div>
-          {/* Center text */}
+          {/* Center text — mobile: top of flow, desktop: absolute centered */}
           <div
             ref={centerRef}
-            className="text-center pointer-events-none select-none"
+            className="text-center pointer-events-none select-none mt-10 md:mt-0"
           >
             {refreshComponent && (
               <BlurTextReveal
@@ -755,6 +764,8 @@ export default function DribbleSection() {
               daily design practice.
             </p>
           </div>
+          {/* Spacer: pushes bottom bar down on desktop (center text is absolute there) */}
+          <div className="hidden md:block flex-1" />
           <div className="w-full flex flex-col md:flex-row items-center md:items-end justify-end md:justify-between gap-10">
             <p className="max-w-80 w-full block relative z-5 small text-center md:text-left">
               Concepts, explorations, and interface experiments—shared openly as
