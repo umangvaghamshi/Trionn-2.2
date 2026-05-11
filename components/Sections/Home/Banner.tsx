@@ -61,7 +61,7 @@ export default function Banner() {
       className="text-light-font relative mix-blend-difference"
       id="sticky-wrap"
     >
-      <section className="main-banner relative min-h-dvh pt-25 lg:pt-37 pb-20 flex w-full ">
+      <section className="main-banner relative min-h-dvh pt-25 lg:pt-30 pb-16 flex w-full ">
         <div className="tr__container relative flex flex-col justify-between w-full gap-10">
           <div className="banner-top-block flex flex-col w-full items-start">
             <div className="grid grid-cols-12 gap-6 mb-10 w-full">
@@ -109,20 +109,36 @@ export default function Banner() {
             </p> */}
             <div
               id="s1-scroll"
-              className="col-span-12 lg:col-span-4 hidden lg:flex items-end justify-center lg:justify-start order-3 lg:order-1"
+              className="col-span-4 flex items-end justify-start"
             >
-              <BlurTextReveal
-                as="span"
-                text={` scroll ⤋ down `}
-                animationType="chars"
-                stagger={0.05}
-                className="title block"
-                start="top bottom"
-              />
+              <div className="flex items-center">
+                <BlurTextReveal
+                  as="span"
+                  text={` scroll `}
+                  animationType="chars"
+                  stagger={0.05}
+                  className="title block"
+                  start="top bottom"
+                />
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-4.5 h-4.5 ml-1.5"
+                >
+                  <circle cx="9" cy="9" r="8.5" stroke="#D8D8D8" />
+                  <path
+                    d="M8.64645 12.3536C8.84171 12.5488 9.15829 12.5488 9.35355 12.3536L12.5355 9.17157C12.7308 8.97631 12.7308 8.65973 12.5355 8.46447C12.3403 8.2692 12.0237 8.2692 11.8284 8.46447L9 11.2929L6.17157 8.46447C5.97631 8.2692 5.65973 8.2692 5.46447 8.46447C5.2692 8.65973 5.2692 8.97631 5.46447 9.17157L8.64645 12.3536ZM9 5L8.5 5L8.5 12L9 12L9.5 12L9.5 5L9 5Z"
+                    fill="#D8D8D8"
+                  />
+                </svg>
+              </div>
             </div>
             <div
               ref={statsRef}
-              className="col-span-12 lg:col-span-4 hidden lg:flex text-center items-end justify-center order-2 lg:order-2"
+              className="col-span-12 lg:col-span-4 hidden lg:flex text-center items-end justify-center"
               id="s1-stats"
             >
               <BlurTextReveal
@@ -134,7 +150,7 @@ export default function Banner() {
                 start="top bottom"
               />
             </div>
-            <div className="col-span-12 lg:col-span-4 flex justify-end lg:col-start-9 order-1 lg:order-3">
+            <div className="col-span-8 lg:col-span-4 flex justify-end lg:col-start-9">
               <div className="flex flex-col max-w-65 gap-6 w-full">
                 <div
                   className="flex border border-[#2F323B] overflow-hidden rounded-sm min-h-18 text-light-font title"
@@ -196,7 +212,7 @@ export default function Banner() {
             id="s2-text"
           >
             <div className="about-title-block grid grid-cols-12 gap-6">
-              <div className="col-span-12 lg:col-span-1">
+              <div className="col-span-12 md:col-span-1">
                 <BlurTextReveal
                   as="span"
                   text={`about`}
@@ -205,7 +221,7 @@ export default function Banner() {
                   className="title mt-4 block"
                 />
               </div>
-              <div className="col-span-12 lg:col-span-11">
+              <div className="col-span-12 md:col-span-11">
                 <FadeOnScroll
                   as={"h2"}
                   html="<span class='w-1/12 inline-block'></span><span class='pl-3 inline!'><span>Trionn is an independent digital studio crafting meaningful brand experiences through strategy, design, and technology.<span></span>"
@@ -214,7 +230,7 @@ export default function Banner() {
               </div>
             </div>
             <LinePlus
-              customClass={"mt-16 lg:mt-25 mb-16 lg:mb-20"}
+              customClass={"mt-20 lg:mt-25 mb-20 lg:mb-20"}
               lineClass={"lg:col-start-2 bg-[#2F323B]"}
               plusClass={
                 "col-start-4 sm:col-start-7 lg:col-start-9 -translate-x-1/2!"
@@ -232,7 +248,7 @@ export default function Banner() {
                 />
               </div>
               <div className="col-span-9 col-start-4 sm:col-span-6 lg:col-span-3 lg:col-start-9 flex flex-col ">
-                <p className="mb-10 lg:mb-20 lg:max-w-100 ">
+                <p className="mb-10 lg:mb-20 md:max-w-100 ">
                   Our mission is to make technology feel human by designing
                   digital products that are intuitive, purposeful, and
                   meaningful to people.

@@ -144,7 +144,7 @@ export default function Forms() {
           </div>
         </div>
         <LinePlus
-          customClass="my-16 lg:my-30"
+          customClass="my-20 lg:my-30"
           lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
           plusClass={"col-span-12 mx-auto"}
           iconColor={"#D8D8D8"}

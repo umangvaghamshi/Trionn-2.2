@@ -81,7 +81,7 @@ const WorkProjectPanel = forwardRef<
   return (
     <div
       ref={rootRef}
-      className="relative flex flex-col w-full pointer-events-auto py-16 lg:max-h-dvh"
+      className="relative flex flex-col w-full pointer-events-auto py-20 lg:py-16 lg:max-h-dvh"
     >
       {/* Image — directly visible, no clip-path wipe */}
       <Link
@@ -112,7 +112,7 @@ const WorkProjectPanel = forwardRef<
           </div>
 
           {/* Right: Year & Link */}
-          <div className="flex flex-col sm:flex-row justify-between gap-6 lg:gap-4">
+          <div className="flex flex-col sm:flex-row justify-between gap-10 lg:gap-4">
             <p ref={subTitleRef} className="small max-w-75">
               {parse(item.subTitle)}
             </p>

@@ -33,9 +33,13 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const projectIndex = projects.findIndex((p) => p.slug === slug);
+  const project = projects[projectIndex];
 
   if (!project) return <h1>Project not found</h1>;
+
+  const prevProject = projectIndex > 0 ? projects[projectIndex - 1] : null;
+  const nextProject = projectIndex < projects.length - 1 ? projects[projectIndex + 1] : null;
 
   return (
     <>
@@ -68,7 +72,7 @@ export default async function Page({
           })
         }}
       />
-      <ProjectDetailPage project={project} />
+      <ProjectDetailPage project={project} prevProject={prevProject} nextProject={nextProject} />
       <div className="min-h-dvh bg-[#0C0C0C]"></div>
     </>
   );
