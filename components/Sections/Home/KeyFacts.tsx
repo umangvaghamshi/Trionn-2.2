@@ -16,13 +16,17 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function KeyFacts() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [odoTick, setOdoTick] = useState(0);
-  const odoFiredRef = useRef(false);
+  const [odoTicks, setOdoTicks] = useState([0, 0, 0]);
+  const odoFiredRef = useRef([false, false, false]);
 
-  const triggerOdometerOnce = useCallback(() => {
-    if (odoFiredRef.current) return;
-    odoFiredRef.current = true;
-    setOdoTick((n) => n + 1);
+  const triggerOdometer = useCallback((index: number) => {
+    if (odoFiredRef.current[index]) return;
+    odoFiredRef.current[index] = true;
+    setOdoTicks((prev) => {
+      const next = [...prev];
+      next[index] = next[index] + 1;
+      return next;
+    });
   }, []);
 
   useEffect(() => {
@@ -70,43 +74,104 @@ export default function KeyFacts() {
       // }
 
       gsap.set(cards, {
-        rotateX: -92,
         autoAlpha: 0,
-        transformOrigin: "center top",
         force3D: true,
       });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root,
-          start: "top center",
-          end: "top top",
-          scrub: 2,
-          markers: false,
-        },
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 1024px)", () => {
+        gsap.set(cards, {
+          rotateX: -92,
+          transformOrigin: "center top",
+        });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: root,
+            start: "top center",
+            end: "top top",
+            scrub: 2,
+            markers: false,
+          },
+        });
+
+        const cardDuration = 2.65;
+        const staggerEach = 0.6;
+
+        tl.to(cards, {
+          rotateX: 0,
+          autoAlpha: 1,
+          stagger: { each: staggerEach, from: "start" },
+          ease: "none",
+          force3D: true,
+          duration: cardDuration,
+        });
+
+        cards.forEach((_, i) => {
+          tl.call(() => triggerOdometer(i), undefined, i * staggerEach + staggerEach * 1.5);
+        });
       });
 
-      const cardDuration = 2.65;
-      const staggerEach = 0.6;
+      mm.add("(max-width: 1023px)", () => {
+        if (!list) return;
 
-      tl.to(cards, {
-        rotateX: 0,
-        autoAlpha: 1,
-        stagger: { each: staggerEach, from: "start" },
-        ease: "none",
-        force3D: true,
-        duration: cardDuration,
+        gsap.set(list, { x: 0 });
+        gsap.set(cards, { rotateX: 0 });
+
+        const scrollTween = gsap.to(list, {
+          x: () => {
+            const padding = 32;
+            return -(list.scrollWidth - window.innerWidth + padding);
+          },
+          ease: "none",
+          scrollTrigger: {
+            trigger: root,
+            pin: true,
+            start: "center center",
+            end: "+=150%",
+            scrub: 1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const card = entry.target as HTMLElement;
+                const index = cards.indexOf(card);
+                if (index !== -1) {
+                  triggerOdometer(index);
+                  gsap.to(card, {
+                    autoAlpha: 1,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    force3D: true,
+                  });
+                  observer.unobserve(card);
+                }
+              }
+            });
+          },
+          { threshold: 0.2 },
+        );
+
+        cards.forEach((card) => observer.observe(card));
+
+        return () => {
+          observer.disconnect();
+        };
       });
-
-      tl.call(triggerOdometerOnce, undefined, staggerEach * 1.5);
     },
-    { scope: containerRef, dependencies: [triggerOdometerOnce] },
+    { scope: containerRef, dependencies: [triggerOdometer] },
   );
 
   return (
     <section
       id="keyfacts-section"
-      className="pt-20 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh"
+      className="pt-32 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh max-lg:overflow-hidden"
       ref={containerRef}
     >
       <div className="tr__container">
@@ -123,10 +188,10 @@ export default function KeyFacts() {
             experience and impact.
           </p>
         </div>
-        <div className="key-card-list flex gap-6 justify-center flex-wrap lg:flex-nowrap transform-3d">
-          <FeaturedCard odoSync={odoTick} />
-          <ProjectCard odoSync={odoTick} />
-          <TeamCard odoSync={odoTick} />
+        <div className="key-card-list flex gap-4 lg:gap-6 justify-start lg:justify-center flex-nowrap transform-3d max-lg:w-max max-lg:-mx-4 max-lg:px-4">
+          <FeaturedCard odoSync={odoTicks[0]} />
+          <ProjectCard odoSync={odoTicks[1]} />
+          <TeamCard odoSync={odoTicks[2]} />
         </div>
         <div className="partners-block mt-14 lg:mt-29 flex flex-col gap-6">
           <BlurTextReveal
@@ -175,9 +240,9 @@ export default function KeyFacts() {
         </div>
       </div>
       {/* Bottom decoration line (Moved from Work section) */}
-      <div className="js-kf-line-wrap tr__container absolute bottom-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4">
+      <div className="js-kf-line-wrap tr__container absolute bottom-0 max-lg:translate-y-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4">
         <LinePlus
-          key={odoTick}
+          key={odoTicks[0]}
           lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
           plusClass={"col-span-12 mx-auto"}
           iconColor={"#272727"}
@@ -237,7 +302,7 @@ function FeaturedCard({ odoSync }: { odoSync: number }) {
     <div
       ref={cardRef}
       data-kf-card
-      className="featured-card max-w-99 w-full h-122 rounded-lg bg-black text-light-font overflow-hidden relative hover:scale-[1.02] transition-colors duration-500 will-change-transform backface-hidden transform-3d"
+      className="featured-card shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-black text-light-font overflow-hidden relative hover:scale-[1.02] transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <video
         autoPlay
@@ -286,7 +351,7 @@ function ProjectCard({ odoSync }: { odoSync: number }) {
   return (
     <div
       data-kf-card
-      className="project-card relative max-w-99 w-full h-122 rounded-lg bg-cream p-6 lg:p-10 flex flex-col justify-between overflow-hidden cursor-pointer hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
+      className="project-card relative shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-cream p-6 lg:p-10 flex flex-col justify-between overflow-hidden cursor-pointer hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
     >
       <span className="title block text-dark-font">projects completed</span>
       <div className="flex flex-col items-center justify-center flex-1 relative">
@@ -334,11 +399,11 @@ function TeamCard({ odoSync }: { odoSync: number }) {
       data-kf-card
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="team-card max-w-99 w-full h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02] cursor-pointer transition-colors duration-500 will-change-transform backface-hidden transform-3d"
+      className="team-card shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02] cursor-pointer transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <div className="relative z-3 h-full p-6 lg:p-10 flex flex-col justify-between">
         <span className="title block text-right">our team members</span>
-        <div className="team-video overflow-hidden py-10 rounded-lg">
+        <div className="team-video overflow-hidden max-lg:py-2 lg:py-10 max-lg:flex-1 rounded-lg">
           <video
             ref={videoRef}
             src="/video/team/rushi.mp4"
