@@ -109,7 +109,7 @@ export default function Banner() {
             </p> */}
             <div
               id="s1-scroll"
-              className="col-span-12 lg:col-span-4 flex items-end justify-center lg:justify-start order-3 lg:order-1"
+              className="col-span-12 lg:col-span-4 hidden lg:flex items-end justify-center lg:justify-start order-3 lg:order-1"
             >
               <BlurTextReveal
                 as="span"
@@ -135,7 +135,7 @@ export default function Banner() {
               />
             </div>
             <div className="col-span-12 lg:col-span-4 flex justify-end lg:col-start-9 order-1 lg:order-3">
-              <div className="flex flex-col max-w-80 lg:max-w-65 gap-6 w-full">
+              <div className="flex flex-col max-w-65 gap-6 w-full">
                 <div
                   className="flex border border-[#2F323B] overflow-hidden rounded-sm min-h-18 text-light-font title"
                   id="s1-body"
@@ -217,12 +217,12 @@ export default function Banner() {
               customClass={"mt-16 lg:mt-25 mb-16 lg:mb-20"}
               lineClass={"lg:col-start-2 bg-[#2F323B]"}
               plusClass={
-                "col-span-12 sm:col-span-1 sm:col-start-7 lg:col-start-9 sm:-translate-x-1/2! mx-auto sm:mx-0"
+                "col-start-4 sm:col-start-7 lg:col-start-9 -translate-x-1/2!"
               }
               iconColor={"#D8D8D8"}
             />
             <div className="about-subtitle-block grid grid-cols-12 gap-6">
-              <div className="col-span-12 sm:col-span-6 lg:col-span-3 lg:col-start-2 max-w-75 lg:max-w-57 ">
+              <div className="col-span-9 col-start-4 sm:col-span-6 lg:col-span-3 lg:col-start-2 max-w-60 lg:max-w-57 ">
                 <BlurTextReveal
                   as="span"
                   text={`We design for longevity — clarity first, craft always, built to scale.`}
@@ -231,7 +231,7 @@ export default function Banner() {
                   className="title block"
                 />
               </div>
-              <div className="col-span-12 sm:col-span-6 lg:col-span-3 lg:col-start-9 flex flex-col ">
+              <div className="col-span-9 col-start-4 sm:col-span-6 lg:col-span-3 lg:col-start-9 flex flex-col ">
                 <p className="mb-10 lg:mb-20 lg:max-w-100 ">
                   Our mission is to make technology feel human by designing
                   digital products that are intuitive, purposeful, and
