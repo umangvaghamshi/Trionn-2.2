@@ -216,7 +216,21 @@ function applyStripeHold(
       Math.min(1, (holdT - stripeStart) / (stripeEnd - stripeStart)),
     );
     const s = stripes[i];
-    if (s) gsap.set(s, { scaleY: stripeProgress });
+    if (s) {
+      gsap.set(s, { scaleY: stripeProgress,ease:'none' });
+      // testimonials: translateY 0→-100vh in sync with stripe reveal
+      const testimonialsEl = document.getElementById(
+        "testimonials",
+      ) as HTMLElement | null;
+
+      if (testimonialsEl) {
+        gsap.set(testimonialsEl, {
+          marginTop: "-100vh",
+          ease: "none",
+          duration: stripeEnd - holdStart,
+        })
+      }
+    }
   }
 }
 
@@ -325,6 +339,8 @@ export default function TrionnServices({
     cardsT: 0, // Smoothed scroll specifically for cards
     particles: [] as Particle[],
     prevInZone: false,
+    testimonialsRaised: false,
+    unpinnedEventFired: false,
     particleContainer: null as HTMLDivElement | null,
     gsapTL: null as gsap.core.Timeline | null,
     cardsTL: null as gsap.core.Timeline | null,
@@ -821,18 +837,76 @@ export default function TrionnServices({
 
         preload();
 
+        let unpinnedEventFired = false;
+
+        // Total pin duration in "vh units" used as timeline labels
+        const total = SERVICES_PIN_END_PERCENT;
+
+        // Normalised positions (0–1) of each phase within the full pin
+        const scrubStart = (120 + 120) / total; // where scrollT starts
+        const scrubEnd = (120 + 120 + 500) / total; // where scrollT reaches 1
+        const holdStart = scrubEnd; // stripe / testimonials phase begins
+        // Stripes finish at holdT=0.3 within the hold window
+        const stripeEnd = holdStart + 0.3 * (1 - holdStart);
+
+        // Paused timeline — progress is driven manually by the ScrollTrigger below
+        const tl = gsap.timeline({ paused: true });
+
+        // scrim: opacity 1→0 during scrub phase (first ~12% of scrollT)
+        if (scrimRef.current) {
+          const scrimE = scrubStart + (scrubEnd - scrubStart) * 0.12;
+          tl.fromTo(
+            scrimRef.current,
+            { opacity: 1 },
+            { opacity: 0, ease: "none", duration: scrimE - scrubStart },
+            scrubStart,
+          );
+        }
+
+        // canvas: opacity 0→1 during first 8% of scrollT
+        if (canvasRef.current) {
+          const canvasE = scrubStart + (scrubEnd - scrubStart) * 0.08;
+          tl.fromTo(
+            canvasRef.current,
+            { opacity: 0 },
+            { opacity: 1, ease: "none", duration: canvasE - scrubStart },
+            scrubStart,
+          );
+        }
+
+        // bgVideo: opacity 0→0.5 starting at 4% of scrollT
+        if (bgVideoRef.current) {
+          const vidS = scrubStart + (scrubEnd - scrubStart) * 0.04;
+          const vidE = vidS + (scrubEnd - scrubStart) * 0.08;
+          tl.fromTo(
+            bgVideoRef.current,
+            { opacity: 0 },
+            { opacity: 0.5, ease: "none", duration: vidE - vidS },
+            vidS,
+          );
+        }
+
         ScrollTrigger.create({
           trigger: driver,
           start: "top top",
           end: `+=${SERVICES_PIN_END_PERCENT}%`,
           pin: true,
           pinSpacing: true,
-          anticipatePin: 1,
+          // anticipatePin: 1,
           markers: false,
           scrub: 1,
           onUpdate: (self) => {
+            // Drive the timeline with scroll progress
+            tl.progress(self.progress);
+            // Imperative state — drives canvas draw & RAF loop
             stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
             applyStripeHold(self.progress, stripesRef.current);
+
+            // One-time event so Testimonials refreshes its ScrollTriggers
+            if (self.progress >= holdStart && !unpinnedEventFired) {
+              unpinnedEventFired = true;
+              window.dispatchEvent(new CustomEvent("trionn-services:unpinned"));
+            }
           },
         });
       });
@@ -870,10 +944,14 @@ export default function TrionnServices({
         const linear = scrollProgressRef.current;
         s.scrollT = mapServicesScrollProgress(linear);
         applyStripeHold(linear, stripesRef.current);
-        const st = s.scrollT;
 
-        // Overlap progress (0→1 as services slides in from right)
-        const ov = mapOverlapProgress(linear);
+        const holdStart = servicesStripeHoldStartLinear();
+        if (linear >= holdStart && !s.unpinnedEventFired) {
+          s.unpinnedEventFired = true;
+          window.dispatchEvent(new CustomEvent("trionn-services:unpinned"));
+        }
+
+        const st = s.scrollT;
 
         // Scrim: fully opaque while Work slides over it. Fades ONLY when scrollT begins.
         if (scrimRef.current) {
@@ -883,7 +961,6 @@ export default function TrionnServices({
 
         // Use a smoothed scroll value for visual transitions to make them buttery smooth
         s.cardsT += (st - s.cardsT) * 0.08;
-        const smoothSt = s.cardsT;
 
         // Text color transition — perfectly scrubbed with the background fade
         if (typographyRef.current) {
@@ -1055,11 +1132,7 @@ export default function TrionnServices({
   return (
     <section
       ref={sectionRef}
-      className={`relative isolate bg-[#000] ${embedded ? "h-full min-h-0 w-full" : ""}`}
-      style={{
-        zIndex: 1,
-        marginTop: embedded ? 0 : `-100dvh`,
-      }}
+      className={`relative min-h-screen bg-[#000] ${embedded ? "h-full min-h-0 w-full" : ""}`}
     >
       <SoundListener soundEnabledRef={soundEnabledRef} />
       {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}

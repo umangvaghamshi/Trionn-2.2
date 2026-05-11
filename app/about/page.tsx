@@ -80,8 +80,8 @@ const Page = () => {
       <WeNot />
       <Awards />
       <BrandShowcase />
-      <Testimonials disableScrollEffect />
-      <div className="min-h-dvh bg-[#0C0C0C]"></div>
+      <Testimonials/>
+      <div className="min-h-screen bg-[#0C0C0C]"></div>
     </>
   );
 };

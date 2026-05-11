@@ -18,7 +18,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { SwiperOptions } from "swiper/types";
 
 // Components / Data
-import { SERVICES_HOLD_VH } from "@/components/Sections/Home/servicesScrollConstants";
 import { TestimonialsData } from "@/data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -61,14 +60,12 @@ const ArrowRight = () => (
 interface TestimonialsProps {
   customClass?: string;
   swiperOptions?: SwiperOptions;
-  disableScrollEffect?: boolean;
   showBottomLine?: boolean;
 }
 
 export default function Testimonials({
   customClass,
   swiperOptions = {},
-  disableScrollEffect = false,
   showBottomLine = false,
 }: TestimonialsProps) {
   const swiperRef = useRef<SwiperClass | null>(null);
@@ -76,6 +73,7 @@ export default function Testimonials({
   const reviewNextRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [modalVideoURL, setModalVideoURL] = useState<string | null>(null);
+  const [show, setShow] = useState(false);
 
   const openModal = (url: string) => {
     setModalVideoURL(url);
@@ -97,6 +95,16 @@ export default function Testimonials({
     return () => {
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const onUnpinned = () => {
+      setShow(true);
+    };
+    window.addEventListener("trionn-services:unpinned", onUnpinned);
+    return () => {
+      window.removeEventListener("trionn-services:unpinned", onUnpinned);
     };
   }, []);
 
@@ -128,18 +136,10 @@ export default function Testimonials({
 
   return (
     <section
-      className="relative z-20 isolate bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden"
-      style={
-        disableScrollEffect
-          ? undefined
-          : {
-              transform: `translateY(-${SERVICES_HOLD_VH}vh)`,
-              marginBottom: `-${SERVICES_HOLD_VH}vh`,
-              willChange: "transform",
-            }
-      }
+      id="testimonials"
+      className="relative z-20 min-h-screen bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden"
     >
-      <div className="tr__container min-h-dvh py-37.5">
+      <div key={Number(show)} className="tr__container min-h-dvh py-37.5">
         <div className="grid grid-cols-12 gap-6">
           <BlurTextReveal
             as="h2"
@@ -323,6 +323,7 @@ export default function Testimonials({
       {showBottomLine && (
         <div className="tr__container z-0">
           <LinePlus
+            key={Number(show)}
             lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
             plusClass={"col-span-12 mx-auto"}
             iconColor={"#272727"}
