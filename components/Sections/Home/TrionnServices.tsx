@@ -217,7 +217,7 @@ function applyStripeHold(
     );
     const s = stripes[i];
     if (s) {
-      gsap.set(s, { scaleY: stripeProgress,ease:'none' });
+      gsap.set(s, { scaleY: stripeProgress, ease: "none" });
       // testimonials: translateY 0→-100vh in sync with stripe reveal
       const testimonialsEl = document.getElementById(
         "testimonials",
@@ -228,7 +228,7 @@ function applyStripeHold(
           marginTop: "-100vh",
           ease: "none",
           duration: stripeEnd - holdStart,
-        })
+        });
       }
     }
   }
@@ -535,7 +535,7 @@ export default function TrionnServices({
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const isMobile = vw < 768;
-    const isTablet = vw >= 768 && vw < 1024;
+    const isTablet = vw >= 768 && vw < 1440;
 
     // Match .tr__container padding: px-6 (24px) on mobile, px-10 (40px) on tablet/desktop
     const containerPx = isMobile ? 24 : 40;
@@ -549,12 +549,12 @@ export default function TrionnServices({
       W = containerW;
       H = Math.round(W * 0.55);
     } else if (isTablet) {
-      // Tablet (768–1023px): slightly wider than desktop ratio
+      // Tablet (768–1439px): wider cards for mid-range viewports
       W = Math.round(vw * 0.42);
       H = Math.round(vh * 0.32);
     } else {
-      // Desktop (≥1024px)
-      W = Math.round(vw * 0.34);
+      // Desktop (≥1440px): smaller cards like original
+      W = Math.round(vw * 0.28);
       H = Math.round(vh * 0.32);
     }
 
@@ -799,21 +799,25 @@ export default function TrionnServices({
 
     const isSmallMobile = window.matchMedia("(max-width: 677px)").matches;
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    const isTablet = window.matchMedia("(min-width: 768px) and (max-width: 1023px)").matches;
+    const isTablet = window.matchMedia(
+      "(min-width: 768px) and (max-width: 1023px)",
+    ).matches;
 
     let cvW: number;
     let cvH: number;
 
     if (isSmallMobile) {
       // Full viewport fill on small phones
-      cvW = Math.round(window.visualViewport?.width ?? window.innerWidth);
-      cvH = Math.round(window.visualViewport?.height ?? window.innerHeight);
+      cvW = 999;
+      cvH = 594;
     } else if (isMobile) {
       cvW = 999;
       cvH = 594;
     } else if (isTablet) {
       // Tablet (768–1023px): reduced canvas, 16:9 at 75% of viewport height
-      const vh = Math.round(window.visualViewport?.height ?? window.innerHeight);
+      const vh = Math.round(
+        window.visualViewport?.height ?? window.innerHeight,
+      );
       cvH = Math.round(vh * 0.75);
       cvW = Math.round(cvH * (16 / 9));
     } else {
