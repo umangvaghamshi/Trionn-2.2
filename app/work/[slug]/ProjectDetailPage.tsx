@@ -12,7 +12,15 @@ import { TransitionLink } from "@/components/Transition";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function ProjectDetailPage({ project }: { project: any }) {
+export default function ProjectDetailPage({
+  project,
+  prevProject,
+  nextProject,
+}: {
+  project: any;
+  prevProject?: any;
+  nextProject?: any;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const leftColRef = useRef<HTMLDivElement>(null);
   const rightColRef = useRef<HTMLDivElement>(null);
@@ -67,24 +75,45 @@ export default function ProjectDetailPage({ project }: { project: any }) {
       ref={containerRef}
       className="relative w-full bg-[#171717] z-3 overflow-hidden text-light-font"
     >
-      <div className="tr__container flex flex-col justify-between">
-        <div className="grid grid-cols-12 gap-6">
+      <div className="tr__container grid grid-cols-12 gap-6 relative">
+        <div className="grid grid-cols-12 gap-6 col-span-12">
           <div
-            className="col-span-12 lg:col-span-5 xl:col-span-4 pt-37.5 lg:pt-37.5 pb-10 lg:pb-25 flex flex-col justify-between gap-8 lg:gap-10 lg:min-h-dvh max-h-dvh left-block relative"
+            className="col-span-12 lg:col-span-5 xl:col-span-4 pt-37.5 lg:pt-37.5 pb-10 lg:pb-25 flex flex-col justify-between gap-8 lg:gap-10 lg:min-h-dvh max-h-dvh left-block"
             ref={leftColRef}
           >
             <div className="title-block flex flex-col relative">
-              <div className="absolute top-0 -translate-y-full flex justify-start">
-                <TransitionLink
-                  className={`link menu block text-light-font pb-1 mb-4`}
-                  href="/work"
-                  transitionLabel="Back"
-                >
-                  Back
-                </TransitionLink>
+              <div className="fixed lg:absolute left-0 top-25 lg:top-0 lg:-translate-y-full w-full px-6 md:px-10 lg:px-0 z-2 top-bar mix-blend-difference">
+                <div className="flex justify-between">
+                  {prevProject ? (
+                    <TransitionLink
+                      className="link title block text-light-font py-2 mb-2"
+                      href={`/work/${prevProject.slug}`}
+                      transitionLabel="Prev"
+                    >
+                      Prev project
+                    </TransitionLink>
+                  ) : (
+                    <TransitionLink
+                      className="link title block text-light-font py-2 mb-2"
+                      href="/work"
+                      transitionLabel="Back"
+                    >
+                      Back to work
+                    </TransitionLink>
+                  )}
+                  {nextProject && (
+                    <TransitionLink
+                      className="link title block text-light-font py-2 mb-2 ml-auto"
+                      href={`/work/${nextProject.slug}`}
+                      transitionLabel="Next"
+                    >
+                      Next project
+                    </TransitionLink>
+                  )}
+                </div>
+                <LinePlus lineClass={"bg-cream-line/20"} plusClass={"hidden"} />
               </div>
-              <LinePlus lineClass={"bg-cream-line/20"} plusClass={"hidden"} />
-              <div className="flex flex-col sm:flex-row justify-between mt-6 lg:mt-10 mb-4 gap-2">
+              <div className="flex flex-row justify-between mt-6 lg:mt-10 mb-4 gap-2">
                 <BlurTextReveal
                   as="h1"
                   html={project.title}
@@ -101,9 +130,9 @@ export default function ProjectDetailPage({ project }: { project: any }) {
                     : project.subTitle,
                 )}
               </p>
-              <ul className="mt-6 lg:mt-10 list-disc pl-4">
+              <ul className="mt-6 lg:mt-10">
                 {project.category.map((cat: string, i: number) => (
-                  <li key={i}>{cat}</li>
+                  <li key={i}>·&nbsp;&nbsp;{cat}</li>
                 ))}
               </ul>
             </div>

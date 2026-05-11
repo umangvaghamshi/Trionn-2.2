@@ -192,12 +192,12 @@ export default function KeyFacts() {
             experience and impact.
           </p>
         </div>
-        <div className="key-card-list flex gap-4 lg:gap-6 justify-start lg:justify-center flex-nowrap transform-3d max-lg:w-max max-lg:-mx-4 max-lg:px-4">
+        <div className="key-card-list flex gap-6 justify-start lg:justify-center flex-nowrap transform-3d max-lg:w-max max-lg:-mx-4 max-lg:px-4">
           <FeaturedCard odoSync={odoTicks[0]} />
           <ProjectCard odoSync={odoTicks[1]} />
           <TeamCard odoSync={odoTicks[2]} />
         </div>
-        <div className="partners-block mt-14 lg:mt-29 flex flex-col gap-6">
+        <div className="partners-block mt-20 lg:mt-29 flex flex-col gap-6">
           <BlurTextReveal
             as="span"
             text={`Our business partners`}
@@ -326,12 +326,12 @@ function FeaturedCard({ odoSync }: { odoSync: number }) {
       <div className="relative z-2 h-full p-8 lg:p-10 flex flex-col justify-between">
         <span className="text-light-font title block">Featured & Awards</span>
         <div>
-          <div className="relative w-3/12 h-8 flex items-end justify-end mb-4 awards-logo-list">
+          <div className="relative w-3/12 h-8 flex items-end justify-end mb-2 awards-logo-list">
             {awardsImages.map((src, i) => (
               <Image
                 key={i}
                 src={src}
-                className="absolute mt-auto w-auto! max-w-16 max-h-8 object-contain"
+                className="absolute mt-auto w-auto! max-w-30 max-h-20 object-contain"
                 data-img
                 fill
                 alt={`Awards logo ${i}`}

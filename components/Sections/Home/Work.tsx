@@ -205,7 +205,7 @@ export default function Work({
             <div className="js-work-card-inner w-full will-change-transform px-0 md:px-10 lg:px-16 xl:px-20">
               <div className="relative flex flex-col items-center justify-center w-full pointer-events-auto">
                 <div className="group flex flex-col items-center justify-center gap-10 text-center cursor-pointer w-full h-full">
-                  <h3 className=" text-dark-font transition-transform duration-700 max-w-116">
+                  <h3 className=" text-dark-font transition-transform duration-700 max-w-100 lg:max-w-116">
                     Discover our complete collection of digital experiences,
                     brands, and platforms.
                   </h3>

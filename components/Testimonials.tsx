@@ -19,7 +19,6 @@ import type { SwiperOptions } from "swiper/types";
 
 // Components / Data
 import { TestimonialsData } from "@/data";
-import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -69,8 +68,6 @@ export default function Testimonials({
   showBottomLine = false,
 }: TestimonialsProps) {
   const swiperRef = useRef<SwiperClass | null>(null);
-  const reviewPrevRef = useRef<HTMLDivElement>(null);
-  const reviewNextRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [modalVideoURL, setModalVideoURL] = useState<string | null>(null);
   const [show, setShow] = useState(false);
@@ -108,24 +105,6 @@ export default function Testimonials({
     };
   }, []);
 
-  useGSAP(() => {
-    const swiper = swiperRef.current;
-
-    if (swiper && reviewPrevRef.current && reviewNextRef.current) {
-      swiper.params.navigation = {
-        ...(typeof swiper.params.navigation === "object"
-          ? swiper.params.navigation
-          : {}),
-        prevEl: reviewPrevRef.current,
-        nextEl: reviewNextRef.current,
-      };
-
-      swiper.navigation.destroy();
-      swiper.navigation.init();
-      swiper.navigation.update();
-    }
-  }, []);
-
   const handleSlideChange = useCallback((swiper: SwiperClass) => {
     setActiveIndex(swiper.realIndex);
   }, []);
@@ -146,26 +125,26 @@ export default function Testimonials({
             text="Client stories"
             animationType="chars"
             stagger={0.05}
-            className="text-dark-font col-span-12 sm:col-span-6 lg:col-span-5 lg:col-start-2"
+            className="text-dark-font col-span-12 sm:col-span-6 md:col-span-5 md:col-start-2"
           />
           <div className="col-span-12 sm:col-span-6 lg:col-span-5 flex flex-col justify-end">
-            <p className="small text-dark-font max-w-55 lg:max-w-45">
+            <p className="small text-dark-font max-w-55 2xl:max-w-45">
               Great work is built through partnership. Here&apos;s what our
               clients say.
             </p>
           </div>
         </div>
         <LinePlus
-          customClass={"my-16 lg:my-20"}
-          lineClass={"opacity-15 bg-grey-line lg:col-span-10 lg:col-start-2"}
+          customClass={"my-20"}
+          lineClass={"opacity-15 bg-grey-line lg:col-span-10 md:col-start-2"}
           plusClass={
             "col-span-12 sm:col-span-1 sm:col-start-7 sm:-translate-x-1/2! mx-auto sm:mx-0"
           }
           iconColor={"#272727"}
         />
         <div className="w-full relative grid grid-cols-12 gap-6 ">
-          <div className="flex flex-col justify-between col-span-12 lg:col-span-5 lg:col-start-2 order-2 lg:order-1">
-            <div className="testimonial-company-list flex-col gap-4 hidden lg:flex">
+          <div className="flex flex-col justify-between col-span-12 md:col-span-5 md:col-start-2 order-2 md:order-1">
+            <div className="testimonial-company-list flex-col gap-4 hidden md:flex">
               {TestimonialsData.map((item, index) => (
                 <button
                   type="button"
@@ -204,7 +183,8 @@ export default function Testimonials({
               ))}
             </div>
             <div className="flex">
-              <div ref={reviewPrevRef} className="custom-arrow left">
+              {/* Added unique and specific class selectors for Swiper navigation */}
+              <div className="js-testimonials-prev custom-arrow left cursor-pointer select-none">
                 <div className="arrow-icon first">
                   <ArrowLeft />
                 </div>
@@ -212,7 +192,7 @@ export default function Testimonials({
                   <ArrowLeft />
                 </div>
               </div>
-              <div ref={reviewNextRef} className="custom-arrow right -ml-px">
+              <div className="js-testimonials-next custom-arrow right -ml-px cursor-pointer select-none">
                 <div className="arrow-icon first">
                   <ArrowRight />
                 </div>
@@ -222,25 +202,29 @@ export default function Testimonials({
               </div>
             </div>
           </div>
-          <div className="col-span-12 lg:col-span-5 order-1 lg:order-2 mb-10 lg:mb-0">
+          <div className="col-span-12 md:col-span-6 lg:col-span-5 order-1 md:order-2 mb-10 md:mb-0">
             <Swiper
               {...swiperOptions}
               modules={[Navigation, Pagination, Autoplay, EffectFade]}
               effect="fade"
               fadeEffect={{ crossFade: true }}
               speed={600}
-              navigation={false} // assigned manually in useEffect
               autoplay={{
                 delay: 5000,
-                disableOnInteraction: false, // Autoplay won't stop after user swipes
-                pauseOnMouseEnter: true, //
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
               }}
               loop={true}
               onSlideChange={handleSlideChange}
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;
               }}
-              className={`swiper-row mx-0! lg:max-w-203 ${customClass ? customClass : ""}`}
+              /* PASS STATIC CLASS SELECTORS INSTEAD OF REFS DURING RENDER */
+              navigation={{
+                prevEl: ".js-testimonials-prev",
+                nextEl: ".js-testimonials-next",
+              }}
+              className={`swiper-row mx-0! md:max-w-203 ${customClass ? customClass : ""}`}
             >
               {TestimonialsData.map((item, index) => (
                 <SwiperSlide
@@ -248,14 +232,14 @@ export default function Testimonials({
                   className="testimonial-slide h-auto! text-dark-font"
                 >
                   <div className="testimonial-item gap-x-6 h-full">
-                    <span className="block lg:hidden title mb-6">
+                    <span className="block md:hidden title mb-6">
                       {item.companyName}
                     </span>
                     <div className="flex flex-col justify-between">
-                      <h3 className="mb-10 lg:mb-20">{item.quoteMessage}</h3>
+                      <h3 className="mb-10 md:mb-20">{item.quoteMessage}</h3>
                       <div className="client-info flex justify-between items-end">
                         <div className="left-block flex items-end">
-                          <div className="w-14 h-14 lg:w-20 lg:h-20 overflow-hidden rounded-lg relative transition-all duration-300 ease-in-out mr-4 lg:mr-6">
+                          <div className="w-14 h-14 md:w-20 md:h-20 overflow-hidden rounded-md relative transition-all duration-300 ease-in-out mr-4 md:mr-6">
                             <Image
                               src={item.clientImage}
                               alt={item.companyName}
@@ -265,7 +249,7 @@ export default function Testimonials({
                             />
                           </div>
                           <div className="flex flex-col">
-                            <p className="lg:mb-1">{item.clientName}</p>
+                            <p className="md:mb-1">{item.clientName}</p>
                             <p className="opacity-60 small">{item.clientDeg}</p>
                           </div>
                         </div>
@@ -287,7 +271,7 @@ export default function Testimonials({
                 </SwiperSlide>
               ))}
             </Swiper>
-            <div className="mt-10 lg:mt-25">
+            <div className="mt-10 md:mt-25">
               <WordShiftButton text="become a client" href="#" />
             </div>
           </div>
