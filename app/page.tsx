@@ -1,12 +1,13 @@
+import { BrandShowcase } from "@/components/BrandShowcase";
+import DribbleSection from "@/components/DribbleSection";
 import {
   Banner,
   KeyFacts,
   Vision,
   WorkServicesSequence,
 } from "@/components/Sections/Home";
-import TrionnSymbolAnimation from "@/components/TrionnSymbolAnimation";
 import Testimonials from "@/components/Testimonials";
-import DribbleSection from "@/components/DribbleSection";
+import TrionnSymbolAnimation from "@/components/TrionnSymbolAnimation";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
