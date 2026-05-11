@@ -217,7 +217,7 @@ function applyStripeHold(
     );
     const s = stripes[i];
     if (s) {
-      gsap.set(s, { scaleY: stripeProgress,ease:'none' });
+      gsap.set(s, { scaleY: stripeProgress, ease: "none" });
       // testimonials: translateY 0→-100vh in sync with stripe reveal
       const testimonialsEl = document.getElementById(
         "testimonials",
@@ -228,7 +228,7 @@ function applyStripeHold(
           marginTop: "-100vh",
           ease: "none",
           duration: stripeEnd - holdStart,
-        })
+        });
       }
     }
   }
@@ -258,7 +258,7 @@ function ServiceCard({ data }: { data: CardData }) {
 
   return (
     <div className="w-full relative">
-      <div className="card-inner pointer-events-auto bg-[#000]/20 border-0 rounded-sm p-10 h-full flex flex-col justify-between overflow-hidden relative backdrop-blur-md min-h-fit md:min-h-79">
+      <div className="card-inner pointer-events-auto bg-[#000]/60 lg:bg-[#000]/20 border-0 rounded-sm p-10 h-full flex flex-col justify-between overflow-hidden relative backdrop-blur-md min-h-fit md:min-h-79">
         <div className="card-top relative z-10 flex justify-between items-start gap-6">
           <h3 className="text-white m-0 max-w-50">{data.title}</h3>
           <svg
@@ -535,8 +535,28 @@ export default function TrionnServices({
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const isMobile = vw < 768;
-    const W = Math.round(vw * (isMobile ? 0.85 : 0.28));
-    const H = Math.round(vh * (isMobile ? 0.25 : 0.32));
+    const isTablet = vw >= 768 && vw < 1440;
+
+    // Match .tr__container padding: px-6 (24px) on mobile, px-10 (40px) on tablet/desktop
+    const containerPx = isMobile ? 24 : 40;
+    const containerW = vw - containerPx * 2;
+
+    let W: number;
+    let H: number;
+
+    if (isMobile) {
+      // Full container width on mobile
+      W = containerW;
+      H = Math.round(W * 0.55);
+    } else if (isTablet) {
+      // Tablet (768–1439px): wider cards for mid-range viewports
+      W = Math.round(vw * 0.42);
+      H = Math.round(vh * 0.32);
+    } else {
+      // Desktop (≥1440px): smaller cards like original
+      W = Math.round(vw * 0.28);
+      H = Math.round(vh * 0.32);
+    }
 
     const cEls = cardRefs.current;
     const allEls = Object.values(cEls).filter(Boolean) as HTMLDivElement[];
@@ -639,7 +659,8 @@ export default function TrionnServices({
           const lEndX = -W * 0.7;
           const lStartY = vh;
           const lEndY = -H;
-          const lPeakX = vw * 0.1;
+          // Tablet: keep left card fully left of center, desktop stays at 0.1vw
+          const lPeakX = isTablet ? containerPx : vw * 0.1;
 
           const lY = lStartY + frac * (lEndY - lStartY);
           const arc = frac <= 0.5 ? Math.sin(frac * Math.PI) : 1;
@@ -648,7 +669,8 @@ export default function TrionnServices({
           const rStartX = vw - W * 0.3;
           const rStartY = -H;
           const rEndY = vh;
-          const rPeakX = vw * 0.9 - W;
+          // Tablet: right card starts at right edge of container, no overlap with left
+          const rPeakX = isTablet ? vw - containerPx - W : vw * 0.9 - W;
 
           const rY = rStartY + frac * (rEndY - rStartY);
           const rX = rStartX + arc * (rPeakX - rStartX);
@@ -774,13 +796,38 @@ export default function TrionnServices({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const dpr = window.devicePixelRatio || 1;
-    const vh = Math.round(
-      typeof window !== "undefined" && window.visualViewport?.height
-        ? window.visualViewport.height
-        : window.innerHeight,
-    );
-    const cvH = vh;
-    const cvW = Math.round(cvH * (16 / 9));
+
+    const isSmallMobile = window.matchMedia("(max-width: 677px)").matches;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    const isTablet = window.matchMedia(
+      "(min-width: 768px) and (max-width: 1023px)",
+    ).matches;
+
+    let cvW: number;
+    let cvH: number;
+
+    if (isSmallMobile) {
+      // Full viewport fill on small phones
+      cvW = 999;
+      cvH = 594;
+    } else if (isMobile) {
+      cvW = 999;
+      cvH = 594;
+    } else if (isTablet) {
+      // Tablet (768–1023px): reduced canvas, 16:9 at 75% of viewport height
+      const vh = Math.round(
+        window.visualViewport?.height ?? window.innerHeight,
+      );
+      cvH = Math.round(vh * 0.75);
+      cvW = Math.round(cvH * (16 / 9));
+    } else {
+      const vh = Math.round(
+        window.visualViewport?.height ?? window.innerHeight,
+      );
+      cvH = vh;
+      cvW = Math.round(cvH * (16 / 9));
+    }
+
     canvas.width = cvW * dpr;
     canvas.height = cvH * dpr;
     canvas.style.width = cvW + "px";
@@ -1150,7 +1197,7 @@ export default function TrionnServices({
         <canvas
           ref={canvasRef}
           id="c"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block h-dvh w-auto max-w-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block max-[677px]:w-full max-[677px]:h-full md:h-dvh md:w-auto max-w-none"
           style={{ opacity: embedded ? 0 : 1 }}
         />
 
@@ -1188,7 +1235,7 @@ export default function TrionnServices({
             <div
               key={card.id}
               ref={setCardRef(card.id)}
-              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-6"
+              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d lg:p-6"
             >
               <ServiceCard data={card} />
             </div>
@@ -1197,7 +1244,7 @@ export default function TrionnServices({
             <div
               key={card.id}
               ref={setCardRef(card.id)}
-              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d p-6"
+              className="svc-card absolute top-0 left-0 will-change-[transform,opacity] transform-3d lg:p-6"
             >
               <ServiceCard data={card} />
             </div>
@@ -1257,7 +1304,7 @@ export default function TrionnServices({
               >
                 <BlurTextReveal
                   as="span"
-                  html={`✦ Design with intent. Built to work.`}
+                  html={`✦ Different disciplines. One standard of craft.`}
                   animationType="chars"
                   stagger={0.05}
                   className={`title relative z-20 block ${embedded ? "" : "text-light-font"}`}
