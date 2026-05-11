@@ -1981,7 +1981,7 @@ export default function OurWorkListing() {
 
       <main
         id="projects-grid"
-        className="relative py-10 lg:py-20 z-10 flex flex-col gap-10 lg:gap-20"
+        className="relative py-10 lg:py-20 z-10 flex flex-col gap-16 lg:gap-20"
       >
         {projects.map((project, i) => (
           <article
