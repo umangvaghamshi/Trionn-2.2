@@ -2,7 +2,7 @@ import { BlurTextReveal, FadeInOnScroll } from "@/components/TextAnimation";
 
 export default function Banner() {
   return (
-    <section className="pb-20 lg:pb-37.5 relative bg-[#D2D2D2] text-dark-font min-h-screen flex">
+    <section className="pb-20 lg:pb-37.5 relative bg-[#D2D2D2] text-dark-font min-h-dvh flex">
       <div className="tr__container flex flex-col items-center text-center">
         <div className="video-block ">
           <video
@@ -21,7 +21,7 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-screen w-full mix-blend-darken block lg:hidden"
+            className="max-h-dvh w-full mix-blend-darken block lg:hidden"
           />
         </div>
         <div className="flex flex-col gap-6 lg:gap-10 items-center text-center -translate-y-full lg:translate-y-0 -mt-30 lg:-mt-20">

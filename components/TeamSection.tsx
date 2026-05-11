@@ -287,12 +287,12 @@ export default function TeamSection() {
         centerFrame.style.bottom = "auto";
 
         // Update frame sizes dynamically
-        frameOuterRef.current!.style.width = (frameW + 8) + "px";
-        frameOuterRef.current!.style.height = (frameH + 8) + "px";
+        frameOuterRef.current!.style.width = frameW + 8 + "px";
+        frameOuterRef.current!.style.height = frameH + 8 + "px";
         frameOuterRef.current!.style.top = "-4px";
         frameOuterRef.current!.style.left = "-4px";
-        arcCanvasRef.current!.style.width = (frameW + 8) + "px";
-        arcCanvasRef.current!.style.height = (frameH + 8) + "px";
+        arcCanvasRef.current!.style.width = frameW + 8 + "px";
+        arcCanvasRef.current!.style.height = frameH + 8 + "px";
         arcCanvasRef.current!.style.top = "-4px";
         arcCanvasRef.current!.style.left = "-4px";
         centerFrameInnerRef.current!.style.width = frameW + "px";
@@ -2056,7 +2056,7 @@ export default function TeamSection() {
         }
       `}</style>
 
-      <div ref={sectionRef} className="relative ts-root min-h-screen">
+      <div ref={sectionRef} className="relative ts-root min-h-dvh">
         {/* Stripe reveal overlay */}
         <div className="absolute inset-0 pointer-events-none flex flex-col w-full h-full z-[10001]">
           {Array.from({ length: DEFAULT_STRIPE_COUNT }).map((_, index) => (
@@ -2080,7 +2080,7 @@ export default function TeamSection() {
         {/* Scene */}
         <div
           ref={sceneRef}
-          className="ts-scene relative w-screen min-h-screen overflow-hidden"
+          className="ts-scene relative w-screen min-h-dvh overflow-hidden"
         >
           <div
             ref={crtRef}
@@ -2094,7 +2094,11 @@ export default function TeamSection() {
           <div
             ref={centerFrameRef}
             className="ts-center-frame absolute z-9999 pointer-events-none"
-            style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
+            style={{
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
           >
             <div
               ref={frameOuterRef}

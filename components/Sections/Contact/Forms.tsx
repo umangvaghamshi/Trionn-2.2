@@ -132,7 +132,7 @@ export default function Forms() {
                 </p>
               </div>
 
-              <div className="mt-6 lg:mt-16">
+              <div className="mt-10 lg:mt-16">
                 <WordShiftButton
                   type="submit"
                   text="Start the conversation"
@@ -149,7 +149,7 @@ export default function Forms() {
           plusClass={"col-span-12 mx-auto"}
           iconColor={"#D8D8D8"}
         />
-        <div className="grid grid-cols-12 gap-6 ">
+        <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 md:col-span-4 lg:col-start-2 flex flex-col justify-center items-start">
             <BlurTextReveal
               as="h2"
@@ -166,7 +166,7 @@ export default function Forms() {
               Send a short note and your work.
             </p>
           </div>
-          <div className="col-span-12 sm:col-span-6 md:col-span-2 flex flex-col justify-center items-start">
+          <div className="col-span-12 sm:col-span-6 md:col-span-2 flex flex-col justify-center items-start mt-6 sm:mt-0">
             <Link href="mailto:hello@trionn.com" className="h3 mb-2 link">
               hello@trionn.com
             </Link>

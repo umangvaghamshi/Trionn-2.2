@@ -11,19 +11,23 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "TRIONN | AI-Powered Creative Design & Development Studio in India",
-  description: "TRIONN is an independent AI-powered digital studio crafting meaningful brand experiences through strategy, design, and technology. Based in Rajkot, Gujarat, India, we create premium websites, immersive digital products, and interactive experiences for ambitious brands worldwide.",
-  keywords: "TRIONN, AI-powered digital studio, AI design studio, AI web development, AI website design, design and development studio, creative technology studio, digital experience studio, interactive web design, premium web design, award-winning web design, UI UX design studio, branding and development agency, creative development studio, motion design studio, immersive digital experiences, strategy-led design, custom website development, WebGL development studio, frontend development studio, digital product design, modern brand experiences, creative agency India, web design company India, digital studio Rajkot, creative studio Gujarat, AI agency India, premium digital agency, interactive experiences, technology-driven design",
+  description:
+    "TRIONN is an independent AI-powered digital studio crafting meaningful brand experiences through strategy, design, and technology. Based in Rajkot, Gujarat, India, we create premium websites, immersive digital products, and interactive experiences for ambitious brands worldwide.",
+  keywords:
+    "TRIONN, AI-powered digital studio, AI design studio, AI web development, AI website design, design and development studio, creative technology studio, digital experience studio, interactive web design, premium web design, award-winning web design, UI UX design studio, branding and development agency, creative development studio, motion design studio, immersive digital experiences, strategy-led design, custom website development, WebGL development studio, frontend development studio, digital product design, modern brand experiences, creative agency India, web design company India, digital studio Rajkot, creative studio Gujarat, AI agency India, premium digital agency, interactive experiences, technology-driven design",
   alternates: {
     canonical: "https://trionn.com/",
   },
   openGraph: {
     title: "TRIONN | AI-Powered Creative Design & Development Studio",
-    description: "Independent AI-powered digital studio crafting premium brand experiences through strategy, design, and technology.",
+    description:
+      "Independent AI-powered digital studio crafting premium brand experiences through strategy, design, and technology.",
     url: "https://trionn.com/",
   },
   twitter: {
     title: "TRIONN | AI-Powered Creative Design & Development Studio",
-    description: "Independent AI-powered digital studio crafting premium brand experiences through strategy, design, and technology.",
+    description:
+      "Independent AI-powered digital studio crafting premium brand experiences through strategy, design, and technology.",
   },
 };
 
@@ -36,26 +40,27 @@ const Page = () => {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            "name": "TRIONN",
-            "url": "https://trionn.com/",
-            "logo": "https://trionn.com/logo.png",
-            "description": "TRIONN is an independent AI-powered digital studio crafting meaningful brand experiences through strategy, design, and technology.",
-            "founder": {
+            name: "TRIONN",
+            url: "https://trionn.com/",
+            logo: "https://trionn.com/logo.png",
+            description:
+              "TRIONN is an independent AI-powered digital studio crafting meaningful brand experiences through strategy, design, and technology.",
+            founder: {
               "@type": "Person",
-              "name": "Sunny Rathod"
+              name: "Sunny Rathod",
             },
-            "address": {
+            address: {
               "@type": "PostalAddress",
-              "streetAddress": "216-4Plus Complex, Astron Chowk",
-              "addressLocality": "Rajkot",
-              "addressRegion": "Gujarat",
-              "addressCountry": "India"
+              streetAddress: "216-4Plus Complex, Astron Chowk",
+              addressLocality: "Rajkot",
+              addressRegion: "Gujarat",
+              addressCountry: "India",
             },
-            "sameAs": [
+            sameAs: [
               "https://www.linkedin.com/company/trionndesign",
-              "https://www.instagram.com/trionndesign"
-            ]
-          })
+              "https://www.instagram.com/trionndesign",
+            ],
+          }),
         }}
       />
       <div
@@ -67,6 +72,7 @@ const Page = () => {
             "nav",
             "s1-headline",
             "s1-sub",
+            "s1-scroll",
             "s1-stats",
             "s1-body",
             "s1-cta",
@@ -75,7 +81,7 @@ const Page = () => {
         <Banner />
         <Vision />
         {/* Scroll gap to hold the vision section before key facts and stripes appear */}
-        <div className="w-full h-[20vh] md:h-screen pointer-events-none bg-transparent" />
+        <div className="w-full h-[20dvh] md:h-dvh pointer-events-none bg-transparent" />
       </div>
       <KeyFacts />
       <WorkServicesSequence />

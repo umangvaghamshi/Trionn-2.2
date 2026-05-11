@@ -69,7 +69,7 @@ export default async function Page({
         }}
       />
       <ProjectDetailPage project={project} />
-      <div className="min-h-screen bg-[#0C0C0C]"></div>
+      <div className="min-h-dvh bg-[#0C0C0C]"></div>
     </>
   );
 }

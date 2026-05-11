@@ -130,10 +130,10 @@ export default function HowWork({
         ?.nextElementSibling as HTMLElement | null;
       if (nextSection) {
         if (stripeCount > 0) {
-          gsap.set(nextSection, { marginTop: "-100vh", ease: "none" });
+          gsap.set(nextSection, { marginTop: "-100dvh", ease: "none" });
         } else {
           tl.to({}, { duration: 1 }); // Hold for 1 sec
-          gsap.set(nextSection, { marginTop: "-100vh", ease: "none" });
+          gsap.set(nextSection, { marginTop: "-100dvh", ease: "none" });
         }
       }
 
@@ -176,7 +176,7 @@ export default function HowWork({
       ref={outerRef}
       className={`relative ${theme === "dark" ? "bg-[#040508] text-light-font" : "bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] text-dark-font"}`}
     >
-      <div ref={sectionRef} className="py-37.5 min-h-screen relative">
+      <div ref={sectionRef} className="py-37.5 min-h-dvh relative">
         <div className="tr__container relative w-full grid grid-cols-12 gap-x-6 h-full">
           <div className="grid grid-cols-12 gap-x-6 mb-20 col-span-12">
             <BlurTextReveal

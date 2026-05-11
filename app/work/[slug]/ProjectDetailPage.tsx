@@ -70,7 +70,7 @@ export default function ProjectDetailPage({ project }: { project: any }) {
       <div className="tr__container flex flex-col justify-between">
         <div className="grid grid-cols-12 gap-6">
           <div
-            className="col-span-12 lg:col-span-5 xl:col-span-4 pt-37.5 lg:pt-37.5 pb-10 lg:pb-25 flex flex-col justify-between gap-8 lg:gap-10 lg:min-h-screen max-h-screen left-block relative"
+            className="col-span-12 lg:col-span-5 xl:col-span-4 pt-37.5 lg:pt-37.5 pb-10 lg:pb-25 flex flex-col justify-between gap-8 lg:gap-10 lg:min-h-dvh max-h-dvh left-block relative"
             ref={leftColRef}
           >
             <div className="title-block flex flex-col relative">
