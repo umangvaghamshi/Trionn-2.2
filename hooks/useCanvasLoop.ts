@@ -87,5 +87,5 @@ export function useCanvasLoop(
 export function getCappedDPR(): number {
   if (typeof window === "undefined") return 1;
   const mobile = window.innerWidth < 768;
-  return mobile ? 1 : Math.min(window.devicePixelRatio, 1.5);
+  return mobile ? 1.5 : Math.min(window.devicePixelRatio, 1.5);
 }
