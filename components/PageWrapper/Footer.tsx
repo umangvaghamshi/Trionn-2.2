@@ -64,7 +64,7 @@ export default function Footer() {
                     stagger={0.05}
                     className="title mb-4 text-light-font block"
                   />
-                  <h2 className="h1 max-w-200 text-light-font">
+                  <h2 className="max-w-200 text-light-font">
                     Ready to build <br />
                     something bold?
                   </h2>

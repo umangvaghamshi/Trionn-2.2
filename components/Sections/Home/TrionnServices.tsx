@@ -279,7 +279,7 @@ function ServiceCard({ data }: { data: CardData }) {
             ))}
           </svg>
         </div>
-        <p className="text-light-font relative z-10 m-0 small max-w-75 mt-10">
+        <p className="text-light-font relative z-10 m-0 small md:max-w-75 mt-10">
           {data.description}
         </p>
       </div>
@@ -1179,7 +1179,7 @@ export default function TrionnServices({
   return (
     <section
       ref={sectionRef}
-      className={`relative min-h-dvh bg-[#000] ${embedded ? "h-full min-h-0 w-full" : ""}`}
+      className={`relative min-h-dvh max-lg:-mt-px ${embedded ? "h-full min-h-0 w-full" : ""}`}
     >
       <SoundListener soundEnabledRef={soundEnabledRef} />
       {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}
@@ -1252,7 +1252,7 @@ export default function TrionnServices({
         </div>
         <div
           ref={typographyRef}
-          className="tr__container relative flex h-full flex-col items-center justify-between pt-25 pb-20 lg:py-20 z-30"
+          className="tr__container relative flex h-full flex-col items-center justify-between pt-30 pb-20 z-30"
         >
           <div data-services-copy className="relative z-20 block">
             <BlurTextReveal

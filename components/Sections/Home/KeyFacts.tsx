@@ -73,7 +73,7 @@ export default function KeyFacts() {
 
       const mm = gsap.matchMedia();
 
-      mm.add("(min-width: 1024px)", () => {
+      mm.add("(min-width: 768px)", () => {
         gsap.set(cards, {
           rotateX: -92,
           transformOrigin: "center top",
@@ -110,7 +110,7 @@ export default function KeyFacts() {
         });
       });
 
-      mm.add("(max-width: 1023px)", () => {
+      mm.add("(max-width: 767px)", () => {
         if (!list) return;
 
         gsap.set(list, { x: 0 });
@@ -168,7 +168,7 @@ export default function KeyFacts() {
   return (
     <section
       id="keyfacts-section"
-      className="pt-16 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh max-lg:overflow-hidden"
+      className="pt-16 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh max-md:overflow-hidden"
       ref={containerRef}
     >
       <div className="tr__container">
@@ -185,18 +185,18 @@ export default function KeyFacts() {
             experience and impact.
           </p>
         </div>
-        <div className="key-card-list flex gap-6 justify-start lg:justify-center flex-nowrap transform-3d max-lg:w-max max-lg:-mx-4 max-lg:px-[7.5vw]">
+        <div className="key-card-list flex gap-6 justify-start md:justify-center md:flex-wrap lg:flex-nowrap transform-3d max-lg:-mx-4 max-lg:px-4">
           <FeaturedCard key={windowKey} odoSync={odoTicks[0]} />
           <ProjectCard odoSync={odoTicks[1]} />
           <TeamCard odoSync={odoTicks[2]} />
         </div>
-        <div className="partners-block mt-20 lg:mt-29 flex flex-col gap-6">
+        <div className="partners-block mt-20 lg:mt-30 flex flex-col gap-10">
           <BlurTextReveal
             as="span"
             text={`Our business partners`}
             animationType="chars"
             stagger={0.05}
-            className="text-black small uppercase text-center block"
+            className="text-black title text-center block"
           />
           <div className="partners-list hidden lg:flex justify-center -mx-4 lg:-mx-10">
             {partnersLogo.map((item, index) => (
@@ -237,7 +237,7 @@ export default function KeyFacts() {
         </div>
       </div>
       {/* Bottom decoration line (Moved from Work section) */}
-      <div className="js-kf-line-wrap tr__container absolute bottom-0 max-lg:translate-y-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4">
+      <div className="js-kf-line-wrap tr__container absolute bottom-0 max-md:translate-y-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4">
         <LinePlus
           key={odoTicks[0]}
           lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
@@ -305,7 +305,7 @@ function FeaturedCard({ odoSync }: { odoSync: number }) {
     <div
       ref={cardRef}
       data-kf-card
-      className="featured-card shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-black text-light-font overflow-hidden relative hover:scale-[1.02] transition-colors duration-500 will-change-transform backface-hidden transform-3d"
+      className="featured-card shrink-0 w-[85vw] md:w-[380px] lg:w-full max-w-99 max-md:h-[50svh] max-md:max-h-110 max-md:min-h-[300px] md:h-122 rounded-lg bg-black text-light-font overflow-hidden relative hover:scale-[1.02] transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <video
         autoPlay
@@ -354,7 +354,7 @@ function ProjectCard({ odoSync }: { odoSync: number }) {
   return (
     <div
       data-kf-card
-      className="project-card relative shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-cream p-8 lg:p-10 flex flex-col justify-between overflow-hidden  hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
+      className="project-card relative shrink-0 w-[85vw] md:w-[380px] lg:w-full max-w-99 max-md:h-[50svh] max-md:max-h-110 max-md:min-h-[300px] md:h-122 rounded-lg bg-cream p-8 lg:p-10 flex flex-col justify-between overflow-hidden  hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
     >
       <span className="title block text-dark-font">projects completed</span>
       <div className="flex flex-col items-center justify-center flex-1 relative">
@@ -402,7 +402,7 @@ function TeamCard({ odoSync }: { odoSync: number }) {
       data-kf-card
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="team-card shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02]  transition-colors duration-500 will-change-transform backface-hidden transform-3d"
+      className="team-card shrink-0 w-[85vw] md:w-[380px] lg:w-full max-w-99 max-md:h-[50svh] max-md:max-h-110 max-md:min-h-[300px] md:h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02]  transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <div className="relative z-3 h-full p-8 lg:p-10 flex flex-col justify-between">
         <span className="title block text-right">our team members</span>
