@@ -152,7 +152,7 @@ export default function Work({
                 stagger={0.05}
                 className="text-dark-font text-[2.5rem] leading-[1.1] md:text-5xl font-medium tracking-tight"
               />
-              <div className="whitespace-nowrap">
+              <div className="whitespace-nowrap hidden md:block">
                 <WordShiftButton text="view all projects" href="/work" />
               </div>
             </div>
