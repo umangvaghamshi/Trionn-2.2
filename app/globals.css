@@ -240,6 +240,12 @@ sup {
   @apply -top-2 md:-top-6;
 }
 
+.flex-flow {
+  -moz-flex-flow: row wrap;
+  -webkit-flex-flow: row wrap;
+  flex-flow: row wrap;
+}
+
 /* Top line */
 .link::before {
   transform: scaleX(0);
@@ -330,12 +336,6 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 1000px #d2d2d2 inset !important;
   -webkit-text-fill-color: #434343 !important; /* Changes the text color */
-}
-
-h4,
-.h4 {
-  font-family: "FamiljenGroteskVariable-Regular";
-  @apply text-lg leading-5 -tracking-[0.02em];
 }
 
 @media (max-width: 1023px) {
