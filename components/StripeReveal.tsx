@@ -103,16 +103,6 @@ export default function StripeReveal({
         ? (document.querySelector(scrollEndTrigger) as HTMLElement | null)
         : null;
 
-      const st = ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        endTrigger: endTriggerEl ?? section,
-        end: endTriggerEl ? scrollEnd : "bottom top",
-        pin: container,
-        pinSpacing: false,
-        markers,
-      });
-
       const count = stripes.length;
       const perStripe = 1 - staggerAmount;
 
@@ -120,17 +110,38 @@ export default function StripeReveal({
          Lenis-smoothed scroll (same pattern as DribbleSection). */
       let sectionVisible = false;
       let resolvedHoldStart = holdStart;
+      let st: ScrollTrigger | undefined;
 
       const mm = gsap.matchMedia();
       mm.add("(max-width: 1023px)", () => {
         resolvedHoldStart = 0;
+        st = ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          endTrigger: endTriggerEl ?? section,
+          end: endTriggerEl ? "top top" : "bottom top",
+          pin: container,
+          pinSpacing: false,
+          markers,
+        });
+        return () => st.kill();
       });
       mm.add("(min-width: 1024px)", () => {
         resolvedHoldStart = holdStart;
+        st = ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          endTrigger: endTriggerEl ?? section,
+          end: endTriggerEl ? scrollEnd : "bottom top",
+          pin: container,
+          pinSpacing: false,
+          markers,
+        });
+        return () => st.kill();
       });
 
       const tick = () => {
-        if (!sectionVisible) return;
+        if (!sectionVisible || !st) return;
 
         const progress = st.progress;
         const holdT = Math.max(
@@ -166,7 +177,6 @@ export default function StripeReveal({
       return () => {
         gsap.ticker.remove(tick);
         io.disconnect();
-        st.kill();
         mm.revert();
       };
     },
