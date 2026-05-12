@@ -139,7 +139,7 @@ body {
   font-family: "NeueHaasDisplay-Roman";
   background-color: #040508;
   color: #d8d8d8;
-  @apply text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden;
+  @apply text-xl lg:text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden;
 }
 
 h1,
@@ -175,17 +175,17 @@ h4,
 p,
 .p {
   font-family: "NeueHaasDisplay-Roman";
-  @apply text-lg lg:text-xl leading-[normal];
+  @apply text-xl leading-[normal];
 }
 
 .small {
   font-family: "NeueHaasDisplay-Roman";
-  @apply text-lg 2xl:text-base leading-[normal];
+  @apply text-xl 2xl:text-base leading-[normal];
 }
 
 .title {
   font-family: "FamiljenGroteskVariable-Regular";
-  @apply text-base leading-4 -tracking-[0.02em] uppercase;
+  @apply text-lg leading-none -tracking-[0.02em] uppercase;
 }
 
 .menu {

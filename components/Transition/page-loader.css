@@ -149,7 +149,7 @@
 /* ── Page label (shown during transition) ─────────────────────────── */
 .pl-overlay-page-label {
   /* font-family: var(--pl-mono); */
-  font-size: clamp(9px, 1vw, 11px);
+  font-size: clamp(0.563rem, 1vw, 0.688rem);
   letter-spacing: 0.45em;
   text-transform: uppercase;
   color: var(--pl-black);
@@ -189,9 +189,9 @@
 .pl-slot-digit {
   display: block;
   /* font-family: var(--pl-mono); */
-  font-size: 13px;
-  line-height: 18px;
-  height: 18px;
+  font-size: 0.813rem;
+  line-height: 1.125rem;
+  height: 1.125rem;
   color: var(--pl-line-gray);
   letter-spacing: 0;
   text-align: center;
@@ -207,7 +207,7 @@
 }
 .pl-tag-word {
   /* font-family: var(--pl-mono); */
-  font-size: clamp(8px, 0.9vw, 10px);
+  font-size: clamp(0.5rem, 0.9vw, 0.625rem);
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: #111;
@@ -223,7 +223,7 @@
 }
 .pl-tag-dot {
   /* font-family: var(--pl-mono); */
-  font-size: 8px;
+  font-size: 0.5rem;
   color: rgba(0, 0, 0, 0.3);
   opacity: 0;
   transition: opacity 0.4s 0.15s;
@@ -262,7 +262,7 @@
 }
 .pl-trans-label {
   /* font-family: var(--pl-mono); */
-  font-size: clamp(9px, 1vw, 11px);
+  font-size: clamp(0.563rem, 1vw, 0.688rem);
   letter-spacing: 0.45em;
   text-transform: uppercase;
   color: #111;
