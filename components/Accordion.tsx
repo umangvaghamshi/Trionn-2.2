@@ -69,7 +69,7 @@ export default function Accordion({ items, customClass }: AccordionProps) {
 
         return (
           <div key={index} className="group">
-            <div className="accordion__item py-5 md:py-8">
+            <div className="accordion__item py-6 md:py-8">
               {/* TITLE */}
               <div
                 className="accordion__title pr-20 w-full relative cursor-pointer items-center"
@@ -84,7 +84,7 @@ export default function Accordion({ items, customClass }: AccordionProps) {
 
                 {/* + / - */}
                 <span
-                  className={`icon absolute top-1/2 right-0 h-3 w-3 -translate-y-1/2 delay-200 ${
+                  className={`icon absolute top-1/2 right-0 h-3 w-3 -translate-y-1/2 delay-200 flex justify-center items-center transition-all duration-300 ease-in-out ${
                     isOpen ? "rotate-180" : ""
                   }`}
                 >
