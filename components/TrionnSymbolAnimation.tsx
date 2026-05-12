@@ -73,7 +73,15 @@ export function TrionnSymbolAnimation({
       return;
     }
     audio.setSoundEnabled(true);
-    audio.autoStartWoosh();
+    // Only start woosh if the hero section is actually visible in the viewport
+    const heroEl = document.getElementById("hero-section");
+    if (heroEl) {
+      const { top, bottom } = heroEl.getBoundingClientRect();
+      const inView = top < window.innerHeight && bottom > 0;
+      if (inView) audio.autoStartWoosh();
+    } else {
+      audio.autoStartWoosh();
+    }
   }, [soundEnabled, audio]);
 
   // ── Perf monitor ──────────────────────────────────────────────────────────
