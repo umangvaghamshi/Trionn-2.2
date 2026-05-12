@@ -115,7 +115,7 @@ export default function StripeReveal({
       const mm = gsap.matchMedia();
       mm.add("(max-width: 1023px)", () => {
         resolvedHoldStart = 0;
-        st = ScrollTrigger.create({
+        const localSt = ScrollTrigger.create({
           trigger: section,
           start: "top top",
           endTrigger: endTriggerEl ?? section,
@@ -124,11 +124,12 @@ export default function StripeReveal({
           pinSpacing: false,
           markers,
         });
-        return () => st.kill();
+        st = localSt;
+        return () => localSt.kill();
       });
       mm.add("(min-width: 1024px)", () => {
         resolvedHoldStart = holdStart;
-        st = ScrollTrigger.create({
+        const localSt = ScrollTrigger.create({
           trigger: section,
           start: "top top",
           endTrigger: endTriggerEl ?? section,
@@ -137,7 +138,8 @@ export default function StripeReveal({
           pinSpacing: false,
           markers,
         });
-        return () => st.kill();
+        st = localSt;
+        return () => localSt.kill();
       });
 
       const tick = () => {
