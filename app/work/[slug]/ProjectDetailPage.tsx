@@ -9,6 +9,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TransitionLink } from "@/components/Transition";
+import { HoverBlur } from "@/components/TextAnimation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -78,41 +79,41 @@ export default function ProjectDetailPage({
       <div className="tr__container grid grid-cols-12 gap-6 relative">
         <div className="grid grid-cols-12 gap-6 col-span-12">
           <div
-            className="col-span-12 lg:col-span-5 xl:col-span-4 pt-37.5 lg:pt-37.5 pb-10 lg:pb-25 flex flex-col justify-between gap-8 lg:gap-10 lg:min-h-dvh max-h-dvh left-block"
+            className="col-span-12 lg:col-span-5 xl:col-span-4 pt-25 lg:pt-37.5 pb-10 lg:pb-25 flex flex-col justify-between gap-8 lg:gap-10 lg:min-h-dvh max-h-dvh left-block project-detail-content"
             ref={leftColRef}
           >
             <div className="title-block flex flex-col relative">
-              <div className="fixed lg:absolute left-0 top-25 lg:top-0 lg:-translate-y-full w-full px-6 md:px-10 lg:px-0 z-2 top-bar mix-blend-difference">
+              <div className="fixed lg:absolute left-0 max-lg:bottom-16 lg:top-0 lg:-translate-y-full w-full px-6 md:px-10 lg:px-0 z-2 project-navigation">
                 <div className="flex justify-between">
                   {prevProject ? (
                     <TransitionLink
-                      className="link title block text-light-font py-2 mb-2"
+                      className="navigation-link title block text-light-font lg:mb-4"
                       href={`/work/${prevProject.slug}`}
                       transitionLabel="Prev"
                     >
-                      Prev project
+                      <HoverBlur>Prev project</HoverBlur>
                     </TransitionLink>
                   ) : (
                     <TransitionLink
-                      className="link title block text-light-font py-2 mb-2"
+                      className="navigation-link title block text-light-font lg:mb-4"
                       href="/work"
                       transitionLabel="Back"
                     >
-                      Back to work
+                      <HoverBlur>Back to work</HoverBlur>
                     </TransitionLink>
                   )}
                   {nextProject && (
                     <TransitionLink
-                      className="link title block text-light-font py-2 mb-2 ml-auto"
+                      className="navigation-link title block text-light-font lg:mb-4 ml-auto"
                       href={`/work/${nextProject.slug}`}
                       transitionLabel="Next"
                     >
-                      Next project
+                      <HoverBlur>Next project</HoverBlur>
                     </TransitionLink>
                   )}
                 </div>
-                <LinePlus lineClass={"bg-cream-line/20"} plusClass={"hidden"} />
               </div>
+              <LinePlus lineClass={"bg-cream-line/20"} plusClass={"hidden"} />
               <div className="flex flex-row justify-between mt-6 lg:mt-10 mb-4 gap-2">
                 <BlurTextReveal
                   as="h1"
@@ -132,7 +133,7 @@ export default function ProjectDetailPage({
               </p>
               <ul className="mt-6 lg:mt-10">
                 {project.category.map((cat: string, i: number) => (
-                  <li key={i}>·&nbsp;&nbsp;{cat}</li>
+                  <li key={i}>{cat}</li>
                 ))}
               </ul>
             </div>

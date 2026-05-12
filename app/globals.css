@@ -307,9 +307,11 @@ sup {
 .accordion__title .icon.open::before {
   @apply h-0 w-0;
 } */
-
-.tab-content ul {
-  @apply list-disc pl-4;
+.project-detail-content ul li {
+  @apply flex gap-0.5 items-center;
+}
+.project-detail-content ul li::before {
+  content: "·";
 }
 
 .text-field {
@@ -336,6 +338,11 @@ h4,
   @apply text-lg leading-5 -tracking-[0.02em];
 }
 
+@media (max-width: 1023px) {
+  .project-navigation .navigation-link {
+    @apply py-3 px-4 rounded-3xl bg-black border-black;
+  }
+}
 @media (max-width: 640px) {
   .marquee-wrapper .mrquee-text {
     @apply leading-none;
