@@ -6,11 +6,10 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-
-import { partnersLogo } from "@/data";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LinePlus from "@/components/LinePlus";
 import Marquee from "@/components/Marquee";
+import { partnersLogo } from "@/data";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,6 +17,13 @@ export default function KeyFacts() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [odoTicks, setOdoTicks] = useState([0, 0, 0]);
   const odoFiredRef = useRef([false, false, false]);
+  const [windowKey, setWindowKey] = useState(0);
+
+  useEffect(() => {
+    const onResize = () => setWindowKey((k) => k + 1);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const triggerOdometer = useCallback((index: number) => {
     if (odoFiredRef.current[index]) return;
@@ -180,7 +186,7 @@ export default function KeyFacts() {
           </p>
         </div>
         <div className="key-card-list flex gap-6 justify-start lg:justify-center flex-nowrap transform-3d max-lg:w-max max-lg:-mx-4 max-lg:px-[7.5vw]">
-          <FeaturedCard odoSync={odoTicks[0]} />
+          <FeaturedCard key={windowKey} odoSync={odoTicks[0]} />
           <ProjectCard odoSync={odoTicks[1]} />
           <TeamCard odoSync={odoTicks[2]} />
         </div>
@@ -348,7 +354,7 @@ function ProjectCard({ odoSync }: { odoSync: number }) {
   return (
     <div
       data-kf-card
-      className="project-card relative shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-cream p-8 lg:p-10 flex flex-col justify-between overflow-hidden cursor-pointer hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
+      className="project-card relative shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-cream p-8 lg:p-10 flex flex-col justify-between overflow-hidden  hover:scale-[1.02] transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
     >
       <span className="title block text-dark-font">projects completed</span>
       <div className="flex flex-col items-center justify-center flex-1 relative">
@@ -396,7 +402,7 @@ function TeamCard({ odoSync }: { odoSync: number }) {
       data-kf-card
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="team-card shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02] cursor-pointer transition-colors duration-500 will-change-transform backface-hidden transform-3d"
+      className="team-card shrink-0 w-[85vw] md:w-[380px] lg:w-full lg:max-w-99 max-lg:h-[50svh] max-lg:min-h-[300px] lg:h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative hover:scale-[1.02]  transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <div className="relative z-3 h-full p-8 lg:p-10 flex flex-col justify-between">
         <span className="title block text-right">our team members</span>
