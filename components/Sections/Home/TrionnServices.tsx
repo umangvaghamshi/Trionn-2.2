@@ -351,7 +351,7 @@ export default function TrionnServices({
   const TOTAL = 371;
   const EXPLODE_START = 0.35;
   const EXPLODE_END = 0.53;
-  const CARDS_START = 0.45;
+  const CARDS_START = 0.56;
   const CARDS_END = 1.0;
 
   /* ── Measure each char viewport position (Range API = same layout as painted text) ── */
