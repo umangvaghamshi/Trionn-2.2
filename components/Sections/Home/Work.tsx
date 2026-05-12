@@ -140,10 +140,10 @@ export default function Work({
       <div className="absolute inset-0 flex items-start md:items-center overflow-hidden z-10">
         <div
           ref={trackRef}
-          className="flex flex-col md:flex-row h-auto md:h-[min(80vh,860px)] flex-nowrap items-center will-change-transform w-full"
+          className="flex flex-col md:flex-row h-auto md:h-[min(80vh,860px)] flex-nowrap items-center will-change-transform"
         >
           {/* ── Intro Text Block (Responsive width) ── */}
-          <div className="pointer-events-auto flex w-full md:w-[50vw] shrink-0 h-[75vh] md:h-full flex-col justify-center items-center px-6 md:px-10">
+          <div className="pointer-events-auto flex w-screen md:w-[50vw] shrink-0 h-[75vh] md:h-full flex-col justify-center items-center px-6 md:px-10">
             <div className="title-block flex flex-col items-center text-center gap-10 md:gap-12 pt-20">
               <BlurTextReveal
                 as="h2"
@@ -219,7 +219,7 @@ export default function Work({
         </div>
       </div>
       {/* Section right-border line + plus icon (independent timeline) */}
-      <div className="hidden md:block absolute right-0 top-0 h-full w-0 pointer-events-none z-20">
+      <div className="absolute right-0 top-0 h-full w-0 pointer-events-none z-20">
         <div
           ref={borderLineRef}
           className="absolute top-0 -left-px h-full w-px bg-grey-line/30"
