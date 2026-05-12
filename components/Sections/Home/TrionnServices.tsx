@@ -1252,7 +1252,7 @@ export default function TrionnServices({
         </div>
         <div
           ref={typographyRef}
-          className="tr__container relative flex h-full flex-col items-center justify-between30 pb-20 z-30"
+          className="tr__container relative flex h-full flex-col items-center justify-between pt-30 pb-20 z-30"
         >
           <div data-services-copy className="relative z-20 block">
             <BlurTextReveal
