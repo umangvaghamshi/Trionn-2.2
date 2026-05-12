@@ -17,7 +17,7 @@ const CROSS_ICON = (
     viewBox="0 0 40 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className="mx-[4.582vw] w-[2.291vw] h-[2.291vw] shrink-0"
+    className="mx-10 lg:mx-16 w-6 lg:w-8 h-6 lg:h-8 mt-2"
     aria-hidden
   >
     <line
@@ -85,9 +85,9 @@ export default function AboutHero() {
   }, []);
 
   return (
-    <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center min-h-dvh">
+    <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center">
       {/* Top: heading */}
-      <div className="relative z-20 pt-32 md:pt-40 px-6 md:px-10 w-full mix-blend-difference title-block pointer-events-none">
+      <div className="relative z-20 pt-25 md:pt-40 px-6 md:px-10 w-full mix-blend-difference title-block pointer-events-none">
         <h1
           ref={splitTextRef}
           className="text-center mx-auto max-w-342 text-[rgba(216,216,216,0.1)]"
@@ -99,7 +99,7 @@ export default function AboutHero() {
 
       {/* Lion and Marquee container */}
       <div className="relative w-full flex flex-col items-center -mt-8 md:-mt-30">
-        <div className="absolute top-30 left-0 w-full py-15 px-10 z-10 pointer-events-none flex flex-col justify-between top-content">
+        <div className="absolute md:top-30 left-0 w-full pt-20 md:py-15 px-10 z-10 pointer-events-none flex flex-col justify-between top-content max-md:mix-blend-difference">
           <span className="title text-center z-10 block col-span-12">
             <BlurTextReveal
               as="span"
@@ -110,13 +110,13 @@ export default function AboutHero() {
             />
           </span>
         </div>
-        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[50%] w-full z-5 translate-y-full pointer-events-none">
+        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[66%] md:top-[50%] w-full z-5 translate-y-full pointer-events-none">
           <BlurTextReveal
             as="span"
             text={`We design and build digital experiences that scale, perform, and endure.`}
             animationType="chars"
             stagger={0.02}
-            className="block title col-span-10 col-start-2  max-w-60"
+            className="block title col-span-12 md:col-span-10 md:col-start-2 max-w-60"
           />
         </div>
 

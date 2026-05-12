@@ -10,10 +10,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function AboutIntro() {
   return (
-    <section className="relative w-full pb-37.5 bg-white z-3 overflow-hidden text-dark-font">
+    <section className="relative w-full pb-20 lg:pb-37.5 bg-white z-3 overflow-hidden text-dark-font">
       <div className="tr__container  flex flex-col justify-between">
         <div className="title-block grid grid-cols-12 gap-x-6">
-          <div className="col-span-11 col-start-2 mb-10">
+          <div className="col-span-11 col-start-2">
             <BlurTextReveal
               as="span"
               text={`At Trionn,`}
@@ -21,26 +21,28 @@ export default function AboutIntro() {
               stagger={0.05}
               className="title block mb-4"
             />
-            <h3 className="max-w-167.5 w-full">
+            <h3 className="max-w-136 xl:max-w-167.5 w-full">
               We build teams around ideas. Each project is led by designers,
               engineers, and specialists chosen specifically for the challenge
               at hand.
             </h3>
           </div>
         </div>
-        <div className="grid grid-cols-12 gap-x-6 my-25">
-          <div className="col-span-10 col-start-2 ">
+        <div className="grid grid-cols-12 gap-x-6 my-20 lg:my-25">
+          <div className="col-span-11 md:col-span-10 col-start-2 md:col-start-2">
             <LinePlus
               lineClass={"opacity-15 bg-grey-line"}
-              plusClass={"col-start-9 -translate-x-1/2!"}
+              plusClass={
+                "col-span-12 sm:col-span-1 sm:col-start-7 lg:col-start-9 sm:-translate-x-1/2! max-sm:mx-auto"
+              }
               iconColor={"#272727"}
             />
           </div>
         </div>
 
         <div className="grid grid-cols-12 gap-x-6">
-          <div className="col-span-10 col-start-2 grid grid-cols-12 gap-x-6 grid-rows-1">
-            <div className="left-block col-span-3">
+          <div className="col-span-11 md:col-span-10 col-start-2 md:col-start-2 grid grid-cols-12 gap-x-6 gap-y-10">
+            <div className="left-block col-span-12 md:col-span-6 lg:col-span-3">
               <div className="flex border border-dark-font overflow-hidden rounded-sm min-h-18 text-dark-font title max-w-65">
                 <div className="flex flex-col justify-center items-center min-w-26 text-light-font bg-dark-font border-r border-dark-font text-center gap-2 p-4">
                   <svg
@@ -74,8 +76,8 @@ export default function AboutIntro() {
                 </div>
               </div>
             </div>
-            <div className="left-block flex flex-col col-span-3 col-start-9">
-              <p className="mb-18 max-w-98">
+            <div className="right-block flex flex-col col-span-12 md:col-span-6 lg:col-span-4 md:col-start-7 lg:col-start-9">
+              <p className="mb-10 lg:mb-18 max-w-98">
                 We&apos;ve grown through experimentation, learning, and
                 refinement — shaping a practice focused on clarity, craft, and
                 long-term impact.

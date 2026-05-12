@@ -118,7 +118,10 @@ export default function Testimonials({
       id="testimonials"
       className="relative z-20 min-h-dvh bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] overflow-hidden"
     >
-      <div key={Number(show)} className="tr__container min-h-dvh py-37.5">
+      <div
+        key={Number(show)}
+        className="tr__container min-h-dvh py-20 lg:py-37.5"
+      >
         <div className="grid grid-cols-12 gap-6">
           <BlurTextReveal
             as="h2"

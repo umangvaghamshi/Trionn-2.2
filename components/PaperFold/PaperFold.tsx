@@ -57,38 +57,42 @@ export default function PaperFold({
   usePaperFoldAnimation(containerRef, cards.length);
 
   useGSAP(() => {
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "top top",
-      // Use a function to calculate pixels dynamically
-      end: () => {
-        const valueBlock = document.querySelector(
-          ".velue-block",
-        ) as HTMLElement;
-        const bottomText = document.querySelector(
-          ".bottom-text",
-        ) as HTMLElement;
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 1024px)", () => {
+      ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: "top top",
+        // Use a function to calculate pixels dynamically
+        end: () => {
+          const valueBlock = document.querySelector(
+            ".velue-block",
+          ) as HTMLElement;
+          const bottomText = document.querySelector(
+            ".bottom-text",
+          ) as HTMLElement;
 
-        if (!valueBlock) {
-          console.error("Element .velue-block not found!");
-          return "bottom center"; // Fallback
-        }
+          if (!valueBlock) {
+            console.error("Element .velue-block not found!");
+            return "bottom center"; // Fallback
+          }
 
-        const style = window.getComputedStyle(valueBlock);
+          const style = window.getComputedStyle(valueBlock);
 
-        const padding = parseFloat(style.paddingBottom);
-        const headerHeight =
-          document.querySelector(".site-header")?.clientHeight || 100;
-        const bottomTextHeight = bottomText.clientHeight;
-        return `bottom ${headerHeight + bottomTextHeight + padding * 2 + 12}px`;
-      },
-      pin: valueTitle.current,
-      pinSpacing: false,
-      scrub: false,
-      invalidateOnRefresh: true, // IMPORTANT: Allows recalculation on resize
-      markers: false,
+          const padding = parseFloat(style.paddingBottom);
+          const headerHeight =
+            document.querySelector(".site-header")?.clientHeight || 100;
+          const bottomTextHeight = bottomText.clientHeight;
+          return `bottom ${headerHeight + bottomTextHeight + padding * 2 + 12}px`;
+        },
+        pin: valueTitle.current,
+        pinSpacing: false,
+        scrub: false,
+        invalidateOnRefresh: true, // IMPORTANT: Allows recalculation on resize
+        markers: false,
+      });
     });
-  }, []);
+    return () => mm.revert();
+  });
 
   return (
     <section
@@ -97,62 +101,74 @@ export default function PaperFold({
     >
       <div className="tr__container flex flex-col">
         <div className="grid grid-cols-12 gap-x-6">
-          <div className="col-span-10 col-start-2 ">
+          <div className="col-span-11 md:col-span-10 col-start-2 md:col-start-2">
             <LinePlus
-              lineClass={"opacity-15 bg-grey-line left-1/2! -translate-x-1/2"}
-              plusClass={"mx-auto col-span-12"}
+              lineClass={"opacity-15 bg-grey-line"}
+              plusClass={
+                "col-span-12 sm:col-span-1 sm:col-start-7 lg:col-start-5 sm:-translate-x-1/2! max-sm:mx-auto"
+              }
               iconColor={"#272727"}
             />
           </div>
         </div>
-        <div className="velue-block text-dark-font flex flex-col py-37.5">
-          <div className="grid grid-cols-12 gap-x-6 mb-20">
-            <div className="col-span-3 col-start-2" ref={valueTitle}>
-              <BlurTextReveal
-                as="h2"
-                text={sectionTitle}
-                animationType="chars"
-                stagger={0.05}
-                className="text-dark-font block"
-              />
-            </div>
-            <div className="col-span-7 flex items-end">
-              <p className="max-w-100 small">{sectionSubtitle}</p>
+        <div className="velue-block text-dark-font flex flex-col py-20 lg:py-37.5">
+          <div className="grid grid-cols-12 gap-x-6 mb-16 lg:mb-20">
+            <div className="col-span-11 md:col-span-10 col-start-2 md:col-start-2 grid grid-cols-12 gap-6">
+              <div
+                className="col-span-12 md:col-span-6 lg:col-span-4"
+                ref={valueTitle}
+              >
+                <BlurTextReveal
+                  as="h2"
+                  text={sectionTitle}
+                  animationType="chars"
+                  stagger={0.05}
+                  className="text-dark-font block"
+                />
+              </div>
+              <div className="col-span-12 md:col-span-6 lg:col-span-8 flex items-end">
+                <p className="max-w-100 small">{sectionSubtitle}</p>
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-x-6">
-            <div className="col-span-7 col-start-5 flex flex-col gap-10">
-              <div
-                className="paperfold-stack flex flex-col gap-0.5"
-                style={{ perspective: "2500px" }}
-              >
-                {cards.map((card, i) => {
-                  return (
-                    <div key={i} className="paperfold-card relative origin-top">
-                      <div className="paperfold-card-inner grid grid-cols-7 gap-6 p-8 bg-white rounded-sm">
-                        <div className="col-span-3 flex items-center">
-                          <h3>{card.title}</h3>
-                        </div>
-                        <div className="col-span-3 flex items-center col-start-5 ">
-                          <p className="small">{card.description}</p>
-                        </div>
-                      </div>
-                      {/* Shadow overlay for fold depth */}
+            <div className="col-span-11 md:col-span-10 col-start-2 md:col-start-2 grid grid-cols-12 gap-6 ">
+              <div className="col-span-12 lg:col-span-8 lg:col-start-5 flex flex-col gap-10">
+                <div
+                  className="paperfold-stack flex flex-col gap-0.5"
+                  style={{ perspective: "2500px" }}
+                >
+                  {cards.map((card, i) => {
+                    return (
                       <div
-                        className="paperfold-shadow absolute inset-0 bg-black/80 pointer-events-none"
-                        style={{ opacity: 0 }}
-                      />
-                    </div>
-                  );
-                })}
+                        key={i}
+                        className="paperfold-card relative origin-top"
+                      >
+                        <div className="paperfold-card-inner grid grid-cols-12 gap-4 lg:gap-6 p-6 lg:p-8 bg-white rounded-sm">
+                          <div className="col-span-12 md:col-span-6 flex items-center">
+                            <h3>{card.title}</h3>
+                          </div>
+                          <div className="col-span-12 md:col-span-6 flex items-center">
+                            <p className="small">{card.description}</p>
+                          </div>
+                        </div>
+                        {/* Shadow overlay for fold depth */}
+                        <div
+                          className="paperfold-shadow absolute inset-0 bg-black/80 pointer-events-none"
+                          style={{ opacity: 0 }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                <BlurTextReveal
+                  as="span"
+                  text={footerTagline}
+                  animationType="chars"
+                  stagger={0.05}
+                  className="text-dark-font title block bottom-text"
+                />
               </div>
-              <BlurTextReveal
-                as="span"
-                text={footerTagline}
-                animationType="chars"
-                stagger={0.05}
-                className="text-dark-font title block bottom-text"
-              />
             </div>
           </div>
         </div>

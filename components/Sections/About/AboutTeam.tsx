@@ -19,29 +19,29 @@ export default function AboutTeam() {
               text="Different"
               animationType="chars"
               stagger={0.08}
-              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-11 col-start-2"
+              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-12 sm:col-span-11 sm:col-start-2"
             />
             <BlurTextReveal
               as="h2"
               text="skills. One"
               animationType="chars"
               stagger={0.08}
-              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-10 col-start-4"
+              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-11 col-start-2 sm:col-span-10 sm:col-start-3 md:col-start-4"
             />
             <BlurTextReveal
               as="h2"
               text="standard."
               animationType="chars"
               stagger={0.08}
-              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-6 col-start-7"
+              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-10 col-start-3 sm:col-span-8 sm:col-start-5 md:col-span-6 md:col-start-7"
             />
-            <div className="relative col-span-8 col-start-4 max-w-[16rem]">
+            <div className="relative col-span-11 col-start-2 sm:col-span-8 sm:col-start-3 mdcol-start-4 max-w-[20rem] mt-10 lg:mt-0">
               <BlurTextReveal
                 as="span"
                 text="A collective shaped by shared standards, not job titles."
                 animationType="words"
                 stagger={0.08}
-                className="title uppercase z-2 absolute -translate-y-full block"
+                className="title uppercase z-2 lg:absolute lg:-translate-y-full block"
               />
             </div>
           </div>
