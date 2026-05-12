@@ -379,7 +379,7 @@ export default function Awards() {
       {/* 2. Marquee Component (Centered) */}
       <div className="z-10 flex flex-col justify-center min-h-dvh pt-37.5 pb-25 mix-blend-difference">
         <div
-          className="tr__container w-full absolute top-37.5 left-0 flex justify-between items-end"
+          className="tr__container w-full absolute top-20 lg:top-37.5 left-0 flex flex-col md:flex-row justify-between items-center md:items-end gap-10"
           ref={titleContainerRef}
         >
           <BlurTextReveal
@@ -387,7 +387,7 @@ export default function Awards() {
             text="Results matter most. Awards add recognition and value."
             animationType="words"
             stagger={0.03}
-            className="small max-w-54 text-light-font block uppercase"
+            className="small max-w-70 2xl:max-w-54 text-light-font block uppercase text-center md:text-left"
           />
           <WordShiftButton
             text="win an award?"
