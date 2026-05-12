@@ -1179,7 +1179,7 @@ export default function TrionnServices({
   return (
     <section
       ref={sectionRef}
-      className={`relative min-h-screen bg-[#000] ${embedded ? "h-full min-h-0 w-full" : ""}`}
+      className={`relative min-h-dvh bg-[#000] ${embedded ? "h-full min-h-0 w-full" : ""}`}
     >
       <SoundListener soundEnabledRef={soundEnabledRef} />
       {/* Viewport stack: avoid position:sticky here — it fights GSAP pin and causes jerk */}

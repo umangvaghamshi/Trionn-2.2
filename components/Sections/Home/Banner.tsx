@@ -109,7 +109,7 @@ export default function Banner() {
             </p> */}
             <div
               id="s1-scroll"
-              className="col-span-4 flex items-end justify-start"
+              className="col-span-4 flex items-end justify-start opacity-50"
             >
               <div className="flex items-center">
                 <BlurTextReveal
