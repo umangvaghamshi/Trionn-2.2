@@ -8,6 +8,7 @@ import Image from "next/image";
 import parse from "html-react-parser";
 import { WordShiftButton } from "@/components/Button";
 import type { ProjectsType } from "@/data/dataType";
+import { TransitionLink } from "@/components/Transition";
 
 export type WorkProjectPanelHandle = {
   play: () => void;
@@ -84,7 +85,7 @@ const WorkProjectPanel = forwardRef<
       className="relative flex flex-col w-full pointer-events-auto py-20 lg:py-16 lg:max-h-dvh"
     >
       {/* Image — directly visible, no clip-path wipe */}
-      <Link
+      <TransitionLink
         href={`work/${item.slug}`}
         className="relative w-full aspect-670/460 overflow-hidden rounded-sm"
       >
@@ -96,7 +97,7 @@ const WorkProjectPanel = forwardRef<
           sizes="(max-width: 768px) 90vw, 45vw"
           priority
         />
-      </Link>
+      </TransitionLink>
 
       {/* Content */}
       <div className="mt-6 flex flex-col text-dark-font">
