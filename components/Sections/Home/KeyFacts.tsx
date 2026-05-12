@@ -29,19 +29,6 @@ export default function KeyFacts() {
     });
   }, []);
 
-  useEffect(() => {
-    let rafId = 0;
-    const onResize = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => ScrollTrigger.refresh());
-    };
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("resize", onResize);
-      cancelAnimationFrame(rafId);
-    };
-  }, []);
-
   useGSAP(
     () => {
       const root = containerRef.current;
@@ -132,7 +119,7 @@ export default function KeyFacts() {
           scrollTrigger: {
             trigger: root,
             pin: true,
-            start: "center center",
+            start: "top top",
             end: "+=150%",
             scrub: 1,
             anticipatePin: 1,
@@ -175,7 +162,7 @@ export default function KeyFacts() {
   return (
     <section
       id="keyfacts-section"
-      className="pt-32 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh max-lg:overflow-hidden"
+      className="pt-16 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh max-lg:overflow-hidden"
       ref={containerRef}
     >
       <div className="tr__container">
@@ -192,7 +179,7 @@ export default function KeyFacts() {
             experience and impact.
           </p>
         </div>
-        <div className="key-card-list flex gap-6 justify-start lg:justify-center flex-nowrap transform-3d max-lg:w-max max-lg:-mx-4 max-lg:px-4">
+        <div className="key-card-list flex gap-6 justify-start lg:justify-center flex-nowrap transform-3d max-lg:w-max max-lg:-mx-4 max-lg:px-[7.5vw]">
           <FeaturedCard odoSync={odoTicks[0]} />
           <ProjectCard odoSync={odoTicks[1]} />
           <TeamCard odoSync={odoTicks[2]} />
