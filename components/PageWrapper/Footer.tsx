@@ -6,6 +6,7 @@ import FooterFog from "@/components/Footer/FooterFog";
 import TrionnFooterLogo from "@/components/Footer/TrionnFooterLogo";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import Link from "next/link";
+import { HoverBlur } from "@/components/TextAnimation";
 import { useEffect, useState } from "react";
 
 import { enquiry, social } from "@/data";
@@ -102,10 +103,10 @@ export default function Footer() {
                           {formatEnquiryLabel(item.label)}
                         </span>
                         <Link
-                          className="link relative z-3 block text-light-font"
+                          className="relative z-3 block text-light-font"
                           href={item.url}
                         >
-                          {item.title}
+                          <HoverBlur>{item.title}</HoverBlur>
                         </Link>
                       </p>
                     ))}
@@ -121,10 +122,10 @@ export default function Footer() {
                           className="w-full max-w-[calc(50%-1rem)]"
                         >
                           <Link
-                            className="link relative z-3 block text-light-font"
+                            className="relative z-3 block text-light-font"
                             href={item.url}
                           >
-                            {item.title}
+                            <HoverBlur>{item.title}</HoverBlur>
                           </Link>
                         </p>
                       ))}

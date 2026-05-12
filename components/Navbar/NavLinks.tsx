@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/Transition";
+import { HoverBlur } from "@/components/TextAnimation";
 import { menu } from "@/data";
 
 export default function NavLinks() {
@@ -23,11 +24,11 @@ export default function NavLinks() {
             return (
               <li className="menu-item" key={index}>
                 <TransitionLink
-                  className={`link menu block uppercase text-white py-1 ${isActive ? "active" : ""}`}
+                  className={`menu block uppercase text-white ${isActive ? "active" : ""}`}
                   href={item.url}
                   transitionLabel={labelMap[item.url] || item.title}
                 >
-                  {item.title}
+                  <HoverBlur>{item.title}</HoverBlur>
                 </TransitionLink>
               </li>
             );
