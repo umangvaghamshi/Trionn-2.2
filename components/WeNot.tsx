@@ -85,7 +85,7 @@ export default function WeNot() {
               stagger={0.05}
               className="title uppercase mb-6 lg:mb-10 block"
             />
-            <p className="max-w-50 mb-10 lg:mb-13 small">
+            <p className="max-w-50 mb-16 lg:mb-13 small">
               We&rsquo;re not the right fit for everyone — and that&rsquo;s
               intentional.
             </p>
@@ -98,7 +98,7 @@ export default function WeNot() {
                         cardsRef.current[idx] = self;
                       }
                     }}
-                    className="col-span-12 md:col-span-3 relative max-md:pl-10 max-md:not-last:pb-16 pt-0 md:pt-20 md:pr-6 last:pr-0"
+                    className="col-span-11 col-start-2 md:col-span-3 relative max-md:pl-10 max-md:not-last:pb-16 pt-0 md:pt-20 md:pr-6 last:pr-0"
                     key={card.id}
                   >
                     <div className="fill-line flex md:items-center w-[1.188rem] h-full md:h-[1.188rem] absolute left-0 top-0 md:w-full">

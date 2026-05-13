@@ -13,28 +13,28 @@ export default function AboutTeam() {
   return (
     <section className="bg-[#040508]">
       <div className="tr__container relative w-full text-light-font flex flex-col">
-        <div className="min-h-dvh flex flex-col justify-center items-center py-37.5 gap-10">
-          <div className="grid grid-cols-12 gap-x-6 ">
+        <div className="min-h-dvh flex flex-col justify-center items-center py-37.5 gap-20">
+          <div className="grid grid-cols-12 gap-x-6 w-full">
             <BlurTextReveal
               as="h2"
               text="Different"
               animationType="chars"
               stagger={0.08}
-              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-12 sm:col-span-11 sm:col-start-2 whitespace-nowrap"
+              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-12 md:col-span-11 md:col-start-2 whitespace-nowrap"
             />
             <BlurTextReveal
               as="h2"
               text="skills. One"
               animationType="chars"
               stagger={0.08}
-              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-11 col-start-2 sm:col-span-10 sm:col-start-3 md:col-start-4 whitespace-nowrap"
+              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-12 md:col-span-8 md:col-start-4 whitespace-nowrap text-center md:text-left"
             />
             <BlurTextReveal
               as="h2"
               text="standard."
               animationType="chars"
               stagger={0.08}
-              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-10 col-start-3 sm:col-span-8 sm:col-start-5 md:col-span-6 md:col-start-7 whitespace-nowrap"
+              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-12 md:col-span-6 md:col-start-7 whitespace-nowrap text-right md:text-left"
             />
             <div className="relative col-span-12 lg:col-span-8 lg:col-start-4 max-w-[20rem] mt-10 lg:mt-0 mx-auto lg:mx-0 text-center lg:text-left">
               <BlurTextReveal
