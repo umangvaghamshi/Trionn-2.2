@@ -144,7 +144,7 @@ export default function PaperFold({
                         key={i}
                         className="paperfold-card relative origin-top"
                       >
-                        <div className="paperfold-card-inner grid grid-cols-12 gap-4 lg:gap-6 p-6 lg:p-8 bg-white rounded-sm">
+                        <div className="paperfold-card-inner grid grid-cols-12 gap-4 lg:gap-6 p-8 bg-white rounded-sm">
                           <div className="col-span-12 md:col-span-6 flex items-center">
                             <h3>{card.title}</h3>
                           </div>

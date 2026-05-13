@@ -100,7 +100,7 @@ export default function HowWork({
             .fromTo(
               content,
               { autoAlpha: 0, y: 20 },
-              { autoAlpha: 0.5, y: 0 },
+              { autoAlpha: 1, y: 0 },
               "<",
             );
 
@@ -365,7 +365,7 @@ export default function HowWork({
                         {card.title}
                       </h3>
 
-                      <p className="content small md:max-w-87.5 mt-4 md:mt-0">
+                      <p className="content small md:max-w-87.5 mt-4 md:mt-0 opacity-50!">
                         {card.content}
                       </p>
                     </div>
