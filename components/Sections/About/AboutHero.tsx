@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Marquee from "@/components/Marquee";
@@ -37,16 +37,10 @@ const CROSS_ICON = (
   </svg>
 );
 
-/**
- * About page hero: large heading, interactive WebGL lion portrait with
- * overlay labels, and a full-width marquee banner at the bottom.
- *
- * Uses natural document flow so the lion scales proportionally (just like
- * the HTML prototype), rather than being forced into a 100dvh container.
- */
 export default function AboutHero() {
   const [isLoaded, setIsLoaded] = useState(false);
   const splitTextRef = useRef<HTMLHeadingElement>(null);
+  const clipInnerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     if (!isLoaded) return;
@@ -65,6 +59,29 @@ export default function AboutHero() {
       { delay: 0.5, color: "#d8d8d8", stagger: 0.02, ease: "none" },
     );
   }, [isLoaded]);
+
+  // Clip the white top of lion-mobile.png so the lion fur appears flush
+  // against the "At the intersection" text above, with no white gap.
+  useEffect(() => {
+    const MOBILE_IMG_W = 660;
+    const MOBILE_IMG_H = 1434;
+    const CLIP_RATIO = 0.272;
+
+    const applyClip = () => {
+      if (!clipInnerRef.current) return;
+      if (window.innerWidth > 768) {
+        clipInnerRef.current.style.marginTop = "";
+        return;
+      }
+      const cw = Math.min(window.innerWidth, MOBILE_IMG_W);
+      const ch = Math.round(MOBILE_IMG_H * (cw / MOBILE_IMG_W));
+      clipInnerRef.current.style.marginTop = `-${Math.round(ch * CLIP_RATIO)}px`;
+    };
+
+    applyClip();
+    window.addEventListener("resize", applyClip);
+    return () => window.removeEventListener("resize", applyClip);
+  }, []);
 
   useGSAP(() => {
     const updateHeight = () => {
@@ -97,8 +114,9 @@ export default function AboutHero() {
         </h1>
       </div>
 
-      {/* Mobile: "At the intersection" sits between heading and lion */}
-      <div className="md:hidden w-full px-10 pt-6 pb-10 pointer-events-none mix-blend-difference z-10">
+      {/* Mobile: "At the intersection" sits in normal flow directly above the
+          lion. With the top clip applied, the lion fur appears flush below. */}
+      <div className="md:hidden w-full px-10 pt-4 pb-0 pointer-events-none mix-blend-difference z-10">
         <span className="title text-center block">
           <BlurTextReveal
             as="span"
@@ -110,8 +128,9 @@ export default function AboutHero() {
         </span>
       </div>
 
-      {/* Lion and Marquee container */}
-      <div className="relative w-full flex flex-col items-center -mt-8 md:-mt-30">
+      {/* Lion and Marquee container — no mobile negative margin so the
+          clipped canvas top aligns exactly with the text above. */}
+      <div className="relative w-full flex flex-col items-center md:-mt-30">
         {/* Desktop only: absolute overlay with "At the intersection" text + height spacer */}
         <div className="top-content hidden md:flex absolute top-30 left-0 w-full py-15 px-10 z-10 pointer-events-none flex-col justify-between">
           <span className="title text-center z-10 block col-span-12">
@@ -134,17 +153,16 @@ export default function AboutHero() {
           />
         </div>
 
-        {/* Lion — natural document flow, scales proportionally */}
-        {/* On mobile: overflow-hidden clips the ~25% white top of lion-mobile.png */}
+        {/* Lion — overflow-hidden clips the white top of lion-mobile.png on mobile */}
         <div
           className={`relative w-full overflow-hidden md:overflow-visible transition-opacity duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}
         >
-          <div className="-mt-[230px] md:mt-0 w-full">
+          <div ref={clipInnerRef} className="md:mt-0 w-full">
             <div className="relative pointer-events-auto w-full flex justify-center items-end">
               <AboutLion onLoad={() => setIsLoaded(true)}>
-                {/* Bottom: marquee — sits ON TOP of the lion canvas, but BEHIND the strips */}
+                {/* Marquee — inside lion canvas, behind curtain strips */}
                 <div
-                  className={`absolute bottom-[2%] md:bottom-[20%] left-0 right-0 z-1 w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${
+                  className={`absolute bottom-[2%] md:bottom-[20%] left-0 right-0 z-[1] w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${
                     isLoaded ? "opacity-100" : "opacity-0"
                   }`}
                 >
