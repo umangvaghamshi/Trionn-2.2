@@ -139,7 +139,7 @@ body {
   font-family: "NeueHaasDisplay-Roman";
   background-color: #040508;
   color: #d8d8d8;
-  @apply text-xl lg:text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden;
+  @apply text-xl lg:text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden selection:bg-transparent;
 }
 
 h1,
