@@ -17,7 +17,6 @@ export function HeaderSoundToggle() {
   const { soundEnabled, toggleSound } = useSiteSound();
 
   const containerRef = useRef<HTMLButtonElement>(null);
-  // Keep track of the active animation loop status using a ref to avoid stale closure issues
   const isPlayingRef = useRef(soundEnabled);
 
   useEffect(() => {
@@ -25,7 +24,7 @@ export function HeaderSoundToggle() {
 
     if (!containerRef.current) return;
 
-    // Scoping selectors within our button container
+    // Scope GSAP selectors to this component instance
     const q = gsap.utils.selector(containerRef.current);
     const soundLines = q(".sound-line");
     const offLine = q(".off-line");
@@ -34,7 +33,6 @@ export function HeaderSoundToggle() {
       gsap.utils.random(min, max, 0.01);
 
     const animateSingleLine = (line: Element, index: number) => {
-      // Exit out of the loop if sound gets muted
       if (!isPlayingRef.current) return;
 
       const setting = LINE_SETTINGS[index];
@@ -49,7 +47,7 @@ export function HeaderSoundToggle() {
     };
 
     if (soundEnabled) {
-      // --- Play Animation ---
+      // --- Start Sound Animation ---
       gsap.killTweensOf(offLine);
       gsap.to(offLine, {
         opacity: 0,
@@ -68,20 +66,15 @@ export function HeaderSoundToggle() {
         animateSingleLine(line, index);
       });
     } else {
-      // --- Mute/Stop Animation ---
+      // --- Stop Sound Animation ---
       soundLines.forEach((line) => {
         gsap.killTweensOf(line);
       });
 
       gsap.to(soundLines, {
-        scaleY: 1,
         opacity: 1,
-        duration: 0.35,
-        ease: "power3.out",
-        stagger: {
-          each: 0.025,
-          from: "center",
-        },
+        duration: 0.18,
+        ease: "power2.out",
       });
 
       gsap.killTweensOf(offLine);
@@ -95,12 +88,11 @@ export function HeaderSoundToggle() {
           strokeDashoffset: 0,
           duration: 0.38,
           ease: "power3.out",
-          delay: 0.08,
+          delay: 0.03, // Matches updated snappy delay
         },
       );
     }
 
-    // Clean up tweens when the component unmounts
     return () => {
       gsap.killTweensOf(soundLines);
       gsap.killTweensOf(offLine);
