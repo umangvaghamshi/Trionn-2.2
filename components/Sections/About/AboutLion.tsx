@@ -900,11 +900,11 @@ export default function AboutLion({
       // Reserve space up-front using CSS (aspect-ratio + max-height) so the
       // layout doesn't collapse before the WebGL canvas loads. JS still takes
       // over with precise px dimensions once the image is ready.
-      className={`relative leading-0 mx-auto w-screen aspect-[660/1434] max-h-[1434px] md:aspect-[2048/1200] md:max-h-[1200px] ${className}`}
+      className={`relative leading-0 mx-auto w-screen aspect-[660/900] max-h-[900px] md:aspect-[2048/1200] md:max-h-[1200px] ${className}`}
     >
       <canvas
         ref={glCanvasRef}
-        className="block mx-auto touch-none h-full aspect-[660/1434] md:aspect-[2048/1200]"
+        className="block mx-auto touch-none h-full aspect-[660/900] md:aspect-[2048/1200]"
       />
       {children}
       <div
