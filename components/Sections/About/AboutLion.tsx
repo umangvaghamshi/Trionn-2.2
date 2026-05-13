@@ -692,6 +692,7 @@ export default function AboutLion({
       // leaving the bottom of the lion without strip coverage on big screens.
       scene.style.width = `${vw}px`;
       scene.style.height = `${ch}px`;
+      scene.style.maxHeight = "none";
       canvas.style.width = `${cw}px`;
       canvas.style.height = `${ch}px`;
       canvas.width = Math.max(1, Math.round(cw * dpr));
