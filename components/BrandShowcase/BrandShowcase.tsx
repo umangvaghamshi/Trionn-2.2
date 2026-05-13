@@ -313,7 +313,7 @@ export default function BrandShowcase({
           <div className="flex flex-col gap-14">
             <div
               ref={containerRef}
-              className="relative isolate w-full max-w-6xl mx-auto flex flex-wrap justify-center gap-x-4 gap-y-2 z-10"
+              className="relative isolate w-full max-w-300 mx-auto flex flex-wrap justify-center gap-x-4 gap-y-2 z-10"
             >
               <div className="group">
                 {brands.map((brand, i) => (
