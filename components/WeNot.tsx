@@ -76,16 +76,16 @@ export default function WeNot() {
       className="we-not-section  bg-[#F7F7F7] text-dark-font"
     >
       <div className="tr__container relative w-full">
-        <div className="grid grid-cols-12 gap-x-6 py-37.5">
-          <div className="col-span-9 col-start-3">
+        <div className="grid grid-cols-12 gap-x-6 py-20 lg:py-37.5">
+          <div className="col-span-12 lg:col-span-9 lg:col-start-3">
             <BlurTextReveal
               as="span"
               text={`Who we're not for`}
               animationType="chars"
               stagger={0.05}
-              className="title uppercase mb-10 block"
+              className="title uppercase mb-6 lg:mb-10 block"
             />
-            <p className="max-w-50 mb-13 small">
+            <p className="max-w-50 mb-10 lg:mb-13 small">
               We&rsquo;re not the right fit for everyone — and that&rsquo;s
               intentional.
             </p>
@@ -98,11 +98,11 @@ export default function WeNot() {
                         cardsRef.current[idx] = self;
                       }
                     }}
-                    className="col-span-3 relative pt-20 pr-6 last:pr-0"
+                    className="col-span-12 md:col-span-3 relative max-md:pl-10 max-md:not-last:pb-16 pt-0 md:pt-20 md:pr-6 last:pr-0"
                     key={card.id}
                   >
-                    <div className="fill-line flex items-center h-[1.188rem] absolute left-0 top-0 w-full">
-                      <div className="line absolute top-1/2 left-0 -translate-y-1/2 bg-dark-font/15 h-px w-full" />
+                    <div className="fill-line flex md:items-center w-[1.188rem] h-full md:h-[1.188rem] absolute left-0 top-0 md:w-full">
+                      <div className="line absolute top-0 md:top-1/2 left-0 translate-y-0 md:-translate-y-1/2 bg-dark-font/15 w-px h-full md:h-px md:w-full" />
                       {card.id == 2 ? (
                         <svg
                           width="14"
@@ -110,7 +110,7 @@ export default function WeNot() {
                           viewBox="0 0 14 8"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
-                          className="-translate-x-1/2 svg-icon"
+                          className="max-md:-translate-y-1/2 -translate-x-1/2 svg-icon"
                         >
                           <line
                             x1="3.22103"
@@ -134,7 +134,7 @@ export default function WeNot() {
                           viewBox="0 0 19 19"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
-                          className="-translate-x-1/2 svg-icon"
+                          className="max-md:-translate-y-1/2 -translate-x-1/2 svg-icon"
                         >
                           <line
                             x1="13.7891"
@@ -153,7 +153,7 @@ export default function WeNot() {
                         </svg>
                       )}
                     </div>
-                    <p className="content small max-w-83">
+                    <p className="content small max-w-83 max-md:-mt-2">
                       {parse(card.content)}
                     </p>
                   </div>
