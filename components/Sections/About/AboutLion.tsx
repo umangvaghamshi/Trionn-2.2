@@ -682,13 +682,11 @@ export default function AboutLion({
       let cw: number, ch: number;
 
       if (isDesktop) {
-        // Always render at the image's natural width (never downscale below it).
-        // lion.png has large white margins so downscaling it to fit a 1470px laptop
-        // viewport makes the lion face appear tiny. By keeping cw ≥ imageWidth the
-        // canvas is wider than the viewport on laptops; the scene clips the sides
-        // (white margin area) so only the centred lion is visible — making it ~40%
-        // larger on a MacBook Air than the old contain-fit approach.
-        cw = Math.max(state.imageWidth, vw);
+        if (vw <= 1024) {
+          cw = Math.round(vw * 1.8);
+        } else {
+          cw = Math.max(state.imageWidth, vw);
+        }
         ch = Math.max(1, Math.round(state.imageHeight * (cw / state.imageWidth)));
       } else {
         cw = Math.min(state.imageWidth, vw);
