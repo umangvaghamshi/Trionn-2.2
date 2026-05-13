@@ -328,9 +328,9 @@ export default function HowWork({
               text="Our process"
               animationType="chars"
               stagger={0.05}
-              className="title col-span-4 sm:col-span-3 md:col-span-2 pt-4"
+              className="title col-span-12 md:col-span-2 pt-4 hidden md:block"
             />
-            <div className="col-span-8 sm:col-span-9 md:col-span-10">
+            <div className="col-span-12 md:col-span-10">
               <BlurTextReveal
                 as="h2"
                 text="How we work"
@@ -353,14 +353,14 @@ export default function HowWork({
                     if (self) cardsRef.current[idx] = self;
                   }}
                   key={idx}
-                  className="col-span-12 md:col-span-4 relative md:pb-20 pb-10 md:pr-6 md:last:pr-0 not-first:mt-10 md:not-first:mt-0"
+                  className="col-span-12 md:col-span-4 relative md:pb-20 pb-14 md:pr-6 md:last:pr-0 not-first:mt-14 md:not-first:mt-0"
                 >
                   <div className="grid grid-cols-12 gap-x-6 items-baseline md:gap-x-0">
-                    <span className="col-span-4 sm:col-span-3 md:col-span-12 title step-no md:mb-9 opacity-50">
+                    <span className="col-span-3 md:col-span-12 title step-no md:mb-9 opacity-50">
                       Step - {card.id}
                     </span>
 
-                    <div className="col-span-8 sm:col-span-9 md:col-span-12 gap-2">
+                    <div className="col-span-9 sm:col-span-9 md:col-span-12 gap-2">
                       <h3 className="work-title md:mb-8 md:mt-0">
                         {card.title}
                       </h3>

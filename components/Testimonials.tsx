@@ -138,7 +138,7 @@ export default function Testimonials({
           </div>
         </div>
         <LinePlus
-          customClass={"my-20"}
+          customClass={"my-10 lg:my-20"}
           lineClass={"opacity-15 bg-grey-line lg:col-span-10 md:col-start-2"}
           plusClass={
             "col-span-12 sm:col-span-1 sm:col-start-7 sm:-translate-x-1/2! mx-auto sm:mx-0"
