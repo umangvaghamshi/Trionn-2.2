@@ -4,6 +4,8 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useSiteSound } from "@/components/SiteSoundContext";
 
+const DEFAULT_OFF_HEIGHTS = [0.48, 0.76, 0.42, 0.88, 0.58, 0.7];
+
 const LINE_SETTINGS = [
   { min: 0.42, max: 0.95, speed: 0.46 },
   { min: 0.2, max: 1.0, speed: 0.38 },
@@ -18,13 +20,13 @@ export function HeaderSoundToggle() {
 
   const containerRef = useRef<HTMLButtonElement>(null);
   const isPlayingRef = useRef(soundEnabled);
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     isPlayingRef.current = soundEnabled;
 
     if (!containerRef.current) return;
 
-    // Scope GSAP selectors to this component instance
     const q = gsap.utils.selector(containerRef.current);
     const soundLines = q(".sound-line");
     const offLine = q(".off-line");
@@ -33,6 +35,7 @@ export function HeaderSoundToggle() {
       gsap.utils.random(min, max, 0.01);
 
     const animateSingleLine = (line: Element, index: number) => {
+      // Clean state check matching your updated script logic
       if (!isPlayingRef.current) return;
 
       const setting = LINE_SETTINGS[index];
@@ -45,6 +48,22 @@ export function HeaderSoundToggle() {
         onComplete: () => animateSingleLine(line, index),
       });
     };
+
+    // Initialize core structural states on the very first mount
+    if (isFirstRender.current) {
+      gsap.set(soundLines, {
+        scaleY: (index: number) => DEFAULT_OFF_HEIGHTS[index],
+        opacity: 1,
+        transformOrigin: "50% 50%",
+      });
+
+      gsap.set(offLine, {
+        opacity: soundEnabled ? 0 : 1,
+        strokeDashoffset: soundEnabled ? 26 : 0,
+      });
+
+      isFirstRender.current = false;
+    }
 
     if (soundEnabled) {
       // --- Start Sound Animation ---
@@ -60,10 +79,10 @@ export function HeaderSoundToggle() {
         gsap.killTweensOf(line);
         gsap.to(line, {
           opacity: 1,
-          duration: 0.18,
+          duration: 0.12, // Updated matching your snippet
           ease: "power2.out",
+          onComplete: () => animateSingleLine(line, index),
         });
-        animateSingleLine(line, index);
       });
     } else {
       // --- Stop Sound Animation ---
@@ -73,7 +92,7 @@ export function HeaderSoundToggle() {
 
       gsap.to(soundLines, {
         opacity: 1,
-        duration: 0.18,
+        duration: 0.12, // Updated matching your snippet
         ease: "power2.out",
       });
 
@@ -86,9 +105,9 @@ export function HeaderSoundToggle() {
         },
         {
           strokeDashoffset: 0,
-          duration: 0.38,
+          duration: 0.34, // Updated matching your snippet
           ease: "power3.out",
-          delay: 0.03, // Matches updated snappy delay
+          delay: 0.02, // Updated ultra-fast delay
         },
       );
     }
