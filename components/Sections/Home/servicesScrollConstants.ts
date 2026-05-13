@@ -4,7 +4,7 @@
  */
 
 /** Vertical scroll budget mapped to horizontal Work track scrub (intro + project panels). */
-export const WORK_HORIZONTAL_VH = 120;
+export const WORK_HORIZONTAL_VH = 300;
 /** Side overlap: TrionnServices layer slides in from the right (white intro). */
 export const WORK_SERVICES_OVERLAP_VH = 100;
 /** Scroll distance for services animation scrollT 0→1 (canvas / video / cards). */

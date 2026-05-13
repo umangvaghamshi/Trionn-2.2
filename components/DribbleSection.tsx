@@ -5,15 +5,12 @@ import * as THREE from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { useLenis } from "lenis/react";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 
 import { getCappedDPR } from "@/hooks/useCanvasLoop";
 
 gsap.registerPlugin(ScrollTrigger);
-gsap.ticker.lagSmoothing(0);
-gsap.ticker.fps(60);
 
 export default function DribbleSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,11 +19,7 @@ export default function DribbleSection() {
   const stripesRef = useRef<HTMLDivElement[]>([]);
   const [refreshComponent, setRefreshComponent] = useState(false);
 
-  /* Hold a live ref to the Lenis instance so renderFrame reads scroll in the same tick */
-  const lenisRef = useRef<{ scroll: number } | null>(null);
-  useLenis((lenis) => {
-    lenisRef.current = lenis;
-  });
+  /* Read smoothed scroll directly from ScrollSmoother inside renderFrame. */
 
   useGSAP(
     () => {
@@ -231,7 +224,7 @@ export default function DribbleSection() {
           renderer.setSize(window.innerWidth, window.innerHeight);
           buildPlacedCards();
           gridLinesBuilt = false; // force grid line geometry rebuild for new viewport
-          ScrollTrigger.refresh();
+          st.refresh();
         });
       };
       window.addEventListener("resize", handleResize);
@@ -493,10 +486,21 @@ export default function DribbleSection() {
       /* Position center text at top on mobile, centered on desktop */
       const mm = gsap.matchMedia();
       mm.add("(max-width: 767px)", () => {
-        gsap.set(centerEl, { position: "relative", top: "auto", left: "auto", transform: "none" });
+        gsap.set(centerEl, {
+          position: "relative",
+          top: "auto",
+          left: "auto",
+          transform: "none",
+        });
       });
       mm.add("(min-width: 768px)", () => {
-        gsap.set(centerEl, { position: "absolute", top: "50%", left: "50%", xPercent: -50, yPercent: -50 });
+        gsap.set(centerEl, {
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          xPercent: -50,
+          yPercent: -50,
+        });
       });
 
       const N = SRCS.length;
@@ -506,17 +510,29 @@ export default function DribbleSection() {
         ((totalArc * 0.5 + totArcN + 10.0) / (totalArc + totArcN)) *
         (400 / 600);
 
-      /* Pin the section — scrub driven per-frame from Lenis scroll, like app.js */
-      const totalScroll = window.innerHeight * 6; // 500% animation + 100% shutter
-      const animationEnd = (window.innerHeight * 5) / totalScroll;
+      /* Pin the section — scrub driven per-frame from ScrollSmoother.
+         Use a percent-based end so ScrollTrigger recomputes the pin spacer
+         on every refresh (px-based ends bound at trigger-create time can go
+         stale when ScrollSmoother / preceding pins shift layout, leaving the
+         pin shorter than expected and the animation stuck partway). */
+      const animationEnd = 5 / 6; // animation runs over first 500vh of the 600vh pin (last 100vh = stripe shutter)
 
       const st = ScrollTrigger.create({
         trigger: section,
         start: "top top",
-        end: `+=${totalScroll}`,
+        end: "+=600%",
         pin: true,
+        pinSpacing: true,
         anticipatePin: 1,
       });
+
+      /* Ensure the pin-spacer has a low z-index so the footer can cover it */
+      ScrollTrigger.refresh();
+      const pinSpacer = section.parentElement;
+      if (pinSpacer && pinSpacer.classList.contains("pin-spacer")) {
+        pinSpacer.style.zIndex = "1";
+        pinSpacer.style.position = "relative";
+      }
 
       /* When WorkServicesSequence stripes finish, its layout shift changes our scroll
          position — refresh so st.start stays accurate for the render loop. */
@@ -525,7 +541,8 @@ export default function DribbleSection() {
       };
       window.addEventListener("trionn-services:unpinned", onServicesUnpinned);
 
-      /* render loop — driven by gsap.ticker (same tick as Lenis) so scroll is never stale */
+      /* render loop — driven by gsap.ticker so the loop is continuous (smoothing
+         lerps, wave time, video frames keep advancing even when scroll is idle). */
       let lastTs = 0;
       let smoothHeadA = 0,
         smoothHeadB = 0;
@@ -534,13 +551,9 @@ export default function DribbleSection() {
         const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 1 / 60;
         lastTs = ts;
 
-        /* Read smoothed scroll from Lenis (same as app.js: lenis.on('scroll', e => scrollY = e.scroll)) */
-        const lenisScroll = lenisRef.current?.scroll ?? 0;
-        const sectionTop = st.start; // px offset where pin begins
-        const rawProg =
-          totalScroll > 0
-            ? Math.max(0, Math.min(1, (lenisScroll - sectionTop) / totalScroll))
-            : 0;
+        /* ScrollTrigger already tracks pin progress against the native scroll
+           that ScrollSmoother drives — use it directly. */
+        const rawProg = st.progress;
         const prog = Math.min(rawProg / animationEnd, 1);
 
         /* ── Stripe reveal after animation completes ── */
@@ -694,7 +707,6 @@ export default function DribbleSection() {
         renderer.render(scene, cam);
       };
 
-      /* Same as app.js: gsap.ticker.add drives the render in the same tick as Lenis */
       gsap.ticker.add(renderFrame);
 
       /* cleanup */
@@ -725,6 +737,7 @@ export default function DribbleSection() {
   useEffect(() => {
     const onUnpinned = () => {
       setRefreshComponent(true);
+      ScrollTrigger.refresh();
     };
     window.addEventListener("trionn-services:unpinned", onUnpinned);
     return () => {
@@ -736,7 +749,7 @@ export default function DribbleSection() {
     <>
       <div
         ref={sectionRef}
-        className="relative z-10 h-dvh bg-[#C3C3C3] py-20 overflow-hidden -top-0.5!"
+        className="relative z-10 h-dvh bg-[#C3C3C3] py-20 overflow-hidden"
       >
         <canvas
           ref={canvasRef}

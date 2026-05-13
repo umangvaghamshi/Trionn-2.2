@@ -1,5 +1,5 @@
 /**
- * PerfMonitor — drop-in performance overlay for Three.js + GSAP + Lenis scenes.
+ * PerfMonitor — drop-in performance overlay for Three.js + GSAP + ScrollSmoother scenes.
  * Works in Next.js (App Router or Pages), plain browser, or any TypeScript project.
  *
  * Drop into:  src/lib/perf-monitor.ts
@@ -23,16 +23,9 @@
 
 import type { WebGLRenderer } from 'three'
 
-// ── Lenis type shims ────────────────────────────────────────────────────────
-// Covers both Lenis v1 (.velocity) and v2 (.scroll.velocity).
-// If you have @types/lenis installed, replace these with the real types.
-interface LenisV1Like {
-  velocity: number
-}
-interface LenisV2Like {
-  scroll: { velocity: number }
-}
-type LenisInstance = LenisV1Like | LenisV2Like | object
+// ── Smoother type shim ──────────────────────────────────────────────────────
+// Accepts any object exposing a numeric velocity (e.g. ScrollSmoother via getVelocity()).
+type SmootherInstance = { getVelocity?: () => number } | { velocity: number } | object
 
 // ── GSAP type shim ──────────────────────────────────────────────────────────
 interface GSAPInstance {
@@ -78,8 +71,8 @@ export interface PerfMonitorOptions {
 export interface PerfMonitorTickExtras {
   /** Pass true when your RAF loop is sleeping / not scheduled */
   sleeping?: boolean
-  /** Your Lenis instance — shows scroll velocity */
-  lenis?: LenisInstance
+  /** Your ScrollSmoother (or compatible) instance — shows scroll velocity */
+  lenis?: SmootherInstance
   /** Your gsap object — shows active tween count */
   gsap?: GSAPInstance
 }
@@ -465,14 +458,14 @@ export function createPerfMonitor(options: PerfMonitorOptions = {}): PerfMonitor
       gsapColor  = clr(gsapTweens, T.gsapTweensWarn, T.gsapTweensWarn * 2)
     }
 
-    // Lenis scroll velocity (v1: .velocity, v2: .scroll.velocity)
+    // Scroll velocity — ScrollSmoother (.getVelocity()) or any object with .velocity.
     let lenisVel: number | null = null
     if (extras.lenis) {
       const l = extras.lenis as Record<string, unknown>
-      if (typeof l['velocity'] === 'number') {
+      if (typeof l['getVelocity'] === 'function') {
+        lenisVel = (l['getVelocity'] as () => number)()
+      } else if (typeof l['velocity'] === 'number') {
         lenisVel = l['velocity'] as number
-      } else if (l['scroll'] && typeof (l['scroll'] as Record<string, unknown>)['velocity'] === 'number') {
-        lenisVel = (l['scroll'] as Record<string, unknown>)['velocity'] as number
       }
     }
 
@@ -536,7 +529,7 @@ export function createPerfMonitor(options: PerfMonitorOptions = {}): PerfMonitor
         (memMB !== null ? row('JS heap', `${memMB} MB`, memColor) : '') +
         (gsapTweens !== null ? row('gsap tweens', `${gsapTweens}`, gsapColor) : '') +
         (lenisVel !== null
-          ? row('lenis vel', `${lenisVel.toFixed(1)} px/s`,
+          ? row('scroll vel', `${lenisVel.toFixed(1)} px/s`,
                 Math.abs(lenisVel) > 2000 ? C.warn : C.text)
           : '') +
 

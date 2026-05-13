@@ -4,21 +4,15 @@ import { useSiteSound } from "@/components/SiteSoundContext";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLenis } from "lenis/react";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import Marquee from "@/components/Marquee";
 import { useServicesOrbitSceneV2 } from "./useServicesOrbitSceneV2";
 import parse from "html-react-parser";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
 const BG = "#0a0a0a";
 const FG = "#e8e8e8";
@@ -47,12 +41,7 @@ const CROSS_ICON = (
 
 /** Same layout as `ServicesOrbitExperience`; WebGL background uses the optimized single-canvas pipeline (see `useServicesOrbitSceneV2`). */
 export default function ServicesOrbitExperienceV2() {
-  /** Every Lenis scroll tick (incl. initial callback) — avoids reading stale scroll between RAF / React renders. */
-  const lenisScrollMirrorRef = useRef(0);
-  const lenis = useLenis((l) => {
-    lenisScrollMirrorRef.current = l.scroll;
-  });
-
+  const sectionRef = useRef<HTMLDivElement>(null);
   const mainCanvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWrapRef = useRef<HTMLDivElement>(null);
   const sec2Ref = useRef<HTMLElement>(null);
@@ -68,36 +57,29 @@ export default function ServicesOrbitExperienceV2() {
 
   const getSmoothScroll = useCallback(() => {
     if (typeof window === "undefined") return 0;
-    if (typeof lenis?.scroll === "number") return lenis.scroll;
-    return lenisScrollMirrorRef.current || window.scrollY;
-  }, [lenis]);
+    const sm = ScrollSmoother.get();
+    if (sm) return sm.scrollTop();
+    return window.scrollY;
+  }, []);
 
   const getScrollProgress = useCallback(() => {
     if (typeof window === "undefined") return 0;
-    if (lenis) {
-      const lim = lenis.limit;
-      if (lim > 0) return Math.min(Math.max(lenis.scroll / lim, 0), 1);
-      const p = lenis.progress;
-      if (typeof p === "number" && Number.isFinite(p))
-        return Math.min(Math.max(p, 0), 1);
-    }
+    const sm = ScrollSmoother.get();
     const max = document.documentElement.scrollHeight - window.innerHeight;
-    return max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
-  }, [lenis]);
+    const top = sm ? sm.scrollTop() : window.scrollY;
+    return max > 0 ? Math.min(Math.max(top / max, 0), 1) : 0;
+  }, []);
 
   useEffect(() => {
     const onResize = () => {
-      lenis?.resize();
       ScrollTrigger.refresh();
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [lenis]);
+  }, []);
 
   useEffect(() => {
-    if (!lenis) return;
     const ro = new ResizeObserver(() => {
-      lenis.resize();
       requestAnimationFrame(() => ScrollTrigger.refresh());
     });
     const s2 = sec2Ref.current;
@@ -105,16 +87,7 @@ export default function ServicesOrbitExperienceV2() {
     if (s2) ro.observe(s2);
     if (s3) ro.observe(s3);
     return () => ro.disconnect();
-  }, [lenis]);
-
-  /** Pin + min-height sections: refresh ST + Lenis after layout so phase anchor (sec4) matches DOM consistently. */
-  useLayoutEffect(() => {
-    const id = requestAnimationFrame(() => {
-      lenis?.resize();
-      ScrollTrigger.refresh();
-    });
-    return () => cancelAnimationFrame(id);
-  }, [lenis]);
+  }, []);
 
   const orbitAudioRef = useServicesOrbitSceneV2(mainCanvasRef, {
     getSmoothScroll,
@@ -135,79 +108,85 @@ export default function ServicesOrbitExperienceV2() {
     else orbitAudioRef.current?.muteWoosh();
   }, [soundEnabled]);
 
-  useGSAP(() => {
-    if (!canvasWrapRef.current) return;
-    const st = ScrollTrigger.create({
-      trigger: "#services-orbit-scope-v2",
-      start: "top top",
-      end: "bottom top",
-      pin: canvasWrapRef.current,
-      pinSpacing: false,
-      markers: false,
-    });
-    return () => st.kill();
-  }, []);
-
-  useGSAP(() => {
-    if (!sec3Ref.current) return;
-
-    const stripes = stripesRef.current;
-    gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sec3Ref.current,
+  useGSAP(
+    () => {
+      if (!canvasWrapRef.current) return;
+      const st = ScrollTrigger.create({
+        trigger: sectionRef.current,
         start: "top top",
-        end: "+=150%",
-        pin: sec3Ref.current,
-        pinSpacing: true,
-        markers: false,
-        scrub: true,
-        anticipatePin: 0.5,
-      },
-      defaults: { ease: "none" },
-    });
+        end: "bottom top",
+        pin: canvasWrapRef.current,
+        pinSpacing: false,
+      });
+      return () => st.refresh();
+    },
+    { scope: sectionRef },
+  );
 
-    const nextSection = document.getElementById("services-orbit-scope-v2")
-      ?.nextElementSibling as HTMLElement | null;
-    if (nextSection) {
-      gsap.set(nextSection, { marginTop: "-100dvh" });
-    }
+  useGSAP(
+    () => {
+      if (!sec3Ref.current) return;
 
-    const stripeCount = stripes.length;
-    const staggerAmount = 0.5;
-    const perStripe = 1 - staggerAmount;
-    const totalStripeDuration = 1;
+      const stripes = stripesRef.current;
+      gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
 
-    tl.addLabel("stripes_start");
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: "sec-3",
+          trigger: sec3Ref.current,
+          start: "top top",
+          end: "+=150%",
+          pin: sec3Ref.current,
+          pinSpacing: true,
+          markers: false,
+          scrub: true,
+        },
+        defaults: { ease: "none" },
+      });
 
-    for (let i = 0; i < stripeCount; i++) {
-      const staggerIdx = stripeCount - 1 - i;
-      const stripeOffset =
-        (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
-      const start = stripeOffset * totalStripeDuration;
-      const end = start + perStripe * totalStripeDuration;
+      const nextSection = document.getElementById("services-orbit-scope-v2")
+        ?.nextElementSibling as HTMLElement | null;
+      if (nextSection) {
+        gsap.set(nextSection, { marginTop: "-100dvh" });
+      }
 
-      tl.fromTo(
-        stripes[i]!,
-        { scaleY: 0 },
-        { scaleY: 1, duration: end - start, ease: "none" },
-        `stripes_start+=${start}`,
-      );
-    }
+      const stripeCount = stripes.length;
+      const staggerAmount = 0.5;
+      const perStripe = 1 - staggerAmount;
+      const totalStripeDuration = 1;
 
-    tl.to({}, { duration: 0.2 });
+      tl.addLabel("stripes_start");
 
-    return () => {
-      tl.kill();
-    };
-  }, []);
+      for (let i = 0; i < stripeCount; i++) {
+        const staggerIdx = stripeCount - 1 - i;
+        const stripeOffset =
+          (staggerAmount * staggerIdx) / (stripeCount - 1 || 1);
+        const start = stripeOffset * totalStripeDuration;
+        const end = start + perStripe * totalStripeDuration;
+
+        tl.fromTo(
+          stripes[i]!,
+          { scaleY: 0 },
+          { scaleY: 1, duration: end - start, ease: "none" },
+          `stripes_start+=${start}`,
+        );
+      }
+
+      tl.to({}, { duration: 0.2 });
+
+      return () => {
+        tl.scrollTrigger?.refresh();
+      };
+    },
+    { scope: sectionRef },
+  );
 
   return (
     <div
       id="services-orbit-scope-v2"
-      className="services-orbit-scope relative min-h-dvh font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[#e8e8e8] overflow-x-hidden"
+      className="services-orbit-scope relative min-h-dvh font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[#e8e8e8] overflow-hidden"
       style={{ background: BG, color: FG }}
+      ref={sectionRef}
     >
       <div
         ref={canvasWrapRef}

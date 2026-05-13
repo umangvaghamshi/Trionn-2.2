@@ -84,7 +84,7 @@ export default function ServicesOrbitPage() {
       <Services />
       <Technology />
       <HowWork theme="light" />
-      <div className="h-dvh" />
+      <div className="min-h-dvh" />
     </>
   );
 }

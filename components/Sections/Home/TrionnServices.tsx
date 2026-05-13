@@ -2,12 +2,12 @@
 
 import { WordShiftButton } from "@/components/Button";
 import {
-  mapOverlapProgress,
-  mapServicesScrollProgress,
   mapServicesScrimOpacity,
+  mapServicesScrollProgress,
   SERVICES_PIN_END_PERCENT,
   servicesStripeHoldStartLinear,
 } from "@/components/Sections/Home/servicesScrollConstants";
+import { useSiteSound } from "@/components/SiteSoundContext";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useGSAP } from "@gsap/react";
@@ -15,7 +15,6 @@ import gsap from "gsap";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useCallback, useEffect, useRef, type MutableRefObject } from "react";
-import { useSiteSound } from "@/components/SiteSoundContext";
 gsap.registerPlugin(DrawSVGPlugin, ScrollTrigger);
 
 /* ─────────────────────────────────────────────
@@ -874,96 +873,96 @@ export default function TrionnServices({
   }, [drawFrame, TOTAL]);
 
   /* ── ScrollTrigger: only when not driven by WorkServicesSequence bridge ── */
-  useGSAP(
-    () => {
-      if (scrollProgressRef) return;
+  // useGSAP(
+  //   () => {
+  //     if (scrollProgressRef) return;
 
-      const ctx = gsap.context(() => {
-        const driver = sectionRef.current;
-        if (!driver) return;
+  //     const ctx = gsap.context(() => {
+  //       const driver = sectionRef.current;
+  //       if (!driver) return;
 
-        preload();
+  //       preload();
 
-        let unpinnedEventFired = false;
+  //       let unpinnedEventFired = false;
 
-        // Total pin duration in "vh units" used as timeline labels
-        const total = SERVICES_PIN_END_PERCENT;
+  //       // Total pin duration in "vh units" used as timeline labels
+  //       const total = SERVICES_PIN_END_PERCENT;
 
-        // Normalised positions (0–1) of each phase within the full pin
-        const scrubStart = (120 + 120) / total; // where scrollT starts
-        const scrubEnd = (120 + 120 + 500) / total; // where scrollT reaches 1
-        const holdStart = scrubEnd; // stripe / testimonials phase begins
-        // Stripes finish at holdT=0.3 within the hold window
-        const stripeEnd = holdStart + 0.3 * (1 - holdStart);
+  //       // Normalised positions (0–1) of each phase within the full pin
+  //       const scrubStart = (120 + 120) / total; // where scrollT starts
+  //       const scrubEnd = (120 + 120 + 500) / total; // where scrollT reaches 1
+  //       const holdStart = scrubEnd; // stripe / testimonials phase begins
+  //       // Stripes finish at holdT=0.3 within the hold window
+  //       const stripeEnd = holdStart + 0.3 * (1 - holdStart);
 
-        // Paused timeline — progress is driven manually by the ScrollTrigger below
-        const tl = gsap.timeline({ paused: true });
+  //       // Paused timeline — progress is driven manually by the ScrollTrigger below
+  //       const tl = gsap.timeline({ paused: true });
 
-        // scrim: opacity 1→0 during scrub phase (first ~12% of scrollT)
-        if (scrimRef.current) {
-          const scrimE = scrubStart + (scrubEnd - scrubStart) * 0.12;
-          tl.fromTo(
-            scrimRef.current,
-            { opacity: 1 },
-            { opacity: 0, ease: "none", duration: scrimE - scrubStart },
-            scrubStart,
-          );
-        }
+  //       // scrim: opacity 1→0 during scrub phase (first ~12% of scrollT)
+  //       if (scrimRef.current) {
+  //         const scrimE = scrubStart + (scrubEnd - scrubStart) * 0.12;
+  //         tl.fromTo(
+  //           scrimRef.current,
+  //           { opacity: 1 },
+  //           { opacity: 0, ease: "none", duration: scrimE - scrubStart },
+  //           scrubStart,
+  //         );
+  //       }
 
-        // canvas: opacity 0→1 during first 8% of scrollT
-        if (canvasRef.current) {
-          const canvasE = scrubStart + (scrubEnd - scrubStart) * 0.08;
-          tl.fromTo(
-            canvasRef.current,
-            { opacity: 0 },
-            { opacity: 1, ease: "none", duration: canvasE - scrubStart },
-            scrubStart,
-          );
-        }
+  //       // canvas: opacity 0→1 during first 8% of scrollT
+  //       if (canvasRef.current) {
+  //         const canvasE = scrubStart + (scrubEnd - scrubStart) * 0.08;
+  //         tl.fromTo(
+  //           canvasRef.current,
+  //           { opacity: 0 },
+  //           { opacity: 1, ease: "none", duration: canvasE - scrubStart },
+  //           scrubStart,
+  //         );
+  //       }
 
-        // bgVideo: opacity 0→0.5 starting at 4% of scrollT
-        if (bgVideoRef.current) {
-          const vidS = scrubStart + (scrubEnd - scrubStart) * 0.04;
-          const vidE = vidS + (scrubEnd - scrubStart) * 0.08;
-          tl.fromTo(
-            bgVideoRef.current,
-            { opacity: 0 },
-            { opacity: 0.5, ease: "none", duration: vidE - vidS },
-            vidS,
-          );
-        }
+  //       // bgVideo: opacity 0→0.5 starting at 4% of scrollT
+  //       if (bgVideoRef.current) {
+  //         const vidS = scrubStart + (scrubEnd - scrubStart) * 0.04;
+  //         const vidE = vidS + (scrubEnd - scrubStart) * 0.08;
+  //         tl.fromTo(
+  //           bgVideoRef.current,
+  //           { opacity: 0 },
+  //           { opacity: 0.5, ease: "none", duration: vidE - vidS },
+  //           vidS,
+  //         );
+  //       }
 
-        ScrollTrigger.create({
-          trigger: driver,
-          start: "top top",
-          end: `+=${SERVICES_PIN_END_PERCENT}%`,
-          pin: true,
-          pinSpacing: true,
-          // anticipatePin: 1,
-          markers: false,
-          scrub: 1,
-          onUpdate: (self) => {
-            // Drive the timeline with scroll progress
-            tl.progress(self.progress);
-            // Imperative state — drives canvas draw & RAF loop
-            stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
-            applyStripeHold(self.progress, stripesRef.current);
+  //       ScrollTrigger.create({
+  //         trigger: driver,
+  //         start: "top top",
+  //         end: `+=${SERVICES_PIN_END_PERCENT}%`,
+  //         pin: true,
+  //         pinSpacing: true,
+  //         // anticipatePin: 1,
+  //         markers: false,
+  //         scrub: 1,
+  //         onUpdate: (self) => {
+  //           // Drive the timeline with scroll progress
+  //           // tl.progress(self.progress);
+  //           // Imperative state — drives canvas draw & RAF loop
+  //           // stateRef.current.scrollT = mapServicesScrollProgress(self.progress);
+  //           // applyStripeHold(self.progress, stripesRef.current);
 
-            // One-time event so Testimonials refreshes its ScrollTriggers
-            if (self.progress >= holdStart && !unpinnedEventFired) {
-              unpinnedEventFired = true;
-              window.dispatchEvent(new CustomEvent("trionn-services:unpinned"));
-            }
-          },
-        });
-      });
+  //           // One-time event so Testimonials refreshes its ScrollTriggers
+  //           // if (self.progress >= holdStart && !unpinnedEventFired) {
+  //           //   unpinnedEventFired = true;
+  //           //   window.dispatchEvent(new CustomEvent("trionn-services:unpinned"));
+  //           // }
+  //         },
+  //       });
+  //     });
 
-      return () => ctx.revert();
-    },
-    {
-      dependencies: [scrollProgressRef],
-    },
-  );
+  //     return () => ctx.revert();
+  //   },
+  //   {
+  //     dependencies: [scrollProgressRef],
+  //   },
+  // );
 
   useGSAP(
     () => {
@@ -992,8 +991,8 @@ export default function TrionnServices({
         s.scrollT = mapServicesScrollProgress(linear);
         applyStripeHold(linear, stripesRef.current);
 
-        const holdStart = servicesStripeHoldStartLinear();
-        if (linear >= holdStart && !s.unpinnedEventFired) {
+        // const holdStart = servicesStripeHoldStartLinear();
+        if (!s.unpinnedEventFired) {
           s.unpinnedEventFired = true;
           window.dispatchEvent(new CustomEvent("trionn-services:unpinned"));
         }
@@ -1149,7 +1148,9 @@ export default function TrionnServices({
 
     const sectionEl = stickyWrapRef.current;
     const sectionIo = new IntersectionObserver(
-      ([entry]) => manager.setActive(loopId, entry.isIntersecting),
+      ([entry]) => {
+        manager.setActive(loopId, entry.isIntersecting);
+      },
       { root: null, threshold: 0, rootMargin: "128px 0px" },
     );
     if (sectionEl) sectionIo.observe(sectionEl);

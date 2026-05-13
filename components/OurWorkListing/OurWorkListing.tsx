@@ -2,6 +2,7 @@
 import parser from "html-react-parser";
 import { useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useSiteSound } from "@/components/SiteSoundContext";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
@@ -834,6 +835,17 @@ export default function OurWorkListing() {
     }
 
     // ===== pagelines.js =====
+    // With GSAP ScrollSmoother active, #smooth-content is translated via CSS
+    // transform. window.scrollY reflects the native scroll position, but
+    // getBoundingClientRect() reflects the currently-rendered (smoothed)
+    // position. Mixing the two would put line origins and card dots at
+    // positions that drift one frame behind the visuals. Always read the
+    // smoothed scroll position so the build math and the per-frame draw use
+    // the same source of truth.
+    const getSmoothScrollY = () => {
+      const sm = ScrollSmoother.get();
+      return sm ? sm.scrollTop() : window.scrollY;
+    };
     const PL_clamp01 = (v: number) => Math.max(0, Math.min(1, v));
     const debounce = (fn: (...args: any[]) => void, wait = 200) => {
       let timer: ReturnType<typeof setTimeout> | null = null;
@@ -1127,7 +1139,7 @@ export default function OurWorkListing() {
     function getStableLineStartY() {
       const header = document.querySelector<HTMLElement>("#page-header");
       if (!header) return Math.max(0, window.innerHeight);
-      const pageTop = header.getBoundingClientRect().top + window.scrollY;
+      const pageTop = header.getBoundingClientRect().top + getSmoothScrollY();
       return Math.max(0, pageTop + header.offsetHeight - window.innerHeight);
     }
     function build() {
@@ -1135,7 +1147,7 @@ export default function OurWorkListing() {
         document.querySelectorAll<HTMLElement>(".project-card"),
       );
       if (!cards.length) return;
-      const sy = window.scrollY,
+      const sy = getSmoothScrollY(),
         cx = VW / 2;
       const startY = getStableLineStartY();
       _originY = startY + VH * 0.5;
@@ -1639,7 +1651,7 @@ export default function OurWorkListing() {
     document.addEventListener("mousemove", onMouseMove);
 
     function updateProg() {
-      const sy = window.scrollY;
+      const sy = getSmoothScrollY();
       if (!lineA.length) {
         drawProg = 0;
         smoothProg = 0;
@@ -1660,7 +1672,7 @@ export default function OurWorkListing() {
       plLast = ts;
       _t += dt;
       updateProg();
-      const sx = window.scrollY;
+      const sx = getSmoothScrollY();
       wA = wave(lineA, 1.0);
       wB = wave(lineB, 2.3);
       wC = wave(lineC, 3.7);
@@ -1693,9 +1705,23 @@ export default function OurWorkListing() {
     }
     let plResizeHandler: any = null;
     let plLastWidth = 0;
+    let lcOriginalParent: Node | null = null;
+    let lcOriginalNextSibling: Node | null = null;
     function plInit() {
       lc = document.querySelector<HTMLCanvasElement>("#line-canvas");
       if (!lc) return;
+      // ScrollSmoother applies a CSS transform to #smooth-content, which
+      // creates a new containing block for any position:fixed descendants —
+      // so a `fixed` canvas rendered inside the React tree scrolls with the
+      // content instead of staying glued to the viewport. Hoist the canvas
+      // to <body> so it's truly viewport-fixed. flagwave.ts does the same
+      // for its WebGL stage. The original parent is remembered so the
+      // cleanup can put it back before React unmounts the tree.
+      if (lc.parentNode !== document.body) {
+        lcOriginalParent = lc.parentNode;
+        lcOriginalNextSibling = lc.nextSibling;
+        document.body.appendChild(lc);
+      }
       lctx = lc.getContext("2d");
       if (plRafId) {
         cancelAnimationFrame(plRafId);
@@ -1816,6 +1842,15 @@ export default function OurWorkListing() {
       if (_refreshRaf) cancelAnimationFrame(_refreshRaf);
       clearTimeout(fallbackPL);
       if (st) st.kill();
+      // Restore the line-canvas to its original React-owned parent so React's
+      // unmount doesn't trip over a missing child node.
+      if (lc && lcOriginalParent) {
+        try {
+          lcOriginalParent.insertBefore(lc, lcOriginalNextSibling);
+        } catch {}
+        lcOriginalParent = null;
+        lcOriginalNextSibling = null;
+      }
       delete (window as any)._mouseTilt;
       delete (window as any)._thumbAnimReady;
       delete (window as any)._thumbAnimDone;
