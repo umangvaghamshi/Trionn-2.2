@@ -365,7 +365,7 @@ export default function HowWork({
                         {card.title}
                       </h3>
 
-                      <p className="content small max-w-87.5 mt-4 md:mt-0">
+                      <p className="content small md:max-w-87.5 mt-4 md:mt-0">
                         {card.content}
                       </p>
                     </div>
