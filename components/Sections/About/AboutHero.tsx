@@ -7,6 +7,7 @@ import Marquee from "@/components/Marquee";
 import AboutLion from "./AboutLion";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { SplitText } from "gsap/all";
+import ScrollIndicator from "@/components/ScrollIndicator";
 
 gsap.registerPlugin(SplitText);
 
@@ -146,6 +147,9 @@ export default function AboutHero() {
             className="block text-white uppercase"
           />
         </span>
+        <div className="flex items-center absolute top-[calc(100dvh-5rem)] left-0 w-full justify-center text-light-font pointer-events-none">
+          <ScrollIndicator />
+        </div>
       </div>
 
       {/* Lion and Marquee container */}
@@ -161,6 +165,9 @@ export default function AboutHero() {
               className="block text-white uppercase"
             />
           </span>
+          <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font pointer-events-none">
+            <ScrollIndicator />
+          </div>
         </div>
         <div className="tr__container grid grid-cols-12 absolute top-[66%] sm:top-[76%] md:top-[60%] 2xl:top-[50%] w-full z-5 translate-y-full pointer-events-none">
           <BlurTextReveal

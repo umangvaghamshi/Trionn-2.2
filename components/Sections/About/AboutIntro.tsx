@@ -43,7 +43,7 @@ export default function AboutIntro() {
         <div className="grid grid-cols-12 gap-x-6">
           <div className="col-span-12 md:col-span-10 md:col-start-2 grid grid-cols-12 gap-x-6 gap-y-10">
             <div className="left-block col-span-12 md:col-span-6 lg:col-span-3">
-              <div className="flex border border-dark-font overflow-hidden rounded-sm min-h-18 text-dark-font title max-w-65">
+              <div className="flex border border-dark-font overflow-hidden rounded-sm min-h-18 text-dark-font title max-w-70">
                 <div className="flex flex-col justify-center items-center min-w-26 text-light-font bg-dark-font border-r border-dark-font text-center gap-2 p-4">
                   <svg
                     width="43"
@@ -69,7 +69,7 @@ export default function AboutIntro() {
                     Est. 2012
                   </span>
                 </div>
-                <div className="p-4 flex flex-col justify-center items-center">
+                <div className="p-6 flex flex-col justify-center items-center">
                   <span className="text-sm leading-3.5 -tracking-[0.02em] uppercase block">
                     14+ years shaping digital direction.
                   </span>
