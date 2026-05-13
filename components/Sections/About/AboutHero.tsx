@@ -25,9 +25,9 @@ const CROSS_ICON = (
       y1="-2.18557e-08"
       x2="20.2256"
       y2="40"
-      stroke="#FFFFFF"
+      stroke="currentColor"
     />
-    <line x1="40" y1="20.226" x2="-4.37114e-08" y2="20.226" stroke="#FFFFFF" />
+    <line x1="40" y1="20.226" x2="-4.37114e-08" y2="20.226" stroke="currentColor" />
   </svg>
 );
 
@@ -66,21 +66,15 @@ export default function AboutHero() {
       const topContent = document.querySelector(".top-content") as HTMLElement;
 
       if (titleBlock && topContent) {
-        // Calculate height: Viewport height - Title offset height
-        const availableHeight = window.innerHeight - titleBlock.offsetHeight;
-
-        // Apply height via GSAP
-        gsap.set(topContent, { height: availableHeight });
+        if (window.innerWidth >= 768) {
+          const availableHeight = window.innerHeight - titleBlock.offsetHeight;
+          gsap.set(topContent, { height: availableHeight });
+        }
       }
     };
 
-    // Run once on mount
     updateHeight();
-
-    // Add resize listener for responsiveness
     window.addEventListener("resize", updateHeight);
-
-    // Cleanup listener on unmount
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
@@ -97,9 +91,23 @@ export default function AboutHero() {
         </h1>
       </div>
 
+      {/* Mobile: "At the intersection" sits between heading and lion */}
+      <div className="md:hidden w-full px-10 pt-6 pb-10 pointer-events-none mix-blend-difference z-10">
+        <span className="title text-center block">
+          <BlurTextReveal
+            as="span"
+            html={`At the intersection of strategy, <br/>design, and technology.`}
+            animationType="words"
+            stagger={0.5}
+            className="block text-white uppercase"
+          />
+        </span>
+      </div>
+
       {/* Lion and Marquee container */}
       <div className="relative w-full flex flex-col items-center -mt-8 md:-mt-30">
-        <div className="absolute md:top-30 left-0 w-full pt-20 md:py-15 px-10 z-10 pointer-events-none flex flex-col justify-between top-content max-md:mix-blend-difference">
+        {/* Desktop only: absolute overlay with "At the intersection" text + height spacer */}
+        <div className="top-content hidden md:flex absolute top-30 left-0 w-full py-15 px-10 z-10 pointer-events-none flex-col justify-between">
           <span className="title text-center z-10 block col-span-12">
             <BlurTextReveal
               as="span"
@@ -110,7 +118,7 @@ export default function AboutHero() {
             />
           </span>
         </div>
-        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[66%] md:top-[50%] w-full z-5 translate-y-full pointer-events-none">
+        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[65%] md:top-[50%] w-full z-5 translate-y-full pointer-events-none">
           <BlurTextReveal
             as="span"
             text={`We design and build digital experiences that scale, perform, and endure.`}
@@ -121,16 +129,14 @@ export default function AboutHero() {
         </div>
 
         {/* Lion — natural document flow, scales proportionally */}
-        <div
-          className={`relative w-full flex justify-center pointer-events-none transition-opacity duration-1000 ${
-            isLoaded ? "opacity-100" : "opacity-0"
-          }`}
-        >
+        {/* On mobile: overflow-hidden clips the ~25% white top of lion-mobile.png */}
+        <div className={`relative w-full overflow-hidden md:overflow-visible transition-opacity duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
+          <div className="-mt-[230px] md:mt-0 w-full">
           <div className="relative pointer-events-auto w-full flex justify-center items-end">
             <AboutLion onLoad={() => setIsLoaded(true)}>
               {/* Bottom: marquee — sits ON TOP of the lion canvas, but BEHIND the strips */}
               <div
-                className={`absolute bottom-[15%] md:bottom-[20%] left-0 right-0 z-1 w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${
+                className={`absolute bottom-[2%] md:bottom-[20%] left-0 right-0 z-1 w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${
                   isLoaded ? "opacity-100" : "opacity-0"
                 }`}
               >
@@ -147,8 +153,10 @@ export default function AboutHero() {
               </div>
             </AboutLion>
           </div>
+          </div>
         </div>
       </div>
+
     </section>
   );
 }
