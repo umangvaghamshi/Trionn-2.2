@@ -7,7 +7,7 @@ import { useSiteSound } from "@/components/SiteSoundContext";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useTransitionReady } from "@/components/Transition";
 import { useGSAP } from "@gsap/react";
-import { WordShiftButton } from "./Button";
+import { WordShiftButton } from "@/components/Button";
 
 /**
  * TeamSection — App Router compatible client component.
@@ -2266,7 +2266,7 @@ export default function TeamSection() {
             </div>
           </div>
           {/* Button */}
-          <div className="absolute bottom-20 tr__container w-full flex justify-end z-10000 text-light-font">
+          <div className="absolute bottom-20 tr__container w-full justify-end z-10000 text-light-font hidden lg:flex">
             <WordShiftButton
               text="Join the team?"
               href="/contact"
