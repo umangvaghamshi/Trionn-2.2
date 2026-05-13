@@ -158,6 +158,7 @@ export default function Awards() {
   const HorizontalScrollerContentRef = useRef<HTMLDivElement | null>(null);
 
   const sliderHeaderRef = useRef<HTMLDivElement>(null);
+  const sliderButtonRef = useRef<HTMLDivElement>(null);
 
   const cardsRef = useRef<HTMLDivElement[]>([]);
 
@@ -255,6 +256,12 @@ export default function Awards() {
         // 5️⃣ Slider header fade in
         .fromTo(
           sliderHeaderRef.current,
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 0.05 },
+          "<50%",
+        )
+        .fromTo(
+          sliderButtonRef.current,
           { autoAlpha: 0 },
           { autoAlpha: 1, duration: 0.05 },
           "<50%",
@@ -379,7 +386,7 @@ export default function Awards() {
       {/* 2. Marquee Component (Centered) */}
       <div className="z-10 flex flex-col justify-center min-h-dvh pt-37.5 pb-25 mix-blend-difference">
         <div
-          className="tr__container w-full absolute top-20 lg:top-37.5 left-0 flex flex-col md:flex-row justify-between items-center md:items-end gap-10"
+          className="tr__container w-full absolute top-25 lg:top-37.5 left-0 flex flex-col md:flex-row justify-between items-start md:items-end gap-10"
           ref={titleContainerRef}
         >
           <BlurTextReveal
@@ -387,12 +394,13 @@ export default function Awards() {
             text="Results matter most. Awards add recognition and value."
             animationType="words"
             stagger={0.03}
-            className="small max-w-70 2xl:max-w-54 text-light-font block uppercase text-center md:text-left"
+            className="small max-w-70 2xl:max-w-54 text-light-font block uppercase"
           />
           <WordShiftButton
             text="win an award?"
             href="/contact"
             styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+            customClass="hidden lg:block"
           />
         </div>
         {/* Using your component */}
@@ -533,6 +541,16 @@ export default function Awards() {
               );
             })}
           </div>
+        </div>
+        <div
+          className="w-full max-w-screen flex items-center justify-center tr__container mx-0! lg:hidden"
+          ref={sliderButtonRef}
+        >
+          <WordShiftButton
+            text="win an award?"
+            href="/contact"
+            styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+          />
         </div>
       </div>
 

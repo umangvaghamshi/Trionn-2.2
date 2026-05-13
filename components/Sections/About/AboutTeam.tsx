@@ -3,6 +3,7 @@
 import LinePlus from "@/components/LinePlus";
 import TeamSection from "@/components/TeamSection";
 import { BlurTextReveal } from "@/components/TextAnimation";
+import { WordShiftButton } from "@/components/Button";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -12,30 +13,30 @@ export default function AboutTeam() {
   return (
     <section className="bg-[#040508]">
       <div className="tr__container relative w-full text-light-font flex flex-col">
-        <div className="min-h-dvh flex flex-col justify-center py-37.5">
+        <div className="min-h-dvh flex flex-col justify-center items-center py-37.5 gap-10">
           <div className="grid grid-cols-12 gap-x-6 ">
             <BlurTextReveal
               as="h2"
               text="Different"
               animationType="chars"
               stagger={0.08}
-              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-12 sm:col-span-11 sm:col-start-2"
+              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-12 sm:col-span-11 sm:col-start-2 whitespace-nowrap"
             />
             <BlurTextReveal
               as="h2"
               text="skills. One"
               animationType="chars"
               stagger={0.08}
-              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-11 col-start-2 sm:col-span-10 sm:col-start-3 md:col-start-4"
+              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-11 col-start-2 sm:col-span-10 sm:col-start-3 md:col-start-4 whitespace-nowrap"
             />
             <BlurTextReveal
               as="h2"
               text="standard."
               animationType="chars"
               stagger={0.08}
-              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-10 col-start-3 sm:col-span-8 sm:col-start-5 md:col-span-6 md:col-start-7"
+              className="mrquee-text leading-[0.8]! uppercase z-2 col-span-10 col-start-3 sm:col-span-8 sm:col-start-5 md:col-span-6 md:col-start-7 whitespace-nowrap"
             />
-            <div className="relative col-span-11 col-start-2 sm:col-span-8 sm:col-start-3 mdcol-start-4 max-w-[20rem] mt-10 lg:mt-0">
+            <div className="relative col-span-12 lg:col-span-8 lg:col-start-4 max-w-[20rem] mt-10 lg:mt-0 mx-auto lg:mx-0 text-center lg:text-left">
               <BlurTextReveal
                 as="span"
                 text="A collective shaped by shared standards, not job titles."
@@ -44,6 +45,13 @@ export default function AboutTeam() {
                 className="title uppercase z-2 lg:absolute lg:-translate-y-full block"
               />
             </div>
+          </div>
+          <div className="block lg:hidden">
+            <WordShiftButton
+              text="Join the team?"
+              href="/contact"
+              styleVars={{ buttonWrapperColor: "#D8D8D8" }}
+            />
           </div>
         </div>
         <LinePlus
