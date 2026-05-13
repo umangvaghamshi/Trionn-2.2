@@ -7,6 +7,7 @@ import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
 import { TransitionLink, useTransitionReady } from "@/components/Transition";
+import ScrollIndicator from "@/components/ScrollIndicator";
 
 import { projects } from "@/data";
 
@@ -1971,6 +1972,9 @@ export default function OurWorkListing() {
               web, and digital system work.
             </p>
           </div>
+          <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font opacity-50 pointer-events-none">
+            <ScrollIndicator />
+          </div>
         </div>
       </div>
 
@@ -1981,7 +1985,7 @@ export default function OurWorkListing() {
 
       <main
         id="projects-grid"
-        className="relative py-10 lg:py-20 z-10 flex flex-col gap-16 lg:gap-20"
+        className="relative py-10 lg:py-20 z-10 flex flex-col gap-20"
       >
         {projects.map((project, i) => (
           <article
@@ -2006,7 +2010,7 @@ export default function OurWorkListing() {
                   {project.year}
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row justify-between gap-4">
+              <div className="flex flex-col sm:flex-row justify-between gap-10">
                 <p className="text-light-font/60 w-full sm:w-7/12 small max-w-75">
                   {parser(
                     Array.isArray(project.subTitle)
@@ -2014,7 +2018,7 @@ export default function OurWorkListing() {
                       : project.subTitle,
                   )}
                 </p>
-                <div className="w-full sm:w-5/12 flex justify-end">
+                <div className="w-full sm:w-5/12 flex sm:justify-end">
                   <WordShiftButton
                     text="EXPLORE PROJECT"
                     href={`work/${project.slug}`}
