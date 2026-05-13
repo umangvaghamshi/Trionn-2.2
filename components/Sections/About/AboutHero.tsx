@@ -40,6 +40,7 @@ const CROSS_ICON = (
 export default function AboutHero() {
   const [isLoaded, setIsLoaded] = useState(false);
   const splitTextRef = useRef<HTMLHeadingElement>(null);
+  const clipOuterRef = useRef<HTMLDivElement>(null);
   const clipInnerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
@@ -60,22 +61,39 @@ export default function AboutHero() {
     );
   }, [isLoaded]);
 
-  // Clip the white top of lion-mobile.png so the lion fur appears flush
-  // against the "At the intersection" text above, with no white gap.
+  // Expand the canvas upward into the mt-12 gap so the white area of
+  // lion-mobile.png fills the space between the text and the lion fur.
+  // The lion fur stays at exactly the same page position — only the
+  // overflow wrapper is pulled up (by the mt-12 pixel amount) and the
+  // inner clip is reduced by the same amount.
   useEffect(() => {
     const MOBILE_IMG_W = 660;
     const MOBILE_IMG_H = 1434;
     const CLIP_RATIO = 0.272;
 
     const applyClip = () => {
-      if (!clipInnerRef.current) return;
+      if (!clipOuterRef.current || !clipInnerRef.current) return;
       if (window.innerWidth > 768) {
+        clipOuterRef.current.style.marginTop = "";
         clipInnerRef.current.style.marginTop = "";
         return;
       }
       const cw = Math.min(window.innerWidth, MOBILE_IMG_W);
       const ch = Math.round(MOBILE_IMG_H * (cw / MOBILE_IMG_W));
-      clipInnerRef.current.style.marginTop = `-${Math.round(ch * CLIP_RATIO)}px`;
+      const fullClip = Math.round(ch * CLIP_RATIO);
+
+      // mt-12 in px at the current viewport (fluid font: 1rem = 1000vw / --size)
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const gapPx = Math.round(12 * rem);
+
+      // Pull the overflow wrapper up by gapPx (capped so we never over-extend
+      // beyond the white space). Reduce the inner clip by the same amount so
+      // the lion fur stays at its original page position.
+      const extensionUp = Math.min(fullClip, gapPx);
+      const innerClip = fullClip - extensionUp;
+
+      clipOuterRef.current.style.marginTop = `-${extensionUp}px`;
+      clipInnerRef.current.style.marginTop = `-${innerClip}px`;
     };
 
     applyClip();
@@ -128,8 +146,7 @@ export default function AboutHero() {
         </span>
       </div>
 
-      {/* Lion and Marquee container — no mobile negative margin so the
-          clipped canvas top aligns exactly with the text above. */}
+      {/* Lion and Marquee container */}
       <div className="relative w-full flex flex-col items-center mt-12 md:-mt-30">
         {/* Desktop only: absolute overlay with "At the intersection" text + height spacer */}
         <div className="top-content hidden md:flex absolute top-30 left-0 w-full py-15 px-10 z-10 pointer-events-none flex-col justify-between">
@@ -153,8 +170,10 @@ export default function AboutHero() {
           />
         </div>
 
-        {/* Lion — overflow-hidden clips the white top of lion-mobile.png on mobile */}
+        {/* Lion — outer ref is pulled up by the mt-12 gap amount so the
+            canvas extends seamlessly up to the text above. */}
         <div
+          ref={clipOuterRef}
           className={`relative w-full overflow-hidden md:overflow-visible transition-opacity duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}
         >
           <div ref={clipInnerRef} className="md:mt-0 w-full">

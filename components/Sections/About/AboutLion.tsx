@@ -677,22 +677,38 @@ export default function AboutLion({
     const applyCanvasSize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const vw = Math.max(window.innerWidth, 1);
-      // Lion canvas is capped at the image's natural width so it never gets
-      // stretched/blurred, but the scene (and strip overlay) span full viewport
-      // width so the strips always reach the edges of the screen.
-      const cw = Math.min(state.imageWidth, vw);
-      const ch = Math.max(
-        1,
-        Math.round(state.imageHeight * (cw / state.imageWidth)),
-      );
+      const isDesktop = vw > MOBILE_BREAKPOINT;
+
+      let cw: number, ch: number;
+
+      if (isDesktop) {
+        // Always render at the image's natural width (never downscale below it).
+        // lion.png has large white margins so downscaling it to fit a 1470px laptop
+        // viewport makes the lion face appear tiny. By keeping cw ≥ imageWidth the
+        // canvas is wider than the viewport on laptops; the scene clips the sides
+        // (white margin area) so only the centred lion is visible — making it ~40%
+        // larger on a MacBook Air than the old contain-fit approach.
+        cw = Math.max(state.imageWidth, vw);
+        ch = Math.max(1, Math.round(state.imageHeight * (cw / state.imageWidth)));
+      } else {
+        cw = Math.min(state.imageWidth, vw);
+        ch = Math.max(1, Math.round(state.imageHeight * (cw / state.imageWidth)));
+      }
 
       // Use px (not rem) — this app uses a fluid root font-size
-      // (`calc(1000vw / var(--size))`), so 1rem is not 16px. Using rem here
-      // would desync the CSS height of the scene from the strip canvas height,
-      // leaving the bottom of the lion without strip coverage on big screens.
+      // (`calc(1000vw / var(--size))`), so 1rem is not 16px.
       scene.style.width = `${vw}px`;
       scene.style.height = `${ch}px`;
       scene.style.maxHeight = "none";
+      // When the canvas is wider than the scene (cover crop), hide the overflow
+      // and centre the canvas so the lion face stays centred.
+      if (cw > vw) {
+        scene.style.overflow = "hidden";
+        canvas.style.marginLeft = `${Math.round((vw - cw) / 2)}px`;
+      } else {
+        scene.style.overflow = "";
+        canvas.style.marginLeft = "";
+      }
       canvas.style.width = `${cw}px`;
       canvas.style.height = `${ch}px`;
       canvas.width = Math.max(1, Math.round(cw * dpr));
