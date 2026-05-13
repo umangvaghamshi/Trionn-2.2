@@ -116,7 +116,7 @@ export default function AboutHero() {
 
       {/* Mobile: "At the intersection" sits in normal flow directly above the
           lion. With the top clip applied, the lion fur appears flush below. */}
-      <div className="md:hidden w-full px-10 pt-4 pb-0 pointer-events-none mix-blend-difference z-10">
+      <div className="md:hidden w-full px-10 pt-8 md:mt-4 pb-0 pointer-events-none mix-blend-difference z-10">
         <span className="title text-center block">
           <BlurTextReveal
             as="span"
@@ -130,7 +130,7 @@ export default function AboutHero() {
 
       {/* Lion and Marquee container — no mobile negative margin so the
           clipped canvas top aligns exactly with the text above. */}
-      <div className="relative w-full flex flex-col items-center md:-mt-30">
+      <div className="relative w-full flex flex-col items-center mt-12 md:-mt-30">
         {/* Desktop only: absolute overlay with "At the intersection" text + height spacer */}
         <div className="top-content hidden md:flex absolute top-30 left-0 w-full py-15 px-10 z-10 pointer-events-none flex-col justify-between">
           <span className="title text-center z-10 block col-span-12">
