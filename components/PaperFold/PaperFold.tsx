@@ -101,7 +101,7 @@ export default function PaperFold({
     >
       <div className="tr__container flex flex-col">
         <div className="grid grid-cols-12 gap-x-6">
-          <div className="col-span-11 md:col-span-10 col-start-2 md:col-start-2">
+          <div className="col-span-12 md:col-span-10 md:col-start-2">
             <LinePlus
               lineClass={"opacity-15 bg-grey-line"}
               plusClass={
@@ -113,7 +113,7 @@ export default function PaperFold({
         </div>
         <div className="velue-block text-dark-font flex flex-col py-20 lg:py-37.5">
           <div className="grid grid-cols-12 gap-x-6 mb-16 lg:mb-20">
-            <div className="col-span-11 md:col-span-10 col-start-2 md:col-start-2 grid grid-cols-12 gap-6">
+            <div className="col-span-12 md:col-span-10 md:col-start-2 grid grid-cols-12 gap-6">
               <div
                 className="col-span-12 md:col-span-6 lg:col-span-4"
                 ref={valueTitle}
@@ -132,7 +132,7 @@ export default function PaperFold({
             </div>
           </div>
           <div className="grid grid-cols-12 gap-x-6">
-            <div className="col-span-11 md:col-span-10 col-start-2 md:col-start-2 grid grid-cols-12 gap-6 ">
+            <div className="col-span-12 md:col-span-10 md:col-start-2 grid grid-cols-12 gap-6 ">
               <div className="col-span-12 lg:col-span-8 lg:col-start-5 flex flex-col gap-10">
                 <div
                   className="paperfold-stack flex flex-col gap-0.5"

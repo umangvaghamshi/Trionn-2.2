@@ -27,7 +27,13 @@ const CROSS_ICON = (
       y2="40"
       stroke="currentColor"
     />
-    <line x1="40" y1="20.226" x2="-4.37114e-08" y2="20.226" stroke="currentColor" />
+    <line
+      x1="40"
+      y1="20.226"
+      x2="-4.37114e-08"
+      y2="20.226"
+      stroke="currentColor"
+    />
   </svg>
 );
 
@@ -118,7 +124,7 @@ export default function AboutHero() {
             />
           </span>
         </div>
-        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[65%] md:top-[50%] w-full z-5 translate-y-full pointer-events-none">
+        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[65%] md:top-[46%] lg:top-[50%] w-full z-5 translate-y-full pointer-events-none">
           <BlurTextReveal
             as="span"
             text={`We design and build digital experiences that scale, perform, and endure.`}
@@ -130,33 +136,34 @@ export default function AboutHero() {
 
         {/* Lion — natural document flow, scales proportionally */}
         {/* On mobile: overflow-hidden clips the ~25% white top of lion-mobile.png */}
-        <div className={`relative w-full overflow-hidden md:overflow-visible transition-opacity duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
+        <div
+          className={`relative w-full overflow-hidden md:overflow-visible transition-opacity duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+        >
           <div className="-mt-[230px] md:mt-0 w-full">
-          <div className="relative pointer-events-auto w-full flex justify-center items-end">
-            <AboutLion onLoad={() => setIsLoaded(true)}>
-              {/* Bottom: marquee — sits ON TOP of the lion canvas, but BEHIND the strips */}
-              <div
-                className={`absolute bottom-[2%] md:bottom-[20%] left-0 right-0 z-1 w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${
-                  isLoaded ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <Marquee gap={0} speed={0.8}>
-                  <div className="uppercase mrquee-text flex items-center">
-                    <span className="marquee-text-item">Inspire</span>
-                    {CROSS_ICON}
-                    <span className="marquee-text-item">innovate</span>
-                    {CROSS_ICON}
-                    <span className="marquee-text-item">Impact</span>
-                    {CROSS_ICON}
-                  </div>
-                </Marquee>
-              </div>
-            </AboutLion>
-          </div>
+            <div className="relative pointer-events-auto w-full flex justify-center items-end">
+              <AboutLion onLoad={() => setIsLoaded(true)}>
+                {/* Bottom: marquee — sits ON TOP of the lion canvas, but BEHIND the strips */}
+                <div
+                  className={`absolute bottom-[2%] md:bottom-[20%] left-0 right-0 z-1 w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${
+                    isLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <Marquee gap={0} speed={0.8}>
+                    <div className="uppercase mrquee-text flex items-center">
+                      <span className="marquee-text-item">Inspire</span>
+                      {CROSS_ICON}
+                      <span className="marquee-text-item">innovate</span>
+                      {CROSS_ICON}
+                      <span className="marquee-text-item">Impact</span>
+                      {CROSS_ICON}
+                    </div>
+                  </Marquee>
+                </div>
+              </AboutLion>
+            </div>
           </div>
         </div>
       </div>
-
     </section>
   );
 }
