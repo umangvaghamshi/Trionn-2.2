@@ -159,6 +159,14 @@ h2,
   line-height: clamp(2.4rem, 5.952vw, 5.625rem);
   letter-spacing: clamp(-0.06em, -0.056vw, -0.06em);
 }
+h2.big,
+.h2.big {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-[6rem] leading-22 -tracking-[0.06em];
+  font-size: clamp(3.5rem, 6.349vw, 6rem);
+  line-height: clamp(3.25rem, 5.82vw, 5.5rem);
+  letter-spacing: clamp(-0.06em, -0.055vw, -0.06em);
+}
 
 h3,
 .h3 {
