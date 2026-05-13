@@ -40,14 +40,19 @@ export function usePaperFoldAnimation(
 
       // Single timeline on the stack — all cards unfold in sequence
       const foldCount = cardsCount - FOLD_START_INDEX;
-      const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      const isTablet = window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches;
+
+      const startPoint = isMobile ? 'top 65%' : isTablet ? 'top 70%' : 'top 80%';
+      const endOffset = isMobile ? foldCount * 250 : isTablet ? foldCount * 200 : foldCount * 150;
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: stack,
-          start: isMobile ? 'top bottom' : 'top 80%',
-          end: `+=${foldCount * 150}`,
+          start: startPoint,
+          end: `+=${endOffset}`,
           scrub: 0.5,
-          markers: false,
+          markers: true,
         },
       });
 
