@@ -5,11 +5,12 @@ import WorkProjectPanel, {
   type WorkProjectPanelHandle,
 } from "@/components/Sections/Home/WorkProjectPanel";
 import { BlurTextReveal } from "@/components/TextAnimation";
-import { projects } from "@/data";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import React, { useRef } from "react";
+import { projects } from "@/data";
+import LinePlus from "@/components/LinePlus";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -139,7 +140,7 @@ export default function Work({
       <div className="absolute inset-0 flex items-start md:items-center overflow-hidden z-10">
         <div
           ref={trackRef}
-          className="flex flex-col md:flex-row h-auto md:h-dvh flex-nowrap items-center will-change-transform"
+          className="flex flex-col md:flex-row h-auto md:h-[min(80vh,860px)] flex-nowrap items-center will-change-transform"
         >
           {/* ── Intro Text Block (Responsive width) ── */}
           <div className="pointer-events-auto flex w-screen md:w-[50vw] shrink-0 h-[75vh] md:h-full flex-col justify-center items-center px-6 md:px-10">

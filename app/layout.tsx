@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import PagesWrapper from "@/components/PagesWrapper";
+import SmoothScrolling from "@/components/SmoothScrolling";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
 import "./globals.css";
 
@@ -45,7 +46,7 @@ export default function RootLayout({
   return (
     <PagesWrapper>
       <PerformanceMonitor />
-      {children}
+      <SmoothScrolling>{children}</SmoothScrolling>
     </PagesWrapper>
   );
 }

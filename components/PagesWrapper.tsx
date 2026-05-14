@@ -1,6 +1,5 @@
 import { headerSection } from "@/data";
 import { SiteSoundProvider } from "@/components/SiteSoundContext";
-import SmoothScrolling from "@/components/SmoothScrolling";
 import { Header, Footer } from "./PageWrapper";
 import {
   TransitionProvider,
@@ -15,16 +14,8 @@ export default async function PagesWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      style={{ backgroundColor: "#040508" }}
-    >
-      <body
-        cz-shortcut-listen="true"
-        suppressHydrationWarning
-        style={{ backgroundColor: "#040508" }}
-      >
+    <html lang="en" suppressHydrationWarning style={{ backgroundColor: '#040508' }}>
+      <body cz-shortcut-listen="true" suppressHydrationWarning style={{ backgroundColor: '#040508' }}>
         <script
           dangerouslySetInnerHTML={{
             __html: `document.documentElement.style.backgroundColor = "#040508"; document.body.style.backgroundColor = "#040508";`,
@@ -32,14 +23,11 @@ export default async function PagesWrapper({
         />
         <SiteSoundProvider>
           <TransitionProvider>
-            <SmoothScrolling />
             <PageLoader />
             <PageTransition />
             <Header data={headerSection}></Header>
             <PageTransitionWrapper>
-              <main className="relative z-1 overflow-x-hidden">
-                {children}
-              </main>
+              <main className="relative z-1 overflow-x-hidden">{children}</main>
             </PageTransitionWrapper>
             <Footer />
           </TransitionProvider>

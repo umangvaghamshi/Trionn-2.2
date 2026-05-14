@@ -1,5 +1,9 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
 import TrionnServices from "@/components/Sections/Home/TrionnServices";
 import Work, { type WorkHandle } from "@/components/Sections/Home/Work";
 import {
@@ -7,10 +11,6 @@ import {
   mapOverlapProgress,
   mapWorkHorizontalProgress,
 } from "@/components/Sections/Home/servicesScrollConstants";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -208,7 +208,6 @@ export default function WorkServicesSequence() {
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
-        markers: false,
         onUpdate: (self) => {
           progressObj.p = self.progress;
           renderTransforms();
@@ -224,23 +223,34 @@ export default function WorkServicesSequence() {
       const onResize = () => {
         cancelAnimationFrame(resizeRafId);
         resizeRafId = requestAnimationFrame(() => {
-          st.refresh();
+          ScrollTrigger.refresh();
           progressObj.p = st.progress;
           renderTransforms();
         });
       };
-
-      const handleReady = () => {
-        st.refresh();
-      };
-
       window.addEventListener("resize", onResize);
-      window.addEventListener("trionn-keyfacts:ready", handleReady);
+
+      // Refresh on window load to fix hard reload layout shifts
+      const onLoad = () => {
+        ScrollTrigger.refresh();
+      };
+      if (document.readyState === "complete") {
+        onLoad();
+      } else {
+        window.addEventListener("load", onLoad);
+      }
+
+      // Additional refresh to catch late-loading fonts/images
+      const timeoutId = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 500);
 
       return () => {
         window.removeEventListener("resize", onResize);
-        window.removeEventListener("trionn-keyfacts:ready", handleReady);
+        window.removeEventListener("load", onLoad);
         cancelAnimationFrame(resizeRafId);
+        clearTimeout(timeoutId);
+        st.kill();
       };
     },
     { dependencies: [] },

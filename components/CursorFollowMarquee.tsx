@@ -2,6 +2,7 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { useLenis } from "lenis/react";
 import { useEffect, useRef } from "react";
 import Marquee from "./Marquee";
 
@@ -170,30 +171,26 @@ export default function CursorFollowMarquee({
     { dependencies: [text], scope: followerRef },
   );
 
-  // Re-check cursor visibility on every scroll tick (GSAP ticker runs in sync with ScrollSmoother)
-  useEffect(() => {
-    const tick = () => {
-      const { x, y } = lastMouse.current;
-      if (x === -9999) return;
-      const follower = followerRef.current;
-      if (!follower) return;
-      if (!containerRef?.current) return;
+  // Re-check cursor visibility on every Lenis scroll tick (synced with GSAP ticker)
+  useLenis(() => {
+    const { x, y } = lastMouse.current;
+    if (x === -9999) return;
+    const follower = followerRef.current;
+    if (!follower) return;
+    if (!containerRef?.current) return;
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const isIn =
-        x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    const rect = containerRef.current.getBoundingClientRect();
+    const isIn =
+      x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 
-      if (isIn && showRef.current && !isMouseDown.current && !isVisible.current) {
-        gsap.to(follower, { opacity: 1, scale: 1, duration: 0.3 });
-        isVisible.current = true;
-      } else if (!isIn && isVisible.current) {
-        gsap.to(follower, { opacity: 0, scale: 0.5, duration: 0.3 });
-        isVisible.current = false;
-      }
-    };
-    gsap.ticker.add(tick);
-    return () => gsap.ticker.remove(tick);
-  }, [containerRef]);
+    if (isIn && showRef.current && !isMouseDown.current && !isVisible.current) {
+      gsap.to(follower, { opacity: 1, scale: 1, duration: 0.3 });
+      isVisible.current = true;
+    } else if (!isIn && isVisible.current) {
+      gsap.to(follower, { opacity: 0, scale: 0.5, duration: 0.3 });
+      isVisible.current = false;
+    }
+  });
 
   return (
     <div

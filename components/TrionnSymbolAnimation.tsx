@@ -5,7 +5,9 @@ import { useTrionnSymbolScene } from "@/hooks/useTrionnSymbolScene";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+// import CursorFollowMarquee from "./CursorFollowMarquee";
+// import { createPerfMonitor } from "@/lib/perf-monitor";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,6 +29,7 @@ export function TrionnSymbolAnimation({
   const heroActiveRef = useRef(true);
   const siteSoundRef = useRef(false);
   const disableHoldRef = useRef(false);
+  const [showMarquee, setShowMarquee] = useState(true);
 
   const { soundEnabled } = useSiteSound();
   useEffect(() => {
@@ -70,8 +73,61 @@ export function TrionnSymbolAnimation({
       return;
     }
     audio.setSoundEnabled(true);
-    audio.autoStartWoosh();
+    // Only start woosh if the hero section is actually visible in the viewport
+    const heroEl = document.getElementById("hero-section");
+    if (heroEl) {
+      const { top, bottom } = heroEl.getBoundingClientRect();
+      const inView = top < window.innerHeight && bottom > 0;
+      if (inView) audio.autoStartWoosh();
+    } else {
+      audio.autoStartWoosh();
+    }
   }, [soundEnabled, audio]);
+
+  // ── Perf monitor ──────────────────────────────────────────────────────────
+  // useEffect(() => {
+  //   let rafId: number;
+  //   let lastTime = performance.now();
+  //   let monitor: ReturnType<typeof createPerfMonitor> | null = null;
+
+  //   const syncClockAfterBackground = () => {
+  //     lastTime = performance.now();
+  //   };
+  //   document.addEventListener("visibilitychange", syncClockAfterBackground);
+  //   window.addEventListener("focus", syncClockAfterBackground);
+
+  //   function waitForRenderer() {
+  //     const renderer = stateRef.current?.renderer ?? null;
+  //     if (!renderer) {
+  //       rafId = requestAnimationFrame(waitForRenderer);
+  //       return;
+  //     }
+  //     monitor = createPerfMonitor({
+  //       label: "Trionn Hero Canvas",
+  //       enabled: perfMonitorEnabled,
+  //       renderer,
+  //       position: "top-right",
+  //       toggleKey: "p",
+  //     });
+  //     lastTime = performance.now();
+  //     function tick() {
+  //       const now = performance.now();
+  //       const dt = (now - lastTime) / 1000;
+  //       lastTime = now;
+  //       monitor!.tick(dt, { sleeping: !heroActiveRef.current });
+  //       rafId = requestAnimationFrame(tick);
+  //     }
+  //     rafId = requestAnimationFrame(tick);
+  //   }
+
+  //   rafId = requestAnimationFrame(waitForRenderer);
+  //   return () => {
+  //     document.removeEventListener("visibilitychange", syncClockAfterBackground);
+  //     window.removeEventListener("focus", syncClockAfterBackground);
+  //     cancelAnimationFrame(rafId);
+  //     monitor?.destroy();
+  //   };
+  // }, [perfMonitorEnabled]);
 
   // ── Sticky pin via GSAP ScrollTrigger ────────────────────────────────────
   useGSAP(() => {
@@ -82,6 +138,7 @@ export function TrionnSymbolAnimation({
       start: "top top",
       end: "bottom bottom",
       pin: canvasWrapRef.current,
+      pinType: "fixed",
       pinSpacing: false,
       markers: false,
       onLeave: () => {
@@ -98,6 +155,23 @@ export function TrionnSymbolAnimation({
       },
     });
 
+    // ── Marquee visibility based on scroll progress ───────────────────────
+    // default: shown → hide at 10% → show at 80% → hide at 100%
+    ScrollTrigger.create({
+      trigger: "#hero-section",
+      start: "top top",
+      end: "bottom bottom",
+      onUpdate: (self) => {
+        const p = self.progress;
+        if (p >= 0.9) {
+          setShowMarquee(true);
+        } else if (p >= 0.1) {
+          setShowMarquee(false);
+        } else {
+          setShowMarquee(true);
+        }
+      },
+    });
   }, []);
 
   return (
@@ -107,6 +181,14 @@ export function TrionnSymbolAnimation({
         ref={canvasWrapRef}
         className="absolute inset-0 w-full h-dvh z-0 pointer-events-none"
       />
+
+      {/* Cursor Follow Marquee */}
+      {/* <CursorFollowMarquee
+        text="Hold to blast. Touch lines at your own risk."
+        containerRef={canvasWrapRef}
+        excludeSelectors={["#keyfacts-section", ".stripe-item", "#nav"]}
+        show={showMarquee}
+      /> */}
     </div>
   );
 }

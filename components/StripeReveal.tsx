@@ -2,8 +2,12 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef, type ReactNode } from "react";
+import { useLenis } from "lenis/react";
+import { useRef, useEffect, type ReactNode } from "react";
+
 gsap.registerPlugin(ScrollTrigger);
+gsap.ticker.lagSmoothing(0);
+gsap.ticker.fps(60);
 
 /* ── Configuration ─────────────────────────────────────── */
 
@@ -65,6 +69,25 @@ export default function StripeReveal({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
 
+  /* Hold a live ref to the Lenis instance so the tick reads scroll in the same frame */
+  const lenisRef = useRef<{ scroll: number } | null>(null);
+  useLenis((lenis) => {
+    lenisRef.current = lenis;
+  });
+
+  useEffect(() => {
+    let rafId = 0;
+    const onResize = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => ScrollTrigger.refresh());
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   useGSAP(
     () => {
       const section = sectionRef.current;
@@ -84,7 +107,8 @@ export default function StripeReveal({
       const perStripe = 1 - staggerAmount;
 
       /* Drive stripe scaleY every GSAP ticker tick — stays in sync with
-         ScrollSmoother-smoothed scroll (same pattern as DribbleSection). */
+         Lenis-smoothed scroll (same pattern as DribbleSection). */
+      let sectionVisible = false;
       let resolvedHoldStart = holdStart;
       let st: ScrollTrigger | undefined;
 
@@ -98,7 +122,6 @@ export default function StripeReveal({
           end: endTriggerEl ? "top top" : "bottom top",
           pin: container,
           pinSpacing: false,
-          anticipatePin: 1,
           markers,
         });
         st = localSt;
@@ -113,7 +136,6 @@ export default function StripeReveal({
           end: endTriggerEl ? scrollEnd : "bottom top",
           pin: container,
           pinSpacing: false,
-          anticipatePin: 1,
           markers,
         });
         st = localSt;
@@ -121,7 +143,7 @@ export default function StripeReveal({
       });
 
       const tick = () => {
-        if (!st) return;
+        if (!sectionVisible || !st) return;
 
         const progress = st.progress;
         const holdT = Math.max(
@@ -143,8 +165,20 @@ export default function StripeReveal({
 
       gsap.ticker.add(tick);
 
+      /* Skip rendering when section is fully off-screen */
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          sectionVisible = entry.isIntersecting;
+        },
+        { root: null, threshold: 0, rootMargin: "64px 0px" },
+      );
+      io.observe(container);
+
+      ScrollTrigger.refresh();
+
       return () => {
         gsap.ticker.remove(tick);
+        io.disconnect();
         mm.revert();
       };
     },
@@ -188,8 +222,8 @@ export default function StripeReveal({
               style={{
                 backgroundColor: stripeColor,
                 willChange: "transform",
-                marginTop: index > 0 ? "-1px" : undefined,
-                paddingBottom: "1px",
+                marginTop: index > 0 ? "-0.5px" : undefined,
+                paddingBottom: "0.5px",
               }}
             />
           ))}

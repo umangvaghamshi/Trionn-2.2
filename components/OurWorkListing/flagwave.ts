@@ -1,8 +1,4 @@
 import * as THREE from 'three';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 
@@ -213,9 +209,9 @@ class CardWave {
   }
   updatePosition() {
     if (!this.mesh || !this.thumb) return false;
-    // With GSAP ScrollSmoother (smoothTouch enabled), scroll is JS-driven on all
-    // devices, so getBoundingClientRect() reads safely without 1-frame lag and
-    // accurately tracks elements pushed down by GSAP ScrollTrigger pins.
+    // With Lenis syncTouch: true, mobile scrolling is perfectly synced to JS.
+    // We can use getBoundingClientRect() safely on all devices without 1-frame lag,
+    // which accurately tracks elements pushed down by GSAP ScrollTrigger pins.
     const r = this.thumb.getBoundingClientRect();
     this.mesh.position.x = r.left + r.width * 0.5 - this.stage.w * 0.5;
     this.mesh.position.y = this.stage.h * 0.5 - (r.top + r.height * 0.5);
@@ -421,7 +417,7 @@ export function initFlagwave(root: HTMLElement | Document = document): FlagwaveH
   const onResize = () => {
     if (window.innerWidth === flagLastWidth) return;
     flagLastWidth = window.innerWidth;
-
+    
     if (resizeTimer) clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       if (resizeRaf) cancelAnimationFrame(resizeRaf);
@@ -435,9 +431,6 @@ export function initFlagwave(root: HTMLElement | Document = document): FlagwaveH
           if (Math.abs(r.width - card.lastW) > 2 || Math.abs(r.height - card.lastH) > 2) card.build();
           else card.updatePosition();
         });
-        // Let ScrollTrigger recompute pinned/effects geometry after a resize
-        // so card meshes track their thumbs correctly.
-        ScrollTrigger.refresh();
         scheduleRender();
       });
     }, 180);
@@ -453,25 +446,6 @@ export function initFlagwave(root: HTMLElement | Document = document): FlagwaveH
       scheduleRender();
     }
   };
-
-  // With GSAP ScrollSmoother, content scrolls via CSS transform on
-  // #smooth-content rather than native document scroll. The window
-  // 'scroll'/'wheel' events still fire but only once per RAF and can lag
-  // behind the smoothed transform — leaving the WebGL mesh out of sync with
-  // the thumb until the next event. Drive renderOnce from gsap.ticker so the
-  // canvas updates on every frame ScrollSmoother is animating.
-  const tickerUpdate = () => {
-    // Only re-render if there's something to do; renderOnce already short
-    // circuits when no cards are visible.
-    if (!pageHidden) renderOnce();
-  };
-  gsap.ticker.add(tickerUpdate);
-
-  // Also refresh when ScrollTrigger reports a scroll (covers programmatic
-  // scrollTo calls from ScrollSmoother).
-  const stScrollListener = () => scheduleRender();
-  ScrollTrigger.addEventListener('scrollEnd', stScrollListener);
-  ScrollTrigger.addEventListener('refresh', stScrollListener);
 
   window.addEventListener('resize', onResize, { passive: true });
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -505,9 +479,6 @@ export function initFlagwave(root: HTMLElement | Document = document): FlagwaveH
 
   return {
     dispose() {
-      gsap.ticker.remove(tickerUpdate);
-      ScrollTrigger.removeEventListener('scrollEnd', stScrollListener);
-      ScrollTrigger.removeEventListener('refresh', stScrollListener);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('wheel', onWheel);
