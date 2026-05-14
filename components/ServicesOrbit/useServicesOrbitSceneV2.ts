@@ -191,11 +191,10 @@ function randomOffscreen(): THREE.Vector3 {
 }
 
 export type ServicesOrbitSceneOptions = {
-  /** Pixel scroll (Lenis or native) — for canvas unpin math on Firefox */
+  /** Pixel scroll (ScrollSmoother or native) — for canvas unpin math on Firefox */
   getSmoothScroll: () => number;
   /**
-   * Normalized scroll 0–1. Must match Lenis (`scroll/limit` or `progress`).
-   * Using DOM scrollHeight/innerHeight with Lenis skews phase and makes section-3 grid timing late.
+   * Normalized scroll 0–1. Should match the smoothed scroll source.
    */
   getScrollProgress?: () => number;
   soundEnabledRef: React.MutableRefObject<boolean>;

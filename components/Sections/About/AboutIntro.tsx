@@ -3,10 +3,7 @@
 import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
 import { BlurTextReveal } from "@/components/TextAnimation";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
 
 export default function AboutIntro() {
   return (

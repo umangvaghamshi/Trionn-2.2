@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { useLenis } from "lenis/react";
 import { useSiteSound } from "@/components/SiteSoundContext";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useTransitionReady } from "@/components/Transition";
@@ -45,7 +44,6 @@ const DEFAULT_STRIPE_COUNT = 5;
 const DEFAULT_STRIPE_COLOR = "#F7F7F7";
 
 export default function TeamSection() {
-  useLenis(); // subscribe to the global Lenis instance provided by SmoothScrolling
   const { soundEnabled } = useSiteSound();
   const transitionReady = useTransitionReady();
   const soundEnabledRef = useRef(soundEnabled);

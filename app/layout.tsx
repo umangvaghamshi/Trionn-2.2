@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import PagesWrapper from "@/components/PagesWrapper";
-import SmoothScrolling from "@/components/SmoothScrolling";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
 import "./globals.css";
+import SmoothScrolling from "@/components/SmoothScrolling";
 
 export const viewport: Viewport = {
   themeColor: "#040508",

@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { useLenis } from "lenis/react";
+import gsap from "gsap";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTrionnSymbolAudio } from "./useTrionnSymbolAudio";
 import { getCanvasManager } from "@/lib/canvasManager";
@@ -163,24 +164,20 @@ export function useTrionnSymbolScene(
   disableHoldRef?: React.RefObject<boolean>
 ) {
   const audio = useTrionnSymbolAudio();
-  const lenis = useLenis();
   const lenisScrollRef = useRef(0);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!lenis) {
-      lenisScrollRef.current = window.scrollY;
-      return;
-    }
-    lenisScrollRef.current = lenis.scroll;
-    const onScroll = () => {
-      lenisScrollRef.current = lenis.scroll;
+    const tick = () => {
+      const sm = ScrollSmoother.get();
+      lenisScrollRef.current = sm ? sm.scrollTop() : window.scrollY;
     };
-    lenis.on("scroll", onScroll);
+    tick();
+    gsap.ticker.add(tick);
     return () => {
-      lenis.off("scroll", onScroll);
+      gsap.ticker.remove(tick);
     };
-  }, [lenis]);
+  }, []);
 
   const stateRef = useRef({
     scrollProgress: 0,
@@ -1315,7 +1312,7 @@ export function useTrionnSymbolScene(
         lineCanvas.width = viewportW; lineCanvas.height = viewportH;
         overlayTexture.needsUpdate = true;
         applySymbolScale();
-        ScrollTrigger.refresh();
+        ScrollTrigger.refresh(true);
       });
     };
     window.addEventListener('resize', onResize);
