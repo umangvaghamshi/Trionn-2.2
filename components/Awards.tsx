@@ -302,6 +302,15 @@ export default function Awards() {
           `stripes_start+=${start}`,
         );
       }
+
+      const handler = () => {
+        tl.scrollTrigger?.refresh();
+      };
+      window.addEventListener("trionn:about-hero-loaded", handler);
+
+      return () => {
+        window.removeEventListener("trionn:about-hero-loaded", handler);
+      };
     },
     { scope: awardsSectionRef },
   );

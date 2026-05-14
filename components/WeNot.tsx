@@ -66,6 +66,15 @@ export default function WeNot() {
         );
         tl.addLabel(`end_${idx}_animation`);
       });
+
+      const handler = () => {
+        tl.scrollTrigger?.refresh();
+      };
+      window.addEventListener("trionn:about-hero-loaded", handler);
+
+      return () => {
+        window.removeEventListener("trionn:about-hero-loaded", handler);
+      };
     },
     { scope: sectionRef },
   );
