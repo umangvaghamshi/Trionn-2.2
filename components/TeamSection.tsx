@@ -1796,6 +1796,15 @@ export default function TeamSection() {
         `stripes_start+=${start}`,
       );
     }
+
+    const handler = () => {
+      tl.scrollTrigger?.refresh();
+    };
+    window.addEventListener("trionn:about-hero-loaded", handler);
+
+    return () => {
+      window.removeEventListener("trionn:about-hero-loaded", handler);
+    };
   }, []);
 
   return (
@@ -2072,8 +2081,8 @@ export default function TeamSection() {
                 backgroundColor: DEFAULT_STRIPE_COLOR,
                 willChange: "transform",
                 transformOrigin: "bottom",
-                marginTop: index > 0 ? "-0.5px" : undefined,
-                paddingBottom: "0.5px",
+                marginTop: index > 0 ? "-1px" : undefined,
+                paddingBottom: "1px",
                 // opacity:0.5
               }}
             />
