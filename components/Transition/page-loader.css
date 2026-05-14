@@ -47,8 +47,8 @@
 /* ── Flying plus markers ──────────────────────────────────────────── */
 .pl-flying-plus {
   position: fixed;
-  width: 13px;
-  height: 13px;
+  width: 0.813rem;
+  height: 0.813rem;
   z-index: 9500;
   opacity: 1;
   pointer-events: none;
@@ -77,8 +77,8 @@
 /* ── Logo wrap ────────────────────────────────────────────────────── */
 .pl-overlay-logo-wrap {
   position: relative;
-  width: clamp(160px, 22vw, 280px);
-  height: clamp(163px, 22.3vw, 284px);
+  width: clamp(10rem, 22vw, 17.5rem);
+  height: clamp(10.25rem, 22.3vw, 17.75rem);
 }
 
 /* ── Black box (expands to fullscreen) ────────────────────────────── */
@@ -96,15 +96,15 @@
 /* ── Logo corner plus markers ─────────────────────────────────────── */
 .pl-logo-corner-plus {
   position: absolute;
-  width: 13px;
-  height: 13px;
+  width: 0.813rem;
+  height: 0.813rem;
   z-index: 10;
   will-change: transform, opacity;
 }
 .pl-logo-corner-plus svg {
   position: static;
-  width: 13px;
-  height: 13px;
+  width: 0.813rem;
+  height: 0.813rem;
 }
 .pl-logo-corner-plus.tl {
   top: var(--pl-corner-plus-offset);
