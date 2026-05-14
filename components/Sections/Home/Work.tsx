@@ -219,7 +219,7 @@ export default function Work({
         </div>
       </div>
       {/* Section right-border line + plus icon (independent timeline) */}
-      <div className="absolute right-0 top-0 h-full w-0 pointer-events-none z-20 hidden md:block">
+      <div className="absolute right-0 top-0 h-full w-0 pointer-events-none z-20">
         <div
           ref={borderLineRef}
           className="absolute top-0 -left-px h-full w-px bg-grey-line/30"

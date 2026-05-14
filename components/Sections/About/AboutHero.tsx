@@ -84,9 +84,7 @@ export default function AboutHero() {
       const fullClip = Math.round(ch * CLIP_RATIO);
 
       // mt-12 in px at the current viewport (fluid font: 1rem = 1000vw / --size)
-      const rem = parseFloat(
-        getComputedStyle(document.documentElement).fontSize,
-      );
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
       const gapPx = Math.round(12 * rem);
 
       // Pull the overflow wrapper up by gapPx (capped so we never over-extend
@@ -169,13 +167,13 @@ export default function AboutHero() {
             <ScrollIndicator />
           </div>
         </div>
-        <div className="tr__container grid grid-cols-12 absolute top-[66%] sm:top-[76%] md:top-[60%] 2xl:top-[50%] w-full z-5 translate-y-full pointer-events-none">
+        <div className="tr__container grid grid-cols-12 absolute top-[66%] sm:top-[76%] md:top-[50%] w-full z-5 translate-y-full pointer-events-none">
           <BlurTextReveal
             as="span"
             text={`We design and build digital experiences that scale, perform, and endure.`}
             animationType="chars"
             stagger={0.02}
-            className="block title col-span-12 xl:col-span-10 xl:col-start-2 max-w-60"
+            className="block title col-span-12 md:col-span-10 md:col-start-2 max-w-60"
           />
         </div>
 
