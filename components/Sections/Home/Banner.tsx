@@ -7,7 +7,6 @@ import { useTransitionReady } from "@/components/Transition";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useTransitionReady } from "@/components/Transition";
 import ScrollIndicator from "@/components/ScrollIndicator";
 import { useRef } from "react";
 
