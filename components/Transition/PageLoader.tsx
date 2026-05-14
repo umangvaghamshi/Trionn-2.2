@@ -10,7 +10,7 @@ const CORNER_GAP = 6;
 const CORNER_SIZE = 6.5;
 const CORNER_OFFSET = CORNER_GAP + CORNER_SIZE;
 const CENTER_ORIGIN = "52% 52%";
-const DIGIT_H = 18;
+const DIGIT_H = 1;
 const FULL_ROTATION = 360;
 const PLUS_SPIN_IN = 720;
 const PLUS_SPIN_INTRO = 1080;
@@ -409,9 +409,9 @@ export default function PageLoader() {
     (function tick(n: number) {
       const r = Math.min((n - cs) / COUNTER_DUR, 1);
 
-      strip0.style.transform = `translateY(${-r * DIGIT_H}px)`;
-      strip1.style.transform = `translateY(${-(r * 10 * DIGIT_H) % (10 * DIGIT_H)}px)`;
-      strip2.style.transform = `translateY(${-(r * 30 * DIGIT_H) % (10 * DIGIT_H)}px)`;
+      strip0.style.transform = `translateY(${-r * DIGIT_H}rem)`;
+      strip1.style.transform = `translateY(${-(r * 10 * DIGIT_H) % (10 * DIGIT_H)}rem)`;
+      strip2.style.transform = `translateY(${-(r * 30 * DIGIT_H) % (10 * DIGIT_H)}rem)`;
 
       borderRect.style.strokeDashoffset = String(1 - r);
 
@@ -444,7 +444,7 @@ export default function PageLoader() {
       if (r < 1) {
         requestVisibleFrame(tick);
       } else {
-        strip0.style.transform = `translateY(${-DIGIT_H}px)`;
+        strip0.style.transform = `translateY(${-DIGIT_H}rem)`;
         strip1.style.transform = "translateY(0px)";
         strip2.style.transform = "translateY(0px)";
         borderRect.style.strokeDashoffset = "0";
