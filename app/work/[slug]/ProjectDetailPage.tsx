@@ -89,7 +89,7 @@ export default function ProjectDetailPage({
                     <TransitionLink
                       className="navigation-link title block text-light-font lg:mb-4"
                       href={`/work/${prevProject.slug}`}
-                      transitionLabel="Prev"
+                      transitionLabel={prevProject.title}
                     >
                       <HoverBlur>Prev project</HoverBlur>
                     </TransitionLink>
@@ -97,7 +97,7 @@ export default function ProjectDetailPage({
                     <TransitionLink
                       className="navigation-link title block text-light-font lg:mb-4"
                       href="/work"
-                      transitionLabel="Back"
+                      transitionLabel="Back to work"
                     >
                       <HoverBlur>Back to work</HoverBlur>
                     </TransitionLink>
@@ -106,7 +106,7 @@ export default function ProjectDetailPage({
                     <TransitionLink
                       className="navigation-link title block text-light-font lg:mb-4 ml-auto"
                       href={`/work/${nextProject.slug}`}
-                      transitionLabel="Next"
+                      transitionLabel={nextProject.title}
                     >
                       <HoverBlur>Next project</HoverBlur>
                     </TransitionLink>
