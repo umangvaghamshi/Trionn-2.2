@@ -2,10 +2,8 @@
 import LinePlus from "@/components/LinePlus";
 import { TechFaqItemType } from "@/data/dataType";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import parser from "html-react-parser";
 import { useRef, useState } from "react";
-gsap.registerPlugin(ScrollTrigger);
 
 interface TechAccordionProps {
   items: TechFaqItemType[];
