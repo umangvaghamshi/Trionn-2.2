@@ -6,7 +6,7 @@ import { useSiteSound } from "@/components/SiteSoundContext";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useTransitionReady } from "@/components/Transition";
 import { useGSAP } from "@gsap/react";
-import { WordShiftButton } from "./Button";
+import { WordShiftButton } from "@/components/Button";
 
 /**
  * TeamSection — App Router compatible client component.
@@ -265,7 +265,7 @@ export default function TeamSection() {
       if (_mob) {
         const cw = 68;
         const ch = Math.round(cw * RATIO);
-        const gap = 14;   // matches main.js
+        const gap = 14; // matches main.js
         const rowH = ch + gap;
         const boxGap = 40; // matches main.js gap between cards and center frame
 
@@ -314,14 +314,21 @@ export default function TeamSection() {
           const startX = (vw - totalW) / 2 + cw / 2;
           row.forEach((idx, ci) => {
             const s = state[idx];
-            s.baseW = cw; s.baseH = ch; s.w = cw; s.h = ch;
+            s.baseW = cw;
+            s.baseH = ch;
+            s.w = cw;
+            s.h = ch;
             s.ox = startX + ci * (cw + gap);
             s.oy = rowCenterY;
             s.rx = 5 + Math.random() * 5;
             s.ry = 5 + Math.random() * 5;
-            s.x = s.ox; s.y = s.oy;
+            s.x = s.ox;
+            s.y = s.oy;
             const el = cardEls[idx];
-            if (el) { el.style.width = cw + "px"; el.style.height = ch + "px"; }
+            if (el) {
+              el.style.width = cw + "px";
+              el.style.height = ch + "px";
+            }
           });
         });
 
@@ -336,14 +343,21 @@ export default function TeamSection() {
           const startX = (vw - totalW) / 2 + cw / 2;
           row.forEach((idx, ci) => {
             const s = state[idx];
-            s.baseW = cw; s.baseH = ch; s.w = cw; s.h = ch;
+            s.baseW = cw;
+            s.baseH = ch;
+            s.w = cw;
+            s.h = ch;
             s.ox = startX + ci * (cw + gap);
             s.oy = rowCenterY;
             s.rx = 5 + Math.random() * 5;
             s.ry = 5 + Math.random() * 5;
-            s.x = s.ox; s.y = s.oy;
+            s.x = s.ox;
+            s.y = s.oy;
             const el = cardEls[idx];
-            if (el) { el.style.width = cw + "px"; el.style.height = ch + "px"; }
+            if (el) {
+              el.style.width = cw + "px";
+              el.style.height = ch + "px";
+            }
           });
         });
 
@@ -2072,11 +2086,11 @@ export default function TeamSection() {
         >
           <div
             ref={crtRef}
-            className="ts-crt absolute inset-0 z-[200] pointer-events-none"
+            className="ts-crt absolute inset-0 z-200 pointer-events-none"
           />
           <div
             ref={vignetteRef}
-            className="ts-vignette absolute inset-0 z-[199] pointer-events-none"
+            className="ts-vignette absolute inset-0 z-199 pointer-events-none"
           />
 
           <div
@@ -2098,7 +2112,7 @@ export default function TeamSection() {
             />
             <canvas
               ref={arcCanvasRef}
-              className="ts-arc-canvas absolute rounded-lg pointer-events-none z-[4]"
+              className="ts-arc-canvas absolute rounded-lg pointer-events-none z-4"
             />
 
             <div
@@ -2108,7 +2122,7 @@ export default function TeamSection() {
             >
               <div
                 ref={frameHintRef}
-                className="ts-frame-hint absolute inset-0 flex items-center justify-center text-center uppercase z-[2] pointer-events-none"
+                className="ts-frame-hint absolute inset-0 flex items-center justify-center text-center uppercase z-2 pointer-events-none"
                 style={{
                   fontSize: "11px",
                   letterSpacing: "0.18em",
@@ -2123,12 +2137,12 @@ export default function TeamSection() {
 
               <img
                 ref={frameImgRef}
-                className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none z-[2]"
+                className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none z-2"
                 alt=""
               />
               <video
                 ref={frameVidRef}
-                className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none z-[1]"
+                className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none z-1"
                 muted
                 playsInline
                 preload="metadata"
@@ -2136,27 +2150,27 @@ export default function TeamSection() {
 
               <canvas
                 ref={scanGridRef}
-                className="absolute inset-0 w-full h-full z-[16] pointer-events-none opacity-0"
+                className="absolute inset-0 w-full h-full z-16 pointer-events-none opacity-0"
               />
 
               <div
                 ref={scanOverlayRef}
-                className="absolute inset-0 z-[15] opacity-0 pointer-events-none"
+                className="absolute inset-0 z-15 opacity-0 pointer-events-none"
                 style={{ background: "transparent" }}
               />
               <div
                 ref={scanLineRef}
-                className="ts-scan-line absolute left-0 w-full h-px top-0 z-[20] opacity-0 pointer-events-none"
+                className="ts-scan-line absolute left-0 w-full h-px top-0 z-20 opacity-0 pointer-events-none"
               />
 
               <canvas
                 ref={glitchCanvasRef}
-                className="absolute inset-0 w-full h-full z-[19] pointer-events-none opacity-0"
+                className="absolute inset-0 w-full h-full z-19 pointer-events-none opacity-0"
               />
 
               <div
                 ref={frameDetectionRef}
-                className="ts-frame-detection absolute inset-0 z-[18] flex flex-col items-center justify-center pointer-events-none opacity-0"
+                className="ts-frame-detection absolute inset-0 z-18 flex flex-col items-center justify-center pointer-events-none opacity-0"
               >
                 <div
                   ref={identifyingTextRef}
@@ -2198,9 +2212,9 @@ export default function TeamSection() {
 
               <div
                 ref={hudOverlayRef}
-                className="absolute inset-0 z-[17] pointer-events-none opacity-0"
+                className="absolute inset-0 z-17 pointer-events-none opacity-0"
               >
-                <div className="absolute bottom-8 left-3.5 flex flex-col gap-[3px]">
+                <div className="absolute bottom-8 left-3.5 flex flex-col gap-0.75">
                   <div
                     ref={hudDeptRef}
                     className="uppercase"
@@ -2218,7 +2232,12 @@ export default function TeamSection() {
             <div
               ref={frameCaptionRef}
               className="ts-frame-caption absolute text-center opacity-0 pointer-events-none flex flex-col items-center"
-              style={{ top: "calc(100% + 32px)", left: "50%", transform: "translateX(-50%)", width: "320px" }}
+              style={{
+                top: "calc(100% + 32px)",
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "320px",
+              }}
             >
               <div className="ts-frame-name-row block mb-2">
                 <div
@@ -2245,7 +2264,7 @@ export default function TeamSection() {
             </div>
           </div>
           {/* Button */}
-          <div className="absolute bottom-10 tr__container w-full flex justify-end z-10000 text-light-font">
+          <div className="absolute bottom-20 tr__container w-full justify-end z-10000 text-light-font hidden lg:flex">
             <WordShiftButton
               text="Join the team?"
               href="/contact"

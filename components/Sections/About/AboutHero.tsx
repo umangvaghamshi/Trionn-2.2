@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Marquee from "@/components/Marquee";
 import AboutLion from "./AboutLion";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { SplitText } from "gsap/all";
+import ScrollIndicator from "@/components/ScrollIndicator";
 
 gsap.registerPlugin(SplitText);
 
@@ -17,7 +18,7 @@ const CROSS_ICON = (
     viewBox="0 0 40 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className="mx-[4.582vw] w-[2.291vw] h-[2.291vw] shrink-0"
+    className="mx-10 lg:mx-16 w-6 lg:w-8 h-6 lg:h-8 mt-2"
     aria-hidden
   >
     <line
@@ -25,22 +26,23 @@ const CROSS_ICON = (
       y1="-2.18557e-08"
       x2="20.2256"
       y2="40"
-      stroke="#FFFFFF"
+      stroke="currentColor"
     />
-    <line x1="40" y1="20.226" x2="-4.37114e-08" y2="20.226" stroke="#FFFFFF" />
+    <line
+      x1="40"
+      y1="20.226"
+      x2="-4.37114e-08"
+      y2="20.226"
+      stroke="currentColor"
+    />
   </svg>
 );
 
-/**
- * About page hero: large heading, interactive WebGL lion portrait with
- * overlay labels, and a full-width marquee banner at the bottom.
- *
- * Uses natural document flow so the lion scales proportionally (just like
- * the HTML prototype), rather than being forced into a 100dvh container.
- */
 export default function AboutHero() {
   const [isLoaded, setIsLoaded] = useState(false);
   const splitTextRef = useRef<HTMLHeadingElement>(null);
+  const clipOuterRef = useRef<HTMLDivElement>(null);
+  const clipInnerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     if (!isLoaded) return;
@@ -60,34 +62,70 @@ export default function AboutHero() {
     );
   }, [isLoaded]);
 
+  // Expand the canvas upward into the mt-12 gap so the white area of
+  // lion-mobile.png fills the space between the text and the lion fur.
+  // The lion fur stays at exactly the same page position — only the
+  // overflow wrapper is pulled up (by the mt-12 pixel amount) and the
+  // inner clip is reduced by the same amount.
+  useEffect(() => {
+    const MOBILE_IMG_W = 660;
+    const MOBILE_IMG_H = 1434;
+    const CLIP_RATIO = 0.272;
+
+    const applyClip = () => {
+      if (!clipOuterRef.current || !clipInnerRef.current) return;
+      if (window.innerWidth > 768) {
+        clipOuterRef.current.style.marginTop = "";
+        clipInnerRef.current.style.marginTop = "";
+        return;
+      }
+      const cw = Math.min(window.innerWidth, MOBILE_IMG_W);
+      const ch = Math.round(MOBILE_IMG_H * (cw / MOBILE_IMG_W));
+      const fullClip = Math.round(ch * CLIP_RATIO);
+
+      // mt-12 in px at the current viewport (fluid font: 1rem = 1000vw / --size)
+      const rem = parseFloat(
+        getComputedStyle(document.documentElement).fontSize,
+      );
+      const gapPx = Math.round(12 * rem);
+
+      // Pull the overflow wrapper up by gapPx (capped so we never over-extend
+      // beyond the white space). Reduce the inner clip by the same amount so
+      // the lion fur stays at its original page position.
+      const extensionUp = Math.min(fullClip, gapPx);
+      const innerClip = fullClip - extensionUp;
+
+      clipOuterRef.current.style.marginTop = `-${extensionUp}px`;
+      clipInnerRef.current.style.marginTop = `-${innerClip}px`;
+    };
+
+    applyClip();
+    window.addEventListener("resize", applyClip);
+    return () => window.removeEventListener("resize", applyClip);
+  }, []);
+
   useGSAP(() => {
     const updateHeight = () => {
       const titleBlock = document.querySelector(".title-block") as HTMLElement;
       const topContent = document.querySelector(".top-content") as HTMLElement;
 
       if (titleBlock && topContent) {
-        // Calculate height: Viewport height - Title offset height
-        const availableHeight = window.innerHeight - titleBlock.offsetHeight;
-
-        // Apply height via GSAP
-        gsap.set(topContent, { height: availableHeight });
+        if (window.innerWidth >= 768) {
+          const availableHeight = window.innerHeight - titleBlock.offsetHeight;
+          gsap.set(topContent, { height: availableHeight });
+        }
       }
     };
 
-    // Run once on mount
     updateHeight();
-
-    // Add resize listener for responsiveness
     window.addEventListener("resize", updateHeight);
-
-    // Cleanup listener on unmount
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
   return (
-    <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center min-h-dvh">
+    <section className="relative w-full bg-white text-black overflow-hidden flex flex-col items-center">
       {/* Top: heading */}
-      <div className="relative z-20 pt-32 md:pt-40 px-6 md:px-10 w-full mix-blend-difference title-block pointer-events-none">
+      <div className="relative z-20 pt-25 md:pt-40 px-6 md:px-10 w-full mix-blend-difference title-block pointer-events-none">
         <h1
           ref={splitTextRef}
           className="text-center mx-auto max-w-342 text-[rgba(216,216,216,0.1)]"
@@ -97,9 +135,27 @@ export default function AboutHero() {
         </h1>
       </div>
 
+      {/* Mobile: "At the intersection" sits in normal flow directly above the
+          lion. With the top clip applied, the lion fur appears flush below. */}
+      <div className="md:hidden w-full px-10 pt-8 md:mt-4 pb-0 pointer-events-none mix-blend-difference z-10">
+        <span className="title text-center block">
+          <BlurTextReveal
+            as="span"
+            html={`At the intersection of strategy, <br/>design, and technology.`}
+            animationType="words"
+            stagger={0.5}
+            className="block text-white uppercase"
+          />
+        </span>
+        <div className="flex items-center absolute top-[calc(100dvh-5rem)] left-0 w-full justify-center text-light-font pointer-events-none">
+          <ScrollIndicator />
+        </div>
+      </div>
+
       {/* Lion and Marquee container */}
-      <div className="relative w-full flex flex-col items-center -mt-8 md:-mt-30">
-        <div className="absolute top-30 left-0 w-full py-15 px-10 z-10 pointer-events-none flex flex-col justify-between top-content">
+      <div className="relative w-full flex flex-col items-center mt-12 md:-mt-30">
+        {/* Desktop only: absolute overlay with "At the intersection" text + height spacer */}
+        <div className="top-content hidden md:flex absolute top-30 left-0 w-full py-15 px-10 z-10 pointer-events-none flex-col justify-between">
           <span className="title text-center z-10 block col-span-12">
             <BlurTextReveal
               as="span"
@@ -109,43 +165,48 @@ export default function AboutHero() {
               className="block text-white uppercase"
             />
           </span>
+          <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font pointer-events-none">
+            <ScrollIndicator />
+          </div>
         </div>
-        <div className="tr__container grid grid-cols-12 gap-x mb-25 absolute top-[50%] w-full z-5 translate-y-full pointer-events-none">
+        <div className="tr__container grid grid-cols-12 absolute top-[66%] sm:top-[76%] md:top-[60%] 2xl:top-[50%] w-full z-5 translate-y-full pointer-events-none">
           <BlurTextReveal
             as="span"
             text={`We design and build digital experiences that scale, perform, and endure.`}
             animationType="chars"
             stagger={0.02}
-            className="block title col-span-10 col-start-2  max-w-60"
+            className="block title col-span-12 xl:col-span-10 xl:col-start-2 max-w-60"
           />
         </div>
 
-        {/* Lion — natural document flow, scales proportionally */}
+        {/* Lion — outer ref is pulled up by the mt-12 gap amount so the
+            canvas extends seamlessly up to the text above. */}
         <div
-          className={`relative w-full flex justify-center pointer-events-none transition-opacity duration-1000 ${
-            isLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          ref={clipOuterRef}
+          className={`relative w-full overflow-hidden md:overflow-visible transition-opacity duration-1000 ${isLoaded ? "opacity-100" : "opacity-0"}`}
         >
-          <div className="relative pointer-events-auto w-full flex justify-center items-end">
-            <AboutLion onLoad={() => setIsLoaded(true)}>
-              {/* Bottom: marquee — sits ON TOP of the lion canvas, but BEHIND the strips */}
-              <div
-                className={`absolute bottom-[15%] md:bottom-[20%] left-0 right-0 z-1 w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${
-                  isLoaded ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <Marquee gap={0} speed={0.8}>
-                  <div className="uppercase mrquee-text flex items-center">
-                    <span className="marquee-text-item">Inspire</span>
-                    {CROSS_ICON}
-                    <span className="marquee-text-item">innovate</span>
-                    {CROSS_ICON}
-                    <span className="marquee-text-item">Impact</span>
-                    {CROSS_ICON}
-                  </div>
-                </Marquee>
-              </div>
-            </AboutLion>
+          <div ref={clipInnerRef} className="md:mt-0 w-full">
+            <div className="relative pointer-events-auto w-full flex justify-center items-end">
+              <AboutLion onLoad={() => setIsLoaded(true)}>
+                {/* Marquee — inside lion canvas, behind curtain strips */}
+                <div
+                  className={`absolute bottom-[2%] md:bottom-[20%] left-0 right-0 z-[1] w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${
+                    isLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <Marquee gap={0} speed={0.8}>
+                    <div className="uppercase mrquee-text flex items-center">
+                      <span className="marquee-text-item">Inspire</span>
+                      {CROSS_ICON}
+                      <span className="marquee-text-item">innovate</span>
+                      {CROSS_ICON}
+                      <span className="marquee-text-item">Impact</span>
+                      {CROSS_ICON}
+                    </div>
+                  </Marquee>
+                </div>
+              </AboutLion>
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { BlurTextReveal, FadeInOnScroll } from "@/components/TextAnimation";
+import ScrollIndicator from "@/components/ScrollIndicator";
 
 export default function Banner() {
   return (
@@ -21,7 +22,7 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-dvh w-full mix-blend-darken block lg:hidden"
+            className="max-h-[90dvh] w-full mix-blend-darken block lg:hidden"
           />
         </div>
         <div className="flex flex-col gap-6 lg:gap-10 items-center text-center -translate-y-full lg:translate-y-0 -mt-30 lg:-mt-20">
@@ -37,6 +38,9 @@ export default function Banner() {
               thinking.
             </p>
           </FadeInOnScroll>
+        </div>
+        <div className="flex items-center absolute bottom-20 left-0 w-full justify-center opacity-50 pointer-events-none">
+          <ScrollIndicator />
         </div>
       </div>
     </section>

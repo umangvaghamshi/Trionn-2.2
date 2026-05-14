@@ -299,8 +299,8 @@ export default function BrandShowcase({
       style={{ backgroundColor }}
     >
       <div className="tr__container text-dark-font relative">
-        <div className="flex flex-col py-37.5 items-center justify-between text-center min-h-dvh">
-          <div className="mb-40">
+        <div className="flex flex-col py-20 lg:py-37.5 items-center justify-between text-center min-h-dvh">
+          <div className="mb-20 lg:mb-40">
             <BlurTextReveal
               as="span"
               text={sectionLabel}
@@ -313,7 +313,7 @@ export default function BrandShowcase({
           <div className="flex flex-col gap-14">
             <div
               ref={containerRef}
-              className="relative isolate w-full max-w-6xl mx-auto flex flex-wrap justify-center gap-x-4 gap-y-2 z-10"
+              className="relative isolate w-full max-w-300 mx-auto flex flex-wrap justify-center gap-x-4 gap-y-2 z-10"
             >
               <div className="group">
                 {brands.map((brand, i) => (
@@ -332,7 +332,7 @@ export default function BrandShowcase({
                     <span className="text-dark-font inline-block transition-colors duration-300 group-hover:text-dark-font/20">
                       <span className="-mt-3 pr-1">{brand.name}</span>
                       <span className={i === brands.length - 1 ? "hidden" : ""}>
-                        ,
+                        ,&nbsp;
                       </span>
                     </span>
 
@@ -386,34 +386,34 @@ export default function BrandShowcase({
                 ))}
               </div>
             </div>
-            <div className="flex flex-row justify-center -mx-8 text-dark-font/50 lg:mb-6">
-              <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
-                <p className="small">Fiare Oy</p>
-                <p className="small">Nettiauto</p>
-                <p className="small">Budo Law</p>
-                <p className="small">DAC Recruiting</p>
-                <p className="small">Globalstar Interactive</p>
+            <div className="flex flex-row flex-flow justify-center -mx-4 md:-mx-8 text-dark-font/70 lg:mb-6">
+              <div className="px-8 border-r border-light-font flex flex-col items-start whitespace-nowrap w-1/2 md:w-auto">
+                <p className="small my-1 block">Fiare Oy</p>
+                <p className="small my-1 block">Nettiauto</p>
+                <p className="small my-1 block">Budo Law</p>
+                <p className="small my-1 block">DAC Recruiting</p>
+                <p className="small my-1 block">Globalstar Interactive</p>
               </div>
-              <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
-                <p className="small">RevNet</p>
-                <p className="small">ROI High</p>
-                <p className="small">Flow Row</p>
-                <p className="small">Vendep Oy</p>
-                <p className="small">Billionaire Suit</p>
+              <div className="px-8 md:border-r border-light-font flex flex-col items-start whitespace-nowrap w-1/2 md:w-auto">
+                <p className="small my-1 block">RevNet</p>
+                <p className="small my-1 block">ROI High</p>
+                <p className="small my-1 block">Flow Row</p>
+                <p className="small my-1 block">Vendep Oy</p>
+                <p className="small my-1 block">Billionaire Suit</p>
               </div>
-              <div className="px-8 border-r border-r-light-font flex flex-col items-start whitespace-nowrap gap-2">
-                <p className="small">Berkley</p>
-                <p className="small">Re.Events</p>
-                <p className="small">Cirgo Bike</p>
-                <p className="small">Julia Daviy</p>
-                <p className="small">FieldBridge LLC</p>
+              <div className="px-8 border-r border-light-font flex flex-col items-start whitespace-nowrap w-1/2 md:w-auto">
+                <p className="small my-1 block">Berkley</p>
+                <p className="small my-1 block">Re.Events</p>
+                <p className="small my-1 block">Cirgo Bike</p>
+                <p className="small my-1 block">Julia Daviy</p>
+                <p className="small my-1 block">FieldBridge LLC</p>
               </div>
-              <div className="px-8 flex flex-col items-start whitespace-nowrap gap-2">
-                <p className="small">Vendep Oy</p>
-                <p className="small">SoundBoard AI</p>
-                <p className="small">Mizuno CGI</p>
-                <p className="small">Joonko</p>
-                <p className="small opacity-50">Many more...</p>
+              <div className="px-8 flex flex-col items-start whitespace-nowrap w-1/2 md:w-auto">
+                <p className="small my-1 block">Vendep Oy</p>
+                <p className="small my-1 block">SoundBoard AI</p>
+                <p className="small my-1 block">Mizuno CGI</p>
+                <p className="small my-1 block">Joonko</p>
+                <p className="small my-1 block opacity-50">Many more...</p>
               </div>
             </div>
             <BlurTextReveal

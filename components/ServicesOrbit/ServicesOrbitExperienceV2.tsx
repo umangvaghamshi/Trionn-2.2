@@ -11,6 +11,7 @@ import { WordShiftButton } from "@/components/Button";
 import Marquee from "@/components/Marquee";
 import { useServicesOrbitSceneV2 } from "./useServicesOrbitSceneV2";
 import parse from "html-react-parser";
+import ScrollIndicator from "@/components/ScrollIndicator";
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
@@ -252,6 +253,9 @@ export default function ServicesOrbitExperienceV2() {
               ))}
             </ul>
           </div>
+        </div>
+        <div className="flex items-center absolute bottom-20 right-0 w-full justify-end opacity-50 tr__container pointer-events-none">
+          <ScrollIndicator />
         </div>
       </section>
 

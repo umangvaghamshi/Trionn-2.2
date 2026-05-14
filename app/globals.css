@@ -139,7 +139,7 @@ body {
   font-family: "NeueHaasDisplay-Roman";
   background-color: #040508;
   color: #d8d8d8;
-  @apply text-xl lg:text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden;
+  @apply text-xl lg:text-base font-normal leading-[normal] tracking-normal antialiased overflow-x-hidden selection:bg-transparent;
 }
 
 h1,
@@ -158,6 +158,14 @@ h2,
   font-size: clamp(2.7rem, 6.283vw, 5.938rem);
   line-height: clamp(2.4rem, 5.952vw, 5.625rem);
   letter-spacing: clamp(-0.06em, -0.056vw, -0.06em);
+}
+h2.big,
+.h2.big {
+  font-family: "FamiljenGroteskVariable-Regular";
+  @apply text-[6rem] leading-22 -tracking-[0.06em];
+  font-size: clamp(3.5rem, 6.349vw, 6rem);
+  line-height: clamp(3.25rem, 5.82vw, 5.5rem);
+  letter-spacing: clamp(-0.06em, -0.055vw, -0.06em);
 }
 
 h3,
@@ -238,6 +246,12 @@ canvas {
 
 sup {
   @apply -top-2 md:-top-6;
+}
+
+.flex-flow {
+  -moz-flex-flow: row wrap;
+  -webkit-flex-flow: row wrap;
+  flex-flow: row wrap;
 }
 
 /* Top line */
@@ -330,12 +344,6 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 1000px #d2d2d2 inset !important;
   -webkit-text-fill-color: #434343 !important; /* Changes the text color */
-}
-
-h4,
-.h4 {
-  font-family: "FamiljenGroteskVariable-Regular";
-  @apply text-lg leading-5 -tracking-[0.02em];
 }
 
 @media (max-width: 1023px) {

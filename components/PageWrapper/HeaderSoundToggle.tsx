@@ -1,12 +1,126 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 import { useSiteSound } from "@/components/SiteSoundContext";
+
+const DEFAULT_OFF_HEIGHTS = [0.48, 0.76, 0.42, 0.88, 0.58, 0.7];
+
+const LINE_SETTINGS = [
+  { min: 0.42, max: 0.95, speed: 0.46 },
+  { min: 0.2, max: 1.0, speed: 0.38 },
+  { min: 0.34, max: 0.88, speed: 0.52 },
+  { min: 0.18, max: 1.0, speed: 0.42 },
+  { min: 0.3, max: 0.92, speed: 0.49 },
+  { min: 0.44, max: 0.84, speed: 0.44 },
+];
 
 export function HeaderSoundToggle() {
   const { soundEnabled, toggleSound } = useSiteSound();
 
+  const containerRef = useRef<HTMLButtonElement>(null);
+  const isPlayingRef = useRef(soundEnabled);
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    isPlayingRef.current = soundEnabled;
+
+    if (!containerRef.current) return;
+
+    const q = gsap.utils.selector(containerRef.current);
+    const soundLines = q(".sound-line");
+    const offLine = q(".off-line");
+
+    const randomHeight = (min: number, max: number) =>
+      gsap.utils.random(min, max, 0.01);
+
+    const animateSingleLine = (line: Element, index: number) => {
+      // Clean state check matching your updated script logic
+      if (!isPlayingRef.current) return;
+
+      const setting = LINE_SETTINGS[index];
+
+      gsap.to(line, {
+        scaleY: randomHeight(setting.min, setting.max),
+        duration: gsap.utils.random(setting.speed * 0.75, setting.speed * 1.35),
+        ease: "sine.inOut",
+        delay: gsap.utils.random(0, 0.12),
+        onComplete: () => animateSingleLine(line, index),
+      });
+    };
+
+    // Initialize core structural states on the very first mount
+    if (isFirstRender.current) {
+      gsap.set(soundLines, {
+        scaleY: (index: number) => DEFAULT_OFF_HEIGHTS[index],
+        opacity: 1,
+        transformOrigin: "50% 50%",
+      });
+
+      gsap.set(offLine, {
+        opacity: soundEnabled ? 0 : 1,
+        strokeDashoffset: soundEnabled ? 26 : 0,
+      });
+
+      isFirstRender.current = false;
+    }
+
+    if (soundEnabled) {
+      // --- Start Sound Animation ---
+      gsap.killTweensOf(offLine);
+      gsap.to(offLine, {
+        opacity: 0,
+        strokeDashoffset: 26,
+        duration: 0.25,
+        ease: "power2.out",
+      });
+
+      soundLines.forEach((line, index) => {
+        gsap.killTweensOf(line);
+        gsap.to(line, {
+          opacity: 1,
+          duration: 0.12, // Updated matching your snippet
+          ease: "power2.out",
+          onComplete: () => animateSingleLine(line, index),
+        });
+      });
+    } else {
+      // --- Stop Sound Animation ---
+      soundLines.forEach((line) => {
+        gsap.killTweensOf(line);
+      });
+
+      gsap.to(soundLines, {
+        opacity: 1,
+        duration: 0.12, // Updated matching your snippet
+        ease: "power2.out",
+      });
+
+      gsap.killTweensOf(offLine);
+      gsap.fromTo(
+        offLine,
+        {
+          opacity: 1,
+          strokeDashoffset: 26,
+        },
+        {
+          strokeDashoffset: 0,
+          duration: 0.34, // Updated matching your snippet
+          ease: "power3.out",
+          delay: 0.02, // Updated ultra-fast delay
+        },
+      );
+    }
+
+    return () => {
+      gsap.killTweensOf(soundLines);
+      gsap.killTweensOf(offLine);
+    };
+  }, [soundEnabled]);
+
   return (
     <button
+      ref={containerRef}
       type="button"
       id="sound-toggle"
       onClick={toggleSound}
@@ -15,53 +129,71 @@ export function HeaderSoundToggle() {
       aria-label={soundEnabled ? "Mute sound" : "Enable sound"}
       className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center text-white/80 shadow-sm backdrop-blur-sm transition hover:text-white"
     >
-      {soundEnabled ? <SoundOnGlyph /> : <SoundOffGlyph />}
+      <svg
+        className="h-6 w-6 overflow-visible"
+        viewBox="-4 -4 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <g className="sound-bars">
+          <rect
+            className="sound-line origin-center fill-current"
+            x="0"
+            y="0"
+            width="1"
+            height="16"
+            rx="0.5"
+          />
+          <rect
+            className="sound-line origin-center fill-current"
+            x="3"
+            y="0"
+            width="1"
+            height="16"
+            rx="0.5"
+          />
+          <rect
+            className="sound-line origin-center fill-current"
+            x="6"
+            y="0"
+            width="1"
+            height="16"
+            rx="0.5"
+          />
+          <rect
+            className="sound-line origin-center fill-current"
+            x="9"
+            y="0"
+            width="1"
+            height="16"
+            rx="0.5"
+          />
+          <rect
+            className="sound-line origin-center fill-current"
+            x="12"
+            y="0"
+            width="1"
+            height="16"
+            rx="0.5"
+          />
+          <rect
+            className="sound-line origin-center fill-current"
+            x="15"
+            y="0"
+            width="1"
+            height="16"
+            rx="0.5"
+          />
+        </g>
+        <line
+          className="off-line pointer-events-none stroke-current stroke-[1.35] stroke-linecap-round opacity-0"
+          style={{ strokeDasharray: 26, strokeDashoffset: 26 }}
+          x1="1.8"
+          y1="1.8"
+          x2="13.8"
+          y2="13.8"
+        />
+      </svg>
     </button>
-  );
-}
-
-function SoundOnGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden>
-      <path
-        d="M11 5L6 9H2v6h4l5 4V5z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M19.07 4.93a10 10 0 0 1 0 14.14"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M15.54 8.46a5 5 0 0 1 0 7.07"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function SoundOffGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden>
-      <path
-        d="M11 5L6 9H2v6h4l5 4V5z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M23 9l-6 6M17 9l6 6"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
   );
 }

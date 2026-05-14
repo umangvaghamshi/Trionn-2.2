@@ -5,7 +5,7 @@ import { contactFAQ } from "@/data";
 export default function FAQ() {
   return (
     <section className="py-20 lg:py-37.5 relative bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)] text-dark-font">
-      <div className="tr__container grid grid-cols-12 gap-4 md:gap-6">
+      <div className="tr__container grid grid-cols-12 gap-6">
         <div className="col-span-12 md:col-span-6 lg:col-span-4 lg:col-start-2 flex flex-col gap-4 md:gap-10">
           <BlurTextReveal
             as="h2"
