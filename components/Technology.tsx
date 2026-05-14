@@ -28,7 +28,7 @@ export default function Technology() {
             text="Built with performance-first, scalable front-end architecture."
             animationType="words"
             stagger={0.08}
-            className="title z-2 col-span-12 lg:col-span-8 lg:col-start-5 max-w-70 max-lg:mt-10 lg:-translate-y-full block mx-auto lg:max-0"
+            className="title z-2 col-span-12 lg:col-span-8 lg:col-start-5 max-w-70 max-lg:mt-10 lg:-translate-y-full block mx-auto lg:mx-0"
           />
         </div>
         <LinePlus

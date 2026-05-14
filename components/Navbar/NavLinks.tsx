@@ -18,7 +18,7 @@ export default function NavLinks() {
   return (
     <>
       <div className="menu-wrapper">
-        <ul className="menu flex items-center justify-end gap-x-2 md:gap-x-6">
+        <ul className="flex flex-col md:flex-row items-center justify-end gap-2 md:gap-x-6">
           {menu.map((item, index) => {
             const isActive = pathname === item.url;
             return (

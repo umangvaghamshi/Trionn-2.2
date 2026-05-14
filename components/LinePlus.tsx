@@ -26,6 +26,7 @@ interface LinePlusProps {
   markers?: boolean;
   /** Fixed duration (seconds) for the line draw animation. When set, the line animates in one shot on scroll enter instead of scrubbing. */
   duration?: number;
+  disableScrollTrigger?: boolean;
 }
 
 export default function LinePlus({
@@ -37,6 +38,7 @@ export default function LinePlus({
   scrub = true,
   markers = false,
   duration,
+  disableScrollTrigger = false,
 }: LinePlusProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const drawLine = useRef<HTMLDivElement>(null);
@@ -48,39 +50,45 @@ export default function LinePlus({
 
     const off = scrollOffset ? ` ${scrollOffset}` : "";
 
-    gsap.to(drawLine.current, {
-      width: "100%",
-      ease: "none",
-      ...(duration ? { duration } : {}),
-      scrollTrigger: {
-        trigger: drawLine.current,
-        start: `top bottom${off}`,
-        end: `top center${off}`,
-        scrub: duration ? false : scrub,
-        invalidateOnRefresh: true,
-        markers,
-        onLeave: () => {
-          lineDrawn.current = true;
-        },
-        onEnterBack: () => {
-          lineDrawn.current = false;
-        },
-      },
-    });
-
-    if (scrub !== false) {
-      gsap.to(PlusIcon.current, {
-        rotation: 360,
-        duration: 1,
+    if (!disableScrollTrigger) {
+      gsap.to(drawLine.current, {
+        width: "100%",
         ease: "none",
+        ...(duration ? { duration } : {}),
         scrollTrigger: {
-          trigger: PlusIcon.current,
+          trigger: drawLine.current,
           start: `top bottom${off}`,
-          end: `bottom top${off}`,
-          scrub: true,
+          end: `top center${off}`,
+          scrub: duration ? false : scrub,
           invalidateOnRefresh: true,
+          markers,
+          onLeave: () => {
+            lineDrawn.current = true;
+          },
+          onEnterBack: () => {
+            lineDrawn.current = false;
+          },
         },
       });
+
+      if (scrub !== false) {
+        gsap.to(PlusIcon.current, {
+          rotation: 360,
+          duration: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: PlusIcon.current,
+            start: `top bottom${off}`,
+            end: `bottom top${off}`,
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        });
+      }
+    } else {
+      // If disabled, we rely on external animations to set lineDrawn to true
+      // We can just set it to true so mouse interactions work after it's drawn
+      lineDrawn.current = true;
     }
 
     const container = containerRef.current;
