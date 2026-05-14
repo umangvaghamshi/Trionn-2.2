@@ -81,15 +81,17 @@ export default function TechAccordion({
             <div className="accordion__item group">
               {/* TITLE */}
               <div
-                className="accordion__title py-10 grid grid-cols-12 gap-x-6 w-full relative cursor-pointer items-center"
+                className="accordion__title py-8 lg:py-10 grid grid-cols-12 gap-x-6 w-full relative cursor-pointer items-center"
                 onClick={() => toggleItem(index)}
               >
                 <span className="h3 col-span-1">{index + 1}.</span>
-                <h3 className="col-span-8 col-start-5 pr-20">{item.title}</h3>
+                <h3 className="col-span-11 lg:col-span-8 lg:col-start-5 pr-20">
+                  {item.title}
+                </h3>
 
                 {/* + / - */}
                 <span
-                  className={`icon absolute top-1/2 right-0 h-4 w-4 -translate-y-1/2 delay-200 ${
+                  className={`icon absolute top-1/2 right-0 h-3 w-3 -translate-y-1/2 delay-200 flex justify-center items-center transition-all duration-300 ease-in-out ${
                     isOpen ? "rotate-180" : ""
                   }`}
                 >
@@ -106,9 +108,6 @@ export default function TechAccordion({
                     />
                   </svg>
                 </span>
-                {/* <span className="absolute right-0 top-1/2 -translate-y-1/2 text-2xl font-light">
-                  {isOpen ? "−" : "+"}
-                </span> */}
               </div>
 
               {/* CONTENT */}
@@ -122,7 +121,7 @@ export default function TechAccordion({
                   opacity: index === 0 ? 1 : 0,
                 }}
               >
-                <div className="col-span-8 col-start-5 pb-12 pr-20 grid grid-cols-1 md:grid-cols-2 gap-y-8">
+                <div className="col-span-11 lg:col-span-8 col-start-2 lg:col-start-5 pb-8 lg:pb-12 lg:pr-20 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
                   {Array.isArray(item.content) &&
                     item.content.map((cat, i) => (
                       <div key={i}>
@@ -131,10 +130,7 @@ export default function TechAccordion({
                         </span>
                         <ul className="">
                           {cat.items.map((tech, idx) => (
-                            <li
-                              key={idx}
-                              className="text-base leading-6 text-dark-font"
-                            >
+                            <li key={idx} className="leading-6 text-dark-font">
                               {parser(tech)}
                             </li>
                           ))}
@@ -147,7 +143,9 @@ export default function TechAccordion({
             <LinePlus
               customClass={""}
               lineClass={"opacity-15 bg-grey-line"}
-              plusClass={"col-span-8 col-start-5 -translate-x-1/2!"}
+              plusClass={
+                "col-span-11 lg:col-span-8 col-start-2 lg:col-start-5 -translate-x-1/2!"
+              }
               iconColor={"#272727"}
               scrub={false}
               duration={1}
