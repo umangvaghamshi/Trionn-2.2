@@ -17,6 +17,7 @@ export default function Services() {
   const serviceListRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLElement[]>([]);
   const [tlComplted, setTlComplted] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   // Per-card blur refs: [cardIndex][0=subText, 1=title, 2=capabilities label]
   const blurRefs = useRef<(BlurTextRevealHandle | null)[][]>(
@@ -25,97 +26,73 @@ export default function Services() {
 
   useGSAP(
     () => {
-      const cards = cardsRef.current;
-      if (!cards.length || !sectionRef.current) return;
+      const mm = gsap.matchMedia();
 
-      const totalCards = cards.length;
+      mm.add("(min-width: 768px)", () => {
+        setIsDesktop(true);
+        const cards = cardsRef.current;
+        if (!cards.length || !sectionRef.current) return;
 
-      gsap.set(cards[0], { yPercent: 0 });
-      cards.slice(1).forEach((card) => gsap.set(card, { yPercent: 100 }));
+        const totalCards = cards.length;
 
-      const played = new Array(totalCards).fill(false);
+        // Set initial states for stacking effect
+        gsap.set(cards[0], { yPercent: 0 });
+        cards.slice(1).forEach((card) => gsap.set(card, { yPercent: 100 }));
 
-      const playCard = (i: number) => {
-        if (played[i]) return;
-        played[i] = true;
-        blurRefs.current[i]?.forEach((ref) => ref?.play());
-      };
+        const played = new Array(totalCards).fill(false);
+        const playCard = (i: number) => {
+          if (played[i]) return;
+          played[i] = true;
+          blurRefs.current[i]?.forEach((ref) => ref?.play());
+        };
 
-      const tl = gsap.timeline({
-        onComplete: () => {
-          setTlComplted(true);
-        },
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: () => `+=${window.innerHeight * 1.2 * cards.length}`,
-          scrub: true,
-          pin: serviceListRef.current,
-          pinSpacing: true,
-          anticipatePin: 0.5,
-          markers: false,
-        },
-        defaults: {
-          ease: "none",
-        },
-      });
-
-      // Hold on first card before any overlay begins
-      tl.to({}, { duration: 0.5, ease: "none" });
-
-      cards.forEach((card, i) => {
-        if (i === 0) return;
-
-        const lines = card.querySelectorAll(".service-info-list .line");
-        const plusIcon = card.querySelectorAll(".services-item .plus-icon");
-        const prevContentBlock = cards[i - 1].querySelector(".content-block");
-
-        gsap.set(lines, {
-          scaleX: 0,
-          transformOrigin: "left",
+        const tl = gsap.timeline({
+          onComplete: () => setTlComplted(true),
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: () => `+=${window.innerHeight * 1.2 * cards.length}`,
+            scrub: true,
+            pin: serviceListRef.current,
+            pinSpacing: true,
+            anticipatePin: 0.5,
+          },
+          defaults: { ease: "none" },
         });
 
-        const startPosition = "<0.2";
+        // Initial pause/buffer
+        tl.to({}, { duration: 0.5 });
 
-        // Slide previous card's contentBlock up as this card comes in
-        tl.to(card, { yPercent: 0, ease: "none", duration: 1 })
-          .to(
-            plusIcon,
-            {
-              rotation: "+=360",
-              duration: 1,
-              ease: "none",
-            },
-            "<",
-          )
-          .to(
-            prevContentBlock,
-            {
-              yPercent: -100,
-              ease: "none",
-              duration: 1,
-            },
-            "<",
-          )
-          .call(() => playCard(i), undefined, startPosition)
-          .call(
-            () => {
-              gsap.to(lines, {
-                scaleX: 1,
-                stagger: 0.08,
-                ease: "none",
-              });
-            },
-            undefined,
-            startPosition,
-          );
+        cards.forEach((card, i) => {
+          if (i === 0) return;
 
-        tl.to({}, { duration: 0.5, ease: "none" });
+          const lines = card.querySelectorAll(".service-info-list .line");
+          const plusIcon = card.querySelectorAll(".services-item .plus-icon");
+          const prevContentBlock = cards[i - 1].querySelector(".content-block");
+
+          gsap.set(lines, { scaleX: 0, transformOrigin: "left" });
+
+          const startPosition = "<0.2";
+
+          tl.to(card, { yPercent: 0, duration: 1 })
+            .to(plusIcon, { rotation: "+=360", duration: 1 }, "<")
+            .to(prevContentBlock, { yPercent: -100, duration: 1 }, "<")
+            .call(() => playCard(i), undefined, startPosition)
+            .call(
+              () => {
+                gsap.to(lines, { scaleX: 1, stagger: 0.08 });
+              },
+              undefined,
+              startPosition,
+            );
+
+          tl.to({}, { duration: 0.5 });
+        });
+
+        return () => setIsDesktop(false);
       });
 
-      // Refresh after fonts/images settle so pin height is accurate
-      const rafId = requestAnimationFrame(() => ScrollTrigger.refresh());
-      return () => cancelAnimationFrame(rafId);
+      return () => mm.revert();
     },
     { scope: sectionRef },
   );
@@ -124,15 +101,15 @@ export default function Services() {
     <>
       <section
         ref={sectionRef}
-        className="relative text-dark-font bg-white min-h-dvh z-31"
+        className="relative text-dark-font bg-white md:min-h-dvh z-31"
       >
         <div
-          className="services-list min-h-dvh relative flex flex-col group"
+          className="services-list min-h-fit md:min-h-dvh relative flex flex-col group"
           ref={serviceListRef}
         >
           {ServicesListData.map((service, index) => (
             <div
-              className="services-item min-h-dvh flex w-full absolute z-2 bg-white"
+              className="services-item min-h-fit md:min-h-dvh flex w-full relative md:absolute z-2 bg-white"
               ref={(self) => {
                 if (self) cardsRef.current[index] = self;
               }}
@@ -145,19 +122,24 @@ export default function Services() {
                 iconColor={"#272727"}
                 scrub={false}
               />
-              <div className="flex w-full">
+              <div className="flex flex-col md:flex-row w-full">
+                {/* Image / Subtext Block */}
                 <div
-                  className={`image-block w-1/2 py-37.5 px-20 text-center flex flex-col items-center justify-center border-r border-grey-line/15 ${
-                    index % 2 !== 0 ? "bg-[#040508] text-light-font" : ""
+                  className={`image-block w-full md:w-1/2 pt-20 md:py-20 lg:py-37.5 px-6 md:px-10 lg:px-20 text-center flex flex-col items-center justify-center border-r border-grey-line/15 ${
+                    index % 2 !== 0
+                      ? "md:bg-[#040508] md:text-light-font text-dark-font"
+                      : ""
                   }`}
                 >
                   <BlurTextReveal
-                    {...(index > 0 && {
-                      ref: (el: BlurTextRevealHandle | null) => {
-                        blurRefs.current[index][0] = el;
-                      },
-                      manual: true,
-                    })}
+                    {...(index > 0 && isDesktop
+                      ? {
+                          ref: (el: BlurTextRevealHandle | null) => {
+                            blurRefs.current[index][0] = el;
+                          },
+                          manual: true,
+                        }
+                      : { manual: false })}
                     as="span"
                     html={service.subText}
                     animationType="chars"
@@ -166,22 +148,26 @@ export default function Services() {
                   />
                   <Image
                     src={service.imgUrl}
-                    className="mx-auto max-w-176"
+                    className="mx-auto w-full max-w-176"
                     width={704}
                     height={457}
                     alt="service"
                   />
                 </div>
-                <div className="content-block w-1/2 py-37.5 grid grid-cols-6 gap-x-6">
-                  <div className="flex flex-col h-full col-span-4 col-start-2">
-                    <div className="service-title-block mb-25">
+
+                {/* Content Block */}
+                <div className="content-block w-full md:w-1/2 pt-16 pb-20 md:py-20 lg:py-37.5 grid grid-cols-6 gap-x-6 px-6 md:px-10 lg:px-0">
+                  <div className="flex flex-col h-full col-span-6 lg:col-span-5 xl:col-span-4 lg:col-start-2 xl:col-start-2 justify-center">
+                    <div className="service-title-block mb-10 md:mb-16 lg:mb-25">
                       <BlurTextReveal
-                        {...(index > 0 && {
-                          ref: (el: BlurTextRevealHandle | null) => {
-                            blurRefs.current[index][1] = el;
-                          },
-                          manual: true,
-                        })}
+                        {...(index > 0 && isDesktop
+                          ? {
+                              ref: (el: BlurTextRevealHandle | null) => {
+                                blurRefs.current[index][1] = el;
+                              },
+                              manual: true,
+                            }
+                          : { manual: false })}
                         as="h3"
                         text={service.title}
                         animationType="chars"
@@ -193,14 +179,17 @@ export default function Services() {
                         {parse(service.description)}
                       </p>
                     </div>
-                    <div className="service-info max-w-99">
+
+                    <div className="service-info md:max-w-99">
                       <BlurTextReveal
-                        {...(index > 0 && {
-                          ref: (el: BlurTextRevealHandle | null) => {
-                            blurRefs.current[index][2] = el;
-                          },
-                          manual: true,
-                        })}
+                        {...(index > 0 && isDesktop
+                          ? {
+                              ref: (el: BlurTextRevealHandle | null) => {
+                                blurRefs.current[index][2] = el;
+                              },
+                              manual: true,
+                            }
+                          : { manual: false })}
                         as="span"
                         text="Our Core Capabilities"
                         animationType="chars"
@@ -231,7 +220,8 @@ export default function Services() {
           ))}
         </div>
 
-        <div className="py-25 relative z-31">
+        {/* Footer Section */}
+        <div className="pb-20 md:py-25 relative z-31">
           <BlurTextReveal
             as="span"
             text="✦ Services are outputs. Systems are outcomes."
@@ -239,7 +229,8 @@ export default function Services() {
             stagger={0.05}
             className="title block text-center"
           />
-          {tlComplted && (
+          {/* Only show line if timeline completed on desktop, or always on mobile */}
+          {(tlComplted || !isDesktop) && (
             <LinePlus
               customClass={"absolute! bottom-0 left-0 translate-y-1/2 w-full"}
               lineClass={"opacity-15 bg-grey-line left-1/2 -translate-x-1/2"}
