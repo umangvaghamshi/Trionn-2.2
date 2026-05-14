@@ -140,6 +140,7 @@ export default function ServicesOrbitExperienceV2() {
           pinSpacing: true,
           markers: false,
           scrub: true,
+          anticipatePin:1,
         },
         defaults: { ease: "none" },
       });
