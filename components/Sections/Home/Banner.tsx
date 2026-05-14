@@ -8,6 +8,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ScrollIndicator from "@/components/ScrollIndicator";
+import { useTransitionReady } from "@/components/Transition";
 
 gsap.registerPlugin(ScrollTrigger);
 
