@@ -187,7 +187,14 @@ export default function AboutHero() {
         >
           <div ref={clipInnerRef} className="md:mt-0 w-full">
             <div className="relative pointer-events-auto w-full flex justify-center items-end">
-              <AboutLion onLoad={() => setIsLoaded(true)}>
+              <AboutLion
+                onLoad={() => {
+                  setIsLoaded(true);
+                  window.dispatchEvent(
+                    new CustomEvent("trionn:about-hero-loaded"),
+                  );
+                }}
+              >
                 {/* Marquee — inside lion canvas, behind curtain strips */}
                 <div
                   className={`absolute bottom-[2%] md:bottom-[20%] left-0 right-0 z-[1] w-full text-[#D8D8D8] mix-blend-difference pointer-events-none transition-opacity duration-1000 delay-300 ${

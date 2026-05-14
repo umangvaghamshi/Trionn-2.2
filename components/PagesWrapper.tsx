@@ -32,7 +32,6 @@ export default async function PagesWrapper({
         />
         <SiteSoundProvider>
           <TransitionProvider>
-            <SmoothScrolling />
             <PageLoader />
             <PageTransition />
             <Header data={headerSection}></Header>

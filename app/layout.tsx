@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import PagesWrapper from "@/components/PagesWrapper";
 import PerformanceMonitor from "@/components/PerformanceMonitor";
 import "./globals.css";
+import SmoothScrolling from "@/components/SmoothScrolling";
 
 export const viewport: Viewport = {
   themeColor: "#040508",
@@ -45,7 +46,7 @@ export default function RootLayout({
   return (
     <PagesWrapper>
       <PerformanceMonitor />
-      {children}
+      <SmoothScrolling>{children}</SmoothScrolling>
     </PagesWrapper>
   );
 }

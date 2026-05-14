@@ -141,7 +141,7 @@ export default function ServicesOrbitExperienceV2() {
           pinSpacing: true,
           markers: false,
           scrub: true,
-          anticipatePin:1,
+          anticipatePin: 1,
         },
         defaults: { ease: "none" },
       });
@@ -202,8 +202,17 @@ export default function ServicesOrbitExperienceV2() {
       </div>
 
       <section className="sec-expertise relative z-1 flex min-h-dvh w-screen flex-col justify-center bg-transparent px-6 pt-12 pb-14 sm:px-10 sm:pt-12 sm:pb-14 contain-[layout_style] transform-[translateZ(0)] backface-hidden text-light-font">
-        <div className="exp-left flex flex-col gap-4 justify-center items-center">
-          <div className="exp-top-label">
+        <div className="exp-top-label absolute top-30 left-0 tr__container w-full flex justify-center md:hidden">
+          <BlurTextReveal
+            as="span"
+            text="✦ WHAT WE DO BEST"
+            animationType="chars"
+            stagger={0.05}
+            className="title block text-center"
+          />
+        </div>
+        <div className="exp-left flex flex-col gap-4 justify-center items-center tr__container">
+          <div className="exp-top-label hidden md:flex">
             <BlurTextReveal
               as="span"
               text="✦ WHAT WE DO BEST"
@@ -220,7 +229,7 @@ export default function ServicesOrbitExperienceV2() {
             className="text-center"
           />
         </div>
-        <div className="exp-bottom flex justify-center max-w-130 text-center mx-auto mt-auto absolute bottom-20 left-1/2 -translate-x-1/2">
+        <div className="exp-bottom flex justify-center w-full md:max-w-130 text-center mx-auto mt-auto absolute bottom-30 md:bottom-20 left-1/2 -translate-x-1/2 tr__container">
           <div className="exp-services flex flex-col justify-center items-center">
             <ul
               ref={servicesListRef}
@@ -254,7 +263,7 @@ export default function ServicesOrbitExperienceV2() {
             </ul>
           </div>
         </div>
-        <div className="flex items-center absolute bottom-20 right-0 w-full justify-end opacity-50 tr__container pointer-events-none">
+        <div className="flex items-center absolute bottom-20 left-0 w-full justify-center md:justify-end opacity-50 tr__container pointer-events-none">
           <ScrollIndicator />
         </div>
       </section>

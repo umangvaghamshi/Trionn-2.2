@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { useGSAP } from "@gsap/react";
@@ -90,8 +90,17 @@ export default function PaperFold({
         invalidateOnRefresh: true, // IMPORTANT: Allows recalculation on resize
         markers: false,
       });
+
+      const handler = () => ScrollTrigger.refresh();
+      window.addEventListener("trionn:about-hero-loaded", handler);
+
+      return () => {
+        window.removeEventListener("trionn:about-hero-loaded", handler);
+      };
     });
-    return () => mm.revert();
+    return () => {
+      mm.revert();
+    };
   });
 
   return (

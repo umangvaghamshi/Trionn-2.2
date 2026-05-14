@@ -138,7 +138,14 @@ export default function HowWork({
         }
 
         tlRef.current = tl;
+
+        const handler = () => {
+          tl.scrollTrigger?.refresh();
+        };
+        window.addEventListener("trionn:about-hero-loaded", handler);
+
         return () => {
+          window.removeEventListener("trionn:about-hero-loaded", handler);
           tl.kill();
         };
       });
@@ -287,7 +294,13 @@ export default function HowWork({
 
         tlRef.current = mobileTl;
 
+        const handler = () => {
+          mobileTl.scrollTrigger?.refresh();
+        };
+        window.addEventListener("trionn:about-hero-loaded", handler);
+
         return () => {
+          window.removeEventListener("trionn:about-hero-loaded", handler);
           gsap.ticker.remove(tick);
           mobileTl.kill();
         };
