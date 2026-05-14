@@ -10,7 +10,7 @@ export const WORK_SERVICES_OVERLAP_VH = 150;
 /** Scroll distance for services animation scrollT 0→1 (canvas / video / cards). */
 export const SERVICES_SCRUB_VH = 700;
 /** After scrollT reaches 1, pin holds while testimonials overlaps. */
-export const SERVICES_HOLD_VH = 0;
+export const SERVICES_HOLD_VH = 100;
 
 /** @deprecated Use WORK_HORIZONTAL_VH + WORK_SERVICES_OVERLAP_VH; kept for imports that expected “shutter” length. */
 export const SERVICES_SHUTTER_VH =
