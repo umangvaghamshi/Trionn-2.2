@@ -9,7 +9,7 @@ import { useScrollTriggerRefresh } from "@/hooks/useScrollTriggerRefresh";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const DEFAULT_STRIPE_COUNT = 6;
+const DEFAULT_STRIPE_COUNT = 5;
 const DEFAULT_STRIPE_COLOR = "#040508";
 
 interface HowWorkProps {
