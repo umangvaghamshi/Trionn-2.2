@@ -43,6 +43,8 @@ export function useBrandShowcase() {
 
   const handleBrandHover = useCallback(
     (index: number) => {
+      if (typeof window !== 'undefined' && window.innerWidth < 1024) return;
+
       if (
         index === activeIndexRef.current &&
         committedBrandRef.current === index
@@ -169,6 +171,7 @@ export function useBrandShowcase() {
   }, [handleBrandHover]);
 
   const playEntryAnimation = useCallback(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) return;
     const wrapper = imageWrapperRef.current;
     if (!wrapper) return;
 
@@ -207,6 +210,7 @@ export function useBrandShowcase() {
 
   /** Pointer left the brands row: clear queue; snap all text fills off (no tween). Keeps the last-hovered image visible for the card outro. */
   const deactivateBrandHover = useCallback(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) return;
     currentTl.current?.kill();
     currentTl.current = null;
     isAnimating.current = false;
