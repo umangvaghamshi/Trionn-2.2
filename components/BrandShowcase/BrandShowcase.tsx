@@ -177,6 +177,7 @@ export default function BrandShowcase({
 
   const handleBrandEnter = useCallback(
     (index: number, target: HTMLSpanElement) => {
+      if (typeof window !== "undefined" && window.innerWidth < 1024) return;
       hasHoveredRef.current = true;
       if (index === activeIndex) {
         revealCardBehindBrand(target);
@@ -299,7 +300,7 @@ export default function BrandShowcase({
       style={{ backgroundColor }}
     >
       <div className="tr__container text-dark-font relative">
-        <div className="flex flex-col py-20 lg:py-37.5 items-center justify-between text-center min-h-dvh">
+        <div className="flex flex-col py-20 lg:py-37.5 items-center justify-between text-center lg:min-h-dvh">
           <div className="mb-20 lg:mb-40">
             <BlurTextReveal
               as="span"
@@ -320,16 +321,15 @@ export default function BrandShowcase({
                   <span
                     key={brand.name}
                     ref={(el) => setTextRef(el, i)}
-                    className={`brand-name-item inline-flex items-center cursor-pointer relative h2 leading-none! ${
-                      isPointerInsideBrands && activeIndex === i
-                        ? "z-30"
-                        : "z-10"
-                    }`}
+                    className={`brand-name-item inline-flex items-center lg:cursor-pointer relative h2 leading-none! ${isPointerInsideBrands && activeIndex === i
+                      ? "z-30"
+                      : "z-10"
+                      }`}
                     onMouseEnter={(event) =>
                       handleBrandEnter(i, event.currentTarget)
                     }
                   >
-                    <span className="text-dark-font inline-block transition-colors duration-300 group-hover:text-dark-font/20">
+                    <span className="text-dark-font inline-block transition-colors duration-300 lg:group-hover:text-dark-font/20">
                       <span className="-mt-3 pr-1">{brand.name}</span>
                       <span className={i === brands.length - 1 ? "hidden" : ""}>
                         ,&nbsp;
@@ -337,7 +337,7 @@ export default function BrandShowcase({
                     </span>
 
                     <span
-                      className="text-dark-font absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none"
+                      className="text-dark-font absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:block"
                       aria-hidden="true"
                     >
                       <span
@@ -357,7 +357,7 @@ export default function BrandShowcase({
 
               <div
                 ref={imageWrapperRef}
-                className="absolute left-0 top-0 z-20 h-40 w-61 overflow-hidden rounded-xl pointer-events-none opacity-0 scale-[0.9]"
+                className="absolute left-0 top-0 z-20 h-40 w-61 overflow-hidden rounded-xl pointer-events-none opacity-0 scale-[0.9] hidden lg:block"
                 style={{
                   perspective: "1400px",
                   willChange: "transform, opacity",
