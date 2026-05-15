@@ -22,7 +22,7 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-[90ddvh] w-full mix-blend-darken block lg:hidden -translate-y-[15dvh]"
+            className="max-h-[90dvh] w-full mix-blend-darken block lg:hidden -translate-y-[15dvh]"
           />
         </div>
         <div className="flex flex-col gap-6 lg:gap-10 items-center text-center absolute top-[50dvh] lg:top-[60dvh] xl:top-[65dvh] left-0 w-full">
@@ -39,7 +39,7 @@ export default function Banner() {
             </p>
           </FadeInOnScroll>
         </div>
-        <div className="flex items-center absolute bottom-20 left-0 w-full justify-center opacity-50 pointer-events-none">
+        <div className="flex items-center absolute bottom-20 left-0 w-full justify-center opacity-50 pointer-events-none banner-scroll">
           <ScrollIndicator />
         </div>
       </div>

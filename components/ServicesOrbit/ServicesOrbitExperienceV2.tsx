@@ -263,7 +263,7 @@ export default function ServicesOrbitExperienceV2() {
             </ul>
           </div>
         </div>
-        <div className="flex items-center absolute bottom-20 left-0 w-full justify-center md:justify-end opacity-50 tr__container pointer-events-none">
+        <div className="flex items-center absolute bottom-20 left-0 w-full justify-center md:justify-end opacity-50 tr__container pointer-events-none banner-scroll">
           <ScrollIndicator />
         </div>
       </section>

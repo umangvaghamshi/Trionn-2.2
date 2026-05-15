@@ -147,7 +147,7 @@ export default function AboutHero() {
             className="block text-white uppercase"
           />
         </span>
-        <div className="flex items-center absolute top-[calc(100dvh-5rem)] left-0 w-full justify-center text-light-font pointer-events-none">
+        <div className="flex items-center absolute top-[calc(100dvh-5rem)] left-0 w-full justify-center text-light-font pointer-events-none banner-scroll">
           <ScrollIndicator />
         </div>
       </div>
@@ -165,7 +165,7 @@ export default function AboutHero() {
               className="block text-white uppercase"
             />
           </span>
-          <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font pointer-events-none">
+          <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font pointer-events-none banner-scroll">
             <ScrollIndicator />
           </div>
         </div>

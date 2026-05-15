@@ -2006,7 +2006,7 @@ export default function OurWorkListing() {
               websites, and mobile experiences.
             </p>
           </div>
-          <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font opacity-50 pointer-events-none">
+          <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font opacity-50 pointer-events-none banner-scroll">
             <ScrollIndicator />
           </div>
         </div>
