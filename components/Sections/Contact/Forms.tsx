@@ -347,7 +347,7 @@ export default function Forms() {
                 <h2>Tell us about the vision.</h2>
                 <div className="relative">
                   <textarea
-                    className={`w-full min-h-60 border bg-transparent ${
+                    className={`w-full min-h-60 border bg-transparent rounded-sm ${
                       errors.message ? "border-red-500" : "border-light-font/20"
                     } focus:border-light-font p-6 outline-none transition-all resize-none`}
                     placeholder="Describe the project..."
@@ -519,14 +519,14 @@ function InputGroup({ label, error, errorMsg, ...props }: any) {
   return (
     <div className="relative group">
       <label
-        className={`absolute -top-3 left-4 py-1 px-2 bg-[#040508] text-xs uppercase tracking-widest transition-all duration-300 z-20 
+        className={`absolute -top-3 left-4 py-1 px-2 bg-[#040508] text-xs uppercase tracking-widest transition-all duration-300 z-20 rounded-sm 
           ${shouldShowLabel ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"}`}
       >
         {error ? <span className="text-red-500">{errorMsg}</span> : label}
       </label>
       <input
         {...props}
-        className={`w-full py-5 bg-transparent border ${error ? "border-red-500" : "border-light-font/20"} focus:border-light-font px-6 outline-none transition-all placeholder:text-light-font/50`}
+        className={`w-full py-5 bg-transparent border rounded-sm ${error ? "border-red-500" : "border-light-font/20"} focus:border-light-font px-6 outline-none transition-all placeholder:text-light-font/50`}
       />
     </div>
   );
@@ -544,7 +544,7 @@ function OptionCard({
   return (
     <button
       onClick={onClick}
-      className={`p-6 text-left border transition-all duration-500 flex justify-between items-center cursor-pointer 
+      className={`p-6 text-left border transition-all duration-500 flex justify-between items-center cursor-pointer rounded-sm 
         ${active ? "bg-light-font text-black border-light-font" : "border-light-font/20 hover:border-light-font"}`}
     >
       <span className="title">{label}</span>
