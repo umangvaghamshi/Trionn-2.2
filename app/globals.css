@@ -254,6 +254,10 @@ sup {
   flex-flow: row wrap;
 }
 
+.arrow-back .btn svg {
+  @apply rotate-180;
+}
+
 /* Top line */
 .link::before {
   transform: scaleX(0);
