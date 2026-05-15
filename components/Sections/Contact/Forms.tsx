@@ -6,6 +6,7 @@ import Link from "next/link";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
+import { useSiteSound } from "@/components/SiteSoundContext";
 
 // --- Types ---
 type FormData = {
@@ -35,9 +36,9 @@ const BUDGET_OPTIONS = [
 
 export default function Forms() {
   // --- State ---
+  const { soundEnabled } = useSiteSound();
   const [mounted, setMounted] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [isVoiceOn, setIsVoiceOn] = useState(true);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -47,16 +48,36 @@ export default function Forms() {
     budget: "",
   });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [hasEnteredView, setHasEnteredView] = useState(false);
+  const [hasStartedForm, setHasStartedForm] = useState(false);
 
   // --- Refs ---
+  const sectionRef = useRef<HTMLElement>(null);
   const stepRef = useRef<HTMLDivElement>(null);
-  const successRef = useRef<HTMLDivElement>(null);
   const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
 
   // --- Hydration Fix ---
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // --- Viewport observer: gate first headline voice until section is visible ---
+  useEffect(() => {
+    if (!mounted) return;
+    const node = sectionRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEnteredView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [mounted]);
 
   // --- Voice Logic ---
   useEffect(() => {
@@ -72,7 +93,7 @@ export default function Forms() {
   }, []);
 
   const speak = (text: string) => {
-    if (!isVoiceOn || typeof window === "undefined" || !window.speechSynthesis)
+    if (!soundEnabled || typeof window === "undefined" || !window.speechSynthesis)
       return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
@@ -97,15 +118,6 @@ export default function Forms() {
           ease: "power3.out",
         },
       );
-
-      const headlines = [
-        "Let's begin with an introduction.",
-        "What are you looking to create?",
-        "Tell us about the vision.",
-        "What's your estimated budget?",
-        "Ready to connect. Review your inquiry.",
-      ];
-      speak(headlines[currentStep]);
     } else if (currentStep === 5) {
       const tl = gsap.timeline();
       tl.to(".success-circle", {
@@ -124,7 +136,6 @@ export default function Forms() {
           { opacity: 1, y: 0, stagger: 0.2, duration: 0.6 },
           "-=0.2",
         );
-      speak("Inquiry submitted successfully.");
 
       // Wait 4 seconds, then Fade Out and Reset
       const timer = setTimeout(() => {
@@ -144,6 +155,8 @@ export default function Forms() {
               budget: "",
             });
             setErrors({});
+            // Keep hasStartedForm = true so step 0 voice does NOT replay after submission.
+            // Voice will resume from step 1 onwards if the user starts another inquiry.
             // Go back to first step
             setCurrentStep(0);
           },
@@ -153,6 +166,27 @@ export default function Forms() {
       return () => clearTimeout(timer);
     }
   }, [currentStep, mounted]);
+
+  // --- Voice: speaks per step. First step waits for the section to enter view,
+  //     and is skipped if the user is returning to step 0 mid-flow ---
+  useEffect(() => {
+    if (!mounted) return;
+    if (currentStep === 0 && (!hasEnteredView || hasStartedForm)) return;
+
+    const headlines = [
+      "Let's begin with an introduction.",
+      "What are you looking to create?",
+      "Tell us about the vision.",
+      "What's your estimated budget?",
+      "Ready to connect. Review your inquiry.",
+    ];
+
+    if (currentStep <= 4) {
+      speak(headlines[currentStep]);
+    } else if (currentStep === 5) {
+      speak("Inquiry submitted successfully.");
+    }
+  }, [currentStep, mounted, hasEnteredView, hasStartedForm]);
 
   const validate = () => {
     const newErrors: Record<string, boolean> = {};
@@ -172,6 +206,7 @@ export default function Forms() {
 
   const handleNext = () => {
     if (validate()) {
+      if (currentStep === 0) setHasStartedForm(true);
       if (currentStep < 4) setCurrentStep((s) => s + 1);
       else setCurrentStep(5);
     }
@@ -197,7 +232,10 @@ export default function Forms() {
   const progressPercent = (Math.min(currentStep + 1, 5) / 5) * 100;
 
   return (
-    <section className="relative w-full bg-[#040508] text-light-font overflow-hidden flex items-center py-20 lg:py-37.5">
+    <section
+      ref={sectionRef}
+      className="relative w-full bg-[#040508] text-light-font overflow-hidden flex items-center py-20 lg:py-37.5"
+    >
       {/* Background Video */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <video
@@ -234,12 +272,6 @@ export default function Forms() {
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
-                <button
-                  onClick={() => setIsVoiceOn(!isVoiceOn)}
-                  className="uppercase opacity-40 hover:opacity-100"
-                >
-                  Voice {isVoiceOn ? "On" : "Off"}
-                </button>
               </div>
             </div>
           )}

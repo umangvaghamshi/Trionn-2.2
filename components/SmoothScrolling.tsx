@@ -164,9 +164,20 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
   }, []);
 
   useEffect(() => {
+    const isTyping = () => {
+      const el = document.activeElement;
+      if (!el) return false;
+      const tag = el.tagName;
+      return (
+        tag === 'INPUT' ||
+        tag === 'TEXTAREA' ||
+        (el as HTMLElement).isContentEditable
+      );
+    };
+
     // 1. Handle Spacebar Press
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Space') {
+      if (e.code === 'Space' && !isTyping()) {
         e.preventDefault();
         isSpacePressed.current = true;
       }
