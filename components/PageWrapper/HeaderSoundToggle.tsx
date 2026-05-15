@@ -125,9 +125,10 @@ export function HeaderSoundToggle() {
       id="sound-toggle"
       onClick={toggleSound}
       title={soundEnabled ? "Mute sound" : "Enable sound"}
-      aria-pressed={soundEnabled}
+      aria-pressed={soundEnabled ? "true" : "false"}
       aria-label={soundEnabled ? "Mute sound" : "Enable sound"}
-      className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center text-white/80 transition hover:text-white z-30"
+      className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center text-white/80 transition hover:text-white z-30 md:mt-1"
+      suppressHydrationWarning
     >
       <svg
         className="h-6 w-6 overflow-visible"
