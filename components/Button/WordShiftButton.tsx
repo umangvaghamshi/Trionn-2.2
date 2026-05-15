@@ -442,7 +442,7 @@ export default function WordShiftButton({
         customClass,
       )}
     >
-      {type === "submit" ? (
+      {(type === "submit" || type === "button") ? (
         <button
           ref={btnRef as React.RefObject<HTMLButtonElement>}
           className={clsx(
