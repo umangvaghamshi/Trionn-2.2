@@ -1816,11 +1816,11 @@ export default function TeamSection() {
         :root {
           // --ts-font-family: "Barlow", sans-serif;
           --ts-color-bg: #040508;
-          --ts-color-hint: rgba(255, 255, 255, 0.75);
+          --ts-color-hint: rgba(216, 216, 216, 0.75);
           --ts-color-name: #c8c8c8;
-          --ts-color-role: rgba(255, 255, 255, 0.6);
-          --ts-color-scan-id: rgba(255, 255, 255, 0.75);
-          --ts-color-detected: rgba(255, 255, 255, 0.92);
+          --ts-color-role: rgba(216, 216, 216, 0.5);
+          --ts-color-scan-id: rgba(216, 216, 216, 0.75);
+          --ts-color-detected: rgba(216, 216, 216, 0.92);
         }
         .ts-root,
         .ts-root * {
@@ -2131,13 +2131,13 @@ export default function TeamSection() {
             >
               <div
                 ref={frameHintRef}
-                className="ts-frame-hint absolute inset-0 flex items-center justify-center text-center uppercase z-2 pointer-events-none"
+                className="ts-frame-hint absolute inset-0 flex items-center justify-center text-center uppercase z-2 pointer-events-none title"
                 style={{
-                  fontSize: "11px",
-                  letterSpacing: "0.18em",
+                  // fontSize: "11px",
+                  // letterSpacing: "0.18em",
                   color: "var(--ts-color-hint)",
-                  fontWeight: 300,
-                  lineHeight: 1.7,
+                  // fontWeight: 300,
+                  // lineHeight: 1.7,
                   padding: "0 32px",
                 }}
               >
@@ -2183,12 +2183,12 @@ export default function TeamSection() {
               >
                 <div
                   ref={identifyingTextRef}
-                  className="uppercase opacity-0 text-center"
+                  className="title opacity-0 text-center"
                   style={{
-                    fontSize: "9px",
-                    letterSpacing: "0.28em",
+                    // fontSize: "9px",
+                    // letterSpacing: "0.28em",
+                    // fontWeight: 300,
                     color: "var(--ts-color-scan-id)",
-                    fontWeight: 300,
                   }}
                 >
                   IDENTIFYING...
@@ -2209,12 +2209,12 @@ export default function TeamSection() {
                 </div>
                 <div
                   ref={detectionStatusRef}
-                  className="uppercase opacity-0 text-center"
+                  className="title opacity-0 text-center"
                   style={{
-                    fontSize: "9px",
-                    letterSpacing: "0.28em",
+                    // fontSize: "9px",
+                    // letterSpacing: "0.28em",
+                    // fontWeight: 300,
                     color: "var(--ts-color-detected)",
-                    fontWeight: 300,
                   }}
                 />
               </div>
@@ -2226,12 +2226,12 @@ export default function TeamSection() {
                 <div className="absolute bottom-8 left-3.5 flex flex-col gap-0.75">
                   <div
                     ref={hudDeptRef}
-                    className="uppercase"
+                    className="title"
                     style={{
-                      fontSize: "6.5px",
-                      letterSpacing: "0.14em",
+                      // fontSize: "6.5px",
+                      // letterSpacing: "0.14em",
+                      // fontWeight: 300,
                       color: "rgba(255,255,255,0.5)",
-                      fontWeight: 300,
                     }}
                   />
                 </div>
@@ -2251,22 +2251,22 @@ export default function TeamSection() {
               <div className="ts-frame-name-row block mb-2">
                 <div
                   ref={frameNameRef}
-                  className="ts-frame-name uppercase"
+                  className="ts-frame-name small uppercase"
                   style={{
-                    fontSize: "14px",
-                    fontWeight: 300,
-                    letterSpacing: 0,
+                    // fontSize: "14px",
+                    // fontWeight: 300,
+                    // letterSpacing: 0,
                     color: "var(--ts-color-name)",
                   }}
                 />
               </div>
               <div
                 ref={frameRoleRef}
-                className="ts-frame-role uppercase"
+                className="ts-frame-role title"
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 300,
-                  letterSpacing: "0.14em",
+                  // fontSize: "11px",
+                  // fontWeight: 300,
+                  // letterSpacing: "0.14em",
                   color: "var(--ts-color-role)",
                 }}
               />

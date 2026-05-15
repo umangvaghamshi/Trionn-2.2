@@ -400,10 +400,10 @@ export default function Awards() {
         >
           <BlurTextReveal
             as="span"
-            text="Results matter most. Awards add recognition and value."
+            html="Results matter most. <br/>Awards add recognition <br/>and value."
             animationType="words"
             stagger={0.03}
-            className="small max-w-70 2xl:max-w-54 text-light-font block uppercase"
+            className="title text-light-font block"
           />
           <WordShiftButton
             text="win an award?"

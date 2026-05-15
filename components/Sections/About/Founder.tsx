@@ -79,7 +79,7 @@ export default function Founder() {
               <h2>”</h2>
             </div>
             <div className="flex flex-col md:flex-row justify-between items-start gap-14">
-              <p className="small text-light-font max-w-75">
+              <p className="small text-light-font max-w-84">
                 Recognized by global design platforms and trusted by brands
                 across industries.
               </p>
