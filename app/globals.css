@@ -188,7 +188,7 @@ p,
 
 .small {
   font-family: "NeueHaasDisplay-Roman";
-  @apply text-xl xl:text-base leading-[normal];
+  @apply text-xl lg:text-lg 2xl:text-base leading-[normal];
 }
 
 .title {
