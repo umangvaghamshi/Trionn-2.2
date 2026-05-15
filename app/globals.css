@@ -188,12 +188,12 @@ p,
 
 .small {
   font-family: "NeueHaasDisplay-Roman";
-  @apply text-xl 2xl:text-base leading-[normal];
+  @apply text-xl xl:text-base leading-[normal];
 }
 
 .title {
   font-family: "FamiljenGroteskVariable-Regular";
-  @apply text-lg leading-none -tracking-[0.02em] uppercase;
+  @apply text-lg xl:text-base leading-none -tracking-[0.02em] uppercase;
 }
 
 .menu {
