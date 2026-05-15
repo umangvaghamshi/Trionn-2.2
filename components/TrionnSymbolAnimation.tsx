@@ -80,7 +80,7 @@ export function TrionnSymbolAnimation({
     ScrollTrigger.create({
       trigger: "#hero-section",
       start: "top top",
-      end: "bottom bottom",
+      end: "bottom top",
       pin: canvasWrapRef.current,
       pinSpacing: false,
       markers: false,

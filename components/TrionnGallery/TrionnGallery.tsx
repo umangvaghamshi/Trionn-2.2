@@ -491,6 +491,11 @@ export default function TrionnGallery() {
           },
         });
 
+        galleryTimeline.to(headerText.current, {
+          opacity: 0,
+          delay: 0.7,
+        });
+
         items.forEach((item, index) => {
           const end = positions[index];
           galleryTimeline!.to(
@@ -509,14 +514,6 @@ export default function TrionnGallery() {
             galleryTimeline!.to(img, { scale: 1, duration: 1.2 }, index * 0.34);
           }
         });
-
-        galleryTimeline.to(
-          headerText.current,
-          {
-            opacity: 0,
-          },
-          "<",
-        );
 
         galleryTimeline.to(items, { duration: 0.8 });
       };
