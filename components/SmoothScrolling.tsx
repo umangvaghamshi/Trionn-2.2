@@ -225,10 +225,10 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
   // 3. Lenis Settings for Mouse Wheel
   const lenisOptions = {
     autoRaf: false, // We manage the loop manually via GSAP
-    duration: 1.2, // Slightly reduced for snappier scroll (was 1.5)
+    duration: 1, // Slightly reduced for snappier scroll (was 1.5)
     wheelMultiplier: 0.8,
-    touchMultiplier: 2,
-    syncTouch: true, // Forces JS-driven scroll on mobile to perfectly sync with WebGL
+    touchMultiplier: 0.6,
+    syncTouch: true,
     infinite: false,
     stopped: !isLoaderComplete, // Start stopped if loader is active
   };
