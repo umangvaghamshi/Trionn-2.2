@@ -7,6 +7,7 @@ import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
 import { useSiteSound } from "@/components/SiteSoundContext";
+import { HoverBlur } from "@/components/TextAnimation";
 
 // --- Types ---
 type FormData = {
@@ -93,7 +94,11 @@ export default function Forms() {
   }, []);
 
   const speak = (text: string) => {
-    if (!soundEnabled || typeof window === "undefined" || !window.speechSynthesis)
+    if (
+      !soundEnabled ||
+      typeof window === "undefined" ||
+      !window.speechSynthesis
+    )
       return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
@@ -251,7 +256,7 @@ export default function Forms() {
       </div>
 
       <div className="grid grid-cols-12 tr__container w-full relative z-10">
-        <div className="col-span-12 lg:col-span-8 lg:col-start-3 flex flex-col justify-between min-h-150">
+        <div className="col-span-12 lg:col-span-6 lg:col-start-4 flex flex-col justify-between min-h-150">
           {/* Top Bar */}
           {currentStep < 5 && (
             <div className="flex justify-between items-start mb-16">
@@ -263,7 +268,7 @@ export default function Forms() {
                 className="title max-w-70"
               />
               <div className="flex flex-col items-end gap-3">
-                <span className=" text-light-font/50">
+                <span className="title text-light-font/50">
                   0{Math.min(currentStep + 1, 5)} / 05
                 </span>
                 <div className="w-32 h-px bg-light-font/20 rounded-full overflow-hidden">
@@ -436,9 +441,9 @@ export default function Forms() {
               <button
                 onClick={() => setCurrentStep((s) => s - 1)}
                 disabled={currentStep === 0}
-                className={`uppercase link transition-all cursor-pointer ${currentStep === 0 ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+                className={`uppercase transition-all cursor-pointer ${currentStep === 0 ? "opacity-0 pointer-events-none" : "opacity-100"}`}
               >
-                Back
+                <HoverBlur>Back</HoverBlur>
               </button>
               <div onClick={handleNext} className="cursor-pointer">
                 <WordShiftButton
@@ -451,12 +456,12 @@ export default function Forms() {
           )}
         </div>
         <LinePlus
-          customClass="col-span-12 my-16 lg:my-25"
+          customClass="col-span-12 my-20 lg:my-37.5"
           lineClass={"bg-[#2F323B] left-1/2! -translate-x-1/2"}
           plusClass={"col-span-12 mx-auto"}
           iconColor={"#D8D8D8"}
         />
-        <div className="col-span-12 grid grid-cols-12 gap-6">
+        <div className="col-span-12 grid grid-cols-12 gap-20 md:gap-6">
           <div className="col-span-12 md:col-span-6 lg:col-span-5 lg:col-start-2 flex flex-col gap-6 lg:gap-10">
             <BlurTextReveal
               as="h2"
@@ -490,8 +495,8 @@ export default function Forms() {
               </div>
               <div className="col-span-12 sm:col-span-6 flex flex-col gap-2 sm:items-end">
                 <div className="flex flex-col items-start gap-2">
-                  <Link href="mailto:hello@trionn.com" className="h3 mb-2 link">
-                    hello@trionn.com
+                  <Link href="mailto:hello@trionn.com" className="h3 mb-2">
+                    <HoverBlur>hello@trionn.com</HoverBlur>
                   </Link>
                   <p className="small text-light-font/60">
                     Or, reach out via the contact form.

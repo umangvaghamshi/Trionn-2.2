@@ -3,7 +3,7 @@ import ScrollIndicator from "@/components/ScrollIndicator";
 
 export default function Banner() {
   return (
-    <section className="pb-20 lg:pb-37.5 relative bg-[#D2D2D2] text-dark-font min-h-dvh flex">
+    <section className="pb-20 lg:pb-37.5 relative bg-[#D2D2D2] text-dark-font min-h-dvh flex overflow-hidden">
       <div className="tr__container flex flex-col items-center text-center">
         <div className="video-block ">
           <video
@@ -13,7 +13,7 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-[75vh] w-full mix-blend-darken hidden lg:block"
+            className="max-h-[75dvh] w-full mix-blend-darken hidden lg:block"
           />
           <video
             src="/video/hanging-lion-mobile.mp4"
@@ -22,10 +22,10 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-[90dvh] w-full mix-blend-darken block lg:hidden"
+            className="max-h-[90ddvh] w-full mix-blend-darken block lg:hidden -translate-y-[15dvh]"
           />
         </div>
-        <div className="flex flex-col gap-6 lg:gap-10 items-center text-center -translate-y-full lg:translate-y-0 -mt-30 lg:-mt-20">
+        <div className="flex flex-col gap-6 lg:gap-10 items-center text-center absolute top-[50dvh] lg:top-[60dvh] xl:top-[65dvh] left-0 w-full">
           <BlurTextReveal
             as="h1"
             html="Let's start something."
