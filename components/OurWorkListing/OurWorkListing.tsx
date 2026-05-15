@@ -2002,9 +2002,8 @@ export default function OurWorkListing() {
               className="absolute w-0 h-0 top-1/2 left-1/2 pointer-events-none invisible"
             />
             <p className="small">
-              A curated collection of branding,
-              <br />
-              web, and digital system work.
+              A curated showcase of branding, digital products, <br />
+              websites, and mobile experiences.
             </p>
           </div>
           <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font opacity-50 pointer-events-none">
@@ -2034,6 +2033,7 @@ export default function OurWorkListing() {
                 href={`work/${project.slug}`}
                 className="thumb-link"
                 aria-label={`Open ${project.title}`}
+                transitionLabel={project.title}
               >
                 <img src={project.image} alt={project.title} />
               </TransitionLink>
@@ -2056,7 +2056,8 @@ export default function OurWorkListing() {
                 <div className="w-full sm:w-5/12 flex sm:justify-end">
                   <WordShiftButton
                     text="EXPLORE PROJECT"
-                    href={`work/${project.slug}`}
+                    label={project.slug}
+                    href={`work/${project.title}`}
                     styleVars={{ buttonWrapperColor: "#D8D8D8" }}
                   />
                 </div>
@@ -2075,12 +2076,10 @@ export default function OurWorkListing() {
               styleVars={{ buttonWrapperColor: "#D8D8D8" }}
             />
           </div>
-          <h3 className="text-center text-light-font">
-            Every project begins with a conversation — let&apos;s start yours.
-            <br className="hidden sm:block" />
-            We work with studios, founders, and brands who care about craft.
-            <br className="hidden sm:block" />
-            Based globally. Available for select work worldwide.
+          <h3 className="text-center text-light-font max-w-258">
+            Over the years, we have delivered successful projects for clients
+            worldwide, and if you would like to explore work related to your
+            requirements, we would be happy to share relevant examples.
           </h3>
         </div>
       </div>

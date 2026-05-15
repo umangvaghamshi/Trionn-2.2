@@ -35,6 +35,7 @@ type Props = {
   href?: string;
   customClass?: string;
   styleVars?: StyleVars;
+  label?: string,
   type?: string;
   target?: React.HTMLAttributeAnchorTarget;
 };
@@ -44,6 +45,7 @@ export default function WordShiftButton({
   href = "#",
   customClass,
   styleVars,
+  label,
   type,
   target,
 }: Props) {
@@ -518,6 +520,7 @@ export default function WordShiftButton({
           ref={btnRef as React.RefObject<HTMLAnchorElement>}
           href={href}
           target={target}
+          transitionLabel={label}
           className={clsx(
             "btn button-text relative flex w-full min-h-10 cursor-pointer items-center overflow-hidden no-underline",
             "px-[calc(var(--pad-x)*1.2)]",

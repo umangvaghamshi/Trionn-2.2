@@ -88,6 +88,7 @@ const WorkProjectPanel = forwardRef<
       <TransitionLink
         href={`work/${item.slug}`}
         className="relative w-full aspect-670/460 overflow-hidden rounded-sm"
+        transitionLabel={item.title}
       >
         <Image
           src={item.image}
@@ -121,6 +122,7 @@ const WorkProjectPanel = forwardRef<
               <WordShiftButton
                 text="Explore project"
                 href={`work/${item.slug}`}
+                label={item.title}
               />
             </div>
           </div>
