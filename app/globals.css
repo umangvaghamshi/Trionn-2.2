@@ -199,7 +199,7 @@ p,
 
 .menu {
   font-family: "FamiljenGroteskVariable-Regular";
-  @apply text-[2.5rem] md:text-xl leading-5.5 -tracking-[0.04em];
+  @apply text-[3rem] md:text-xl leading-5.5 -tracking-[0.04em];
 }
 
 .button-text {
