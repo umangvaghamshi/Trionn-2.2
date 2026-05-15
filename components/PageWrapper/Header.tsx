@@ -177,14 +177,25 @@ export default function Header({
       }
     };
 
+    const handleTransitionStart = () => {
+      if (isOpen) {
+        setIsOpen(false);
+        tl.current?.timeScale(1.75).reverse();
+      }
+    };
+
     if (isOpen) {
       window.addEventListener("resize", handleResize);
     }
+    
+    // Always listen to transition start so we can close if open
+    window.addEventListener("trionn-transition:start", handleTransitionStart);
 
     return () => {
       document.body.style.overflow = "";
       window.dispatchEvent(new Event("trionn-modal:close"));
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("trionn-transition:start", handleTransitionStart);
     };
   }, [isOpen]);
 
@@ -219,6 +230,12 @@ export default function Header({
                   <Link
                     className="relative z-3 block text-light-font"
                     href={item.url}
+                    onClick={() => {
+                      if (isOpen) {
+                        setIsOpen(false);
+                        tl.current?.timeScale(1.75).reverse();
+                      }
+                    }}
                   >
                     <HoverBlur>{item.title}</HoverBlur>
                   </Link>

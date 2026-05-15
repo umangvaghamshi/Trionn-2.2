@@ -189,7 +189,7 @@ export default function Banner() {
               <div className="col-span-12 md:col-span-11">
                 <FadeOnScroll
                   as={"h2"}
-                  html="<span class='w-1/12 inline-block'></span><span class='pl-3 inline!'><span>Trionn is an independent digital studio crafting meaningful brand experiences through strategy, design, and technology.<span></span>"
+                  html="<span class='w-1/12 inline-block'></span><span class='pl-3 inline!'><span>Trionn is an independent digital studio crafting meaningful brand experiences through&nbsp;strategy, design, and technology.<span></span>"
                   className=""
                 />
               </div>
