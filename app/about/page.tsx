@@ -81,8 +81,8 @@ const Page = () => {
       <WeNot />
       <Awards />
       <BrandShowcase />
-      <Testimonials/>
-      <TrionnGallery/>
+      <Testimonials showBottomLine />
+      <TrionnGallery />
     </>
   );
 };
