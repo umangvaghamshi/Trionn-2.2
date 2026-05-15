@@ -150,9 +150,9 @@
 .pl-overlay-page-label {
   /* font-family: var(--pl-mono); */
   /* font-size: clamp(0.563rem, 1vw, 0.688rem); */
-  font-size: 1.125rem;
+  /* font-size: 1.125rem;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
+  text-transform: uppercase; */
   color: var(--pl-black);
   position: absolute;
   top: 50%;
@@ -209,9 +209,9 @@
 }
 .pl-tag-word {
   /* font-family: var(--pl-mono); */
-  font-size: 1.125rem;
+  /* font-size: 1.125rem;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
+  text-transform: uppercase; */
   color: #111;
   opacity: 0;
   transform: translateY(6px);
@@ -268,9 +268,9 @@
   /* font-family: var(--pl-mono); */
   /* font-size: clamp(0.563rem, 1vw, 0.688rem); */
   /* letter-spacing: 0.45em; */
-  font-size: 1.125rem;
+  /* font-size: 1.125rem;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
+  text-transform: uppercase; */
   color: #111;
   opacity: 0;
   transform: translateY(6px);

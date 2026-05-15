@@ -996,24 +996,24 @@ export default function PageLoader() {
           </svg>
 
           {/* Page label (used by PageTransition, shown during belt transitions) */}
-          <div ref={labelRef} className="pl-overlay-page-label" />
+          <div ref={labelRef} className="pl-overlay-page-label title" />
         </div>
 
         {/* Tagline */}
         <div className="pl-overlay-tagline">
-          <span ref={word1Ref} className="pl-tag-word">
+          <span ref={word1Ref} className="pl-tag-word title">
             Inspire
           </span>
           <span ref={dot1Ref} className="pl-tag-dot">
             ·
           </span>
-          <span ref={word2Ref} className="pl-tag-word">
+          <span ref={word2Ref} className="pl-tag-word title">
             Innovate
           </span>
           <span ref={dot2Ref} className="pl-tag-dot">
             ·
           </span>
-          <span ref={word3Ref} className="pl-tag-word">
+          <span ref={word3Ref} className="pl-tag-word title">
             Impact
           </span>
         </div>

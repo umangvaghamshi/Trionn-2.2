@@ -191,9 +191,10 @@ p,
   @apply text-xl lg:text-lg 2xl:text-base leading-[normal];
 }
 
-.title {
+.title,
+.pl-trans-label {
   font-family: "FamiljenGroteskVariable-Regular";
-  @apply text-lg xl:text-base leading-none -tracking-[0.02em] uppercase;
+  @apply text-lg lg:text-[1.063rem] 2xl:text-base leading-none -tracking-[0.02em] uppercase;
 }
 
 .menu {

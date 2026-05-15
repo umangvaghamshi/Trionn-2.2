@@ -351,8 +351,9 @@ export default function HowWork({
                 stagger={0.05}
                 className="mb-6"
               />
-              <p className="small max-w-80 2xl:max-w-50 opacity-50">
-                A repeatable method applied across every engagement.
+              <p className="small opacity-50">
+                A repeatable method applied <br />
+                across every engagement.
               </p>
             </div>
           </div>
