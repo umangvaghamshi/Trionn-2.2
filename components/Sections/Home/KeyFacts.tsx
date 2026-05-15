@@ -168,7 +168,7 @@ export default function KeyFacts() {
   return (
     <section
       id="keyfacts-section"
-      className="pt-20 lg:pt-24 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh max-md:overflow-hidden"
+      className="pt-25 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh max-md:overflow-hidden"
       ref={containerRef}
     >
       <div className="tr__container">
@@ -186,8 +186,8 @@ export default function KeyFacts() {
           </p>
         </div>
         <div
-        key={windowKey}
-          className="key-card-list flex gap-6 justify-start md:justify-center md:flex-wrap lg:flex-nowrap transform-3d max-lg:-mx-4 max-lg:px-4"
+          key={windowKey}
+          className="key-card-list flex gap-6 justify-start md:justify-center md:flex-wrap lg:flex-nowrap transform-3d max-lg:px-[8.66vw]"
         >
           <FeaturedCard odoSync={odoTicks[0]} />
           <ProjectCard odoSync={odoTicks[1]} />
@@ -308,7 +308,7 @@ function FeaturedCard({ odoSync }: { odoSync: number }) {
     <div
       ref={cardRef}
       data-kf-card
-      className="featured-card shrink-0 w-[85vw] md:w-[380px] lg:w-full max-w-99 max-md:h-[50svh] max-md:max-h-110 max-md:min-h-[300px] md:h-122 rounded-lg bg-black text-light-font overflow-hidden relative  transition-colors duration-500 will-change-transform backface-hidden transform-3d"
+      className="featured-card shrink-0 w-[85vw] md:w-[380px] lg:w-full max-w-99 max-md:h-[50svh] max-md:max-h-110 max-md:min-h-[300px] md:h-122 rounded-sm bg-black text-light-font overflow-hidden relative  transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <video
         autoPlay
@@ -357,7 +357,7 @@ function ProjectCard({ odoSync }: { odoSync: number }) {
   return (
     <div
       data-kf-card
-      className="project-card relative shrink-0 w-[85vw] md:w-[380px] lg:w-full max-w-99 max-md:h-[50svh] max-md:max-h-110 max-md:min-h-[300px] md:h-122 rounded-lg bg-cream p-8 lg:p-10 flex flex-col justify-between overflow-hidden   transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
+      className="project-card relative shrink-0 w-[85vw] md:w-[380px] lg:w-full max-w-99 max-md:h-[50svh] max-md:max-h-110 max-md:min-h-[300px] md:h-122 rounded-sm bg-cream p-8 lg:p-10 flex flex-col justify-between overflow-hidden   transition-colors duration-500 text-center will-change-transform backface-hidden transform-3d"
     >
       <span className="title block text-dark-font">projects completed</span>
       <div className="flex flex-col items-center justify-center flex-1 relative">
@@ -405,18 +405,18 @@ function TeamCard({ odoSync }: { odoSync: number }) {
       data-kf-card
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="team-card shrink-0 w-[85vw] md:w-[380px] lg:w-full max-w-99 max-md:h-[50svh] max-md:max-h-110 max-md:min-h-[300px] md:h-122 rounded-lg bg-[#2F3135] text-light-font overflow-hidden relative  transition-colors duration-500 will-change-transform backface-hidden transform-3d"
+      className="team-card shrink-0 w-[85vw] md:w-[380px] lg:w-full max-w-99 max-md:h-[50svh] max-md:max-h-110 max-md:min-h-[300px] md:h-122 rounded-sm bg-[#2F3135] text-light-font overflow-hidden relative  transition-colors duration-500 will-change-transform backface-hidden transform-3d"
     >
       <div className="relative z-3 h-full p-8 lg:p-10 flex flex-col justify-between">
         <span className="title block text-right">our team members</span>
-        <div className="team-video overflow-hidden max-lg:py-4 lg:py-10 max-lg:flex-1 rounded-lg">
+        <div className="team-video overflow-hidden max-lg:py-4 lg:py-10 max-lg:flex-1 rounded-sm">
           <video
             ref={videoRef}
             src="/video/team/rushi.mp4"
             muted
             playsInline
             preload="metadata"
-            className="w-full h-full object-cover object-top rounded-lg scale-101"
+            className="w-full h-full object-cover object-top rounded-sm scale-101"
           />
         </div>
         <div className="flex items-end justify-between">

@@ -242,7 +242,7 @@ export default function Testimonials({
                       <h3 className="mb-10 md:mb-20">{item.quoteMessage}</h3>
                       <div className="client-info flex justify-between items-end">
                         <div className="left-block flex items-end">
-                          <div className="w-14 h-14 md:w-20 md:h-20 overflow-hidden rounded-md relative transition-all duration-300 ease-in-out mr-4 md:mr-6">
+                          <div className="w-14 h-14 md:w-20 md:h-20 overflow-hidden rounded-sm relative transition-all duration-300 ease-in-out mr-4 md:mr-6">
                             <Image
                               src={item.clientImage}
                               alt={item.companyName}
@@ -287,7 +287,7 @@ export default function Testimonials({
             onClick={closeModal}
           >
             <div
-              className="relative w-full max-w-4xl mx-4 aspect-video"
+              className="relative w-full max-w-4xl mx-6 aspect-video"
               onClick={(e) => e.stopPropagation()}
             >
               <button
