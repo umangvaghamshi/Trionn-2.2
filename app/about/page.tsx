@@ -9,6 +9,7 @@ import {
   AboutTeam,
 } from "@/components/Sections/About";
 import Testimonials from "@/components/Testimonials";
+import TrionnGallery from "@/components/TrionnGallery/TrionnGallery";
 import WeNot from "@/components/WeNot";
 import type { Metadata } from "next";
 
@@ -81,7 +82,7 @@ const Page = () => {
       <Awards />
       <BrandShowcase />
       <Testimonials/>
-      <div className="min-h-dvh bg-[#0C0C0C]"></div>
+      <TrionnGallery/>
     </>
   );
 };
