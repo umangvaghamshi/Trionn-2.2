@@ -3,10 +3,11 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Register the GSAP plugin safely for Next.js environments
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(useGSAP);
+  gsap.registerPlugin(useGSAP, ScrollTrigger);
 }
 
 export default function ScrollIndicator() {
@@ -40,6 +41,20 @@ export default function ScrollIndicator() {
           duration: 0.5,
           ease: "power2.in",
         });
+
+      // Fade out the .banner-scroll container when scrolling down 100px
+      const bannerScroll = arrowContainerRef.current?.closest(".banner-scroll");
+      if (bannerScroll) {
+        gsap.to(bannerScroll, {
+          opacity: 0,
+          ease: "none",
+          scrollTrigger: {
+            start: 0,
+            end: 100,
+            scrub: true,
+          },
+        });
+      }
     },
     { scope: arrowContainerRef },
   ); // Scope minimizes selectors and safely cleans up on unmount

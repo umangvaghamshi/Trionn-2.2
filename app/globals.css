@@ -327,7 +327,7 @@ sup {
   @apply h-0 w-0;
 } */
 .project-detail-content ul li {
-  @apply flex gap-0.5 items-center;
+  @apply flex gap-1;
 }
 .project-detail-content ul li::before {
   content: "·";

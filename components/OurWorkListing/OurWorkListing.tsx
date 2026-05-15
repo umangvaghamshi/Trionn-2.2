@@ -2006,7 +2006,7 @@ export default function OurWorkListing() {
               websites, and mobile experiences.
             </p>
           </div>
-          <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font opacity-50 pointer-events-none">
+          <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font opacity-50 pointer-events-none banner-scroll">
             <ScrollIndicator />
           </div>
         </div>
@@ -2035,7 +2035,11 @@ export default function OurWorkListing() {
                 aria-label={`Open ${project.title}`}
                 transitionLabel={project.title}
               >
-                <img src={project.image} alt={project.title} />
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="rounded-sm"
+                />
               </TransitionLink>
             </div>
             <div className="card-info flex flex-col gap-4">

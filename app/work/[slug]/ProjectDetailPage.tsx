@@ -77,7 +77,7 @@ export default function ProjectDetailPage({
       className="relative w-full bg-[#171717] z-3 overflow-hidden text-light-font"
     >
       <div className="tr__container grid grid-cols-12 gap-6 relative">
-        <div className="grid grid-cols-12 gap-6 col-span-12">
+        <div className="grid grid-cols-12 gap-10 col-span-12">
           <div
             className="col-span-12 lg:col-span-5 xl:col-span-4 pt-25 lg:pt-37.5 pb-10 lg:pb-25 flex flex-col justify-between gap-8 lg:gap-10 lg:min-h-dvh max-h-dvh left-block project-detail-content"
             ref={leftColRef}

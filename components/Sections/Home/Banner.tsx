@@ -97,7 +97,7 @@ export default function Banner() {
             </p> */}
             <div
               id="s1-scroll"
-              className="col-span-4 flex items-end justify-start opacity-50 pointer-events-none"
+              className="col-span-4 flex items-end justify-start opacity-50 pointer-events-none banner-scroll"
             >
               <ScrollIndicator />
             </div>
