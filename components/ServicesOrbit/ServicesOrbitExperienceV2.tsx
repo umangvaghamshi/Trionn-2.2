@@ -229,7 +229,7 @@ export default function ServicesOrbitExperienceV2() {
             className="text-center"
           />
         </div>
-        <div className="exp-bottom flex justify-center w-full md:max-w-130 text-center mx-auto mt-auto absolute bottom-30 md:bottom-20 left-1/2 -translate-x-1/2 tr__container">
+        <div className="exp-bottom flex justify-center w-full md:max-w-150 text-center mx-auto mt-auto absolute bottom-40 md:bottom-20 left-1/2 -translate-x-1/2 tr__container">
           <div className="exp-services flex flex-col justify-center items-center">
             <ul
               ref={servicesListRef}
@@ -320,7 +320,7 @@ export default function ServicesOrbitExperienceV2() {
               {CROSS_ICON}
             </div>
           </Marquee>
-          <div className="tr__container w-full">
+          <div className="tr__container w-full absolute top-1/2 left-0 mt-20 lg:mt-37.5">
             <BlurTextReveal
               as="span"
               text="✦ Capabilities shaped to scale with ambition."

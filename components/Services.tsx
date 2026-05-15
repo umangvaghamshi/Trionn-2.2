@@ -127,7 +127,7 @@ export default function Services() {
                 <div
                   className={`image-block w-full md:w-1/2 pt-20 md:py-20 lg:py-37.5 px-6 md:px-10 lg:px-20 text-center flex flex-col items-center justify-center border-r border-grey-line/15 ${
                     index % 2 !== 0
-                      ? "md:bg-[#040508] md:text-light-font text-dark-font"
+                      ? "max-lg:pb-20 bg-[#040508] text-light-font"
                       : ""
                   }`}
                 >
@@ -148,7 +148,7 @@ export default function Services() {
                   />
                   <Image
                     src={service.imgUrl}
-                    className="mx-auto w-full max-w-176"
+                    className="mx-auto w-full max-w-176 rounded-sm"
                     width={704}
                     height={457}
                     alt="service"
@@ -158,7 +158,7 @@ export default function Services() {
                 {/* Content Block */}
                 <div className="content-block w-full md:w-1/2 pt-16 pb-20 md:py-20 lg:py-37.5 grid grid-cols-6 gap-x-6 px-6 md:px-10 lg:px-0">
                   <div className="flex flex-col h-full col-span-6 lg:col-span-5 xl:col-span-4 lg:col-start-2 xl:col-start-2 justify-center">
-                    <div className="service-title-block mb-10 md:mb-16 lg:mb-25">
+                    <div className="service-title-block mb-16 lg:mb-25">
                       <BlurTextReveal
                         {...(index > 0 && isDesktop
                           ? {
@@ -172,7 +172,7 @@ export default function Services() {
                         text={service.title}
                         animationType="chars"
                         stagger={0.02}
-                        className="service-title mb-10 text-[3.5rem]! leading-10.5! -tracking-[0.04em]!"
+                        className="service-title mb-6 lg:mb-10 text-[2.5rem]! xl:text-4xl! leading-none! xl:leading-none! -tracking-[0.04em]!"
                         waitForTransition={false}
                       />
                       <p className="small max-w-99">
