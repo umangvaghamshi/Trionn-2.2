@@ -186,6 +186,7 @@ export default function KeyFacts() {
           </p>
         </div>
         <div
+        key={windowKey}
           className="key-card-list flex gap-6 justify-start md:justify-center md:flex-wrap lg:flex-nowrap transform-3d max-lg:-mx-4 max-lg:px-4"
         >
           <FeaturedCard odoSync={odoTicks[0]} />
