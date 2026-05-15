@@ -558,11 +558,20 @@ export default function TrionnGallery() {
   );
 
   return (
-    <section ref={sectionRef} className={styles.gallerySection}>
-      <div ref={stageRef} className={styles.galleryStage}>
-        <div ref={headerText} className={styles.galleryCenterContent}>
-          <h2 className={styles.galleryCenterTitle}>Work hard. Play loud.</h2>
-          <p className={styles.galleryCenterText}>
+    <section
+      ref={sectionRef}
+      className="h-dvh overflow-hidden relative bg-[#c3c3c3] will-change-transform translate-z-0 z-10 text-dark-font"
+    >
+      <div
+        ref={stageRef}
+        className="overflow-hidden relative bg-[#c3c3c3] h-dvh w-screen transform-[translate3d(0,0,0)] will-change-transform contain-[layout_paint]"
+      >
+        <div
+          ref={headerText}
+          className="absolute top-1/2 left-1/2 -translate-1/2 text-center z-1 pointer-events-none w-[min(50rem,82vw)]"
+        >
+          <h2 className="mb-10">Work hard. Play loud.</h2>
+          <p className="max-w-100 mx-auto">
             A glimpse into the creative chaos, team culture, fun moments, and
             everyday life behind TRIONN.
           </p>
