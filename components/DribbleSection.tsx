@@ -157,17 +157,41 @@ export default function DribbleSection() {
         placedCards = [];
         const FW = getFlatW(),
           FH = FW * CARD_RATIO;
+        // px-per-world-unit from camera projection; used to size the 4px corner radius in shader pixel-space
+        const fov = (getCamFov() * Math.PI) / 180;
+        const pxPerWorldUnit = window.innerHeight / (2 * Math.tan(fov / 2) * getCamZ());
+        const pxW = FW * pxPerWorldUnit;
+        const pxH = FH * pxPerWorldUnit;
         const VS = `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`;
-        const FS = `uniform sampler2D map; varying vec2 vUv; void main(){ gl_FragColor=texture2D(map,vUv); }`;
+        const FS = `
+          uniform sampler2D map;
+          uniform vec2 uSize;
+          uniform float uRadius;
+          varying vec2 vUv;
+          void main(){
+            vec2 pxPos = (vUv - 0.5) * uSize;
+            vec2 halfSize = uSize * 0.5;
+            vec2 q = abs(pxPos) - halfSize + uRadius;
+            float dist = min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - uRadius;
+            float alpha = 1.0 - smoothstep(-0.5, 0.5, dist);
+            if (alpha <= 0.0) discard;
+            vec4 col = texture2D(map, vUv);
+            gl_FragColor = vec4(col.rgb, col.a * alpha);
+          }`;
         placeTextures.forEach((tex) => {
           const geo = new THREE.PlaneGeometry(FW, FH, 20, 12);
           const mesh = new THREE.Mesh(
             geo,
             new THREE.ShaderMaterial({
-              uniforms: { map: { value: tex } },
+              uniforms: {
+                map: { value: tex },
+                uSize: { value: new THREE.Vector2(pxW, pxH) },
+                uRadius: { value: 4.0 },
+              },
               vertexShader: VS,
               fragmentShader: FS,
               side: THREE.DoubleSide,
+              transparent: true,
             }),
           );
           mesh.visible = false;
