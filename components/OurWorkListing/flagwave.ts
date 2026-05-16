@@ -15,10 +15,18 @@ const VS = `
 const FS = `
   uniform sampler2D map;
   uniform float alpha;
+  uniform vec2 uSize;
+  uniform float uRadius;
   varying vec2 vUv;
   void main(){
+    vec2 pxPos = (vUv - 0.5) * uSize;
+    vec2 halfSize = uSize * 0.5;
+    vec2 q = abs(pxPos) - halfSize + uRadius;
+    float dist = min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - uRadius;
+    float edge = 1.0 - smoothstep(-0.5, 0.5, dist);
+    if (edge <= 0.0) discard;
     vec4 c = texture2D(map, vUv);
-    gl_FragColor = vec4(c.rgb, c.a * alpha);
+    gl_FragColor = vec4(c.rgb, c.a * alpha * edge);
   }`;
 
 const WAVE_DUR = 3000;
@@ -191,7 +199,12 @@ class CardWave {
     tex.magFilter = THREE.LinearFilter;
     tex.generateMipmaps = false;
     const mat = new THREE.ShaderMaterial({
-      uniforms: { map: { value: tex }, alpha: { value: 0 } },
+      uniforms: {
+        map: { value: tex },
+        alpha: { value: 0 },
+        uSize: { value: new THREE.Vector2(w, h) },
+        uRadius: { value: 4.0 },
+      },
       vertexShader: VS,
       fragmentShader: FS,
       transparent: true,
