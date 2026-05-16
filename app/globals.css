@@ -183,7 +183,7 @@ h4,
 p,
 .p {
   font-family: "NeueHaasDisplay-Roman";
-  @apply text-xl leading-[normal];
+  @apply text-2xl lg:text-xl leading-[normal];
 }
 
 .small {

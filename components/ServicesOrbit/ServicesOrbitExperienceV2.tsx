@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BlurTextReveal } from "@/components/TextAnimation";
+import { BlurTextReveal, FadeInOnScroll } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import Marquee from "@/components/Marquee";
 import { useServicesOrbitSceneV2 } from "./useServicesOrbitSceneV2";
@@ -230,7 +230,10 @@ export default function ServicesOrbitExperienceV2() {
           />
         </div>
         <div className="exp-bottom flex justify-center w-full md:max-w-150 text-center mx-auto mt-auto absolute bottom-40 md:bottom-20 left-1/2 -translate-x-1/2 tr__container">
-          <div className="exp-services flex flex-col justify-center items-center">
+          <FadeInOnScroll
+            delay={0.5}
+            className="exp-services flex flex-col justify-center items-center"
+          >
             <ul
               ref={servicesListRef}
               className="srv-list flex justify-center list-none flex-wrap gap-2"
@@ -261,7 +264,7 @@ export default function ServicesOrbitExperienceV2() {
                 </li>
               ))}
             </ul>
-          </div>
+          </FadeInOnScroll>
         </div>
         <div className="flex items-center absolute bottom-20 left-0 w-full justify-center md:justify-end opacity-50 tr__container pointer-events-none banner-scroll">
           <ScrollIndicator />

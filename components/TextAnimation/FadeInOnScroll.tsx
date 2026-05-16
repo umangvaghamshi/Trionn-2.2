@@ -20,7 +20,7 @@ const FadeInOnScroll = ({
   as: Tag = "div",
   children,
   className = "",
-  y = 40,
+  y = 20,
   duration = 0.8,
   delay = 0,
   ease = "power2.out",
