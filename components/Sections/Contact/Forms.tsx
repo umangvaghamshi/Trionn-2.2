@@ -461,7 +461,7 @@ export default function Forms() {
           plusClass={"col-span-12 mx-auto"}
           iconColor={"#D8D8D8"}
         />
-        <div className="col-span-12 grid grid-cols-12 gap-20 md:gap-6">
+        <div className="col-span-12 grid grid-cols-12 gap-y-20 md:gap-6 w-full">
           <div className="col-span-12 md:col-span-6 lg:col-span-5 lg:col-start-2 flex flex-col gap-6 lg:gap-10">
             <BlurTextReveal
               as="h2"
@@ -483,7 +483,7 @@ export default function Forms() {
               animationType="chars"
               stagger={0.08}
             />
-            <div className="grid grid-cols-12 gap-6">
+            <div className="grid grid-cols-12 gap-10">
               <div className="col-span-12 sm:col-span-6 flex flex-col gap-2">
                 <p className="small sm:max-w-75">
                   We work with people who care deeply about craft, clarity, and

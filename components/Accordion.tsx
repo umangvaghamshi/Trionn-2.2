@@ -75,13 +75,7 @@ export default function Accordion({ items, customClass }: AccordionProps) {
                 className="accordion__title pr-20 w-full relative cursor-pointer items-center"
                 onClick={() => toggleItem(index)}
               >
-                <BlurTextReveal
-                  as="h3"
-                  html={item.title}
-                  animationType="words"
-                  stagger={0.05}
-                />
-
+                <h3>{item.title}</h3>
                 {/* + / - */}
                 <span
                   className={`icon absolute top-1/2 right-0 h-3 w-3 -translate-y-1/2 delay-200 flex justify-center items-center transition-all duration-300 ease-in-out ${
@@ -108,7 +102,7 @@ export default function Accordion({ items, customClass }: AccordionProps) {
                 ref={(el) => {
                   contentRefs.current[index] = el;
                 }}
-                className="accordion__content w-full overflow-hidden"
+                className="accordion__content w-full overflow-hidden small"
                 style={{
                   height: index === 0 ? "auto" : 0,
                   opacity: index === 0 ? 1 : 0,
