@@ -26,7 +26,7 @@ export default function NavLinks() {
                 <TransitionLink
                   className={`menu block uppercase text-white ${isActive ? "active" : ""}`}
                   href={item.url}
-                  transitionLabel={labelMap[item.url] || item.title}
+                  transitionLabel={item.title || labelMap[item.url]}
                 >
                   <HoverBlur>{item.title}</HoverBlur>
                 </TransitionLink>

@@ -159,10 +159,12 @@ export default function Banner() {
                     </div>
                   </div>
                 </FadeInOnScroll>
-                <div id="s1-sub" className="text-justify">
+                <div id="s1-sub">
                   <FadeInOnScroll delay={0.7}>
-                    Websites, digital products, brands, and systems built for
-                    clarity, scale, and impact.
+                    <p className="text-justify">
+                      Websites, digital products, brands, and systems built for
+                      clarity, scale, and impact.
+                    </p>
                   </FadeInOnScroll>
                 </div>
               </div>

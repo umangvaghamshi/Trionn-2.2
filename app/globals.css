@@ -67,36 +67,43 @@
 :root {
   --size: 320;
 }
+
 @media (min-width: 440px) {
   :root {
     --size: 360;
   }
 }
+
 @media (min-width: 640px) {
   :root {
     --size: 480;
   }
 }
+
 @media (min-width: 768px) {
   :root {
     --size: 750;
   }
 }
+
 @media (min-width: 1024px) {
   :root {
     --size: 850;
   }
 }
+
 @media (min-width: 1280px) {
   :root {
     --size: 1000;
   }
 }
+
 @media (min-width: 1441px) {
   :root {
     --size: 1180;
   }
 }
+
 @media (min-width: 1536px) {
   :root {
     --size: 1280;
@@ -128,6 +135,60 @@
   }
 }
 
+.shake {
+  animation: shake 0.42s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-7px);
+  }
+
+  40% {
+    transform: translateX(7px);
+  }
+
+  60% {
+    transform: translateX(-4px);
+  }
+
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.success-circle::before,
+.success-circle::after {
+  content: "";
+  animation: successPulse 2s ease infinite;
+  @apply absolute inset-[-1.5rem] border border-white/12 rounded-full transform scale-[0.75] opacity-0;
+}
+
+.success-circle::after {
+  @apply inset-[-3rem] delay-[0.35s];
+}
+
+@keyframes successPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
 html {
   font-family: "NeueHaasDisplay-Roman";
   font-size: calc(1000vw / var(--size));
@@ -155,10 +216,11 @@ h2,
 .h2 {
   font-family: "FamiljenGroteskVariable-Regular";
   @apply text-[5.938rem] leading-22.5 -tracking-[0.06em];
-  font-size: clamp(2.7rem, 6.283vw, 5.938rem);
-  line-height: clamp(2.4rem, 5.952vw, 5.625rem);
+  font-size: clamp(2.5rem, 6.283vw, 5.938rem);
+  line-height: clamp(2.2rem, 5.952vw, 5.625rem);
   letter-spacing: clamp(-0.06em, -0.056vw, -0.06em);
 }
+
 h2.big,
 .h2.big {
   font-family: "FamiljenGroteskVariable-Regular";
@@ -183,7 +245,7 @@ h4,
 p,
 .p {
   font-family: "NeueHaasDisplay-Roman";
-  @apply text-2xl lg:text-xl leading-[normal];
+  @apply text-xl lg:text-lg 2xl:text-xl leading-[normal];
 }
 
 .small {
@@ -240,6 +302,7 @@ canvas {
 .link {
   @apply relative inline-block transition-all duration-500 ease-in-out;
 }
+
 .link::before {
   content: "";
   @apply absolute bottom-0 left-0 h-[0.063rem] w-full bg-white transition-transform duration-500 ease-in-out;
@@ -273,7 +336,7 @@ sup {
 }
 
 .custom-arrow {
-  @apply relative w-20 h-20 min-w-20 min-h-20 border border-solid border-grey-line/15 flex items-end rounded-lg cursor-pointer transition-all duration-300 ease-in-out hover:border-grey-line overflow-hidden;
+  @apply relative w-20 h-20 min-w-20 min-h-20 border border-solid border-grey-line/15 flex items-end rounded-sm cursor-pointer transition-all duration-300 ease-in-out hover:border-grey-line overflow-hidden;
 }
 
 .custom-arrow .arrow-icon {
@@ -329,6 +392,7 @@ sup {
 .project-detail-content ul li {
   @apply flex gap-1;
 }
+
 .project-detail-content ul li::before {
   content: "·";
 }
@@ -336,19 +400,23 @@ sup {
 .text-field {
   @apply bg-[#131415] w-full rounded-sm border p-4 text-dark-font border-none autofill:bg-[#D2D2D2] placeholder:text-light-font/20 focus:placeholder:text-dark-font;
 }
+
 .text-field:focus,
 .text-field:not(:placeholder-shown) {
   @apply bg-[#D2D2D2] outline-none;
 }
+
 select.text-field {
   @apply pt-4 pr-10 pb-4 pl-4 text-dark-font whitespace-nowrap overflow-hidden text-ellipsis;
 }
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 1000px #d2d2d2 inset !important;
-  -webkit-text-fill-color: #434343 !important; /* Changes the text color */
+  -webkit-text-fill-color: #434343 !important;
+  /* Changes the text color */
 }
 
 @media (max-width: 1023px) {
@@ -356,17 +424,21 @@ input:-webkit-autofill:active {
     @apply py-3 px-4 rounded-3xl bg-black border-black;
   }
 }
+
 @media (max-width: 640px) {
   .marquee-wrapper .mrquee-text {
     @apply leading-none;
   }
+
   .custom-arrow {
     @apply w-14 h-14 min-w-14 min-h-14;
   }
+
   .custom-arrow .arrow-icon {
     @apply p-2;
   }
 }
+
 /* @media (max-width: 1023px) {
   body {
     @apply text-xl;
