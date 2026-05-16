@@ -503,7 +503,7 @@ export default function Awards() {
                       cardsRef.current[idx] = self;
                     }
                   }}
-                  className={`overflow-hidden relative w-[90vw] max-w-134 sm:w-134 min-h-62 sm:min-h-77 p-8 sm:p-10 bg-white/90 hover:bg-black/90 text-dark-font hover:text-light-font rounded-lg flex justify-between transition-all duration-500 ease-in-out`}
+                  className={`overflow-hidden relative w-[90vw] max-w-134 sm:w-134 min-h-62 sm:min-h-77 p-8 sm:p-10 bg-white/90 hover:bg-black/90 text-dark-font hover:text-light-font rounded-sm flex justify-between transition-all duration-500 ease-in-out`}
                 >
                   <div className="flex-1 flex flex-col items-start justify-between pr-6 sm:pr-10">
                     <BlurTextReveal
