@@ -11,18 +11,21 @@ export default function Banner() {
   const videoRef = useRef<HTMLDivElement>(null);
   const transitionReady = useTransitionReady();
 
-  useGSAP(() => {
-    if (!transitionReady) {
-      gsap.set(videoRef.current, { y: "-2rem" });
-      return;
-    }
+  useGSAP(
+    () => {
+      if (!transitionReady) {
+        gsap.set(videoRef.current, { y: "-2rem" });
+        return;
+      }
 
-    gsap.fromTo(
-      videoRef.current,
-      { y: "-2rem" },
-      { y: 0, duration: 1, ease: "none", delay: 0.2 }
-    );
-  }, { scope: videoRef, dependencies: [transitionReady] });
+      gsap.fromTo(
+        videoRef.current,
+        { y: "-2rem" },
+        { y: 0, duration: 0.5, ease: "none" },
+      );
+    },
+    { scope: videoRef, dependencies: [transitionReady] },
+  );
 
   return (
     <section className="pb-20 lg:pb-37.5 relative bg-[#D2D2D2] text-dark-font min-h-dvh flex overflow-hidden">

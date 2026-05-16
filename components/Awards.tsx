@@ -503,9 +503,9 @@ export default function Awards() {
                       cardsRef.current[idx] = self;
                     }
                   }}
-                  className={`overflow-hidden relative w-134 h-77 p-10 bg-white/90 hover:bg-black/90 text-dark-font hover:text-light-font rounded-lg flex justify-between transition-all duration-500 ease-in-out`}
+                  className={`overflow-hidden relative w-[90vw] max-w-134 sm:w-134 min-h-62 sm:min-h-77 p-8 sm:p-10 bg-white/90 hover:bg-black/90 text-dark-font hover:text-light-font rounded-lg flex justify-between transition-all duration-500 ease-in-out`}
                 >
-                  <div className="flex-1 flex flex-col items-start justify-between pr-10">
+                  <div className="flex-1 flex flex-col items-start justify-between pr-6 sm:pr-10">
                     <BlurTextReveal
                       as="p"
                       text={item.title}
@@ -513,7 +513,7 @@ export default function Awards() {
                       stagger={0.03}
                       className="transition-all duration-500 ease-in-out"
                     />
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col sm:gap-1">
                       {item.awards.map((award, i) => {
                         return (
                           <p
@@ -526,7 +526,7 @@ export default function Awards() {
                       })}
                     </div>
                   </div>
-                  <div className="awards-image-wrapper w-full max-w-40 overflow-hidden relative">
+                  <div className="awards-image-wrapper w-full max-w-32 sm:max-w-40 overflow-hidden relative">
                     {item.awards.map((award, index) => {
                       return (
                         <div key={index}>

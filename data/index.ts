@@ -13,7 +13,7 @@ export const headerSection = {
 
 export const menu = [
   {
-    title: "work",
+    title: "Work",
     url: "/work",
   },
   {

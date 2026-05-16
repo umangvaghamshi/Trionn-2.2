@@ -58,7 +58,7 @@ export default function Founder() {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-12 gap-x-6 mb-14 mt-[65dvh] sm:mt-[100dvh] md:my-25">
+        <div className="grid grid-cols-12 gap-x-6 mb-20 mt-[65dvh] sm:mt-[100dvh] md:my-25">
           <div className="col-span-12 lg:col-span-10 lg:col-start-2 ">
             <LinePlus
               customClass="grid-cols-10!"

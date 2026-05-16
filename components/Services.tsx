@@ -120,7 +120,7 @@ export default function Services() {
                 lineClass={"opacity-15 bg-grey-line left-1/2 -translate-x-1/2"}
                 plusClass={"col-span-12 mx-auto plus-icon"}
                 iconColor={"#272727"}
-                scrub={false}
+                // scrub={false}
               />
               <div className="flex flex-col md:flex-row w-full">
                 {/* Image / Subtext Block */}
@@ -172,7 +172,7 @@ export default function Services() {
                         text={service.title}
                         animationType="chars"
                         stagger={0.02}
-                        className="service-title mb-6 lg:mb-10 text-[2.5rem]! xl:text-4xl! leading-none! xl:leading-none! -tracking-[0.04em]!"
+                        className="service-title mb-6 text-[2.5rem]! xl:text-4xl! leading-none! xl:leading-none! -tracking-[0.04em]!"
                         waitForTransition={false}
                       />
                       <p className="small max-w-99">

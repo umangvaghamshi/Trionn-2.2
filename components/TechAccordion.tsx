@@ -147,7 +147,7 @@ export default function TechAccordion({
                 "col-span-11 lg:col-span-8 col-start-2 lg:col-start-5 -translate-x-1/2!"
               }
               iconColor={"#272727"}
-              scrub={false}
+              // scrub={false}
               duration={1}
             />
           </div>

@@ -155,8 +155,8 @@ h2,
 .h2 {
   font-family: "FamiljenGroteskVariable-Regular";
   @apply text-[5.938rem] leading-22.5 -tracking-[0.06em];
-  font-size: clamp(2.7rem, 6.283vw, 5.938rem);
-  line-height: clamp(2.4rem, 5.952vw, 5.625rem);
+  font-size: clamp(2.5rem, 6.283vw, 5.938rem);
+  line-height: clamp(2.2rem, 5.952vw, 5.625rem);
   letter-spacing: clamp(-0.06em, -0.056vw, -0.06em);
 }
 h2.big,
@@ -183,7 +183,7 @@ h4,
 p,
 .p {
   font-family: "NeueHaasDisplay-Roman";
-  @apply text-2xl lg:text-xl leading-[normal];
+  @apply text-xl lg:text-lg 2xl:text-xl leading-[normal];
 }
 
 .small {
