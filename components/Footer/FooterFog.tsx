@@ -41,12 +41,20 @@ export default function FooterFog({ className = "" }: Props) {
     uniform vec2  R;
 
     float hash(vec2 p){
-      p = fract(p * vec2(127.34, 311.7));
-      p += dot(p, p + 19.19);
-      return fract(p.x * p.y);
+      if (R.x < 768.0) {
+        p = fract(p * vec2(0.3183099, 0.3678794));
+        return fract(sin(p.x * 12.9898 + p.y * 78.233) * 43.75854);
+      } else {
+        p = fract(p * vec2(127.34, 311.7));
+        p += dot(p, p + 19.19);
+        return fract(p.x * p.y);
+      }
     }
     float vnoise(vec2 p){
       vec2 i=floor(p), f=fract(p), u=f*f*(3.-2.*f);
+      if (R.x < 768.0) {
+        i = mod(i, 100.0);
+      }
       return mix(
         mix(hash(i),           hash(i+vec2(1,0)), u.x),
         mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), u.x), u.y);
@@ -78,8 +86,15 @@ export default function FooterFog({ className = "" }: Props) {
       float mB    = mod(M + LOOP * 0.5, LOOP);
       float blend = abs(mod(M, LOOP) / LOOP - 0.5) * 2.0;
 
-      vec2 q   = vec2(uv.x * aspect * 3.0, (1.0 - y) * 4.5 + rise);
-      vec2 q2  = vec2(uv.x * aspect * 2.6, (1.0 - y) * 3.8 + rise * 0.6);
+      vec2 q, q2;
+      if (R.x < 768.0) {
+        float qY = (R.y - gl_FragCoord.y) / 88.88;
+        q   = vec2(gl_FragCoord.x / 133.33, qY + rise);
+        q2  = vec2(gl_FragCoord.x / 153.84, qY * 0.8444 + rise * 0.6);
+      } else {
+        q   = vec2(uv.x * aspect * 3.0, (1.0 - y) * 4.5 + rise);
+        q2  = vec2(uv.x * aspect * 2.6, (1.0 - y) * 3.8 + rise * 0.6);
+      }
 
       vec2 w1a = vec2(fbm(q2 + vec2(0.0, mA*0.15)), fbm(q2 + vec2(4.3, 2.7+mA*0.10)));
       float fA = fbm(q + 1.4*w1a + vec2(0.0, mA*0.06));
