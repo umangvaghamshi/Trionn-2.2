@@ -181,16 +181,18 @@ export default function Awards() {
         xPercent: 100,
       });
 
+      const isMobile = window.innerWidth < 1024;
+
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: awardsSectionRef.current,
           start: "top top",
           end: () => `+=600%`,
-          scrub: 1,
+          scrub: isMobile ? true : 1,
           pin: true,
           markers: false,
-          anticipatePin: 1,
+          anticipatePin: isMobile ? 0 : 1,
           pinSpacing: true,
         },
       });
@@ -201,15 +203,29 @@ export default function Awards() {
         .fromTo(
           maskRef.current,
           {
-            width: "33.25rem",
-            height: "43.75rem",
+            width: () => {
+              const rem = parseFloat(
+                getComputedStyle(document.documentElement).fontSize,
+              );
+              const mobile = window.innerWidth < 1024;
+              const sideGap = mobile ? 4 * rem : 3 * rem;
+              return Math.min(33.25 * rem, window.innerWidth - sideGap);
+            },
+            height: () => {
+              const rem = parseFloat(
+                getComputedStyle(document.documentElement).fontSize,
+              );
+              return window.innerWidth < 1024 ? 39 * rem : 43.75 * rem;
+            },
+            y: () => (window.innerWidth < 1024 ? 50 : 0),
             borderRadius: 999,
           },
           {
             width: "100vw",
             height: "100dvh",
+            y: 0,
             borderRadius: 0,
-            duration: 0.15,
+            duration: window.innerWidth < 1024 ? 0.2 : 0.15,
           },
         )
 
