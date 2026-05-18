@@ -20,8 +20,8 @@ export default function Banner() {
 
       gsap.fromTo(
         videoRef.current,
-        { y: "-2rem" },
-        { y: 0, duration: 0.5, ease: "none" },
+        { y: "-5rem" },
+        { y: 0, duration: 1, ease: "back.out(2.5)" },
       );
     },
     { scope: videoRef, dependencies: [transitionReady] },
@@ -38,7 +38,7 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-[75dvh] w-full hidden lg:block"
+            className="max-h-[80dvh] w-full hidden lg:block -translate-y-10"
           />
           <video
             src="/video/hanging-lion-mobile.mp4"
