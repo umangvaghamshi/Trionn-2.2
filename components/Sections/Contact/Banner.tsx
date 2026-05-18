@@ -19,17 +19,43 @@ export default function Banner() {
   const stripesRef = useRef<HTMLDivElement[]>([]);
   const transitionReady = useTransitionReady();
 
+  // Initial video animation
   useGSAP(
     () => {
       if (!transitionReady) {
-        gsap.set(videoRef.current, { y: "-6rem" });
+        gsap.set(videoRef.current, { y: "-10rem", opacity: 0 });
         return;
       }
 
-      gsap.to(videoRef.current, { y: 0, duration: 1, ease: "back.out(3)" });
+      gsap.to(videoRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        ease: "power1.out",
+      });
     },
     { scope: videoRef, dependencies: [transitionReady] },
   );
+
+  // Scroll Up Video While Scrolling
+  useGSAP(() => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top top",
+        end: `+=150%`,
+        scrub: true,
+        markers: false,
+      },
+      defaults: { ease: "none" },
+    });
+
+    tl.to(videoRef.current, { y: "-20rem" });
+
+    return () => {
+      tl.scrollTrigger?.refresh();
+    };
+  });
 
   useGSAP(() => {
     const stripes = stripesRef.current;
