@@ -74,7 +74,7 @@ const Page = () => {
             "s1-sub",
             "s1-scroll",
             "s1-stats",
-            "s1-body",
+            "s1-box",
             "s1-cta",
           ]}
         />
