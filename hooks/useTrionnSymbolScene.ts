@@ -2,9 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import gsap from "gsap";
-import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLenis } from "lenis/react";
 import { useTrionnSymbolAudio } from "./useTrionnSymbolAudio";
 import { getCanvasManager } from "@/lib/canvasManager";
 import { useTransitionReady } from "@/components/Transition";
@@ -165,19 +164,11 @@ export function useTrionnSymbolScene(
 ) {
   const audio = useTrionnSymbolAudio();
   const lenisScrollRef = useRef(0);
+  const loopIdRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const tick = () => {
-      const sm = ScrollSmoother.get();
-      lenisScrollRef.current = sm ? sm.scrollTop() : window.scrollY;
-    };
-    tick();
-    gsap.ticker.add(tick);
-    return () => {
-      gsap.ticker.remove(tick);
-    };
-  }, []);
+  useLenis(({ scroll }) => {
+    lenisScrollRef.current = scroll;
+  });
 
   const stateRef = useRef({
     scrollProgress: 0,
@@ -1225,7 +1216,8 @@ export function useTrionnSymbolScene(
     // Register with global canvas manager. The hero canvas is always in view on
     // load; the manager handles tab-visibility pausing automatically.
     const manager = getCanvasManager();
-    const loopId = manager.register(animate, true);
+    const loopId = manager.register(animate, true, "trionn-hero");
+    loopIdRef.current = loopId;
 
     // Pause when the hero section scrolls entirely out of view.
     const heroIo = new IntersectionObserver(
@@ -1348,5 +1340,10 @@ export function useTrionnSymbolScene(
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transitionReady]);
 
-  return { audio, stateRef };
+  const setLoopActive = (active: boolean) => {
+    if (loopIdRef.current == null) return;
+    getCanvasManager().setActive(loopIdRef.current, active);
+  };
+
+  return { audio, stateRef, setLoopActive };
 }

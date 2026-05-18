@@ -5,7 +5,6 @@ import styles from "./TrionnGallery.module.css";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLenis } from "lenis/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,11 +31,6 @@ export default function TrionnGallery() {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
   const headerText = useRef<HTMLDivElement | null>(null);
-  const lenisRef = useRef<ReturnType<typeof useLenis> | null>(null);
-
-  useLenis((lenis) => {
-    lenisRef.current = lenis;
-  });
 
   useGSAP(
     () => {

@@ -135,6 +135,16 @@
   }
 }
 
+html,
+body {
+  overscroll-behavior: none;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
 .shake {
   animation: shake 0.42s ease;
 }

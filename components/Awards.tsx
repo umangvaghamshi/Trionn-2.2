@@ -188,11 +188,11 @@ export default function Awards() {
         scrollTrigger: {
           trigger: awardsSectionRef.current,
           start: "top top",
-          end: () => `+=600%`,
-          scrub: isMobile ? true : 1,
+          end: () => (window.innerWidth < 1024 ? `+=400%` : `+=600%`),
+          scrub: 1,
           pin: true,
-          markers: false,
-          anticipatePin: isMobile ? 0 : 1,
+          markers: true,
+          anticipatePin: 1,
           pinSpacing: true,
         },
       });
@@ -227,6 +227,15 @@ export default function Awards() {
             borderRadius: 0,
             duration: window.innerWidth < 1024 ? 0.2 : 0.15,
           },
+        )
+        .to(
+          videoContainerRef.current,
+          {
+            paddingLeft: 0,
+            paddingRight: 0,
+            duration: 0.15,
+          },
+          "<",
         )
 
         .addLabel("reveal_clip_path")
@@ -389,7 +398,7 @@ export default function Awards() {
       {/* We apply the clip-path via GSAP, but set initial state here to avoid FOUC */}
       <div
         ref={videoContainerRef}
-        className="absolute inset-0 flex items-center justify-center"
+        className="absolute inset-0 flex items-center justify-center  px-6 lg:px-0"
       >
         <div ref={maskRef} className="overflow-hidden w-full h-full">
           <video
@@ -401,6 +410,8 @@ export default function Awards() {
             // Replace with your actual video URL
             src="/video/awards-video.mp4"
             preload="metadata"
+            disablePictureInPicture
+            disableRemotePlayback
           />
         </div>
 

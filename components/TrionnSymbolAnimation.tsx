@@ -2,6 +2,7 @@
 
 import { useSiteSound } from "@/components/SiteSoundContext";
 import { useTrionnSymbolScene } from "@/hooks/useTrionnSymbolScene";
+import { getCanvasManager } from "@/lib/canvasManager";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -77,6 +78,9 @@ export function TrionnSymbolAnimation({
   useGSAP(() => {
     if (!canvasWrapRef.current) return;
 
+    const manager = getCanvasManager();
+    const PAUSE_REASON = "hero-scrolltrigger";
+
     ScrollTrigger.create({
       trigger: "#hero-section",
       start: "top top",
@@ -84,13 +88,16 @@ export function TrionnSymbolAnimation({
       pin: canvasWrapRef.current,
       pinSpacing: false,
       markers: false,
+      anticipatePin:1,
       onLeave: () => {
         heroActiveRef.current = false;
         audio.stopAllSounds();
         audio.setSoundEnabled(false);
+        manager.suspend("trionn-hero", PAUSE_REASON);
       },
       onEnterBack: () => {
         heroActiveRef.current = true;
+        manager.resume("trionn-hero", PAUSE_REASON);
         if (siteSoundRef.current) {
           audio.setSoundEnabled(true);
           audio.autoStartWoosh();
