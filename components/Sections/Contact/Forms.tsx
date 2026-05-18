@@ -38,7 +38,6 @@ const BUDGET_OPTIONS = [
 export default function Forms() {
   // --- State ---
   const { soundEnabled } = useSiteSound();
-  const [mounted, setMounted] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -58,14 +57,10 @@ export default function Forms() {
   const stepRef = useRef<HTMLDivElement>(null);
   const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
 
-  // --- Hydration Fix ---
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+
 
   // --- Viewport observer: gate first headline voice until section is visible ---
   useEffect(() => {
-    if (!mounted) return;
     const node = sectionRef.current;
     if (!node) return;
     const observer = new IntersectionObserver(
@@ -79,7 +74,7 @@ export default function Forms() {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [mounted]);
+  }, []);
 
   // --- Voice Logic ---
   useEffect(() => {
@@ -110,7 +105,6 @@ export default function Forms() {
 
   // --- Navigation & Animations ---
   useEffect(() => {
-    if (!mounted) return;
 
     if (currentStep <= 4) {
       gsap.fromTo(
@@ -207,12 +201,11 @@ export default function Forms() {
 
       return () => clearTimeout(timer);
     }
-  }, [currentStep, mounted]);
+  }, [currentStep]);
 
   // --- Voice: speaks per step. First step waits for the section to enter view,
   //     and is skipped if the user is returning to step 0 mid-flow ---
   useEffect(() => {
-    if (!mounted) return;
     if (currentStep === 0 && (!hasEnteredView || hasStartedForm)) return;
 
     const headlines = [
@@ -228,7 +221,7 @@ export default function Forms() {
     } else if (currentStep === 5) {
       speak("Inquiry submitted successfully.");
     }
-  }, [currentStep, mounted, hasEnteredView, hasStartedForm]);
+  }, [currentStep, hasEnteredView, hasStartedForm]);
 
   const validate = () => {
     const newErrors: Record<string, boolean> = {};
@@ -274,13 +267,13 @@ export default function Forms() {
   };
 
   // Prevent hydration mismatch
-  if (!mounted) return null;
 
   const progressPercent = (Math.min(currentStep + 1, 5) / 5) * 100;
 
   return (
     <section
       ref={sectionRef}
+      id="contact-forms-section"
       className="relative w-full bg-[#040508] text-light-font overflow-hidden flex items-center py-20 lg:py-37.5"
     >
       {/* Background Video */}
