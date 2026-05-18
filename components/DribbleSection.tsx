@@ -5,13 +5,13 @@ import * as THREE from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { useLenis } from "lenis/react";
 import { BlurTextReveal } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 
 import { getCappedDPR } from "@/hooks/useCanvasLoop";
+import { ScrollSmoother } from "gsap/all";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger,ScrollSmoother) ;
 gsap.ticker.lagSmoothing(0);
 gsap.ticker.fps(60);
 
@@ -21,12 +21,6 @@ export default function DribbleSection() {
   const centerRef = useRef<HTMLDivElement>(null);
   const stripesRef = useRef<HTMLDivElement[]>([]);
   const [refreshComponent, setRefreshComponent] = useState(false);
-
-  /* Hold a live ref to the Lenis instance so renderFrame reads scroll in the same tick */
-  const lenisRef = useRef<{ scroll: number } | null>(null);
-  useLenis((lenis) => {
-    lenisRef.current = lenis;
-  });
 
   useGSAP(
     () => {
@@ -549,17 +543,20 @@ export default function DribbleSection() {
       };
       window.addEventListener("trionn-services:unpinned", onServicesUnpinned);
 
-      /* render loop — driven by gsap.ticker (same tick as Lenis) so scroll is never stale */
+      /* render loop — driven by gsap.ticker; window.scrollY is self-lerped for sub-pixel smoothness */
       let lastTs = 0;
       let smoothHeadA = 0,
         smoothHeadB = 0;
+      let smoothScroll = window.scrollY;
       const renderFrame = (time: number) => {
         const ts = time * 1000;
         const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 1 / 60;
         lastTs = ts;
 
-        /* Read smoothed scroll from Lenis (same as app.js: lenis.on('scroll', e => scrollY = e.scroll)) */
-        const lenisScroll = lenisRef.current?.scroll ?? 0;
+        /* Smooth window.scrollY with a per-frame lerp — fps-independent, matches Lenis feel */
+        const scrollLerpK = 1 - Math.pow(0.001, dt);
+        smoothScroll += (window.scrollY - smoothScroll) * scrollLerpK;
+        const lenisScroll = smoothScroll;
         const sectionTop = st.start; // px offset where pin begins
         const rawProg =
           totalScroll > 0
