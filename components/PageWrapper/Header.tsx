@@ -41,7 +41,12 @@ export default function Header({
   // Smooth Sidebar Toggle Animation
   useGSAP(
     () => {
-      const paths = [menu1.current, menu2.current, close1.current, close2.current];
+      const paths = [
+        menu1.current,
+        menu2.current,
+        close1.current,
+        close2.current,
+      ];
 
       paths.forEach((p) => {
         if (!p) return;
@@ -70,7 +75,7 @@ export default function Header({
             strokeDashoffset: (i, el: any) => el.getTotalLength(),
             ease: "power2.inOut",
           },
-          0
+          0,
         )
         .to(
           menu2.current,
@@ -79,19 +84,19 @@ export default function Header({
             strokeDashoffset: (i, el: any) => el.getTotalLength(),
             ease: "power2.inOut",
           },
-          0.05
+          0.05,
         )
         // 2. Draw in the close lines
         .set([close1.current, close2.current], { opacity: 1 }, 0.2)
         .to(
           close1.current,
           { duration: 0.3, strokeDashoffset: 0, ease: "power2.out" },
-          0.2
+          0.2,
         )
         .to(
           close2.current,
           { duration: 0.3, strokeDashoffset: 0, ease: "power2.out" },
-          0.25
+          0.25,
         )
         // 3. Glide the right sidebar into view smoothly
         .fromTo(
@@ -104,7 +109,7 @@ export default function Header({
             x: "0%",
             ease: "expo.inOut",
           },
-          0
+          0,
         )
         // 4. Fade in top menu items one by one
         .fromTo(
@@ -117,7 +122,7 @@ export default function Header({
             stagger: 0.1,
             ease: "power2.out",
           },
-          0.4
+          0.4,
         )
         // 5. Fill line width 100% concurrently with top menu items
         .fromTo(
@@ -128,7 +133,7 @@ export default function Header({
             width: "100%",
             ease: "expo.out",
           },
-          "<0.4" // Starts 0.4s after the top menu items START showing
+          "<0.4", // Starts 0.4s after the top menu items START showing
         )
         // 6. Fade in bottom content
         .fromTo(
@@ -141,7 +146,7 @@ export default function Header({
             stagger: 0.05,
             ease: "power2.out",
           },
-          "<0.2" // Starts 0.2s after the line starts drawing
+          "<0.2", // Starts 0.2s after the line starts drawing
         );
     },
     { scope: containerRef },
@@ -187,7 +192,7 @@ export default function Header({
     if (isOpen) {
       window.addEventListener("resize", handleResize);
     }
-    
+
     // Always listen to transition start so we can close if open
     window.addEventListener("trionn-transition:start", handleTransitionStart);
 
@@ -195,7 +200,10 @@ export default function Header({
       document.body.style.overflow = "";
       window.dispatchEvent(new Event("trionn-modal:close"));
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("trionn-transition:start", handleTransitionStart);
+      window.removeEventListener(
+        "trionn-transition:start",
+        handleTransitionStart,
+      );
     };
   }, [isOpen]);
 
@@ -223,7 +231,10 @@ export default function Header({
                 Business enquiry
               </span>
               {enquiry.map((item, index) => (
-                <p className="bottom-stagger-item flex gap-2 mb-2 last:mb-0" key={index}>
+                <p
+                  className="bottom-stagger-item flex gap-2 mb-2 last:mb-0"
+                  key={index}
+                >
                   <span className="shrink-0 uppercase text-light-font/50">
                     {formatEnquiryLabel(item.label)}
                   </span>
@@ -243,10 +254,7 @@ export default function Header({
               ))}
             </div>
             <div className="flex flex-col gap-4 text-center">
-              <div
-                className="bottom-stagger-item flex border border-[#2F323B] overflow-hidden rounded-sm min-h-18 text-light-font title"
-                id="s1-body"
-              >
+              <div className="bottom-stagger-item flex border border-[#2F323B] overflow-hidden rounded-sm min-h-18 text-light-font title">
                 <div className="flex flex-col justify-center items-center min-w-26 border-r border-[#2F323B] text-center gap-2 p-4">
                   <svg
                     width="43"

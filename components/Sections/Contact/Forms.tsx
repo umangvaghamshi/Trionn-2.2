@@ -57,8 +57,6 @@ export default function Forms() {
   const stepRef = useRef<HTMLDivElement>(null);
   const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
 
-
-
   // --- Viewport observer: gate first headline voice until section is visible ---
   useEffect(() => {
     const node = sectionRef.current;
@@ -105,7 +103,6 @@ export default function Forms() {
 
   // --- Navigation & Animations ---
   useEffect(() => {
-
     if (currentStep <= 4) {
       gsap.fromTo(
         stepRef.current,
@@ -274,7 +271,7 @@ export default function Forms() {
     <section
       ref={sectionRef}
       id="contact-forms-section"
-      className="relative w-full bg-[#040508] text-light-font overflow-hidden flex items-center py-20 lg:py-37.5"
+      className="relative w-full bg-[#040508] text-light-font overflow-hidden flex items-center py-20 lg:py-37.5 contact-forms-section"
     >
       {/* Background Video */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -428,7 +425,7 @@ export default function Forms() {
                     </div>
                   </div>
                   <textarea
-                    className={`w-full min-h-65 border bg-transparent rounded-sm ${
+                    className={`w-full min-h-65 border bg-transparent rounded-sm selection:bg-black! ${
                       errors.message
                         ? "border-[#ff4b2f]!"
                         : "border-light-font/20"
@@ -619,7 +616,7 @@ function InputGroup({ label, error, errorMsg, shake, ...props }: any) {
   const shouldShowLabel = props.value && props.value.length > 0;
 
   return (
-    <div className={`relative ${shake ? "shake" : ""}`}>
+    <div className={`relative selection:bg-black! ${shake ? "shake" : ""}`}>
       <div className="min-h-0 m-0 block">
         <label
           className={`absolute top-0 left-3.5 z-10 inline-flex items-center h-5.5 px-2 bg-[#040508] text-[0.563rem] rounded-xs uppercase leading-none text-light-font/60 pointer-events-none transition-all duration-250 ease-in-out
@@ -654,7 +651,7 @@ function OptionCard({
   return (
     <button
       onClick={onClick}
-      className={`p-6 text-left border transition-all duration-500 flex justify-between items-center cursor-pointer rounded-sm 
+      className={`p-6 text-left border transition-all duration-500 flex justify-between items-center cursor-pointer rounded-sm selection:bg-black! 
         ${active ? "bg-light-font text-black border-light-font" : "border-light-font/20 hover:border-light-font"}`}
     >
       <span className="title">{label}</span>

@@ -123,7 +123,7 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-[75dvh] w-full hidden lg:block"
+            className="max-h-[80dvh] w-full hidden lg:block"
           />
           <video
             src="/video/hanging-lion-mobile.mp4"
