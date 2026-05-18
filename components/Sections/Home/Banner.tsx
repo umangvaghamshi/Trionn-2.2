@@ -121,10 +121,10 @@ export default function Banner() {
             </div>
             <div className="col-span-8 lg:col-span-4 flex justify-end lg:col-start-9">
               <div className="flex flex-col max-w-65 gap-6 w-full">
-                <FadeInOnScroll delay={0.5}>
-                  <div
+                <div id="s1-box">
+                  <FadeInOnScroll
+                    delay={0.5}
                     className="flex border border-[#2F323B] overflow-hidden rounded-sm min-h-18 text-light-font title"
-                    id="s1-body"
                   >
                     <div className="flex flex-col justify-center items-center min-w-26 border-r border-[#2F323B] text-center gap-2 p-4">
                       <svg
@@ -157,8 +157,8 @@ export default function Banner() {
                         digital direction.
                       </span>
                     </div>
-                  </div>
-                </FadeInOnScroll>
+                  </FadeInOnScroll>
+                </div>
                 <div id="s1-sub">
                   <FadeInOnScroll delay={0.7}>
                     <p className="text-justify">
