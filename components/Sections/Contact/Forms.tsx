@@ -495,17 +495,30 @@ export default function Forms() {
                     Review your inquiry and send it when ready.
                   </p>
                 </div>
-                <div className="divide-y divide-light-font/50 border-t border-b border-light-font/50">
-                  <SummaryRow label="Name" value={formData.name} />
-                  <SummaryRow label="Email" value={formData.email} />
-                  {formData.company.trim() !== "" && (
-                    <SummaryRow label="Company" value={formData.company} />
-                  )}
-                  <SummaryRow
-                    label="Project"
-                    value={formData.projectType.join(", ")}
-                  />
-                  <SummaryRow label="Budget" value={formData.budget} />
+                <div className=" grid grid-cols-12 gap-x-6 sm:pb-4 border-b border-light-font/50">
+                  <div className="col-span-12 sm:col-span-6 divide-y divide-light-font/50">
+                    <SummaryRow
+                      label="Name"
+                      value={formData.name}
+                      className={"capitalize"}
+                    />
+                    <SummaryRow label="Email" value={formData.email} />
+                    {formData.company.trim() !== "" && (
+                      <SummaryRow
+                        label="Company"
+                        value={formData.company}
+                        className={"capitalize"}
+                      />
+                    )}
+                    <SummaryRow
+                      label="Project"
+                      value={formData.projectType.join(", ")}
+                    />
+                    <SummaryRow label="Budget" value={formData.budget} />
+                  </div>
+                  <div className="col-span-12 sm:col-span-6 max-sm:border-t border-light-font/50">
+                    <SummaryRow label="Comments" value={formData.message} />
+                  </div>
                 </div>
               </div>
             )}
@@ -662,11 +675,19 @@ function OptionCard({
   );
 }
 
-function SummaryRow({ label, value }: { label: string; value: string }) {
+function SummaryRow({
+  label,
+  value,
+  className,
+}: {
+  label: string;
+  value: string;
+  className?: string;
+}) {
   return (
-    <div className="grid grid-cols-[140px_1fr] py-6 items-center">
-      <span className="title text-light-font/50">{label}</span>
-      <span className="text-light-font">{value || "—"}</span>
+    <div className={`grid grid-cols-12 gap-2 py-4 sm:py-6 ${className}`}>
+      <span className="title text-light-font/50 col-span-12">{label}</span>
+      <span className="text-light-font col-span-12">{value || "—"}</span>
     </div>
   );
 }
