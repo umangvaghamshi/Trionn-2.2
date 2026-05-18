@@ -1,11 +1,35 @@
+"use client";
+
 import { BlurTextReveal, FadeInOnScroll } from "@/components/TextAnimation";
 import ScrollIndicator from "@/components/ScrollIndicator";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { useTransitionReady } from "@/components/Transition";
 
 export default function Banner() {
+  const videoRef = useRef<HTMLDivElement>(null);
+  const transitionReady = useTransitionReady();
+
+  useGSAP(
+    () => {
+      if (!transitionReady) {
+        gsap.set(videoRef.current, { y: "-2rem" });
+        return;
+      }
+
+      gsap.to(videoRef.current, { y: 0, duration: 1, ease: "back.out(5)" });
+    },
+    { scope: videoRef, dependencies: [transitionReady] },
+  );
+
   return (
     <section className="pb-20 lg:pb-37.5 relative bg-[#D2D2D2] text-dark-font min-h-dvh flex overflow-hidden">
       <div className="tr__container flex flex-col items-center text-center">
-        <div className="video-block ">
+        <div
+          className="video-block mix-blend-darken -translate-y-20"
+          ref={videoRef}
+        >
           <video
             src="/video/hanging-lion.mp4"
             autoPlay
@@ -13,7 +37,7 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-[75dvh] w-full mix-blend-darken hidden lg:block"
+            className="max-h-[75dvh] w-full hidden lg:block"
           />
           <video
             src="/video/hanging-lion-mobile.mp4"
@@ -22,10 +46,10 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-[90dvh] w-full mix-blend-darken block lg:hidden -translate-y-[15dvh]"
+            className="max-h-[90dvh] w-full block lg:hidden -translate-y-[15dvh]"
           />
         </div>
-        <div className="flex flex-col gap-6 lg:gap-10 items-center text-center absolute top-[50dvh] lg:top-[60dvh] xl:top-[65dvh] left-0 w-full">
+        <div className="flex flex-col gap-6 items-center text-center absolute top-[50dvh] lg:top-[60dvh] xl:top-[65dvh] left-0 w-full">
           <BlurTextReveal
             as="h1"
             html="Let's start something."

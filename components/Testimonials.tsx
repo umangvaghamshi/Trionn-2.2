@@ -252,7 +252,7 @@ export default function Testimonials({
                             />
                           </div>
                           <div className="flex flex-col">
-                            <p className="md:mb-1">{item.clientName}</p>
+                            <p className="md:mb-1 small">{item.clientName}</p>
                             <p className="opacity-60 small">{item.clientDeg}</p>
                           </div>
                         </div>

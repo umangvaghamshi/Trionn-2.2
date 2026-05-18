@@ -13,8 +13,9 @@ export default function FAQ() {
             animationType="chars"
             stagger={0.08}
           />
-          <p className="small lg:max-w-42">
-            Common things people ask before we begin.
+          <p className="small">
+            Common things people <br />
+            ask before we begin.
           </p>
         </div>
         <div className="col-span-12 md:col-span-6 lg:col-span-5 md:col-start-7 lg:col-start-7">

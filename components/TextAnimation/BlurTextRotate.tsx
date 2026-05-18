@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, ElementType } from 'react';
-import gsap from 'gsap';
-import BlurTextReveal from './BlurTextReveal';
-import { SplitText } from 'gsap/all';
+import { useEffect, useRef, useState, ElementType } from "react";
+import gsap from "gsap";
+import BlurTextReveal from "./BlurTextReveal";
+import { SplitText } from "gsap/all";
 
 gsap.registerPlugin(SplitText);
 
@@ -19,10 +19,10 @@ interface BlurTextRotateProps {
 }
 
 const BlurTextRotate = ({
-  as: Tag = 'h1',
+  as: Tag = "h1",
   texts,
   interval = 3000,
-  className = '',
+  className = "",
   prefix,
   suffix,
   stagger = 0.05,
@@ -32,12 +32,12 @@ const BlurTextRotate = ({
   const rotateRef = useRef<HTMLSpanElement>(null);
 
   const splitTextContent = (el: HTMLElement) => {
-    const split = new SplitText(el.querySelector('.words-wrapper'), {
-      type: 'chars,words,lines',
+    const split = new SplitText(el.querySelector(".words-wrapper"), {
+      type: "chars,words,lines",
       smartWrap: true,
-      wordsClass: 'words',
-      charsClass: 'chars',
-      linesClass: 'lines',
+      wordsClass: "words",
+      charsClass: "chars",
+      linesClass: "lines",
     });
     return split;
   };
@@ -55,20 +55,20 @@ const BlurTextRotate = ({
 
     tl.to(splitTextContent(el).chars, {
       autoAlpha: 0,
-      filter: 'blur(12px)',
-      ease: 'power2.in',
+      filter: "blur(12px)",
+      ease: "power2.in",
       stagger: {
         each: stagger,
-        from: 'random',
+        from: "random",
       },
       onComplete: () => {
         gsap.to(splitTextContent(el).chars, {
           autoAlpha: 0,
-          filter: 'blur(12px)',
-          ease: 'power2.in',
+          filter: "blur(12px)",
+          ease: "power2.in",
           stagger: {
             each: stagger,
-            from: 'random',
+            from: "random",
           },
           onComplete: () => {
             setIndex((i) => (i + 1) % texts.length);
@@ -78,11 +78,11 @@ const BlurTextRotate = ({
       },
     }).to(splitTextContent(el).chars, {
       autoAlpha: 1,
-      filter: 'blur(0px)',
-      ease: 'power2.out',
+      filter: "blur(0px)",
+      ease: "power2.out",
       stagger: {
         each: stagger,
-        from: 'random',
+        from: "random",
       },
     });
   };
@@ -91,14 +91,14 @@ const BlurTextRotate = ({
     <Tag className={`${className}`}>
       {prefix && (
         <BlurTextReveal
-          className="inline-block mr-4"
+          className="inline-block"
           as="span"
           text={prefix}
           animationType="chars"
           stagger={stagger}
           once
         />
-      )}
+      )}{" "}
       <span ref={rotateRef} className="inline-block">
         <BlurTextReveal
           key={index}
@@ -111,8 +111,7 @@ const BlurTextRotate = ({
           onCompleteAnimation={animate}
         />
       </span>
-
-      {suffix && <span className="ml-2">{suffix}</span>}
+      {suffix && <span className=""> {suffix}</span>}
     </Tag>
   );
 };

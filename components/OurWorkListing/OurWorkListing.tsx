@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useSiteSound } from "@/components/SiteSoundContext";
-import { BlurTextReveal } from "@/components/TextAnimation";
+import { BlurTextReveal, FadeInOnScroll } from "@/components/TextAnimation";
 import { WordShiftButton } from "@/components/Button";
 import LinePlus from "@/components/LinePlus";
 import { TransitionLink, useTransitionReady } from "@/components/Transition";
@@ -2001,10 +2001,10 @@ export default function OurWorkListing() {
               id="line-origin"
               className="absolute w-0 h-0 top-1/2 left-1/2 pointer-events-none invisible"
             />
-            <p className="small">
+            <FadeInOnScroll className="small" delay={0.5}>
               A curated showcase of branding, digital products, <br />
               websites, and mobile experiences.
-            </p>
+            </FadeInOnScroll>
           </div>
           <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font opacity-50 pointer-events-none banner-scroll">
             <ScrollIndicator />

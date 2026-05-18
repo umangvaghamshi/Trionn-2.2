@@ -181,6 +181,8 @@ export default function Awards() {
         xPercent: 100,
       });
 
+      const isMobile = window.innerWidth < 1024;
+
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
@@ -201,15 +203,29 @@ export default function Awards() {
         .fromTo(
           maskRef.current,
           {
-            width: "33.25rem",
-            height: "43.75rem",
+            width: () => {
+              const rem = parseFloat(
+                getComputedStyle(document.documentElement).fontSize,
+              );
+              const mobile = window.innerWidth < 1024;
+              const sideGap = mobile ? 4 * rem : 3 * rem;
+              return Math.min(33.25 * rem, window.innerWidth - sideGap);
+            },
+            height: () => {
+              const rem = parseFloat(
+                getComputedStyle(document.documentElement).fontSize,
+              );
+              return window.innerWidth < 1024 ? 39 * rem : 43.75 * rem;
+            },
+            y: () => (window.innerWidth < 1024 ? 50 : 0),
             borderRadius: 999,
           },
           {
             width: "100vw",
             height: "100dvh",
+            y: 0,
             borderRadius: 0,
-            duration: 0.15,
+            duration: window.innerWidth < 1024 ? 0.2 : 0.15,
           },
         )
         .to(
@@ -514,9 +530,9 @@ export default function Awards() {
                       cardsRef.current[idx] = self;
                     }
                   }}
-                  className={`overflow-hidden relative w-134 h-77 p-10 bg-white/90 hover:bg-black/90 text-dark-font hover:text-light-font rounded-lg flex justify-between transition-all duration-500 ease-in-out`}
+                  className={`overflow-hidden relative w-[90vw] max-w-134 sm:w-134 min-h-62 sm:min-h-77 p-8 sm:p-10 bg-white/90 hover:bg-black/90 text-dark-font hover:text-light-font rounded-sm flex justify-between transition-all duration-500 ease-in-out`}
                 >
-                  <div className="flex-1 flex flex-col items-start justify-between pr-10">
+                  <div className="flex-1 flex flex-col items-start justify-between pr-6 sm:pr-10">
                     <BlurTextReveal
                       as="p"
                       text={item.title}
@@ -524,7 +540,7 @@ export default function Awards() {
                       stagger={0.03}
                       className="transition-all duration-500 ease-in-out"
                     />
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col sm:gap-1">
                       {item.awards.map((award, i) => {
                         return (
                           <p
@@ -537,7 +553,7 @@ export default function Awards() {
                       })}
                     </div>
                   </div>
-                  <div className="awards-image-wrapper w-full max-w-40 overflow-hidden relative">
+                  <div className="awards-image-wrapper w-full max-w-32 sm:max-w-40 overflow-hidden relative">
                     {item.awards.map((award, index) => {
                       return (
                         <div key={index}>

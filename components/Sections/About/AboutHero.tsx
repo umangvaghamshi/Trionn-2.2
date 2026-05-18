@@ -6,6 +6,7 @@ import gsap from "gsap";
 import Marquee from "@/components/Marquee";
 import AboutLion from "./AboutLion";
 import { BlurTextReveal } from "@/components/TextAnimation";
+import type { BlurTextRevealHandle } from "@/components/TextAnimation/BlurTextReveal";
 import { SplitText } from "gsap/all";
 import ScrollIndicator from "@/components/ScrollIndicator";
 
@@ -43,6 +44,20 @@ export default function AboutHero() {
   const splitTextRef = useRef<HTMLHeadingElement>(null);
   const clipOuterRef = useRef<HTMLDivElement>(null);
   const clipInnerRef = useRef<HTMLDivElement>(null);
+  const intersectionMobileRef = useRef<BlurTextRevealHandle>(null);
+  const intersectionDesktopRef = useRef<BlurTextRevealHandle>(null);
+
+  // Once the lion has loaded and its fade-in begins, play the
+  // "At the intersection..." blur reveal. Delayed slightly so the
+  // animation isn't wasted on the white background while the lion fades in.
+  useEffect(() => {
+    if (!isLoaded) return;
+    const t = window.setTimeout(() => {
+      intersectionMobileRef.current?.play();
+      intersectionDesktopRef.current?.play();
+    }, 700);
+    return () => window.clearTimeout(t);
+  }, [isLoaded]);
 
   useGSAP(() => {
     if (!isLoaded) return;
@@ -140,11 +155,14 @@ export default function AboutHero() {
       <div className="md:hidden w-full px-10 pt-8 md:mt-4 pb-0 pointer-events-none mix-blend-difference z-10">
         <span className="title text-center block">
           <BlurTextReveal
+            ref={intersectionMobileRef}
             as="span"
             html={`At the intersection of strategy, <br/>design, and technology.`}
             animationType="words"
             stagger={0.5}
             className="block text-white uppercase"
+            manual
+            waitForTransition={false}
           />
         </span>
         <div className="flex items-center absolute top-[calc(100dvh-5rem)] left-0 w-full justify-center text-light-font pointer-events-none banner-scroll">
@@ -158,11 +176,14 @@ export default function AboutHero() {
         <div className="top-content hidden md:flex absolute top-30 left-0 w-full py-15 px-10 z-10 pointer-events-none flex-col justify-between">
           <span className="title text-center z-10 block col-span-12">
             <BlurTextReveal
+              ref={intersectionDesktopRef}
               as="span"
               html={`At the intersection of strategy, <br/>design, and technology.`}
               animationType="words"
               stagger={0.5}
               className="block text-white uppercase"
+              manual
+              waitForTransition={false}
             />
           </span>
           <div className="flex items-center absolute bottom-20 left-0 w-full justify-center text-light-font pointer-events-none banner-scroll">
