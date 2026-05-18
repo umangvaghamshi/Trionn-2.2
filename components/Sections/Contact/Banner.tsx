@@ -18,11 +18,7 @@ export default function Banner() {
         return;
       }
 
-      gsap.fromTo(
-        videoRef.current,
-        { y: "-5rem" },
-        { y: 0, duration: 1, ease: "back.out(2.5)" },
-      );
+      gsap.to(videoRef.current, { y: 0, duration: 1, ease: "back.out(5)" });
     },
     { scope: videoRef, dependencies: [transitionReady] },
   );
@@ -30,7 +26,10 @@ export default function Banner() {
   return (
     <section className="pb-20 lg:pb-37.5 relative bg-[#D2D2D2] text-dark-font min-h-dvh flex overflow-hidden">
       <div className="tr__container flex flex-col items-center text-center">
-        <div className="video-block mix-blend-darken" ref={videoRef}>
+        <div
+          className="video-block mix-blend-darken -translate-y-20"
+          ref={videoRef}
+        >
           <video
             src="/video/hanging-lion.mp4"
             autoPlay
@@ -38,7 +37,7 @@ export default function Banner() {
             muted
             playsInline
             preload="metadata"
-            className="max-h-[80dvh] w-full hidden lg:block -translate-y-10"
+            className="max-h-[75dvh] w-full hidden lg:block"
           />
           <video
             src="/video/hanging-lion-mobile.mp4"
