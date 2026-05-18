@@ -250,7 +250,7 @@ export default function WorkServicesSequence() {
     <div
       ref={bridgeRef}
       id="work-section"
-      className="relative h-dvh w-full overflow-hidden bg-white"
+      className="relative min-h-dvh h-dvh w-full overflow-hidden bg-white"
     >
       <div
         ref={servicesLayerRef}

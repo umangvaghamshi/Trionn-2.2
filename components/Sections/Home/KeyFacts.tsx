@@ -5,7 +5,7 @@ import { BlurTextReveal } from "@/components/TextAnimation";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import LinePlus from "@/components/LinePlus";
 import Marquee from "@/components/Marquee";
 import { partnersLogo } from "@/data";
@@ -20,20 +20,24 @@ export default function KeyFacts() {
   const [windowKey, setWindowKey] = useState(0);
 
   useEffect(() => {
-    const onResize = () => setWindowKey((k) => k + 1);
+    const onResize = () => {
+      setWindowKey((k) => k + 1);
+    };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const triggerOdometer = useCallback((index: number) => {
-    if (odoFiredRef.current[index]) return;
-    odoFiredRef.current[index] = true;
-    setOdoTicks((prev) => {
-      const next = [...prev];
-      next[index] = next[index] + 1;
-      return next;
-    });
-  }, []);
+  const triggerOdometerRef = useRef<(index: number) => void>(
+    (index: number) => {
+      if (odoFiredRef.current[index]) return;
+      odoFiredRef.current[index] = true;
+      setOdoTicks((prev) => {
+        const next = [...prev];
+        next[index] = next[index] + 1;
+        return next;
+      });
+    },
+  );
 
   useGSAP(
     () => {
@@ -46,51 +50,34 @@ export default function KeyFacts() {
       if (cards.length !== 3) return;
 
       const list = root.querySelector(".key-card-list") as HTMLElement | null;
-      if (list) gsap.set(list, { perspective: 1400 });
 
-      // const lineWrap = root.querySelector(".js-kf-line-wrap");
-      // if (lineWrap) {
-      //   gsap.fromTo(
-      //     lineWrap,
-      //     { scaleY: 0, transformOrigin: "top" },
-      //     {
-      //       scaleY: 1,
-      //       ease: "sine.inOut",
-      //       duration: 1.5,
-      //       scrollTrigger: {
-      //         trigger: lineWrap,
-      //         start: "top 70%",
-      //         toggleActions: "play none none reverse",
-      //       },
-      //     },
-      //   );
-      // }
+      gsap.set(cards, { autoAlpha: 0, force3D: true });
 
-      gsap.set(cards, {
-        autoAlpha: 0,
-        force3D: true,
-      });
+      const fireOdometer = (i: number) => triggerOdometerRef.current(i);
 
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 768px)", () => {
-        gsap.set(cards, {
-          rotateX: -92,
-          transformOrigin: "center top",
-        });
+        gsap.set(cards, { rotateX: -92, transformOrigin: "center top" });
+
+        const cardDuration = 2.65;
+        const staggerEach = 0.6;
 
         const tl = gsap.timeline({
+          onComplete: () => {
+            ScrollTrigger.refresh();
+          },
           scrollTrigger: {
+            id: "keyfacts-cards-desktop",
             trigger: root,
             start: "top center",
             end: "top top",
             scrub: 2,
-            markers: false,
+            onEnter:(()=>{
+              window.dispatchEvent(new Event("trionn-keyfacts:ready"));
+            })
           },
         });
-
-        const cardDuration = 2.65;
-        const staggerEach = 0.6;
 
         tl.to(cards, {
           rotateX: 0,
@@ -99,11 +86,12 @@ export default function KeyFacts() {
           ease: "none",
           force3D: true,
           duration: cardDuration,
+          overwrite: true,
         });
 
         cards.forEach((_, i) => {
           tl.call(
-            () => triggerOdometer(i),
+            () => fireOdometer(i),
             undefined,
             i * staggerEach + staggerEach * 1.5,
           );
@@ -116,13 +104,14 @@ export default function KeyFacts() {
         gsap.set(list, { x: 0 });
         gsap.set(cards, { rotateX: 0 });
 
-        const scrollTween = gsap.to(list, {
+        gsap.to(list, {
           x: () => {
             const padding = 32;
             return -(list.scrollWidth - window.innerWidth + padding);
           },
           ease: "none",
           scrollTrigger: {
+            id: "keyfacts-cards-mobile-pin",
             trigger: root,
             pin: true,
             start: "top top",
@@ -133,37 +122,30 @@ export default function KeyFacts() {
           },
         });
 
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                const card = entry.target as HTMLElement;
-                const index = cards.indexOf(card);
-                if (index !== -1) {
-                  triggerOdometer(index);
-                  gsap.to(card, {
-                    autoAlpha: 1,
-                    duration: 0.8,
-                    ease: "power2.out",
-                    force3D: true,
-                  });
-                  observer.unobserve(card);
-                }
-              }
-            });
-          },
-          { threshold: 0.2 },
-        );
-
-        cards.forEach((card) => observer.observe(card));
-
-        return () => {
-          observer.disconnect();
-        };
+        cards.forEach((card, i) => {
+          ScrollTrigger.create({
+            id: `keyfacts-card-mobile-${i}`,
+            trigger: card,
+            start: "left 80%",
+            horizontal: false,
+            containerAnimation: undefined,
+            once: true,
+            onEnter: () => {
+              fireOdometer(i);
+              gsap.to(card, {
+                autoAlpha: 1,
+                duration: 0.8,
+                ease: "power2.out",
+                force3D: true,
+              });
+            },
+          });
+        });
       });
     },
-    { scope: containerRef, dependencies: [triggerOdometer] },
+    { scope: containerRef },
   );
+
 
   return (
     <section
@@ -171,82 +153,80 @@ export default function KeyFacts() {
       className="pt-25 pb-20 lg:pb-40 bg-[linear-gradient(0deg,#FFFFFF_0%,#D2D2D2_100%)] relative z-20 min-h-dvh max-md:overflow-hidden"
       ref={containerRef}
     >
-      <div className="tr__container">
-        <div className="title-block flex flex-col items-center mb-10 lg:mb-20 gap-6 text-center">
-          <BlurTextReveal
-            as="h2"
-            text={`Key facts`}
-            animationType="chars"
-            stagger={0.05}
-            className="text-dark-font block"
-          />
-          <p className="text-dark-font small">
-            A snapshot of our <br />
-            experience and impact.
-          </p>
-        </div>
-        <div
-          key={windowKey}
-          className="key-card-list flex gap-6 justify-start md:justify-center md:flex-wrap lg:flex-nowrap transform-3d max-lg:px-[8.66vw]"
-        >
-          <FeaturedCard odoSync={odoTicks[0]} />
-          <ProjectCard odoSync={odoTicks[1]} />
-          <TeamCard odoSync={odoTicks[2]} />
-        </div>
-        <div className="partners-block mt-20 lg:mt-30 flex flex-col gap-10">
-          <BlurTextReveal
-            as="span"
-            text={`Our business partners`}
-            animationType="chars"
-            stagger={0.05}
-            className="text-black title text-center block"
-          />
-          <div className="partners-list hidden lg:flex justify-center -mx-4 lg:-mx-10">
-            {partnersLogo.map((item, index) => (
-              <div
-                className="px-6 lg:px-10 border-r border-grey-light/15 flex justify-center items-center last:border-0"
-                key={index}
-              >
-                <Image
-                  src={item.logo}
-                  width={108}
-                  height={50}
-                  className={`h-auto ${item.widthClass}`}
-                  alt={`Partners logo ${index}`}
-                />
-              </div>
-            ))}
+      <div key={windowKey}>
+        <div className="tr__container">
+          <div className="title-block flex flex-col items-center mb-10 lg:mb-20 gap-6 text-center">
+            <BlurTextReveal
+              as="h2"
+              text={`Key facts`}
+              animationType="chars"
+              stagger={0.05}
+              className="text-dark-font block"
+            />
+            <p className="text-dark-font small">
+              A snapshot of our <br />
+              experience and impact.
+            </p>
           </div>
-          <Marquee gap={0} className="-mx-10 block w-auto! lg:hidden">
-            <div className="flex flex-wrap">
-              {partnersLogo.map((item, index) => {
-                return (
-                  <div
-                    className="px-10 border-r border-grey-light/15 flex justify-center items-center"
-                    key={index}
-                  >
-                    <Image
-                      src={item.logo}
-                      width={108}
-                      height={50}
-                      className={`h-auto ${item.widthClass}`}
-                      alt={`Partners logo ${index}`}
-                    />
-                  </div>
-                );
-              })}
+          <div className="key-card-list perspective-[1400] flex gap-6 justify-start md:justify-center md:flex-wrap lg:flex-nowrap transform-3d max-lg:px-[8.66vw] ">
+            <FeaturedCard odoSync={odoTicks[0]} />
+            <ProjectCard odoSync={odoTicks[1]} />
+            <TeamCard odoSync={odoTicks[2]} />
+          </div>
+          <div className="partners-block mt-20 lg:mt-30 flex flex-col gap-10">
+            <BlurTextReveal
+              as="span"
+              text={`Our business partners`}
+              animationType="chars"
+              stagger={0.05}
+              className="text-black title text-center block"
+            />
+            <div className="partners-list hidden lg:flex justify-center -mx-4 lg:-mx-10">
+              {partnersLogo.map((item, index) => (
+                <div
+                  className="px-6 lg:px-10 border-r border-grey-light/15 flex justify-center items-center last:border-0"
+                  key={index}
+                >
+                  <Image
+                    src={item.logo}
+                    width={108}
+                    height={50}
+                    className={`h-auto ${item.widthClass}`}
+                    alt={`Partners logo ${index}`}
+                  />
+                </div>
+              ))}
             </div>
-          </Marquee>
+            <Marquee gap={0} className="-mx-10 block w-auto! lg:hidden">
+              <div className="flex flex-wrap">
+                {partnersLogo.map((item, index) => {
+                  return (
+                    <div
+                      className="px-10 border-r border-grey-light/15 flex justify-center items-center"
+                      key={index}
+                    >
+                      <Image
+                        src={item.logo}
+                        width={108}
+                        height={50}
+                        className={`h-auto ${item.widthClass}`}
+                        alt={`Partners logo ${index}`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </Marquee>
+          </div>
         </div>
-      </div>
-      {/* Bottom decoration line (Moved from Work section) */}
-      <div className="js-kf-line-wrap tr__container absolute bottom-0 max-md:translate-y-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4">
-        <LinePlus
-          key={odoTicks[0]}
-          lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
-          plusClass={"col-span-12 mx-auto"}
-          iconColor={"#272727"}
-        />
+        {/* Bottom decoration line (Moved from Work section) */}
+        <div className="js-kf-line-wrap tr__container absolute bottom-0 max-md:translate-y-0 translate-y-1/2 left-0 right-0 z-0 max-md:px-4">
+          <LinePlus
+            lineClass={"opacity-25 bg-grey-line left-1/2! -translate-x-1/2"}
+            plusClass={"col-span-12 mx-auto"}
+            iconColor={"#272727"}
+          />
+        </div>
       </div>
     </section>
   );
@@ -316,7 +296,7 @@ function FeaturedCard({ odoSync }: { odoSync: number }) {
         muted
         playsInline
         loop
-        preload="metadata"
+        preload="auto"
         className="absolute inset-0 w-full h-full object-cover"
       />
       <div className="relative z-2 h-full p-8 lg:p-10 flex flex-col justify-between">
@@ -415,7 +395,7 @@ function TeamCard({ odoSync }: { odoSync: number }) {
             src="/video/team/rushi.mp4"
             muted
             playsInline
-            preload="metadata"
+            preload="auto"
             className="w-full h-full object-cover object-top rounded-sm scale-101"
           />
         </div>

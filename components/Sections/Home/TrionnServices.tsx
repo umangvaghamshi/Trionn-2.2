@@ -307,7 +307,7 @@ export default function TrionnServices({
 }: TrionnServicesProps = {}) {
   const soundEnabledRef = useRef(false);
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const bgVideoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -764,37 +764,21 @@ export default function TrionnServices({
 
   /* ── Draw frame ── */
   const drawFrame = useCallback((i: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const el = imgRef.current;
+    if (!el) return;
 
     const s = stateRef.current;
-    const img = s.imgs[Math.round(i)];
+    const idx = Math.round(i);
+    const img = s.imgs[idx];
     if (!img || !img.complete) return;
 
-    const cw = canvas.width;
-    const ch = canvas.height;
-    const iw = img.naturalWidth;
-    const ih = img.naturalHeight;
-    const scale = ch / ih;
-    const dw = iw * scale;
-    const dh = ih * scale;
-
-    ctx.save();
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = "source-over";
-    ctx.shadowBlur = 0;
-    ctx.clearRect(0, 0, cw, ch);
-    ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
-    ctx.restore();
+    if (el.src !== img.src) el.src = img.src;
   }, []);
 
   /* ── Resize ── */
   const resize = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const dpr = window.devicePixelRatio || 1;
+    const el = imgRef.current;
+    if (!el) return;
 
     const isSmallMobile = window.matchMedia("(max-width: 677px)").matches;
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
@@ -806,14 +790,12 @@ export default function TrionnServices({
     let cvH: number;
 
     if (isSmallMobile) {
-      // Full viewport fill on small phones
       cvW = 999;
       cvH = 594;
     } else if (isMobile) {
       cvW = 999;
       cvH = 594;
     } else if (isTablet) {
-      // Tablet (768–1023px): reduced canvas, 16:9 at 75% of viewport height
       const vh = Math.round(
         window.visualViewport?.height ?? window.innerHeight,
       );
@@ -827,10 +809,8 @@ export default function TrionnServices({
       cvW = Math.round(cvH * (16 / 9));
     }
 
-    canvas.width = cvW * dpr;
-    canvas.height = cvH * dpr;
-    canvas.style.width = cvW + "px";
-    canvas.style.height = cvH + "px";
+    el.style.width = cvW + "px";
+    el.style.height = cvH + "px";
     stateRef.current.cardsTL = null;
     drawFrame(stateRef.current.videoIdx);
   }, [drawFrame]);
@@ -855,15 +835,20 @@ export default function TrionnServices({
         ? requestIdleCallback
         : (cb: () => void) => setTimeout(cb, 0);
 
+    const markLoaded = () => {
+      s.loaded++;
+      if (s.loaded === TOTAL) drawFrame(0);
+    };
+
     const loadChunk = (start: number) => {
       const end = Math.min(start + CHUNK, TOTAL);
       for (let i = start; i < end; i++) {
         const img = new Image();
-        img.onload = () => {
-          s.loaded++;
-          if (s.loaded === TOTAL) drawFrame(0);
-        };
+        img.decoding = "async";
         img.src = `/images/stone/frame_${String(i + 1).padStart(4, "0")}.webp`;
+        // decode() resolves once the bitmap is fully decoded and cached, so
+        // later src swaps on the visible <img> reuse the cache without re-decoding.
+        img.decode().then(markLoaded, markLoaded);
         s.imgs[i] = img;
       }
       if (end < TOTAL) ric(() => loadChunk(end));
@@ -1066,9 +1051,9 @@ export default function TrionnServices({
           }
         }
 
-        // Canvas: hidden during white intro, fades in with st
-        if (canvasRef.current) {
-          canvasRef.current.style.opacity = String(
+        // Image: hidden during white intro, fades in with st
+        if (imgRef.current) {
+          imgRef.current.style.opacity = String(
             gsap.utils.clamp(0, 1, st / 0.08),
           );
         }
@@ -1194,11 +1179,15 @@ export default function TrionnServices({
           style={{ opacity: embedded ? 1 : 0 }}
           aria-hidden
         />
-        {/* Canvas */}
-        <canvas
-          ref={canvasRef}
+        {/* Frame sequence — plain <img>; next/image would conflict with the scroll-driven src swap */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          ref={imgRef}
           id="c"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block max-[677px]:w-full max-[677px]:h-full md:h-dvh md:w-auto max-w-none"
+          alt=""
+          aria-hidden
+          decoding="async"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 block max-[677px]:w-full max-[677px]:h-full md:h-dvh md:w-auto max-w-none object-contain"
           style={{ opacity: embedded ? 0 : 1 }}
         />
 

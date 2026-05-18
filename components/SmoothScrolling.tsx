@@ -222,16 +222,30 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     };
   }, []);
 
-  // 3. Lenis Settings for Mouse Wheel
-  const lenisOptions = {
-    autoRaf: false, // We manage the loop manually via GSAP
-    duration: 1, // Slightly reduced for snappier scroll (was 1.5)
-    wheelMultiplier: 0.8,
-    touchMultiplier: 0.6,
-    syncTouch: true,
-    infinite: false,
-    stopped: !isLoaderComplete, // Start stopped if loader is active
-  };
+  const isTouch =
+    typeof window !== 'undefined' &&
+    ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+  const lenisOptions = isTouch
+    ? {
+        autoRaf: false,
+        duration: 0.8,
+        smoothWheel: true,
+        smoothTouch: false,
+        wheelMultiplier: 1.2,
+        touchMultiplier: 1.2,
+        syncTouch: true,
+        syncTouchLerp: 0.08,
+        lerp: 0.08,
+        stopped: !isLoaderComplete,
+      }
+    : {
+        autoRaf: false,
+        duration: 1.2,
+        syncTouch: true,
+        infinite: false,
+        stopped: !isLoaderComplete,
+      };
 
   return (
     <ReactLenis root options={lenisOptions} ref={lenisRef}>
@@ -239,3 +253,4 @@ export default function SmoothScrolling({ children }: SmoothScrollingProps) {
     </ReactLenis>
   );
 }
+

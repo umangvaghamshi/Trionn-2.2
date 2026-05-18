@@ -37,7 +37,8 @@ export default function HowWork({
       if (!cardsRef.current.length) return;
 
       const stripes = stripesRef.current;
-      gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
+      if (stripes.length)
+        gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
 
       const mm = gsap.matchMedia();
 
@@ -185,7 +186,8 @@ export default function HowWork({
           if (el)
             gsap.set(el, { scaleX: 0, transformOrigin: "left", autoAlpha: 0 });
         });
-        gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
+        if (stripes.length)
+          gsap.set(stripes, { scaleY: 0, transformOrigin: "bottom" });
 
         // ── pinned scrub timeline (cards + lines only) ──
         const mobileTl = gsap.timeline({
