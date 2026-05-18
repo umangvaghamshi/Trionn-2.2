@@ -163,7 +163,7 @@ const LEFT_CARDS: CardData[] = [
     svgIndex: 2,
     title: "Product Design",
     description:
-      "AI-powered solutions designed to enhance products, automate workflows, and unlock smarter digital experiences.",
+      "Thoughtful product design that captures attention, deepens engagement, and builds lasting loyalty.",
   },
 ];
 
@@ -187,7 +187,7 @@ const RIGHT_CARDS: CardData[] = [
     svgIndex: 5,
     title: "Branding",
     description:
-      "WordPress development focused on performance, clarity, and experiences that convert visitors into loyal users.",
+      "Impactful branding positions startups for success through credibility, clarity, and lasting loyalty.",
   },
 ];
 
