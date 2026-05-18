@@ -568,7 +568,7 @@ export default function TrionnGallery() {
           className="absolute top-1/2 left-1/2 -translate-1/2 text-center z-1 pointer-events-none w-[min(50rem,82vw)]"
         >
           <h2 className="mb-6">Work hard. Play loud.</h2>
-          <p className="max-w-105 mx-auto small">
+          <p className="max-w-80 sm:max-w-105 mx-auto small">
             A glimpse into the creative chaos, team culture, fun moments, and
             everyday life behind TRIONN.
           </p>

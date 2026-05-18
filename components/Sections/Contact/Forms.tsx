@@ -323,7 +323,7 @@ export default function Forms() {
             </div>
           )}
 
-          <div ref={stepRef}>
+          <div ref={stepRef} key={currentStep}>
             {currentStep === 0 && (
               <div className="space-y-10">
                 <div className="flex flex-col gap-4">

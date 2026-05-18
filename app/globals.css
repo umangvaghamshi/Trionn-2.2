@@ -286,7 +286,9 @@ p,
   line-height: clamp(0.672, 0.672, 0.672);
   letter-spacing: clamp(-0.08em, -0.073vw, -0.08em);
 }
-
+.marquee-wrapper .mrquee-text {
+  @apply leading-none;
+}
 .mrquee-text .marquee-text-item {
   @apply relative sm:-top-1.5 md:-top-2.25 xl:-top-3;
 }
@@ -426,10 +428,6 @@ input:-webkit-autofill:active {
 }
 
 @media (max-width: 640px) {
-  .marquee-wrapper .mrquee-text {
-    @apply leading-none;
-  }
-
   .custom-arrow {
     @apply w-14 h-14 min-w-14 min-h-14;
   }
